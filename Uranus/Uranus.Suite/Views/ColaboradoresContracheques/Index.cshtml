@@ -1,0 +1,293 @@
+﻿@{
+    ViewBag.Title = "Administrativo \\ Gestão de Contracheques";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalUpLoad" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="upload-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Nova Ação</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Mês <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Mês" id="Mes" name="Mes" data-msg-required="Por favor, insira o Mês." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Ano <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Ano" id="Ano" name="Ano" data-msg-required="Por favor, insira o Ano." data-rule-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Ação</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir essa Ação?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Contracheques</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                @using (Html.BeginForm("Index", "ColaboradoresContracheques", FormMethod.Get, null))
+                                                {
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Nome</label>
+                                                            <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Mês</label>
+                                                            <input id="mes" name="mes" type="mes" class="form-control" value="@ViewBag.mes" style="border: 1px solid #CCCCCC !important;" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Ano</label>
+                                                            <input id="ano" name="ano" type="ano" class="form-control" value="@ViewBag.ano" style="border: 1px solid #CCCCCC !important;" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group" style="vertical-align: bottom !important;">
+                                                            <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                            &nbsp;
+                                                            <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                                </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("Mes", header: "Mês"),
+                                     grid.Column("Ano", header: "Ano"),
+                                     grid.Column("Profissionais.Pessoas.Nome", header: "Nome"),
+                                     grid.Column("ID", header: "Ações", canSort:false,
+                                     format:
+                    @<text>
+                        @*@Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalUpLoad' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalUpLoad' onclick='Alterar(" + item.ID + ");'>Alterar</a>")*@
+                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ");'>Excluir</a>")
+                    </text>)
+   });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script>
+
+        function Novo() {
+            $('#modalLabelTitle').text('Nova Ação');
+            $('#Mes').attr('disabled', false);
+            $('#Mes').val('');
+            $('#Ano').attr('disabled', false);
+            $('#Ano').val('');
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#upload-form").validate().resetForm();
+        }
+
+        function Excluir(Id, NomeArquivo) {
+            $('h4').text('Você deseja realmente excluir esse Contracheques(' + NomeArquivo + ')?');
+            $('#id').val(Id);
+            $('#nome').val(NomeArquivo);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#upload-form").validate();
+
+            if ($('#upload-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("Mes", $("#Mes").val());
+                dados.append("Ano", $("#Ano").val());
+
+                var options = {};
+                options.url = "/ColaboradoresContracheques/UploadContracheques"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('h4').text('Operação realizada com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#upload-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/ColaboradoresContracheques/ExcluirContracheques"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Contracheque excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#upload-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do ExcluirContracheques (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../ColaboradoresContracheques');
+        }
+
+    </script>
+
+</div>

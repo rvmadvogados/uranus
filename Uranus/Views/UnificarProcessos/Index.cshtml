@@ -1,0 +1,425 @@
+﻿@{
+    ViewBag.Title = "Unificar Processos e Altração Clientes Agenda";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="eventoDescricaoOriginal" name="eventoDescricaoOriginal" value="">
+
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">--------------------------------------------------Unificar Processos---------------------------------------------------</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">-----------------------------------Alterar Clientes Agenda de Compromissos-----------------------------------</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome do Cliente</label>
+                                            <select id="FiltrarClienteProcesso" name="FiltrarClienteProcesso" class="select2_single form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome do Cliente Origem</label>
+                                            <select id="FiltrarClienteOrigem" name="FiltrarClienteOrigem" class="select2_single form-control"> </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número do Processo Origem</label>
+                                            <select id="FiltrarProcessoOrigem" name="FiltrarProcessoOrigem" class="form-control" style="width: 100% !important; height: 40px !important;"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número do Processo Destino</label>
+                                            <select id="FiltrarProcessoDestino" name="FiltrarProcessoDestino" class="form-control" style="width: 100% !important; height: 40px !important;"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome do Cliente Destino</label>
+                                            <select id="FiltrarClienteDestino" name="FiltrarClienteDestino" class="form-control" style="width: 100% !important; height: 40px !important;"></select>
+                                            @*<select id="FiltrarClienteDestino" name="FiltrarClienteDestino" class="select2_single form-control"></select>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="col-md-4">
+                                        <button id="buttonVisuaizar" type="button" class="btn btn-danger" style="margin: 0;">Visualizar Eventos</button>
+                                        &nbsp;
+                                        <button id="buttonUnificar" type="button" class="btn btn-danger" style="margin: 0;">Unificar Processos</button>
+                                    </div>
+                                    <div class="col-md-3" style="text-align: center;">
+                                    </div>
+                                    <div class="col-md-4" style="text-align: center;">
+                                        <button id="buttonAlterar" type="button" class="btn btn-primary" style="margin: 0;">Alterar Cliente Agenda</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <table class="webgrid">
+                    <thead>
+                        <tr class="webgrid-header">
+                            <th scope="col">
+                                <input type="checkbox" id="checkTodos" name="nameAll" /> Eventos - Selecionar Tudo
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="Listagem">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- /page content -->
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    //$("#Evento").select2({
+    //    placeholder: "Selecione um Evento",
+    //    allowClear: true,
+    //    tags: true
+    $(document).ready(function () {
+
+        $('#checkTodos').click(function () {
+
+            var val = this.checked;
+            $('#Listagem').each(function () {
+                $('input:checkbox').prop('checked', val);
+            });
+
+
+        });
+    });
+
+
+    select = $('#FiltrarProcessoOrigem');
+    select.append(
+        $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProcessoOrigem))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarProcessoOrigem)))
+    );
+    $('#FiltrarProcessoOrigem').trigger('change');
+
+    select = $('#FiltrarProcessoDestino');
+    select.append(
+        $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProcessoDestino))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarProcessoDestino)))
+    );
+    $('#FiltrarProcessoDestino').trigger('change');
+
+    var select = $('#FiltrarClienteProcesso');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarClienteProcesso))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarClienteProcesso)))
+        );
+
+    var select = $('#FiltrarClienteOrigem');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarClienteOrigem))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarClienteOrigem)))
+        );
+
+    var select = $('#FiltrarClienteDestino');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarClienteDestino))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarClienteDestino)))
+        );
+
+
+    $("#FiltrarClienteProcesso").select2({
+        placeholder: "Selecione um Cliente",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            dataType: "json",
+            type: "GET",
+            url: '/Clientes/GetClientsList',
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    filter: true,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.clientes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    }).on("change", function (e) {
+
+        var Cliente = $('#FiltrarClienteProcesso').val();
+        if (Cliente != null && Cliente.length > 0) {
+
+            var dados = new window.FormData();
+            dados.append("Cliente", Cliente);
+
+            var options = {};
+            options.url = "/Processos/ListarProcessosCliente"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.processos;
+
+                    $('#FiltrarProcessoDestino').html("");
+                    var select = $('#FiltrarProcessoDestino');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Processo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProcessoOrigem').html("");
+                    var select = $('#FiltrarProcessoOrigem');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Processo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    //$('#FiltrarProcessoOrigem').trigger('change');
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+    });
+
+    $("#FiltrarClienteOrigem").select2({
+        placeholder: "Selecione um Cliente",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            cache: false,
+            dataType: "json",
+            type: "GET",
+            url: '/Clientes/GetClientsList',
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    filter: true,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.clientes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    });
+
+    $("#FiltrarClienteDestino").select2({
+        placeholder: "Selecione um Cliente",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            cache: false,
+            dataType: "json",
+            type: "GET",
+            url: '/Clientes/GetClientsList',
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    filter: true,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.clientes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    });
+
+
+    $('#buttonUnificar').click(function (evt) {
+
+
+        var ids = $('input:checkbox:checked').map(function () {
+            return this.value;
+        }).get().join(";");
+        var dados = new window.FormData();
+        dados.append("Ids", ids);
+        dados.append("IdOrigem", $('#FiltrarProcessoOrigem').val());
+        dados.append("IdDestino", $('#FiltrarProcessoDestino').val());
+        
+        var options = {};
+        options.url = "/UnificarProcessos/UnificarEventosProcesso"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+        var json = $.parseJSON(data.responseText);
+
+            if (response = "success") {
+
+                $('h4').text('Unificação realizada com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+                Atualizar
+            }
+            else {
+                $('h4').text('Problema na Unificação de Processos!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+         
+        };
+        $.ajax(options);
+
+        evt.preventDefault();
+
+    });
+
+
+    $('#buttonAlterar').click(function (evt) {
+
+        var dados = new window.FormData();
+        dados.append("Origem", $('#FiltrarClienteOrigem').val());
+        dados.append("Destino", $('#FiltrarClienteDestino').val());
+
+        var options = {};
+        options.url = "/UnificarProcessos/AlterarClientesAgenda"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (response = "success") {
+
+                $('h4').text('Alteração da Agenda realizada com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+                Atualizar
+            }
+            else {
+                $('h4').text('Problema na Alteração da Agenda!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+
+        evt.preventDefault();
+
+    });
+
+    $('#buttonVisuaizar').click(function (evt) {
+
+        var dados = new window.FormData();
+        dados.append("IdAcao", $('#FiltrarProcessoOrigem').val());
+
+        var options = {};
+        options.url = "/UnificarProcessos/UnificarProcessosEventos"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == 'success') {
+
+                $('#Listagem').html(json.eventos);
+            }
+        };
+        $.ajax(options);
+
+        evt.preventDefault();
+
+    });
+
+    function Atualizar() {
+        $(location).attr('href', '../UnificarProcessos');
+    }
+
+</script>

@@ -1,0 +1,1054 @@
+﻿@{
+    ViewBag.Title = "Cargos e Salários";
+}
+
+<div class="main_container">
+    <style>
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="idCargo" name="idPessoa" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Cargo</label></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="feedback-box">
+                        <form id="cargo-form">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Dados do Cargo</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="titlefield">Nome <span id="nomeRequired" class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Nome do cargo" id="Nome" name="Nome" />
+                                        <label id="NomeValidate" name="NomeValidate" for="Nome" class="error hidden"> Por favor, insira o Nome do cargo.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Área</label>
+                                        <select id="Area" name="Area" class="form-control placeholder">
+                                            <option value="">Selecione a Área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Próximo Cargo </label>
+                                        <select id="Cargo" name="Cargo" class="form-control placeholder">
+                                            <option value="">Selecione o Cargo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Descrição </label>
+                                        <textarea class="form-control" placeholder="Informe a Descrição" id="Descricao" name="Descricao" rows="3"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Atribuições </label>
+                                        <textarea class="form-control" placeholder="Informe a Atribuições" id="Atribuicoes" name="Atribuicoes" rows="6"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @{ if (Uranus.Suite.Sessao.Usuario.Nivel >= 5)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="titlefield">Data Cadastro</label>
+                                                <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="titlefield">Usuário Cadastro</label>
+                                                <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="titlefield">Data Alteração</label>
+                                                <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="titlefield">Usuário Alteração</label>
+                                                <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="modal-footer">
+                                <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                &nbsp;
+                                <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Dados Níveis -->
+                    <div id="DadosNiveis" class="feedback-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><b>Lista de Níveis de Cargos</b></h4>
+                                <hr />
+                            </div>
+                        </div>
+                        <form id="cargo-dadosniveis-form" class="feedback-form">
+                            <div class="panel-group mt-25" id="DadosNiveisAccordion" role="tablist" aria-multiselectable="true">
+                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                            <div class="alert alert-success hidden" id="cargo-dadosniveis-alert-success">
+                                <strong>SUCESSO:</strong> Cadastrado de dados níveis realizado com sucesso.
+                            </div>
+                            <div class="alert alert-success hidden" id="cargo-dadosniveis-alert-removed">
+                                <strong>SUCESSO:</strong> Exclusão de dados níveis realizado com sucesso.
+                            </div>
+                            <div class="alert alert-danger hidden" id="cargo-dadosniveis-alert-error">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de dados níveis.
+                            </div>
+                            <div class="alert alert-danger hidden" id="cargo-dadosniveis-alert-error2">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de dados níveis.
+                            </div>
+                            <div class="alert alert-warning hidden" id="cargo-dadosniveis-alert-warning">
+                                <strong>ERRO:</strong> Esse nível já está cadastrado para esse Cargo.
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Dados Salários -->
+                    <div id="DadosSalarios" class="feedback-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><b>Lista de Salários</b></h4>
+                                <hr />
+                            </div>
+                        </div>
+                        <form id="cargo-dadossalarios-form" class="feedback-form">
+                            <div class="panel-group mt-25" id="DadosSalariosAccordion" role="tablist" aria-multiselectable="true">
+                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                            <div class="alert alert-success hidden" id="cargo-dadossalarios-alert-success">
+                                <strong>SUCESSO:</strong> Cadastrado de dados salário realizado com sucesso.
+                            </div>
+                            <div class="alert alert-success hidden" id="cargo-dadossalarios-alert-removed">
+                                <strong>SUCESSO:</strong> Exclusão de dados salário realizado com sucesso.
+                            </div>
+                            <div class="alert alert-danger hidden" id="cargo-dadossalarios-alert-error">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de dados salário.
+                            </div>
+                            <div class="alert alert-danger hidden" id="cargo-dadossalarios-alert-error2">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de dados salário.
+                            </div>
+                            <div class="alert alert-warning hidden" id="cargo-dadossalarios-alert-warning">
+                                <strong>ERRO:</strong> Esse salário já está cadastrado para esse Cargo.
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Cargo</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluirPergunta">Você deseja realmente excluir esse Cargo?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Cargo</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            @using (Html.BeginForm("Index", "RHCargosSalarios", FormMethod.Get, null))
+                                            {
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Procura na Coluna Nome</label>
+                                                        <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("Nome", header: "Nome"),
+                                     grid.Column("Id", header: "Ações", canSort:false,
+                                     format:
+                    @<text>
+                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
+                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.Id + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")
+                    </text>)
+   });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<!-- datepicker -->
+<script type="text/javascript" src="https://uranus.rvmadvogados.com.br/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="https://uranus.rvmadvogados.com.br/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+<!-- select2 -->
+<script src="https://uranus.rvmadvogados.com.br/Scripts/select/select2.full.js"></script>
+
+<!-- Scripts principais colaborador -->
+<script>
+    //$("#CPF").mask("999.999.999-99");
+    //$("#RG").mask("99999999999999");
+    //$("#CEP").mask("99999-999");
+
+    $('#FiltrarCargo').val("");
+    $('#FiltrarCargo').val("");
+    $('#Sede').prop('disabled', true);
+    // Evento para escutar a digitação no campo de filtro
+    $('#FiltrarTipoContrato').on('input', function () {
+        var filterValue = $(this).val().toLowerCase();
+        // Loop através de todas as opções do select
+        $('#TipoContrato option').each(function () {
+            var optionText = $(this).text().toLowerCase();
+
+            // Se o texto da opção não contiver o valor do filtro, esconde a opção
+            if (optionText.indexOf(filterValue) === -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    });
+    // Evento para escutar a digitação no campo de filtro do Status (semelhante função anterior)
+    $('#FiltrarStatus').on('input', function () {
+        var filterValue = $(this).val().toLowerCase();
+        $('#Status option').each(function () {
+            var optionText = $(this).text().toLowerCase();
+            if (optionText.indexOf(filterValue) === -1) {
+                $(this).hide();
+            } else {
+                $(this).show();
+            }
+        });
+    });
+
+    CarregarCargos()
+    CarregarAreas()
+
+    function CarregarCargos() {
+        var options = {};
+        options.url = "/RHCargosSalarios/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.cargos;
+                $('#Cargo').html("");
+                var select = $('#Cargo');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione próximo Cargo")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    function CarregarAreas() {
+        var options = {};
+        options.url = "/RHAreas/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.areas;
+                $('#Area').html("");
+                var select = $('#Area');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione a Área")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    function Novo() {
+        $('#modalLabelTitle').text('Novo Cargo');
+        $('#Nome').attr('disabled', false);
+        $('#Nome').val('');
+        $('#Descricao').attr('disabled', false);
+        $('#Descricao').val('');
+        $('#Atribuicoes').attr('disabled', false);
+        $('#Atribuicoes').val('');
+        $('#IdAreaResponsavel').attr('disabled', false);
+        $('#IdAreaResponsavel').val('');
+        $('#IdProximoCargo').attr('disabled', false);
+        $('#IdProximoCargo').val('');
+        $('#id').val(0);
+        $('#DataCadastro').val('');
+        $('#UsuarioCadastro').val('');
+        $('#DataAlteracao').val('');
+        $('#UsuarioAlteracao').val('');
+        $('#buttonSalvar').attr('disabled', false);
+        $("#cargo-form").validate().resetForm();
+
+        $("#DadosNiveis").hide();
+        $("#DadosSalarios").hide();
+
+    }
+
+    function Visualizar(Id) {
+        $('#modalLabelTitle').text('Visualizar Cargo');
+        $('#Nome').attr('disabled', true);
+        $('#Descricao').attr('disabled', true);
+        $('#Atribuicoes').attr('disabled', true);
+        $('#Area').attr('disabled', true);
+        $('#Cargo').attr('disabled', true);
+        $('#buttonSalvar').attr('disabled', true);
+        $("#cargo-form").validate().resetForm();
+
+        $("#DadosSalarios").show();
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/RHCargosSalarios/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#id').val(Id);
+                $('#Nome').val(json.cargos[0].Nome);
+                $('#Descricao').val(json.cargos[0].Descricao);
+                $('#Atribuicoes').val(json.cargos[0].Atribuicoes);
+                $('#Area').val(json.cargos[0].IdAreaResponsavel);
+                $('#Cargo').val(json.cargos[0].IdProximoCargo);
+                $('#DataCadastro').val(json.cargos[0].DataCadastro);
+                $('#UsuarioCadastro').val(json.cargos[0].UsuarioCadastro);
+                $('#DataAlteracao').val(json.cargos[0].DataAlteracao);
+                $('#UsuarioAlteracao').val(json.cargos[0].UsuarioAlteracao);
+
+                ShowDadosSalarios();
+                ShowDadosNiveis();
+            }
+        };
+        $.ajax(options);
+    }
+
+    function Alterar(Id) {
+        $('#modalLabelTitle').text('Alterar Profissional');
+        $('#Nome').attr('disabled', false);
+        $('#Descricao').attr('disabled', false);
+        $('#Atribuicoes').attr('disabled', false);
+        $('#Area').attr('disabled', false);
+        $('#Cargo').attr('disabled', false);
+        $('#buttonSalvar').attr('disabled', false);
+        $("#cargo-form").validate().resetForm();
+
+        $("#DadosSalarios").show();
+
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/RHCargosSalarios/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+                $('#id').val(Id);
+                $('#Nome').val(json.cargos[0].Nome);
+                $('#Descricao').val(json.cargos[0].Descricao);
+                $('#Atribuicoes').val(json.cargos[0].Atribuicoes);
+                $('#Area').val(json.cargos[0].IdAreaResponsavel);
+                $('#Cargo').val(json.cargos[0].IdProximoCargo);
+
+                $('#DataCadastro').val(json.cargos[0].DataCadastro);
+                $('#UsuarioCadastro').val(json.cargos[0].UsuarioCadastro);
+                $('#DataAlteracao').val(json.cargos[0].DataAlteracao);
+                $('#UsuarioAlteracao').val(json.cargos[0].UsuarioAlteracao);
+
+                ShowDadosSalarios();
+                ShowDadosNiveis();
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonSalvar').click(function (evt) {
+        $("#cargo-form").validate();
+
+        if ($('#cargo-form').valid()) {
+
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+            dados.append("Nome", $("#Nome").val());
+            dados.append("Descricao", $("#Descricao").val());
+            dados.append("Atribuicoes", $("#Atribuicoes").val());
+            dados.append("IdAreaResponsavel", $("#Area").val());
+            dados.append("IdProximoCargo", $("#Cargo").val());
+
+            var options = {};
+            options.url = "/RHCargosSalarios/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Cargo salvo com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#cargo-form").validate().resetForm();
+
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+
+    });
+
+    function Excluir(Id, Nome, IdPessoa) {
+
+        $('#modalLabelExcluirPergunta').text('Você deseja realmente excluir esse Profissional (' + Nome + ')?');
+        $('#id').val(Id);
+        $('#nome').val(Nome);
+        $('#idPessoa').val(IdPessoa);
+    }
+
+    function ExcluirConfirmado() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/RHCargosSalarios/Excluir"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Cargo excluído com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#profissinal-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir o Cargo (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Cargo (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function ShowDadosSalarios() {
+
+        var dados = new window.FormData();
+        dados.append("IdCargo", $("#id").val());
+
+        var options = {};
+        options.url = "/RHCargosSalarios/CarregarDadosSalarios";
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+            var json = $.parseJSON(data.responseText);
+            if (json.response == "success") {
+
+                $('#DadosSalariosAccordion').html(json.salarios);
+
+                for (var i = 1; i < (json.count + 2); i++) {
+
+                    $("#DadosSalario" + i + "Salario").attr('disabled', false);
+                    $("#DadosSalario" + i + "DataInicio").attr('disabled', false);
+                    $("#DadosSalario" + i + "DataFim").attr('disabled', false);
+                    $("#DadosSalario" + i + "MotivoMudanca").attr('disabled', false);
+
+                    $("#ButtonDadosSalario" + i + "Incluir").show();
+                    $("#ButtonDadosSalario" + i + "Excluir").show();
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    function ButtonDadosSalarioSalvar_Click(index) {
+
+        $("#cargo-dadossalarios-form").validate();
+
+        if ($('#cargo-dadossalarios-form').valid()) {
+
+            $("#ButtonDadosSalario" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadosSalario" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadosSalario" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("Id", $('#HiddenDadosSalario' + index).val());
+            dados.append("IdCargo", $("#id").val());
+            dados.append("Salario", $('#DadosSalario' + index + 'Salario').val());
+            dados.append("DataInicio", $('#DadosSalario' + index + 'DataInicio').val());
+            dados.append("DataFim", $('#DadosSalario' + index + 'DataFim').val());
+            dados.append("MotivoMudanca", $('#DadosSalario' + index + 'MotivoMudanca').val());
+
+            var options = {};
+            options.url = "/RHCargosSalarios/SalvarDadosSalarios";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+                    $("#cargo-dadossalarios-alert-success").removeClass("hidden");
+                    $("#cargo-dadossalarios-alert-error").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-removed").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error2").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-warning").addClass("hidden");
+
+                    ShowDadosSalarios();
+                }
+                else if (json.response == "warning") {
+                    $("#cargo-dadossalarios-alert-success").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-removed").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error2").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-warning").removeClass("hidden");
+
+                    $("#ButtonDadosSalario" + index + "Incluir").text("Salvar");
+                    $("#ButtonDadosSalario" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadosSalario" + index + "Excluir").attr('disabled', false);
+                }
+                else {
+                    $("#cargo-dadossalarios-alert-success").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error").removeClass("hidden");
+                    $("#cargo-dadossalarios-alert-removed").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error2").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-warning").addClass("hidden");
+
+                    $("#ButtonDadosSalario" + index + "Incluir").text("Salvar");
+                    $("#ButtonDadosSalario" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadosSalario" + index + "Excluir").attr('disabled', false);
+                }
+
+                setTimeout(function () {
+                    $("#cargo-dadossalarios-alert-success").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-removed").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-error2").addClass("hidden");
+                    $("#cargo-dadossalarios-alert-warning").addClass("hidden");
+                }, 3000);
+            };
+            $.ajax(options);
+        }
+    }
+
+    function ButtonDadosSalarioExcluir_Click(index) {
+
+        $("#ButtonDadosSalario" + index + "Incluir").attr('disabled', true);
+        $("#ButtonDadosSalario" + index + "Excluir").attr('disabled', true);
+
+        $("#ButtonDadosSalario" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+        $("#ButtonDadosSalario" + index + "ExcluirConfirmacao").show();
+        $("#ButtonDadosSalario" + index + "ExcluirConfirmacao button").on('click', function () {
+            var confirm = $(this).attr('value');
+            if (confirm == 'true') {
+
+                $("#ButtonDadosSalario" + index + "ExcluirConfirmacao").hide();
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadosSalario' + index).val());
+
+                var options = {};
+                options.url = "/RHCargosSalarios/ExcluirDadosSalarios";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "removed") {
+                        $("#cargo-dadossalarios-alert-success").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-error").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-removed").removeClass("hidden");
+                        $("#cargo-dadossalarios-alert-error2").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-warning").addClass("hidden");
+
+                        ShowDadosSalarios();
+                    }
+                    else {
+                        $("#cargo-dadossalarios-alert-success").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-error").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-removed").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-error2").removeClass("hidden");
+                        $("#cargo-dadossalarios-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadosSalario" + index + "Excluir").text("Apagar");
+                        $("#ButtonDadosSalario" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadosSalario" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#cargo-dadossalarios-alert-success").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-error").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-removed").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-error2").addClass("hidden");
+                        $("#cargo-dadossalarios-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+
+                return false;
+
+            } else if (confirm == 'false') {
+
+                $("#ButtonDadosSalario" + index + "ExcluirConfirmacao").hide();
+                $("#ButtonDadosSalario" + index + "Excluir").text("Apagar");
+                $("#ButtonDadosSalario" + index + "Incluir").attr('disabled', false);
+                $("#ButtonDadosSalario" + index + "Excluir").attr('disabled', false);
+
+                return false;
+
+            }
+        })
+
+    }
+
+    function ShowDadosNiveis() {
+
+        var dados = new window.FormData();
+        dados.append("IdCargo", $("#id").val());
+
+        var options = {};
+        options.url = "/RHCargosSalarios/CarregarDadosNiveis";
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+            var json = $.parseJSON(data.responseText);
+            if (json.response == "success") {
+
+                $('#DadosNiveisAccordion').html(json.niveis);
+
+                for (var i = 1; i < (json.count + 2); i++) {
+
+                    $("#DadosNivel" + i + "Nome").attr('disabled', false);
+                    $("#DadosNivel" + i + "Descricao").attr('disabled', false);
+                    $("#DadosNivel" + i + "Atribuicoes").attr('disabled', false);
+
+                    $("#ButtonDadosNivel" + i + "Incluir").show();
+                    $("#ButtonDadosNivel" + i + "Excluir").show();
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    function ButtonDadosNivelSalvar_Click(index) {
+
+        $("#cargo-dadosniveis-form").validate();
+
+        if ($('#cargo-dadosniveis-form').valid()) {
+
+            $("#ButtonDadosNivel" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadosNivel" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadosNivel" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("Id", $('#HiddenDadosNivel' + index).val());
+            dados.append("IdCargo", $("#id").val());
+            dados.append("Nome", $('#DadosNivel' + index + 'Nome').val());
+            dados.append("Descricao", $('#DadosNivel' + index + 'Descricao').val());
+            dados.append("Atribuicoes", $('#DadosNivel' + index + 'Atribuicoes').val());
+
+            var options = {};
+            options.url = "/RHCargosSalarios/SalvarDadosNiveis";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+                    $("#cargo-dadosniveis-alert-success").removeClass("hidden");
+                    $("#cargo-dadosniveis-alert-error").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-removed").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error2").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-warning").addClass("hidden");
+
+                    ShowDadosSalarios();
+                }
+                else if (json.response == "warning") {
+                    $("#cargo-dadosniveis-alert-success").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-removed").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error2").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-warning").removeClass("hidden");
+
+                    $("#ButtonDadosNivel" + index + "Incluir").text("Salvar");
+                    $("#ButtonDadosNivel" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadosNivel" + index + "Excluir").attr('disabled', false);
+                }
+                else {
+                    $("#cargo-dadosniveis-alert-success").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error").removeClass("hidden");
+                    $("#cargo-dadosniveis-alert-removed").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error2").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-warning").addClass("hidden");
+
+                    $("#ButtonDadosNivel" + index + "Incluir").text("Salvar");
+                    $("#ButtonDadosNivel" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadosNivel" + index + "Excluir").attr('disabled', false);
+                }
+
+                setTimeout(function () {
+                    $("#cargo-dadosniveis-alert-success").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-removed").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-error2").addClass("hidden");
+                    $("#cargo-dadosniveis-alert-warning").addClass("hidden");
+                }, 3000);
+            };
+            $.ajax(options);
+        }
+    }
+
+    function ButtonDadosNivelExcluir_Click(index) {
+
+        $("#ButtonDadosNivel" + index + "Incluir").attr('disabled', true);
+        $("#ButtonDadosNivel" + index + "Excluir").attr('disabled', true);
+
+        $("#ButtonDadosNivel" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+        $("#ButtonDadosNivel" + index + "ExcluirConfirmacao").show();
+        $("#ButtonDadosNivel" + index + "ExcluirConfirmacao button").on('click', function () {
+            var confirm = $(this).attr('value');
+            if (confirm == 'true') {
+
+                $("#ButtonDadosSalario" + index + "ExcluirConfirmacao").hide();
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadosSalario' + index).val());
+
+                var options = {};
+                options.url = "/RHCargosSalarios/ExcluirDadosSalarios";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "removed") {
+                        $("#cargo-dadosniveis-alert-success").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-error").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-removed").removeClass("hidden");
+                        $("#cargo-dadosniveis-alert-error2").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-warning").addClass("hidden");
+
+                        ShowDadosSalarios();
+                    }
+                    else {
+                        $("#cargo-dadosniveis-alert-success").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-error").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-removed").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-error2").removeClass("hidden");
+                        $("#cargo-dadosniveis-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadosNivel" + index + "Excluir").text("Apagar");
+                        $("#ButtonDadosNivel" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadosNivel" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#cargo-dadosniveis-alert-success").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-error").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-removed").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-error2").addClass("hidden");
+                        $("#cargo-dadosniveis-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+
+                return false;
+
+            } else if (confirm == 'false') {
+
+                $("#ButtonDadosNivel" + index + "ExcluirConfirmacao").hide();
+                $("#ButtonDadosNivel" + index + "Excluir").text("Apagar");
+                $("#ButtonDadosNivel" + index + "Incluir").attr('disabled', false);
+                $("#ButtonDadosNivel" + index + "Excluir").attr('disabled', false);
+
+                return false;
+
+            }
+        })
+
+    }
+
+    function Atualizar() {
+        $(location).attr('href', '../RHCargosSalarios');
+    }
+
+</script>

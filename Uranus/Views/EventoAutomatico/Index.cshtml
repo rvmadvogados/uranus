@@ -1,0 +1,469 @@
+﻿@{
+    ViewBag.Title = "Eventos Automáticos";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="eventoDescricaoOriginal" name="eventoDescricaoOriginal" value="">
+
+    <div id="modalGerar" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="gerar-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Gerar Eventos Automáticos</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="titlefield">Evento <span class="required">*</span></label>
+                                    <select id="Evento" name="Evento" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="EventoValidate" name="EventoValidate" for="Evento" class="error hidden"> Por favor, selecione um Evento.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Descrição</label>
+                                    <textarea id="Descricao" name="Descricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonGerar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Gerar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                    <div class='alert alert-success hidden' id='evento-autor-alert-success-1'>
+                        <strong>SUCESSO:</strong> Lançamento de Eventos Automáticos realizado com sucesso.
+                    </div>
+                    <div class='alert alert-danger hidden' id='evento-autor-alert-error-1'>
+                        <strong>ERRO:</strong> Algo deu errado ao efetuar o Lançamento de Eventos Automáticos.
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalIncluir" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="incluir-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Incluir Ação nos Eventos Automáticos</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Número do Processo</label><br />
+                                    <select id="NumeroProcesso" name="NumeroProcesso" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="NumeroProcessoValidate" name="NumeroProcessoValidate" for="NumeroProcesso" class="error hidden"> Por favor, selecione um Número do Processo.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonIncluir" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Incluir</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Ação nos Eventos Automáticos</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir essa Ação nos Eventos Automáticos?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Gerar e Incluir Ação nos Eventos Automáticos</h2>
+                                <ul class="right panel_toolbox" style="list-style: none;">
+                                    <li>
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalGerar">Gerar Eventos Automáticos</button>
+                                    </div>
+                                    <div class="col-md-5 right">
+                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalIncluir">Incluir Ação nos Eventos Automáticos</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <table class="webgrid">
+                        <thead>
+                            <tr class="webgrid-header">
+                                <th scope="col">
+                                    <input type="checkbox" id="checkTodos" name="nameAll" checked /> Todos
+                                </th>
+                                <th scope="col">
+                                    Número do Processo
+                                </th>
+                                <th scope="col">
+                                    Nome do Cliente
+                                </th>
+                                <th scope="col">
+                                    Ação
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="Listagem">
+                            @{
+                                int i = 1;
+                                foreach (var item in Model)
+                                {
+                                    <tr class="@(i % 2 == 0 ? "webgrid-alternating-row" : "webgrid-row-style")">
+                                        <td>
+                                            <input type="checkbox" name="NumbersProcesses[]" value="@item.ID" checked />
+                                        </td>
+                                        <td>
+                                            @item.NumeroProcesso
+                                        </td>
+                                        <td>
+                                            @item.Nome
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalExcluir" onclick="Excluir(@item.ID);">Excluir Ação nos Eventos Automáticos</a>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbodyid="Listagem">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#checkTodos').click(function () {
+
+            var val = this.checked;
+            $('#Listagem').each(function () {
+                $('input:checkbox').prop('checked', val);
+            });
+
+
+        });
+    });
+
+    $("#Evento").select2({
+        placeholder: "Selecione um Evento",
+        allowClear: true,
+        tags: true
+    });
+
+    CKEDITOR.replace('Descricao', {
+        language: 'pt',
+        height: 200
+    });
+
+    $(document.body).on("change", "#Evento", function () {
+
+        var dados = new window.FormData();
+        dados.append("Id", this.value);
+
+        var options = {};
+        options.url = "/Eventos/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                if (json.evento[0]?.Texto != null) {
+
+                    var texto = $('#eventoDescricaoOriginal').val() + "<br><br>" + json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                    CKEDITOR.instances["Descricao"].setData(unescape(texto));
+
+                }
+                else {
+
+                    CKEDITOR.instances["Descricao"].setData(unescape($('#eventoDescricaoOriginal').val()));
+
+                }
+
+            }
+        };
+        $.ajax(options);
+
+    });
+
+    $("#NumeroProcesso").select2({
+        placeholder: "Selecione um Processo",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            dataType: "json",
+            type: "GET",
+            url: "/Processos/GetProcessList",
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.acoes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    });
+
+    CarregarEventos();
+
+    function CarregarEventos() {
+
+        var options = {};
+        options.url = "/Eventos/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.eventos;
+
+                $('#Evento').html("");
+                var select = $('#Evento');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                );
+
+                for (i = 0; i < rows.length; i++) {
+                    select.append(
+                        $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonGerar').click(function (evt) {
+
+        var validate = true;
+
+        if ($('#Evento').val() == null || !$.isNumeric($('#Evento').val())) {
+            $('#EventoValidate').removeClass('hidden').css("display", "");
+            validate = false;
+        } else {
+            $('#EventoValidate').addClass('hidden');
+        }
+
+        if (validate) {
+
+            var ids = $('input:checkbox:checked').map(function () {
+                return this.value;
+            }).get().join(";");
+
+            var descricao = escape(CKEDITOR.instances.Descricao.getData());
+
+            var dados = new window.FormData();
+            dados.append("Ids", ids);
+            dados.append("IdEvento", $('#Evento').val());
+            dados.append("Descricao", descricao);
+            
+            var options = {};
+            options.url = "/EventoAutomatico/Gerar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Banco salva com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#gerar-form").validate().resetForm();
+                    Atualizar();
+                }
+
+                //    $("#evento-alert-success").removeClass("hidden");
+                //    $("#evento-alert-error").addClass("hidden");
+                //} else {
+                //    $("#evento-alert-success").addClass("hidden");
+                //    $("#evento-alert-error").removeClass("hidden");
+                //}
+                //setTimeout(function () {
+                //    $("#evento-alert-success").addClass("hidden");
+                //    $("#evento-alert-error").addClass("hidden");
+                //}, 3000);
+
+
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+
+    });
+
+    $('#buttonIncluir').click(function (evt) {
+
+        var validate = true;
+
+        if ($('#NumeroProcesso').val() == null || !$.isNumeric($('#NumeroProcesso').val())) {
+            $('#NumeroProcessoValidate').removeClass('hidden').css("display", "");
+            validate = false;
+        } else {
+            $('#NumeroProcessoValidate').addClass('hidden');
+        }
+
+        if (validate) {
+
+            var dados = new window.FormData();
+            dados.append("Id", $("#NumeroProcesso").val());
+
+            var options = {};
+            options.url = "/EventoAutomatico/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    Atualizar();
+
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+
+    });
+
+    function Excluir(Id) {
+        $("#id").val(Id);
+    }
+
+    function ExcluirConfirmado() {
+
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        var options = {};
+        options.url = "/EventoAutomatico/Excluir"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                Atualizar();
+
+            }
+
+        };
+        $.ajax(options);
+
+    }
+
+    function Atualizar() {
+        $(location).attr('href', '../EventoAutomatico');
+    }
+
+</script>

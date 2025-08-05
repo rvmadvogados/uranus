@@ -1,0 +1,666 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Lançamentos de Bancos";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="idBanco" name="idBanco" value="">
+    <input type="hidden" id="idEmpresa" name="idEmpresa" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalNovo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="bancoslancamento-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Lançamento</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Banco <span class="required">*</span></label>
+                                    <select id="Banco" name="Banco" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione um Banco." data-rule-required="true"></select>
+                                    <label id="BancoValidate" name="BancoValidate" for="Banco" class="error hidden"> Por favor, selecione um Banco.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data <span class="required">*</span></label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="Data" name="Data" data-msg-required="Por favor, insira Data." data-rule-required="true" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Débito </label>
+                                    <input type="text" class="form-control" id="ValorDebito" name="ValorDebito" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Crédito </label>
+                                    <input type="text" class="form-control" id="ValorCredito" name="ValorCredito" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Histórico <span class="required">*</span></label>
+                                    <select id="Historico" name="Historico" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione um Histórico." data-rule-required="true"></select>
+                                    <label id="HistoricoValidate" name="HistoricoValidate" for="Historico" class="error hidden"> Por favor, selecione um Histórico.</label>
+                                </div>
+                            </div>
+                            @*<div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Histórico </label>
+                                        <input type="text" class="form-control" id="Historico" name="Historico" data-msg-required="Por favor, insira o Histórico." data-rule-required="true" />
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Complemento </label>
+                                    <input type="text" class="form-control" id="Complemento" name="Complemento" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row" style="width: 100% !important;">
+                        <div class="col-md-10">
+                            <h4 class="modal-title"><label>Excluir Lançamento</label></h4>
+                        </div>
+                        <div class="col-md-2" style="float: right !important;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluir" name="modalLabelExcluir">Você deseja realmente excluir esse Lançamento</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Criar e Filtrar Lançamentos Bancos</h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content" style="padding-bottom: 0px !important;">
+
+                                    @using (Html.BeginForm("Index", "BancosLancamentos", FormMethod.Get, null))
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Banco <span class="required">*</span></label>
+                                                    <select id="FiltrarBanco" name="FiltrarBanco" class="select2_single form-control" style="width: 100% !important;"></select>
+                                                    <label id="FiltrarBancoValidate" name="FiltrarBancoValidate" for="FiltrarBanco" class="error hidden"> Por favor, selecione um Banco.</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Início </label>
+                                                    <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataInicio" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim </label>
+                                                    <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataFim" readonly />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-secondary" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                 htmlAttributes: new { id = "MainTable" },
+                                 tableStyle: "webgrid",
+                                 fillEmptyRows: false,
+                                 headerStyle: "webgrid-header",
+                                 alternatingRowStyle: "webgrid-alternating-row",
+                                 rowStyle: "webgrid-row-style",
+                                 selectedRowStyle: "webgrid-selected-row",
+                                 footerStyle: "webgrid-footer",
+                                 mode: WebGridPagerModes.All,
+                                 firstText: "Primeiro",
+                                 previousText: "Anterior",
+                                 nextText: "Próximo",
+                                 lastText: "Último",
+                                 numericLinksCount: 5,
+                                 columns: new[] {
+                                 grid.Column("Bancos.Nome", header: "Banco"),
+                                 grid.Column("Data", header: "Data", format: (item) => (item.Data == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.Data))),
+                                 grid.Column("ValorDebito", header: "Valor Débito", format: (item) => (item.ValorDebito != null ? string.Format("R$ {0:##,##0.00}", item.ValorDebito) : "0,00")),
+                                 grid.Column("ValorCredito", header: "Valor Crédito", format: (item) => (item.ValorCredito != null ? string.Format("R$ {0:##,##0.00}", item.ValorCredito) : "0,00")),
+                                 grid.Column("ID", header: "Ações", canSort:false,
+                                 format:
+                @<text>
+                    @Html.Raw("<a class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                    @Html.Raw("<a class='btn btn-warning btn-sm' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                    @Html.Raw("<a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + string.Format("{0:dd/MM/yyyy}", item.Data) + ");'>Excluir</a>")
+                    @*@Html.Raw("<a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Data + '"' + ");'>Excluir</a>")*@
+                </text>)
+});
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    @*<script src="~/Content/vendors/jquery/dist/jquery.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Content/js/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script>
+
+        $("#FiltrarDataInicio").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarDataFim").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+
+        $("#Data").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        CarregarBancos();
+        CarregarHistoricos();
+
+
+        function CarregarBancos() {
+
+            var dados = new window.FormData();
+            var options = {};
+            options.url = "/Bancos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.bancos;
+                    $('#Banco').html("0");
+                    var select = $('#Banco');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione um Banco")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarBanco').html("0");
+                    var select = $('#FiltrarBanco');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione um Banco")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+
+        function CarregarHistoricos() {
+
+            var options = {};
+            options.url = "/Historicos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.historicos;
+                    $('#Historico').html("");
+                    var select = $('#Historico');
+                    select.append(
+                        $('<option selected></option>').val("").html("Selecione um Histórico")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Novo() {
+
+            $('#modalLabelTitle').text('Novo Lançamento');
+            //$('#Empresa').attr('disabled', false);
+            //$('#Empresa').val('0');
+            //$("#Empresa").select2({
+            //    placeholder: "Selecione uma Empresa",
+            //    allowClear: true,
+            //    tags: true
+            //}).on('change', function (e) {
+            //    var value = $("#Empresa option:selected").val();
+            //    if (value == 0 || typeof value === "undefined") {
+            //        $("#EmpresaValidate").removeClass("hidden");
+            //    }
+            //    else {
+            //        $("#EmpresaValidate").addClass("hidden");
+            //    }
+            //}).trigger('change');
+
+            $('#Banco').attr('disabled', false);
+            $('#Banco').val('0');
+            $("#Banco").select2({
+                placeholder: "Selecione um Banco",
+                allowClear: true,
+                tags: true
+            }).on('change', function (e) {
+                var value = $("#Banco option:selected").val();
+                if (value == 0 || typeof value === "undefined") {
+                    $("#BancoValidate").removeClass("hidden");
+                }
+                else {
+                    $("#BancoValidate").addClass("hidden");
+                }
+            }).trigger('change');
+
+            $('#Banco').attr('disabled', false);
+            $('#Banco').val('');
+            $('#Data').attr('disabled', false);
+            $('#Data').val('');
+            $('#ValorDebito').attr('disabled', false);
+            $('#ValorDebito').val('');
+            $('#ValorCredito').attr('disabled', false);
+            $('#ValorCredito').val('');
+
+            $("#Historico").select2({
+                placeholder: "Selecione um Histórico",
+                allowClear: true,
+                tags: true
+            }).on('change', function (e) {
+                var value = $("#Historico option:selected").val();
+                if (value == 0 || typeof value === "undefined") {
+                    $("#HistoricoValidate").removeClass("hidden");
+                }
+                else {
+                    $("#HistoricoValidate").addClass("hidden");
+                }
+            }).trigger('change');
+
+            $('#Historico').attr('disabled', false);
+            $('#Historico').val('');
+            $('#Complemento').attr('disabled', false);
+            $('#Complemento').val('');
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#bancoslancamento-form").validate().resetForm();
+
+        }
+
+        function Visualizar(Id) {
+
+            $('#modalLabelTitle').text('Visualizar Lançamento');
+            $('#Banco').attr('disabled', false);
+            $('#Banco').val('');
+            $('#Data').attr('disabled', false);
+            $('#Data').val('');
+            $('#ValorDebito').attr('disabled', false);
+            $('#ValorDebito').val('');
+            $('#ValorCredito').attr('disabled', false);
+            $('#ValorCredito').val('');
+
+            $('#Historico').attr('disabled', false);
+            $('#Historico').val('');
+            $('#Complemento').attr('disabled', false);
+            $('#Complemento').val('');
+
+
+            $("#bancoslancamento-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/BancosLancamentos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#idBanco').val(json.bancoslancamento[0].IdBanco);
+                    $('#Banco').val(json.bancoslancamento[0].IdBanco);
+                    $("#Banco").select2({
+                        placeholder: "Selecione uma Banco",
+                        allowClear: true,
+                        tags: true
+                    }).on('change', function (e) {
+                        var value = $("#Banco option:selected").val();
+                        if (value == 0 || typeof value === "undefined") {
+                            $("#BancoValidate").removeClass("hidden");
+                        }
+                        else {
+                            $("#BancoValidate").addClass("hidden");
+                        }
+                    }).trigger('change');
+
+                    $('#Data').val(json.bancoslancamento[0].Data);
+                    $('#ValorDebito').val(json.bancoslancamento[0].ValorDebito);
+                    $('#ValorCredito').val(json.bancoslancamento[0].ValorCredito);
+                    $('#Historico').val(json.bancoslancamento[0].IdHistorico);
+                    $('#Complemento').val(json.bancoslancamento[0].Complemento);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+
+            $('#modalLabelTitle').text('Alterar Banco');
+
+            $('#Banco').attr('disabled', false);
+            $('#Data').attr('disabled', false);
+            $('#ValorDebito').attr('disabled', false);
+            $('#ValorCredito').attr('disabled', false);
+            $('#Historico').attr('disabled', false);
+            $('#Complemento').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', false);
+            $("#bancoslancamento-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/BancosLancamentos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#id').val(Id);
+
+                    $('#idBanco').val(json.bancoslancamento[0].IdBanco);
+                    $('#Banco').val(json.bancoslancamento[0].IdBanco);
+                    $("#Banco").select2({
+                        placeholder: "Selecione uma Banco",
+                        allowClear: true,
+                        tags: true
+                    }).on('change', function (e) {
+                        var value = $("#Banco option:selected").val();
+                        if (value == 0 || typeof value === "undefined") {
+                            $("#BancoValidate").removeClass("hidden");
+                        }
+                        else {
+                            $("#BancoValidate").addClass("hidden");
+                        }
+                    }).trigger('change');
+
+                    $('#Data').val(json.bancoslancamento[0].Data);
+                    $('#ValorDebito').val(json.bancoslancamento[0].ValorDebito);
+                    $('#ValorCredito').val(json.bancoslancamento[0].ValorCredito);
+                    $('#Historico').val(json.bancoslancamento[0].IdHistorico);
+                    $('#Complemento').val(json.bancoslancamento[0].Complemento);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('#modalLabelExcluir').text('Você deseja realmente excluir esse Lançamento (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#bancoslancamento-form").validate();
+
+            if ($('#bancoslancamento-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("IdBanco", $("#Banco").val());
+                dados.append("Data", $("#Data").val());
+                dados.append("IdHistorico", $("#Historico").val());
+                dados.append("Complemento", $("#Complemento").val());
+                dados.append("ValorDebito", $("#ValorDebito").val());
+                dados.append("ValorCredito", $("#ValorCredito").val());
+
+                var options = {};
+                options.url = "/BancosLancamentos/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Lançamento salvo com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#bancoslancamento-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+            $('#idBanco').val('');
+
+            var options = {};
+            options.url = "/BancosLancamentos/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Lançamento excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#bancoslancamento-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('#modalMensagemResposta').text('Não foi possível excluir o Lançamento (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('#modalMensagemResposta').text('Ocorreu um erro que impossibilitou a exclusão do Lançamento (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../BancosLancamentos');
+        }
+
+    </script>
+
+</div>

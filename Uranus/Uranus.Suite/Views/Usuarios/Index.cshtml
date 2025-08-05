@@ -1,0 +1,445 @@
+﻿@{
+    ViewBag.Title = "Cadastros Sistêmicos \\ Usuários";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="usuario-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Usuário</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome Completo <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Nome Completo do Usuário" id="Nome" name="Nome" data-msg-required="Por favor, insira o Nome Completo do Usuário." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe um Usuário" id="Usuario" name="Usuario" data-msg-required="Por favor, insira um Usuário." data-rule-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Nível <span class="required">*</span></label>
+                                    <select id="Nivel" class="form-control placeholder" data-msg-required="Por favor, selecione um Nível de Permissão do Usuário." data-rule-required="true">
+                                        <option value="">Selecione o Nível</option>
+                                        <option value="0">Usuário Externo</option>
+                                        <option value="1">Usuário</option>
+                                        <option value="3">Operador</option>
+                                        <option value="4">Controladoria</option>
+                                        <option value="5">Administrador</option>
+                                        <option value="6">Auxiliar Financeiro</option>
+                                        <option value="7">Financeiro</option>
+                                        <option value="8">Auxiliar RH</option>
+                                        <option value="9">RH</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="titlefield">Status <span class="required">*</span></label>
+                                <br />
+                                <div class="radio-item">
+                                    <input type="radio" id="AtivoSim" name="Ativo" value="S">
+                                    <label for="AtivoSim">Ativo</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="AtivoNao" name="Ativo" value="N">
+                                    <label for="AtivoNao">Inativo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="ResetaSenha" name="ResetaSenha">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Senha</label>
+                                    <input type="text" class="form-control" placeholder="Recicle a Senha para alterá-la, depois salve o Usuário" id="Senha" name="Senha" readonly="readonly" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">&nbsp;<span class="required">&nbsp;</span></label>
+                                    <br />
+                                    <button id="buttonReciclarSenha" type="button" class="btn btn-primary" style="margin: 0;" onclick="$('#Senha').val(randomPassword());">Reciclar Senha</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Usuário</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir esse Usuário?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Usuários</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            @using (Html.BeginForm("Index", "Usuarios", FormMethod.Get, null))
+                                            {
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Procura na Coluna Nome</label>
+                                                        <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                tableStyle: "webgrid",
+                                fillEmptyRows: false,
+                                headerStyle: "webgrid-header",
+                                alternatingRowStyle: "webgrid-alternating-row",
+                                rowStyle: "webgrid-row-style",
+                                selectedRowStyle: "webgrid-selected-row",
+                                footerStyle: "webgrid-footer",
+                                mode: WebGridPagerModes.All,
+                                firstText: "Primeiro",
+                                previousText: "Anterior",
+                                nextText: "Próximo",
+                                lastText: "Último",
+                                numericLinksCount: 5,
+                                columns: new[] {
+                                grid.Column("Nome", header: "Nome"),
+                                grid.Column("Login", header: "Usuário"),
+                                grid.Column("Nivel", header: "Nível", format: (item) => new HtmlString((item["Nivel"] == 0 ? "Usuário Externo" : item["Nivel"] == 3 ? "Operador" : item["Nivel"] == 4 ? "Controladoria" : item["Nivel"] == 5 ? "Administrador" : item["Nivel"] == 6 ? "Auxiliar Financeiro" : item["Nivel"] == 7 ? "Financeiro" : item["Nivel"] == 8 ? "Auxiliar RH" : item["Nivel"] == 9 ? "RH" : "Usuário"))),
+                                grid.Column("Bloqueio", header: "Status", format: (item) => new HtmlString((!item["Bloqueio"] ? "Ativo" : "Inativo"))),
+                                grid.Column("ID", header: "Ações", canSort:false,
+                                format: 
+                                    @<text>
+                                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")
+                                    </text>)
+                                });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script>
+
+        function Novo() {
+            $('#modalLabelTitle').text('Novo Usuário');
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val('');
+            $('#Usuario').attr('disabled', false);
+            $('#Usuario').val('');
+            $('#Nivel').attr('disabled', false);
+            $('#Nivel').val('');
+            $('#Senha').attr('disabled', false);
+            $('#Senha').val(randomPassword());
+            $('#buttonReciclarSenha').attr('disabled', false);
+            $('input[name=Ativo][value="S"]').attr('disabled', false);
+            $('input[name=Ativo][value="N"]').attr('disabled', false);
+            $('input[name=Ativo][value="S"]').prop('checked', true).trigger('change');
+            $('#ResetaSenha').show();
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#usuario-form").validate().resetForm();
+        }
+
+        function Visualizar(Id) {
+            $('#modalLabelTitle').text('Visualizar Usuário');
+            $('#Nome').attr('disabled', true);
+            $('#Usuario').attr('disabled', true);
+            $('#Nivel').attr('disabled', true);
+            $('#Senha').attr('disabled', true);
+            $('#Senha').val('');
+            $('#buttonReciclarSenha').attr('disabled', true);
+            $('input[name=Ativo][value="S"]').attr('disabled', true);
+            $('input[name=Ativo][value="N"]').attr('disabled', true);
+            $('#ResetaSenha').hide();
+            $('#buttonSalvar').attr('disabled', true);
+            $("#usuario-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Usuarios/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#Nome').val(json.usuario[0].Nome);
+                    $('#Usuario').val(json.usuario[0].Login);
+                    $('#Nivel').val(json.usuario[0].Nivel);
+
+                    var ativo = "N"
+                    if (!json.usuario[0].Bloqueio) {
+                        ativo = "S"
+                    }
+
+                    $('input[name=Ativo][value="' + ativo + '"]').prop('checked', true).trigger('change');
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+            $('#modalLabelTitle').text('Alterar Usuário');
+            $('#Nome').attr('disabled', false);
+            $('#Usuario').attr('disabled', false);
+            $('#Nivel').attr('disabled', false);
+            $('#Senha').attr('disabled', false);
+            $('#Senha').val('');
+            $('#buttonReciclarSenha').attr('disabled', false);
+            $('input[name=Ativo][value="S"]').attr('disabled', false);
+            $('input[name=Ativo][value="N"]').attr('disabled', false);
+            $('#ResetaSenha').show();
+            $('#buttonSalvar').attr('disabled', false);
+            $("#usuario-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Usuarios/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#Nome').val(json.usuario[0].Nome);
+                    $('#Usuario').val(json.usuario[0].Login);
+                    $('#Nivel').val(json.usuario[0].Nivel);
+
+                    var ativo = "N"
+                    if (!json.usuario[0].Bloqueio) {
+                        ativo = "S"
+                    }
+
+                    $('input[name=Ativo][value="' + ativo + '"]').prop('checked', true).trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir esse Usuário (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#usuario-form").validate();
+
+            if ($('#usuario-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("Nome", $("#Nome").val());
+                dados.append("Usuario", $("#Usuario").val());
+                dados.append("Nivel", $("#Nivel").val());
+                dados.append("Senha", $("#Senha").val());
+                dados.append("Ativo", $("input[type='radio'][name='Ativo']:checked").val());
+
+                var options = {};
+                options.url = "/Usuarios/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('h4').text('Usuário salvo com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#usuario-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Usuarios/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Usuário excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#usuario-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Usuário (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Usuário (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Usuarios');
+        }
+
+    </script>
+
+</div>

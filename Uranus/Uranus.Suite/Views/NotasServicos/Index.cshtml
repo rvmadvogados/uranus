@@ -1,0 +1,1252 @@
+﻿@{
+    ViewBag.Title = "Comercial \\ Notas \\ Emitir Notas de Serviço";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Uranus.Common;
+@using System.Linq;
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idNotaServico" name="idNotaServico" value="0">
+    <input type="hidden" id="idNotaFiscal" name="idNotaServico" value="0">
+
+    <div id="modalVisualizar" class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <!-- Modal content-->
+            <form id="estoque-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        @*<div id="Visualizar" name="Visualizar"></div>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalVisualizarDANFE" class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <!-- Modal content-->
+            <form id="status-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Impressão da DANFE</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="VisualizarDANFE"></div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>
+                Emitir e Filtrar Notas de Serviços
+            </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li id="tab-servico-presentation" role="presentation" class="active">
+                        <a id="tab-servico" name="tab-servico" href="#tab_content_servico" role="tab" data-toggle="tab" aria-expanded="false">Ordem de Serviço</a>
+                    </li>
+                    <li id="tab-notaservico-presentation" role="presentation" class="hidden">
+                        <a id="tab-notaservico" nama="tab-notaservico" href="#tab_content_notaservico" role="tab" data-toggle="tab" aria-expanded="false">Nota Serviço</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_servico" aria-labelledby="tab-servico" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        @{ WebGrid grid = new WebGrid(Model); }
+
+                                        @using (Html.BeginForm("Index", "NotasServicos", FormMethod.Get, new { id = "notasfiscais-filtro-form" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Procura na Coluna Número da Receita</label>
+                                                        <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Número da Receita" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button id="Filtrar" type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-secondary" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                htmlAttributes: new { @id = "WebGrid" },
+                                                tableStyle: "Grid",
+                                                fillEmptyRows: false,
+                                                alternatingRowStyle: "webgrid-alternating-row",
+                                                rowStyle: "webgrid-row-style",
+                                                selectedRowStyle: "webgrid-selected-row",
+                                                footerStyle: "webgrid-footer",
+                                                mode: WebGridPagerModes.All,
+                                                firstText: "Primeiro",
+                                                previousText: "Anterior",
+                                                nextText: "Próximo",
+                                                lastText: "Último",
+                                                numericLinksCount: 5,
+                                                    columns: grid.Columns(
+                                                    grid.Column(null, null, format: @<text><img id='buttonPlus_item.IdReceita' src='~/Content/images/plus.png' title='Clique para Mostrar/Ocultar' /><div style='display: none;'></div></text>, style: "GridAccordion"),
+                                                    //grid.Column("Empresas.Nome", header: "Empresa"),
+                                                    grid.Column("NumeroDocumento", header: "Número Documento da Receita", format: (source) => (source["NumeroDocumento"] != null ? source["NumeroDocumento"] : string.Empty)),
+                                                    grid.Column("DataDocumento", "Data", format: (source) => (source["DataDocumento"] != null ? string.Format("{0:dd/MM/yyyy}", source["DataDocumento"]) : string.Empty)),
+                                                    //grid.Column("Clientes.Pessoas.Nome", header: "Cliente"),
+                                                    grid.Column("Valor", "Total R$", format: (source) => (source["Valor"] != null ? string.Format("R$ {0:##,##0.00}", source["Valor"]) : "0,00")),
+                                                    grid.Column("ID", header: "Ações", canSort: false,
+                                                    format:
+                                                    @<text>
+                                                        @{
+                                                    if (item.Nota == false)
+                                                    {
+                                                        @Html.Raw("<a class='btn btn-info btn-xs' data-backdrop='static' onclick='EmitirNotaServico(" + item.Id + ", " + '"' + item.NumeroDocumento + '"' + ");'>Emitir Nota de Serviço</a>")
+                                                    }
+                                                    else
+                                                    {
+                                                    @Html.Raw("Nota Fiscal Já Emitida.")
+                                                    }
+                                                        }
+                                                    </text>),
+
+                                                    grid.Column(format: (item) =>
+                                                    {
+                                                        // Garante que a lista de NotasServicos não seja nula
+                                                        var notasServicos = item.NotasServicos1 ?? new List<object>();
+
+                                                        WebGrid childGrid = new WebGrid(source: notasServicos, canSort: false, canPage: false);
+                                                        List<WebGridColumn> cols = new List<WebGridColumn>();
+
+                                                        if (notasServicos.Count > 0)
+                                                        {
+                                                            cols.Add(childGrid.Column("NumeroNota", "Número da NF Serviço", format: (source) => (source["NumeroNota"] != null ? Util.AddLeadingZeros(source["NumeroNota"], 10) : string.Empty)));
+                                                            cols.Add(childGrid.Column("Data", "Data Emissão", format: (source) => (source["Data"] != null ? string.Format("{0:dd/MM/yyyy}", source["Data"]) : string.Empty)));
+                                                            cols.Add(childGrid.Column("Status.Nome", "Status"));
+                                                            cols.Add(childGrid.Column("ValorServico", "Total R$", format: (source) => (source["ValorServico"] != null ? string.Format("R$ {0:##,##0.00}", source["ValorServico"]) : "0,00")));
+                                                            cols.Add(childGrid.Column(null, "Ações", format: (source) =>
+                                                                @Html.Raw("<a class='btn btn-warning btn-sm' data-backdrop='static' onclick='AlterarNotaServico(" + source["ID"] + ");'>Alterar NF Serviço</a>"))
+                                                            );
+                                                        }
+                                                        else
+                                                        {
+                                                            cols.Add(childGrid.Column("", "Nenhuma nota fiscal emitida.", format: (source) => (source != null ? string.Empty : string.Empty)));
+                                                        }
+
+                                                        return childGrid.GetHtml(htmlAttributes: new { @class = "ChildGrid" }, columns: cols);
+                                                    })
+                                                ));
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                        }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_notaservico" aria-labelledby="tab-notaservico">
+                        <div class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2 id="TituloServico">Nota de Serviço</h2>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="notaservico-form">
+                                <div class="row">
+                                    <div class="col-md-4 hidden">
+                                        <div class="form-group">
+                                            <label class="titlefield">Empresa <span class="required">*</span></label>
+                                            <select id="NotaServicoEmpresa" name="NotaServicoEmpresa" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione uma Empresa." data-rule-required="true"></select>
+                                            <label id="NotaServicoEmpresaValidate" name="NotaServicoEmpresaValidate" for="NotaServicoEmpresa" class="error hidden"> Por favor, selecione uma Empresa.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número da Nota Serviço <span class="required">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Informe o Número" id="NotaServicoNumero" name="NotaServicoNumero" data-msg-required="Por favor, insira o Número da Nota Fiscal." data-rule-required="true" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número Referencia </label>
+                                            <input type="text" class="form-control" placeholder="Informe o Número" id="NotaServicoNumeroReferencia" name="NotaServicoNumeroReferencia" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data de Emissão <span class="required">*</span></label>
+                                            <input id="NotaServicoDataEmissao" name="NotaServicoDataEmissao" class="form-control" placeholder="Selecione uma Data de Emissão" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Status</label>
+                                            <select id="NotaServicoStatus" name="NotaServicoStatus" class="select2_single form-control" style="width: 100% !important;"></select>
+                                            <label id="NotaServicoStatusValidate" name="NotaServicoStatusValidate" for="NotaServicoStatus" class="information hidden">Nota Serviço não será mais alterada.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número do Documento</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Servico" id="NotaServicoNumeroDocumento" name="NotaServicoNumeroDocumento" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Cliente <span class="required">*</span></label>
+                                            <select id="NotaServicoCliente" name="NotaServicoCliente" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione um Cliente." data-rule-required="true"></select>
+                                            @*<label id="NotaServicoClienteValidate" name="NotaServicoClienteValidate" for="NotaServicoCliente" class="error hidden"> Por favor, selecione um Cliente.</label>*@
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">E-mail do Cliente <span class="required">*</span></label>
+                                            <select id="NotaServicoClienteEmail" name="NotaServicoClienteEmail" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione um E-mail do Cliente." data-rule-required="true"></select>
+                                            <label id="NotaServicoClienteEmailValidate" name="NotaServicoClienteEmailValidate" for="NotaServicoClienteEmail" class="error hidden"> Por favor, selecione um E-mail do Cliente.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nota Serviço Total R$</label><br />
+                                            <input type="text" class="form-control" id="NotaServicoTotal" name="NotaServicoTotal" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nota Serviço Líquido R$</label><br />
+                                            <input type="text" class="form-control" id="NotaServicoLiquido" name="NotaServicoLiquido" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 hidden">
+                                        <label class="titlefield">Reter Impostos </label>
+                                        <br />
+                                        <div class="radio-item">
+                                            <input type="radio" id="NotaServicoReterIssqnSim" name="NotaServicoReterIssqn" value="S">
+                                            <label for="NotaServicoReterIssqnSim">Sim</label>
+                                        </div>
+                                        <div class="radio-item">
+                                            <input type="radio" id="NotaServicoReterIssqnNao" name="NotaServicoReterIssqn" value="N">
+                                            <label for="NotaServicoReterIssqnNao">Não</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nº Parcelas</label>
+                                            <input type="text" class="form-control" id="NotaServicoPlano" name="NotaServicoPlano" maxlength="2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <div class="form-group">
+                                            <label class="titlefield">Local Pagto</label>
+                                            <input type="text" class="form-control" id="NotaServicoLocalPagamento" name="NotaServicoLocalPagamento" maxlength="2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Tipo Pagamento <span class="required">*</span></label>
+                                            <select id="NotaServicoFormaPagamento" name="NotaServicoFormaPagamento" class="form-control placeholder" data-msg-required="Por favor, selecione um Tipo Pagamento." data-rule-required="true">
+                                                <option value="">Selecione um Tipo de Pagamento</option>
+                                                <option value="01">Dinheiro</option>
+                                                <option value="02">Cheque</option>
+                                                <option value="03">Cartão Crédito</option>
+                                                <option value="04">Cartão Débito</option>
+                                                <option value="15">Boleto Bancário</option>
+                                                <option value="16">Depósito Bancário</option>
+                                                <option value="17">Pagamento PIX</option>
+                                                <option value="90">Sem pagamento</option>
+                                                <option value="99">Outros</option>
+                                            </select>
+                                            <label id="NotaServicoFormaPagamentoValidate" name="NotaServicoFormaPagamentoValidate" for="NotaServicoFormaPagamento" class="error hidden"> Por favor, selecione um Tipo Pagamento.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-1 hidden">
+                                        <div class="form-group">
+                                            <label class="titlefield">% Issqn</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Percentual" id="NotaServicoPercentualIssqn" name="NotaServicoPercentualIssqn" onkeyup="CalcularIssqn()" maxlength="5" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 hidden">
+                                        <div class="form-group">
+                                            <label class="titlefield">Valor Issqn R$</label>
+                                            <input type="text" class="form-control" id="NotaServicoValorIssqn" name="NotaServicoValorIssqn" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 ">
+                                        <div class="form-group">
+                                            <label class="titlefield">% IR</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Percentual" id="NotaServicoPercentualIR" name="NotaServicoPercentualIR" onkeyup="CalcularIssqn()" maxlength="5" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Valor IR R$</label>
+                                            <input type="text" class="form-control" id="NotaServicoValorIR" name="NotaServicoValorIR" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 ">
+                                        <div class="form-group">
+                                            <label class="titlefield">% PIS</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Percentual" id="NotaServicoPercentualPis" name="NotaServicoPercentualPis" onkeyup="CalcularIssqn()" maxlength="5" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Valor Pis R$</label>
+                                            <input type="text" class="form-control" id="NotaServicoValorPis" name="NotaServicoValorPis" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 ">
+                                        <div class="form-group">
+                                            <label class="titlefield">% Cofins</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Percentual" id="NotaServicoPercentualCofins" name="NotaServicoPercentualCofins" onkeyup="CalcularIssqn()" maxlength="5" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Valor Cofins R$</label>
+                                            <input type="text" class="form-control" id="NotaServicoValorCofins" name="NotaServicoValorCofins" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 ">
+                                        <div class="form-group">
+                                            <label class="titlefield">% CSLL</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Percentual" id="NotaServicoPercentualCSLL" name="NotaServicoPercentualCSLL" onkeyup="CalcularIssqn()" maxlength="5" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Valor CSLL R$</label>
+                                            <input type="text" class="form-control" id="NotaServicoValorCSLL" name="NotaServicoValorCSLL" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Descrição do Serviço</label>
+                                            <textarea id='NotaServicoDescricaoServico' name="NotaServicoDescricaoServico" rows=10 class="form-control" placeholder="Informe aqui a Descrição do Serviço"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Observação </label>
+                                            <textarea id='NotaServicoObservacao' name="NotaServicoObservacao" rows=3 class="form-control" placeholder="Informe aqui a Observação"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="col-md-4">
+                                    </div>
+                                    <div class="col-md-4" style="text-align: center;">
+                                        <button id="buttonEmitirNotaServico" type="button" class="btn btn-success" style="margin: 0;">Emitir NFSE</button>
+                                    </div>
+                                    <div class="col-md-4" style="text-align: right; padding-right: 0;">
+                                        <button id="buttonSalvarNotaServico" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                        &nbsp;
+                                        <button id="buttonFecharNotaServico" type="button" class="btn btn-default" style="margin: 0;">Fechar</button>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success hidden" id="notaservico-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado do nota serviço realizada com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="notaservico-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da nota de serviço.
+                                </div>
+                            </form>
+                    </div>
+
+                        <!-- Parcelas da Nota Fiscal -->
+                        <div id="ParcelasNotaServico" class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Parcelas da Nota Serviço</h2>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="notaservico-parcelas-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="ParcelasNotaServicoAccordion" role="tablist" aria-multiselectable="true">
+                                    As parcelas só poderam ser cadastradas após a Nota Fiscal ser salva.
+                                </div>
+                                <hr />
+                                <div class="alert alert-success hidden" id="parcelas-notaservico-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado da parcela na nota fiscal realizada com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="parcelas-notaservico-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da parcela na nota fiscal.
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <!--jQuery-->
+    <script src="~/Scripts/ckeditor/adapters/jquery.js"></script>
+
+    <!--simditor-->
+    <script type="text/javascript" src="~/Content/CSS/js/simditor/module.js"></script>
+    <script type="text/javascript" src="~/Content/CSS/js/simditor/hotkeys.js"></script>
+    <script type="text/javascript" src="~/Content/CSS/js/simditor/simditor.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <!--maskMoney-->
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+
+    <!--mask-->
+    @*<script type="text/javascript" src="~/Content/CSS/js/mask.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+    <!--select2-->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        var tr = $('#WebGrid').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        $(function () {
+            //Loop through all Child Grids.
+            $("#WebGrid .ChildGrid").each(function () {
+                //Copy the Child Grid to DIV.
+                var childGrid = $(this).clone();
+                $(this).closest("TR").find("TD").eq(0).find("DIV").append(childGrid);
+
+                //Remove the Last Column from the Row.
+                $(this).parent().remove();
+            });
+
+            //Remove Last Column from Header Row.
+            $("#WebGrid TH:last-child").eq(0).remove();
+        });
+
+        //Assign Click event to Plus Image.
+        $("body").on("click", "img[src*='plus.png']", function () {
+            $(this).closest("tr").after("<tr><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+            $(this).attr("src", "/Content/images/minus.png");
+        });
+
+        //Assign Click event to Minus Image.
+        $("body").on("click", "img[src*='minus.png']", function () {
+            $(this).attr("src", "/Content/images/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+
+        $(document).ready(function () {
+            $(window).load(function () {
+                if ($('#search').val().length > 0) {
+                    $('#buttonPlus_' + $('#search').val()).click();
+                }
+            });
+        });
+
+        //$('#NotaServicoPercentualIssqn').maskMoney({ thousands: '.', decimal: ',', symbolStay: true });
+        //$("#NotaServicoPercentualIssqn").mask("99");
+        //$("#NotaServicoPlano").mask("99");
+
+        //$('#NotaFiscalTransportadora').select2({
+        //    placeholder: 'Selecione uma Transportadora',
+        //    allowClear: true,
+        //    tags: true
+        //});
+
+        CarregarEmpresas();
+        CarregarStatus("S");
+        //CarregarNaturezasOperacoes();
+        //CarregarTransportadoras();
+        CarregarStatus("N");
+
+        function CarregarEmpresas() {
+
+            var options = {};
+            options.url = "/Empresa/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.empresas;
+
+                    $('#NotaServicoEmpresa').html("");
+                    var select = $('#NotaServicoEmpresa');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione uma Empresa")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#NotaFiscalEmpresa').html("");
+                    var select = $('#NotaFiscalEmpresa');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione uma Empresa")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarStatus(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("Tipo", Tipo);
+
+            var options = {};
+            options.url = "/Status/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.status;
+                    if (Tipo == "S") {
+                        $('#NotaServicoStatus').html("");
+                        var select = $('#NotaServicoStatus');
+                        select.append(
+                            $('<option selected></option>').val("0").html("Selecione um Status")
+                        );
+
+                        for (index = 0; index < rows.length; index++) {
+                            if (rows[index].TipoAcao != 'NFL') {
+                                select.append(
+                                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                                );
+                            }
+                        }
+                    }
+                    else {
+                        $('#NotaFiscalStatus').html("");
+                        var select = $('#NotaFiscalStatus');
+                        select.append(
+                            $('<option selected></option>').val("0").html("Selecione um Status")
+                        );
+
+                        for (index = 0; index < rows.length; index++) {
+                            if (rows[index].TipoAcao != 'NFL') {
+                                select.append(
+                                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                                );
+                            }
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        //function CarregarNaturezasOperacoes() {
+
+        //    var options = {};
+        //    options.url = "/NaturezaOperacoes/Listar"
+        //    options.type = "POST";
+        //    options.asyn = true;
+        //    options.contentType = false;
+        //    options.processData = false;
+        //    options.dataType = "application/json; charset=utf-8";
+        //    options.complete = function (data) {
+
+        //        var json = $.parseJSON(data.responseText);
+
+        //        if (json.codigo == '00') {
+
+        //            var rows = json.naturezaoperacoes;
+        //            $('#NotaFiscalNaturezaOperacao').html("");
+        //            var select = $('#NotaFiscalNaturezaOperacao');
+        //            select.append(
+        //                $('<option selected></option>').val("").html("Selecione a Natureza da Operação")
+        //            );
+
+        //            for (index = 0; index < rows.length; index++) {
+        //                select.append(
+        //                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+        //                );
+        //            }
+
+        //        }
+        //    };
+        //    $.ajax(options);
+        //}
+
+        //function CarregarTransportadoras() {
+
+        //    var options = {};
+        //    options.url = "/Transportadoras/Listar"
+        //    options.type = "POST";
+        //    options.asyn = true;
+        //    options.contentType = false;
+        //    options.processData = false;
+        //    options.dataType = "application/json; charset=utf-8";
+        //    options.complete = function (data) {
+
+        //        var json = $.parseJSON(data.responseText);
+
+        //        if (json.codigo == '00') {
+
+        //            var rows = json.transportadoras;
+        //            $('#NotaFiscalTransportadora').html("");
+        //            var select = $('#NotaFiscalTransportadora');
+        //            select.append(
+        //                $('<option selected></option>').val("").html("Selecione uma Transportadora")
+        //            );
+
+        //            for (index = 0; index < rows.length; index++) {
+        //                select.append(
+        //                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+        //                );
+        //            }
+
+        //        }
+        //    };
+        //    $.ajax(options);
+        //}
+
+        function CarregarClienteEmails(Id, Value, Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Clientes/BuscarEmails"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.clientes;
+
+                    $('#NotaServicoClienteEmail').html("");
+                    var select = $('#NotaServicoClienteEmail');
+                    select.append(
+                        $('<option ' + (Value == 0 ? 'selected' : '') + '></option>').val("").html("Selecione um E-mail do Cliente")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option ' + (Value == rows[index].Id ? 'selected' : '') + '></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#NotaServicoStatus').on('change', function (e) {
+
+            var dados = new window.FormData();
+            dados.append("Id", this.value);
+
+            var options = {};
+            options.url = "/Status/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.status;
+
+                    if (rows[0].TipoAcao == "NFF" || rows[0].TipoAcao == "NFC") {
+
+                        $('#NotaServicoStatusValidate').removeClass('hidden');
+
+                        if (rows[0].TipoAcao == "NFF") {
+
+                            $('#NotaServicoCancelamentoValidate').addClass('hidden');
+                            $('#NotaServicoDataCancelamento').val('');
+                            $('#NotaServicoMotivoCancelamento').val('');
+
+                            $('#NotaServicoDataSaida').val(GetTodayDate());
+
+                        }
+                        else if (rows[0].TipoAcao == "NFC") {
+
+                            $('#NotaServicoCancelamentoValidate').removeClass('hidden');
+                            $('#NotaServicoDataCancelamento').val(GetTodayDate());
+
+                            $('#NotaServicoDataSaida').val('');
+
+                        }
+
+                    }
+                    else {
+
+                        $('#NotaServicoStatusValidate').addClass('hidden');
+                        $('#NotaServicoCancelamentoValidate').addClass('hidden');
+
+                    }
+                }
+            };
+            $.ajax(options);
+        });
+
+        function AlterarNotaServico(IdNotaServico) {
+
+            $('#idNotaServico').val(IdNotaServico);
+
+            //$('#tab-servico-presentation').removeClass("active");
+
+            $('#tab-notaservico-presentation').removeClass("hidden");
+            //$('#tab-notaservico-presentation').addClass("active");
+
+            $("#tab-notaservico").click();
+            //$('#tab-notaservico').trigger('click');
+
+
+            //$("#tab-servico").click();
+
+            var dados = new window.FormData();
+            dados.append("Id", IdNotaServico);
+
+            var options = {};
+            options.url = "/NotasServicos/ConsultarServico"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    console.log('Teste 01');
+
+                    //$("#tab-notaservico").click();
+                    $("#NotaServicoEmpresa").val(json.nota[0].IdEmpresa);
+                    $("#NotaServicoEmpresa").trigger('change');
+
+                    $("#NotaServicoNumero").val(AddLeadingZeros(json.nota[0].NumeroNota, 10));
+                    $("#NotaServicoNumeroReferencia").val(AddLeadingZeros(json.nota[0].NumeroReferencia, 10));
+
+                    $("#NotaServicoDataEmissao").val(json.nota[0].Data);
+                    $("#NotaServicoStatus").val(json.nota[0].IdStatus);
+                    $("#NotaServicoNumeroDocumento").val(json.nota[0].IdReceita);
+
+                    $('#NotaServicoCliente').append($('<option selected></option>').val(json.nota[0].IdCliente).html(json.nota[0].Cliente));
+                    $('#NotaServicoCliente').trigger('change');
+
+                    $("#NotaServicoCliente").select2({
+                        placeholder: "Selecione um Cliente",
+                        allowClear: true,
+                        tags: true,
+                        minimumInputLength: 3,
+                        ajax: {
+                            cache: false,
+                            dataType: "json",
+                            type: "GET",
+                            url: '/Clientes/GetClientsList',
+                            delay: 250,
+                            cache: true,
+                            data: function (params) {
+                                params.page = params.page || 1;
+                                return {
+                                    search: params.term,
+                                    page: params.page
+                                };
+                            },
+                            processResults: function (data, params) {
+                                return {
+                                    results: data.clientes,
+                                    pagination: {
+                                        more: (params.page * 10) < data.total
+                                    }
+                                };
+                            }
+                        }
+                    }).on('change', function (e) {
+                        var value = $("#NotaServicoCliente option:selected").val();
+
+                        if (value == 0 || typeof value === "undefined") {
+                            $("#NotaServicoClienteValidate").removeClass("hidden");
+                            $('#NotaServicoClienteEmail').html("");
+                        }
+                        else {
+                            $("#NotaServicoClienteeValidate").addClass("hidden");
+                            CarregarClienteEmails(value, 0, "NFS");
+                        }
+                    }).trigger('change');
+
+                    //CarregarClienteEnderecos(json.nota[0].IdCliente, json.nota[0].IdClienteEndereco, "NFS");
+                    CarregarClienteEmails(json.nota[0].IdCliente, json.nota[0].IdClienteEmail, "NFS");
+
+                    $("#NotaServicoTotal").val(json.nota[0].ValorServico);
+                    $("#NotaServicoLiquido").val(json.nota[0].ValorServico);
+                    $("#NotaServicoPercentualIssqn").val(json.nota[0].PercentualIssqn);
+                    $("#NotaServicoValorIssqn").val(json.nota[0].ValorIssqn);
+                    $("#NotaServicoPercentualIR").val(json.nota[0].PercentualIR);
+                    $("#NotaServicoValorIR").val(json.nota[0].ValorIR);
+                    $("#NotaServicoPercentualPis").val(json.nota[0].PercentualPis);
+                    $("#NotaServicoValorPis").val(json.nota[0].ValorPis);
+                    $("#NotaServicoPercentualCofins").val(json.nota[0].PercentualCofins);
+                    $("#NotaServicoValorCofins").val(json.nota[0].ValorCofins);
+                    $("#NotaServicoPercentualCSLL").val(json.nota[0].PercentualCSLL);
+                    $("#NotaServicoValorCSLL").val(json.nota[0].ValorCSLL);
+
+
+                    var consumidor = "N"
+                    if (json.nota[0].ReterIssqn != "N") {
+                        consumidor = "S"
+                    }
+                    $('input[name=NotaServicoReterIssqn][value="' + consumidor + '"]').prop('checked', true).trigger('change');
+
+                    $("#NotaServicoPlano").val(json.nota[0].Plano);
+                    $("#NotaServicoLocalPagamento").val(json.nota[0].LocalPagamento);
+
+                    $("#NotaServicoDescricaoServico").html(json.nota[0].DescricaoServico);
+                    $("#NotaServicoObservacao").val(json.nota[0].Observacao);
+
+                    $("#NotaServicoFormaPagamento").val(AddLeadingZeros(json.nota[0].IdFormaPagamento, 2));
+
+                    ShowParcelasNotaServico();
+
+                    console.log('Teste 99');
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function ShowParcelasNotaServico() {
+
+            var dados = new window.FormData();
+            dados.append("IdNotaServico", $("#idNotaServico").val());
+
+            var options = {};
+            options.url = "/NotasServicos/CarregarParcelasNotaServico";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#ParcelasNotaServicoAccordion').html(json.parcelas);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function LimparCadastroNotaServico() {
+
+            $('#idNotaServico').val('0');
+            $('#idServico').val('0');
+            $('#NotaServicoEmpresa').val('1');
+            $('#NotaServicoEmpresa').trigger('change');
+            $('#NotaServicoNumero').val('0');
+            $('#NotaServicoNumeroReferencia').val('0');
+            $('#NotaServicoDataEmissao').val('');
+            $('#ServicoStatus').val('');
+            $('#ServicoStatus').trigger('change');
+            $('#NotaServicoNumeroDocumento').val('');
+            $('#NotaServicoCliente').val('');
+            $('#NotaServicoCliente').trigger('change');
+            $('#NotaServicoClienteEmail').val('');
+            $('#NotaServicoTotal').val('');
+            $('#NotaServicoPercentualIssqn').val('');
+            $('#NotaServicoValorIssqn').val('');
+            $('input[name=NotaServicoReterIssqn][value="N"]').prop('checked', true).trigger('change');
+            $('#NotaServicoPlano').val('');
+            $('#NotaServicoLocalPagamento').val('');
+            $('#NotaServicoDescricaoServico').val('');
+            $('#NotaServicoObservacao').val('');
+            $('#NotaServicoFormaPagamento').val('');
+
+        }
+
+        $('#buttonSalvarNotaServico').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#NotaServicoClienteEmail').val() == null || !$.isNumeric($('#NotaServicoClienteEmail').val())) {
+                $('#NotaServicoClienteEmailValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NotaServicoClienteEmailValidate').addClass('hidden');
+            }
+
+            if ($('#NotaServicoFormaPagamento').val() == null || !$.isNumeric($('#NotaServicoFormaPagamento').val())) {
+                $('#NotaServicoFormaPagamentoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NotaServicoFormaPagamentoValidate').addClass('hidden');
+            }
+
+            if (validate) {
+                $("#buttonSalvarNotaServico").attr('disabled', true);
+                $("#buttonSalvarNotaServico").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+               // alert($("#NumeroDocumento").val())
+                var dados = new window.FormData();
+                dados.append("Id", $("#idNotaServico").val());
+                dados.append("IdEmpresa", $("#NotaServicoEmpresa").val());
+                dados.append("NumeroNota", $("#NotaServicoNumero").val());
+                dados.append("NumeroReferencia", $("#NotaServicoNumeroReferencia").val());
+                dados.append("IdReceita", $("#NotaServicoNumeroDocumento").val());
+                dados.append("DataEmissao", $("#NotaServicoDataEmissao").val());
+                dados.append("IdStatus", $("#NotaServicoStatus").val());
+                dados.append("NumeroDocumento", "");
+                dados.append("IdCliente", $("#NotaServicoCliente").val());
+                dados.append("IdClienteEmail", $("#NotaServicoClienteEmail").val());
+
+                dados.append("ValorServico", $("#NotaServicoTotal").val());
+                dados.append("ValorLiquido", $("#NotaServicoLiquido").val());
+                dados.append("PercentualIssqn", $("#NotaServicoPercentualIssqn").val());
+                dados.append("ValorIssqn", $("#NotaServicoValorIssqn").val());
+                dados.append("PercentualIR", $("#NotaServicoPercentualIR").val());
+                dados.append("ValorIR", $("#NotaServicoValorIR").val());
+                dados.append("PercentualCofins", $("#NotaServicoPercentualCofins").val());
+                dados.append("ValorCofins", $("#NotaServicoValorCofins").val());
+                dados.append("PercentualPis", $("#NotaServicoPercentualPis").val());
+                dados.append("ValorPis", $("#NotaServicoValorPis").val());
+                dados.append("PercentualCSLL", $("#NotaServicoPercentualCSLL").val());
+                dados.append("ValorCSLL", $("#NotaServicoValorCSLL").val());
+                dados.append("ReterIssqn", $("input[type='radio'][name='NotaServicoReterIssqn']:checked").val());
+                dados.append("Plano", $("#NotaServicoPlano").val());
+                dados.append("LocalPagamento", $("#NotaServicoLocalPagamento").val());
+
+                dados.append("DescricaoServico", $("#NotaServicoDescricaoServico").val());
+                dados.append("Observacao", $("#NotaServicoObservacao").val());
+                dados.append("IdFomraPagamento", $("#NotaServicoFormaPagamento").val());
+
+                var options = {};
+                options.url = "/NotasServicos/SalvarServico"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $("#notaservico-alert-success").removeClass("hidden");
+                        $("#notaservico-alert-error").addClass("hidden");
+
+                        $("#buttonSalvarNotaServico").text("Salvar");
+                        $("#buttonSalvarNotaServico").attr('disabled', false);
+
+                    }
+                    else if (json.codigo == '11') {
+
+                        $('#buttonFecharNotaServico').click();
+
+                    }
+                    else {
+
+                        $("#notaservico-alert-success").addClass("hidden");
+                        $("#notaservico-alert-error").removeClass("hidden");
+
+                        $("#buttonSalvarNotaServico").text("Salvar");
+                        $("#buttonSalvarNotaServico").attr('disabled', false);
+
+                    }
+
+                    setTimeout(function () {
+                        $("#notaservico-alert-success").addClass("hidden");
+                        $("#notaservico-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonFecharNotaServico').click(function (evt) {
+
+            $('#tab-notaservico-presentation').removeClass("active");
+            $('#tab-notaservico-presentation').addClass("hidden");
+            $('#tab-servico-presentation').removeClass("hidden");
+            $('#tab-servico-presentation').addClass("active");
+
+            LimparCadastroNotaServico();
+
+            $("#notasfiscais-filtro-form").submit();
+
+        });
+
+        function EmitirNotaServico(IdReceita, NumeroServico) {
+
+            var dados = new window.FormData();
+            dados.append("Id", IdReceita);
+
+            var options = {};
+            options.url = "/FinanceiroReceitas/ImportarReceita"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    //AlterarNotaServico(json.idNotaServico);
+
+                    //$('#search').val(NumeroServico);
+                    $('#Filtrar').click();
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        $('#buttonEmitirNotaServico').click(function (evt) {
+
+            $("#buttonEmitirNotaServico").attr('disabled', true);
+            $("#buttonEmitirNotaServico").html("Emitindo, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("Id", $("#idNotaServico").val());
+            dados.append("IdStatus", $("#NotaServicoStatus").val());
+
+            var options = {};
+            options.url = "/NotasServicos/EmitirNFS"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00' || json.codigo == '11') {
+
+                    $("#notaservico-alert-success").removeClass("hidden");
+                    $("#notaservico-alert-error").addClass("hidden");
+
+                    $("#buttonEmitirNotaServico").text("Emitir NFE");
+                    $("#buttonEmitirNotaServico").attr('disabled', false);
+
+                    // console.log("URL: (" + json.urlAux + ")");
+
+                    $("#VisualizarDANFE").html("<iframe width='100%' height='800px' src='data:application/pdf;base64, " + encodeURI(json.arquivo) + "'></iframe>");
+                    $("#modalVisualizarDANFE").modal("show");
+
+                }
+                //else if (json.codigo == '11') {
+
+                //    $('#buttonFecharNotaFiscal').click();
+
+                //}
+                else if (json.codigo == '88') {
+
+                    // Mensagem para erros na emissão da NFCe
+                    $("#notaservico-alert-error").html("<strong>ERRO:</strong> Ocorreu um erro ao emitir o fiscal.<br />" + json.mensagemErro);
+
+                    $("#notaservico-alert-success").addClass("hidden");
+                    $("#notaservico-alert-error").removeClass("hidden");
+
+                    $("#buttonEmitirNotaServico").text("Emitir NFE");
+                    $("#buttonEmitirNotaServico").attr('disabled', false);
+
+                }
+                else {
+                    $("#notaservico-alert-error").html("<strong>ERRO:</strong> Ocorreu um erro ao emitir o fiscal.<br />" + json.mensagemErro);
+
+                    $("#notaservico-alert-success").addClass("hidden");
+                    $("#notaservico-alert-error").removeClass("hidden");
+
+                    $("#buttonEmitirNotaServico").text("Emitir NFE");
+                    $("#buttonEmitirNotaServico").attr('disabled', false);
+
+                }
+                setTimeout(function () {
+                    $("#notaservico-alert-success").addClass("hidden");
+                    $("#notaservico-alert-error").addClass("hidden");
+                }, 9000);
+
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+
+        });
+
+        function CalcularIssqn() {
+            var aliquota = 0;
+            var valorservico = 0;
+            var valorissqn = 0;
+
+            aliquota = $('#NotaServicoPercentualIssqn').val().replace(/[.]/g, '').replace(',', '.');
+            valorservico = $('#NotaServicoTotal').val().replace(/[.]/g, '').replace(',', '.');
+
+            valorissqn = ((valorservico * aliquota) / 100);
+
+            $('#NotaServicoValorIssqn').val((valorissqn > 0.0 ? numberToReal(valorissqn) : '0,00'));
+
+        }
+
+        //$('#tab-servico').click(function (evt) {
+
+        //    $('#tab-servico-presentation').removeClass("hidden");
+        //    $('#tab-servico-presentation').addClass("active");
+        //    $('#tab-notaservico-presentation').removeClass("active");
+        //    $('#tab-notaservico-presentation').addClass("hidden");
+
+        //    LimparCadastroNotaServico();
+
+        //  //  $('#Filtrar').click();
+
+        //});
+
+        //$(document).ready(function () {
+
+        //    $("#tab-servico").click();
+
+        //});
+
+        function Atualizar() {
+            $(location).attr('href', '../Saida');
+        }
+
+        $('#tab-servico').click(function (evt) {
+
+            $('#tab-servico-presentation').removeClass("hidden");
+            $('#tab-servico-presentation').addClass("active");
+
+            $('#Filtrar').click();
+
+        });
+
+
+    </script>
+</div>

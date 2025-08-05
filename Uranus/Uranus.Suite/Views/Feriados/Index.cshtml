@@ -1,0 +1,385 @@
+﻿@{
+    ViewBag.Title = "Cadastros Básicos \\ Feriados";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="feriado-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Feriado</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Data <span class="required">*</span></label>
+                                    <div class="input-group date" style="margin: 0 !important;">
+                                        <input id="DataValor" name="DataValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                    <label id="DataValidate" name="DataValidate" for="Data" class="error hidden"> Por favor, selecine uma data.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Nome do Feriado" id="Nome" name="Nome" style="height: 40px !important;" />
+                                    <label id="NomeValidate" name="NomeValidate" for="Nome" class="error hidden"> Por favor, informe o nome do feriado.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Feriado</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir esse Feriado?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Feriados</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            @using (Html.BeginForm("Index", "Feriados", FormMethod.Get, null))
+                                            {
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Procura na Coluna Nome</label>
+                                                        <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("Data", header: "Data", format: (item) => (item.Data == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.Data))),
+                                     grid.Column("Descricao", header: "Nome"),
+                                     grid.Column("ID", header: "Ações", canSort:false,
+                                     format:
+                                        @<text>
+                                            @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                                            @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                                            @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Data + '"' + ");'>Excluir</a>")
+                                        </text>)
+                                     });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script>
+
+        $('#DataValor').daterangepicker();
+
+        $('input[name="DataValor"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="DataValor"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        function Novo() {
+            $('#modalLabelTitle').text('Novo Feriado');
+            $('#DataValor').val('');
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val('');
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#feriado-form").validate().resetForm();
+        }
+
+        function Visualizar(Id) {
+            $('#modalLabelTitle').text('Visualizar Feriado');
+            $('#Nome').attr('disabled', true);
+            $('#buttonSalvar').attr('disabled', true);
+            $("#feriado-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Feriados/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#DataValor').val(json.feriado[0].Data);
+                    $('#Nome').val(json.feriado[0].Nome);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+            $('#modalLabelTitle').text('Alterar Feriado');
+            $('#Nome').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', false);
+            $("#feriado-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Feriados/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#DataValor').val(json.feriado[0].Data);
+                    $('#Nome').val(json.feriado[0].Nome);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir esse Feriado (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#DataValor').val().length < 10) {
+                $('#DataValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#DataValidate').addClass('hidden');
+            }
+
+            if ($('#Nome').val().length <= 0) {
+                $('#NomeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NomeValidate').addClass('hidden');
+            }
+
+            if (validate) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("Data", $("#DataValor").val());
+                dados.append("Nome", $("#Nome").val());
+
+                var options = {};
+                options.url = "/Feriados/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('h4').text('Feriado salvo com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#feriado-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Feriados/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Feriado excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#feriado-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Feriado (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Feriado (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Feriados');
+        }
+
+    </script>
+
+</div>

@@ -1,0 +1,1201 @@
+﻿@{
+    ViewBag.Title = "Gerar Iniciais";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>
+                Filtrar Iniciais
+            </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a id="tab-listar" href="#tab_content_listar" role="tab" data-toggle="tab" aria-expanded="true">Listar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-cadastrar" href="#tab_content_cadastrar" role="tab" data-toggle="tab" aria-expanded="false">Cadastrar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-visualizar" href="#tab_content_visualizar" role="tab" data-toggle="tab" aria-expanded="false">Visualizar</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_listar" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        @{ WebGrid grid = new WebGrid(Model); }
+
+                                        @using (Html.BeginForm("Index", "Iniciais", FormMethod.Get, new { id = "inicial-filtro-form" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Data</label>
+                                                        <div id="FiltrarData" name="FiltrarData" class="input-group date" style="margin: 0 !important;">
+                                                            <input id="FiltrarDataValor" name="FiltrarDataValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Cliente</label>
+                                                        <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button id="Limpar" name="Limpar" type="button" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                htmlAttributes: new { id = "MainTable" },
+                                                tableStyle: "webgrid",
+                                                fillEmptyRows: false,
+                                                headerStyle: "webgrid-header",
+                                                alternatingRowStyle: "webgrid-alternating-row",
+                                                rowStyle: "webgrid-row-style",
+                                                selectedRowStyle: "webgrid-selected-row",
+                                                footerStyle: "webgrid-footer",
+                                                mode: WebGridPagerModes.All,
+                                                firstText: "Primeiro",
+                                                previousText: "Anterior",
+                                                nextText: "Próximo",
+                                                lastText: "Último",
+                                                numericLinksCount: 5,
+                                                columns: new[] {
+                                                grid.Column("DataCadastro", header: "Data", format: (item) => (item.DataCadastro == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.DataCadastro))),
+                                                grid.Column("ClienteNome", header: "Nome do Cliente"),
+                                                //grid.Column("Profissionais.Pessoas.Nome", header: "Nome do Profissional"),
+                                                grid.Column("IdTemplate", header: "Ações", canSort:false,
+                                                format:
+                                    @<text>
+                                        @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.IdTemplate + ");'>Visualizar</a>")
+
+                                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                       {
+                                            @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.IdTemplate + ");'>Alterar</a>")
+                                            @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.IdTemplate + ", " + '"' + item.ClienteNome + '"' + ");'>Excluir</a>")
+                                            @Html.Raw("<a class='btn btn-info btn-xs' onclick='Exportar(" + item.IdTemplate + ");'>Exportar PDF</a>")
+                                                       }
+                                        }
+                                    </text>)
+           });
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_cadastrar" aria-labelledby="tab-cadastrar">
+                        <!-- Documento -->
+                        <div class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 id="TituloDocumento"><b>Novo Documento</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="inicial-form">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome do Cliente <span class="required">*</span></label><br />
+                                            <select id="Cliente" name="Cliente" class="select2_single form-control" style="width: 100% !important;"></select>
+                                            <label id="ClienteValidate" name="ClienteValidate" for="Cliente" class="error hidden"> Por favor, selecione um Cliente.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome do Profissional</label><br />
+                                            <select id="Profissional" name="Profissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Juízo Número</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Número do Juízo" id="VaraNumero" name="VaraNumero" 0 maxlength="100" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label class="titlefield">Juízo Cidade</label>
+                                            <input type="text" class="form-control" placeholder="Informe a cidade do Juízo" id="VaraCidade" name="VaraCidade" 0 maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Protocolo</label>
+                                            <input type="text" class="form-control" placeholder="Informe as Parcelas" id="ProcessoDataProtocolo" name="ProcessoDataProtocolo" maxlength="100" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="form-group">
+                                            <label class="titlefield">RequerimentoNumero</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Número Requerimento" id="RequerimentoNumero" name="RequerimentoNumero" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Atividade</label>
+                                            <textarea id="ProcessoAtividade" name="ProcessoAtividade" class="form-control placeholder" placeholder="Informe aqui a atividae" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Valor da Causa</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Valor" id="ProcessoValorCausa" name="ProcessoValorCausa" maxlength="18" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Rodapé</label>
+                                            <div id="ProcessoRodapeData" name="ProcessoRodapeData" class="input-group date" style="margin: 0 !important;">
+                                                <input id="ProcessoRodapeDataValor" name="ProcessoRodapeDataValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="titlefield">Reafirmação <span class="required">*</span></label>
+                                        <br />
+                                        <div class="radio-item">
+                                            <input type="radio" id="ProcessoReafirmacaoDERSim" name="ProcessoReafirmacaoDER" value="1">
+                                            <label for="NotificaEmailSim">Sim</label>
+                                        </div>
+                                        <div class="radio-item">
+                                            <input type="radio" id="ProcessoReafirmacaoDERNao" name="ProcessoReafirmacaoDER" value="0">
+                                            <label for="ProcessoReafirmacaoDERNao">Não</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="titlefield">Gratuidade <span class="required">*</span></label>
+                                        <br />
+                                        <div class="radio-item">
+                                            <input type="radio" id="ProcessoGratuidadeSim" name="ProcessoGratuidade" value="1">
+                                            <label for="ProcessoGratuidadeSim">Sim</label>
+                                        </div>
+                                        <div class="radio-item">
+                                            <input type="radio" id="ProcessoGratuidadeNao" name="ProcessoGratuidade" value="0">
+                                            <label for="ProcessoGratuidadeNao">Não</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Resumo Período</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Resumo" id="ProcessoResumoPeriodo" name="ProcessoResumoPeriodo" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Resumo Período DER</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Resumo" id="ProcessoResumoPeriodosDER" name="ProcessoResumoPeriodosDER" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" hidden>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Excel</label>
+                                            <textarea id="ProcessoExcel" name="ProcessoExcel" class="form-control placeholder" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Imagem</label><br />
+                                            <canvas style="border: 1px solid #ccc;" id="ProcessoImagem" name="ProcessoImagem" width="600" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Cadastro</label>
+                                                    <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Cadastro</label>
+                                                    <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Alteração</label>
+                                                    <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Alteração</label>
+                                                    <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                <div class="modal-footer">
+                                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                                </div>
+                                <div class="alert alert-success hidden" id="inicial-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado da Inicial realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="inicial-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da Inicial.
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="Periodos" class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Períodos do Processo </h2>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="acordo-parcelas-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="PeriodosIniciaisAccordion" role="tablist" aria-multiselectable="true">
+                                    Os períodos só poderam ser cadastrados após a Inicial ser salva.
+                                </div>
+                                <hr />
+                                <div class="alert alert-success hidden" id="parcelas-acordo-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado dos períodos na inicial realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="parcelas-acordo-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro do período na inicial.
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_visualizar" aria-labelledby="tab-visualizar">
+                        <div id="VisualizarInicial" name="VisualizarInicial">
+                            <p>Nenhum inicial foi selecionado para visualização.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalExcluir" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title" id="modalLabelExcluir">Excluir Inicial</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Você deseja realmente excluir essa Inicial?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <!-- simditor -->
+    <script type="text/javascript" src="~/Scripts/simditor/module.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/simditor/uploader.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/simditor/hotkeys.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/simditor/dompurify.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/simditor/simditor.js"></script>
+
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script>
+
+
+        CKEDITOR.replace('ProcessoExcel', {
+            language: 'pt',
+            height: 800
+        });
+
+        var tr = $('#VisualizeTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        $("#FiltrarData").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#ProcessoRodapeData").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $('#FiltrarDataValor').val(@Html.Raw(Json.Encode(ViewBag.FiltrarDataValor)));
+
+        var select = $('#FiltrarModelo');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarModelo))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarModelo)))
+        );
+        $('#FiltrarModelo').trigger('change');
+
+        var select = $('#FiltrarCliente');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+        );
+        $('#FiltrarCliente').trigger('change')
+
+        $("#FiltrarModelo").select2({
+            placeholder: "Selecione um Modelo",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#FiltrarCliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#Modelo").select2({
+            placeholder: "Selecione um Modelo",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#Cliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#Profissional").select2({
+            placeholder: "Selecione um Profissional",
+            allowClear: true,
+            tags: true
+        });
+
+        CarregarProfissionais("");
+
+        function CarregarProfissionais(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#Profissional').html("");
+                    var select = $('#Profissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#Cliente').val() == null || !$.isNumeric($('#Cliente').val())) {
+                $('#ClienteValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ClienteValidate').addClass('hidden');
+            }
+
+            if (validate) {
+
+                $("#buttonSalvar").attr('disabled', true);
+                $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var processoexcel = escape(CKEDITOR.instances.ProcessoExcel.getData());
+
+                var dados = new window.FormData();
+
+
+                var image = document.getElementById("PrcessoImagem").toDataURL("image/png");
+                image = image.replace('data:image/png;base64,', '');
+
+
+                dados.append("Id", $("#id").val());
+                dados.append("IdCliente", $("#Cliente").val());
+                dados.append("IdProfissional", $("#Profissional").val());
+                dados.append("VaraNumero", $("#VaraNumero").val());
+                dados.append("VaraCidade", $("#VaraCidade").val());
+                dados.append("ProcessoDataProtocolo", $("#ProcessoDataProtocolo").val());
+                dados.append("RequerimentoNumero", $("#RequerimentoNumero").val());
+                dados.append("ProcessoAtividade", $("#ProcessoAtividade").val());
+                dados.append("ProcessoReafirmacaoDER", $("input[type='radio'][name='ProcessoReafirmacaoDER']:checked").val());
+                dados.append("ProcessoGratuidade", $("input[type='radio'][name='ProcessoGratuidade']:checked").val());
+                dados.append("ProcessoValorCausa", $("#ProcessoValorCausa").val());
+                dados.append("ProcessoRodapeData", $("#ProcessoRodapeDataValor").val());
+                dados.append("ProcessoResumoPeriodo", $("#ProcessoResumoPeriodo").val());
+                dados.append("ProcessoResumoPeriodosDER", $("#ProcessoResumoPeriodosDER").val());
+                dados.append("ProcessoExcel", processoexcel);
+
+                dados.append("ProcessoImagem", image);
+
+                var options = {};
+                options.url = "/Iniciais/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $("#inicial-alert-success").removeClass("hidden");
+                        $("#inicial-alert-error").addClass("hidden");
+
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+
+                    }
+                    else {
+
+                        $("#inicial-alert-success").addClass("hidden");
+                        $("#inicial-alert-error").removeClass("hidden");
+
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+
+                    }
+
+                    setTimeout(function () {
+                        $("#inicial-alert-success").addClass("hidden");
+                        $("#inicial-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonFechar').click(function (evt) {
+
+            LimparCadastro();
+
+            $("#tab-listar").click();
+
+        });
+
+        $('#tab-listar').click(function (evt) {
+
+
+            $('#id').val("0");
+            CKEDITOR.instances["ProcessoExcel"].setData("");
+
+            LimparCadastro();
+
+        });
+
+        $('#tab-cadastrar').click(function (evt) {
+
+            LimparCadastro();
+
+        });
+
+        $('#tab-visualizar').click(function (evt) {
+
+            $('#id').val("0");
+            $('#Nome').val("");
+            CKEDITOR.instances["Inicial"].setData("");
+
+        });
+
+
+        function Visualizar(Id) {
+
+            $('#VisualizarInicial').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+            var url = '@Url.Action("View", "Inicial")';
+            url += '/?Id=' + Id ;
+            $("#VisualizarInicial").load(url);
+            $("#tab-visualizar").click();
+
+        }
+
+        function Alterar(Id) {
+
+            $('#TituloDocumento').html("<b>Alterar Inicial</b>");
+
+            $('#id').val(Id);
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Iniciais/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#tab-cadastrar").click();
+
+                    var select = $('#Cliente');
+                    select.append(
+                        $('<option selected></option>').val(json.inicial[0].IdCliente).html(json.inicial[0].ClienteNome)
+                    );
+                    $('#Cliente').trigger('change');
+
+                    $('#Profissional').val(json.inicial[0].IdProfissional);
+                    $('#Profissional').trigger('change');
+
+                    $('#Cliente').val(json.inicial[0].IdCliente);
+                    $('#Cliente').trigger('change');
+                    $('#VaraNumero').val(json.inicial[0].VaraNumero);
+                    $('#VaraCidade').val(json.inicial[0].VaraCidade);
+                    $('#ProcessoDataProtocolo').val(json.inicial[0].ProcessoDataProtocolo);
+                    $('#RequerimentoNumero').val(json.inicial[0].RequerimentoNumero);
+                    $('#ProcessoAtividade').val(json.inicial[0].ProcessoAtividade);
+                    $('#ProcessoReafirmacaoDER').val(json.inicial[0].ProcessoReafirmacaoDER);
+                    $('#ProcessoGratuidade').val(json.inicial[0].ProcessoGratuidade);
+                    $('#ProcessoValorCausa').val(json.inicial[0].ProcessoValorCausa);
+                    $('#ProcessoRodapeData').val(json.inicial[0].ProcessoRodapeData);
+                    $('#ProcessoResumoPeriodo').val(json.inicial[0].ProcessoResumoPeriodo);
+                    $('#ProcessoResumoPeriodosDER').val(json.inicial[0].ProcessoResumoPeriodosDER);
+
+                    var image = 'data:image/png;base64,' + json.inicial[0].ProcessoImagem;
+                    var canvas = document.getElementById('ProcessoImagem'),
+                    context = canvas.getContext('2d');
+                    base_image = new Image();
+                    base_image.src = image;
+                    base_image.onload = function () {
+                        canvas.width = base_image.width;
+                        canvas.height = base_image.height;
+                        context.drawImage(base_image, 0, 0);
+                    }
+
+                    //$('#ProcessoImagem').val(image);
+
+                    var processoexcel = (json.inicial[0].ProcessoExcel != null ? json.inicial[0].ProcessoExcel : "");
+                    CKEDITOR.instances["ProcessoExcel"].setData(unescape(processoexcel));
+
+
+                    var processoreafirmacaoDER = "0"
+                    if (json.inicial[0].ProcessoReafirmacaoDER) {
+                        processoreafirmacaoDER = "1"
+                    }
+
+                    $('input[name=ProcessoReafirmacaoDER][value="' + processoreafirmacaoDER + '"]').prop('checked', true).trigger('change');
+
+                    var processogratuidade = "0"
+                    if (json.inicial[0].ProcessoGratuidade) {
+                        processogratuidade = "1"
+                    }
+
+                    $('input[name=ProcessoGratuidade][value="' + processogratuidade + '"]').prop('checked', true).trigger('change');
+
+                    $('#DataCadastro').val(json.inicial[0].DataCadastro);
+                    $('#UsuarioCadastro').val(json.inicial[0].UsuarioCadastro);
+                    $('#DataAlteracao').val(json.inicial[0].DataAlteracao);
+                    $('#UsuarioAlteracao').val(json.inicial[0].UsuarioAlteracao);
+
+                    ShowPeriodoInicial();
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Modelo, Cliente) {
+            $('h4').text('Você deseja realmente excluir esse Documento (' + Modelo + " - " + Cliente + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Modelo);
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Documentos/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Documento excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#inicial-form").validate().resetForm();
+
+                    Atualizar();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Documento (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Documento (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function ShowPeriodoInicial() {
+
+            var dados = new window.FormData();
+            dados.append("IdTemplate", $("#id").val());
+
+            var options = {};
+            options.url = "/Iniciais/CarregarPeriodosIniciais";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#PeriodosIniciaisAccordion').html(json.periodos);
+
+                }
+                else {
+
+                    $('#PeriodosIniciaisAccordion').html("Os períodos só poderão ser cadastrados após a Inicial ser salva.");
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoPeriodoSalvar_Click(index) {
+
+            var validated = true;
+
+            if (validated) {
+
+                $("#ButtonDadoPeriodo" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoPeriodo" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoPeriodo" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoPeriodo' + index).val());
+                dados.append("IdTemplate", $("#id").val());
+                dados.append("Periodo", $('#DadoPeriodo' + index + 'Periodo').val());
+                dados.append("Empresa", $('#DadoPeriodo' + index + 'Empresa').val());
+                dados.append("Atividades", $('#DadoPeriodo' + index + 'Atividades').val());
+                dados.append("EnquadramentoLegal", $('#DadoPeriodo' + index + 'EnquadramentoLegal').val());
+                dados.append("Provas", $('#DadoPeriodo' + index + 'Provas').val());
+                dados.append("ProvasAProduzir", $('#DadoPeriodo' + index + 'ProvasAProduzir').val());
+                dados.append("OBS", $('#DadoPeriodo' + index + 'OBS').val());
+
+                var options = {};
+                options.url = "/Iniciais/SalvarPeriodos";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == "00") {
+                        $("#periodos-iniciais-alert-success").removeClass("hidden");
+                        $("#periodos-iniciais-alert-error").addClass("hidden");
+
+                        $("#ButtonDadoPeriodo" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoPeriodo" + index + "Incluir").attr('disabled', false);
+
+                        ShowPeriodoInicial();
+                    }
+                    else {
+                        $("#periodos-iniciais-alert-success").addClass("hidden");
+                        $("#periodos-iniciais-alert-error").removeClass("hidden");
+
+                        $("#ButtonDadoPeriodo" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoPeriodo" + index + "Incluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#periodos-iniciais-alert-success").addClass("hidden");
+                        $("#periodos-iniciais-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+            }
+        }
+
+        function ButtonDadoPeriodoExcluir_Click(index) {
+
+            $("#ButtonDadoPeriodo" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoPeriodo" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoPeriodo" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("Id", $('#HiddenDadoPeriodo' + index).val());
+            //        alert ("teste)
+            var options = {};
+            options.url = "/Iniciais/ExcluirDadosPeriodos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "removed") {
+                    $("#iniciais-dadosperiodos-alert-success").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-error").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-removed").removeClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-error2").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-warning").addClass("hidden");
+
+                    ShowPeriodoInicial("Alterar");
+                }
+                else {
+                    $("#iniciais-dadosperiodos-alert-success").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-error").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-removed").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-error2").removeClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-warning").addClass("hidden");
+
+                    $("#ButtonDadoPeriodo" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoPeriodo" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoPeriodo" + index + "Excluir").attr('disabled', false);
+                }
+
+                setTimeout(function () {
+                    $("#iniciais-dadosperiodos-alert-success").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-error").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-removed").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-error2").addClass("hidden");
+                    $("#iniciais-dadosperiodos-alert-warning").addClass("hidden");
+                }, 3000);
+
+            };
+            $.ajax(options);
+
+        }
+
+
+        function Exportar(Id) {
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Iniciais/Export"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    const linkSource = `data:application/pdf;base64,${json.inicial}`;
+                    const link = document.createElement("a");
+                    const fileName = "inicial.pdf";
+
+                    link.href = linkSource;
+                    link.download = fileName;
+                    link.click();
+
+                }
+                else {
+
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function Atualizar() {
+           $(location).attr('href', '../Iniciais');
+        }
+
+        function LimparFiltro() {
+
+            $("#FiltrarDataValor").val("");
+
+            $("#FiltrarModelo").val("");
+            $("#FiltrarModelo").trigger("change");
+
+            $("#FiltrarCliente").val("");
+            $("#FiltrarCliente").trigger("change");
+
+            $("#inicial-filtro-form").submit();
+        }
+
+        function LimparCadastro() {
+
+            $("#Cliente").val("");
+            $("#Cliente").trigger("change");
+
+            $("#Profissional").val("");
+            $("#Profissional").trigger("change");
+
+            $("#VaraNumero").val("");
+            $("#VaraCidade").val("");
+            $("#ProcessoDataProtocolo").val("");
+            $("#RequerimentoNumero").val("");
+            $("#ProcessoAtividade").val("");
+            $("#ProcessoValorCausa").val("");
+            $("#ProcessoRodapeData").val("");
+            $("#ProcessoResumoPeriodo").val("");
+            $("#ProcessoResumoPeriodosDER").val("");
+            $("#ProcessoExcel").val("");
+
+            $('input[name=ProcessoReafirmacaoDER][value="1"]').attr('disabled', false);
+            $('input[name=ProcessoReafirmacaoDER][value="0"]').attr('disabled', false);
+            $('input[name=ProcessoReafirmacaoDER][value="1"]').prop('checked', true).trigger('change');
+            $('input[name=ProcessoGratuidade][value="1"]').attr('disabled', false);
+            $('input[name=ProcessoGratuidade][value="0"]').attr('disabled', false);
+            $('input[name=ProcessoGratuidade][value="1"]').prop('checked', true).trigger('change');
+
+
+            $("#VisualizarInicial").html("<p>Nenhum inicial foi selecionado para visualização.</p>");
+
+        }
+
+
+
+        var CLIPBOARD = new CLIPBOARD_CLASS("ProcessoImagem", true);
+
+        function CLIPBOARD_CLASS(canvas_id, autoresize) {
+	        var _self = this;
+	        var canvas = document.getElementById(canvas_id);
+	        var ctx = document.getElementById(canvas_id).getContext("2d");
+	        var ctrl_pressed = false;
+	        var command_pressed = false;
+	        var paste_event_support;
+	        var pasteCatcher;
+
+	        //handlers
+	        document.addEventListener('keydown', function (e) {
+		        _self.on_keyboard_action(e);
+	        }, false); //firefox fix
+	        document.addEventListener('keyup', function (e) {
+		        _self.on_keyboardup_action(e);
+	        }, false); //firefox fix
+	        document.addEventListener('paste', function (e) {
+		        _self.paste_auto(e);
+	        }, false); //official paste handler
+
+	        //constructor - we ignore security checks here
+	        this.init = function () {
+		        pasteCatcher = document.createElement("div");
+		        pasteCatcher.setAttribute("id", "paste_ff");
+		        pasteCatcher.setAttribute("contenteditable", "");
+		        pasteCatcher.style.cssText = 'opacity:0;position:fixed;top:0px;left:0px;width:10px;margin-left:-20px;';
+		        document.body.appendChild(pasteCatcher);
+
+		        // create an observer instance
+		        var observer = new MutationObserver(function(mutations) {
+			        mutations.forEach(function(mutation) {
+				        if (paste_event_support === true || ctrl_pressed == false || mutation.type != 'childList'){
+					        //we already got data in paste_auto()
+					        return true;
+				        }
+
+				        //if paste handle failed - capture pasted object manually
+				        if(mutation.addedNodes.length == 1) {
+					        if (mutation.addedNodes[0].src != undefined) {
+						        //image
+						        _self.paste_createImage(mutation.addedNodes[0].src);
+					        }
+					        //register cleanup after some time.
+					        setTimeout(function () {
+						        pasteCatcher.innerHTML = '';
+					        }, 20);
+				        }
+			        });
+		        });
+		        var target = document.getElementById('paste_ff');
+		        var config = { attributes: true, childList: true, characterData: true };
+		        observer.observe(target, config);
+	        }();
+	        //default paste action
+	        this.paste_auto = function (e) {
+		        paste_event_support = false;
+		        if(pasteCatcher != undefined){
+			        pasteCatcher.innerHTML = '';
+		        }
+		        if (e.clipboardData) {
+			        var items = e.clipboardData.items;
+			        if (items) {
+				        paste_event_support = true;
+				        //access data directly
+				        for (var i = 0; i < items.length; i++) {
+					        if (items[i].type.indexOf("image") !== -1) {
+						        //image
+						        var blob = items[i].getAsFile();
+						        var URLObj = window.URL || window.webkitURL;
+						        var source = URLObj.createObjectURL(blob);
+						        this.paste_createImage(source);
+					        }
+				        }
+				        e.preventDefault();
+			        }
+			        else {
+				        //wait for DOMSubtreeModified event
+				        //https://bugzilla.mozilla.org/show_bug.cgi?id=891247
+			        }
+		        }
+	        };
+	        //on keyboard press
+	        this.on_keyboard_action = function (event) {
+		        k = event.keyCode;
+		        //ctrl
+		        if (k == 17 || event.metaKey || event.ctrlKey) {
+			        if (ctrl_pressed == false)
+				        ctrl_pressed = true;
+		        }
+		        //v
+		        if (k == 86) {
+			        if (document.activeElement != undefined && document.activeElement.type == 'text') {
+				        //let user paste into some input
+				        return false;
+			        }
+
+			        if (ctrl_pressed == true && pasteCatcher != undefined){
+				        pasteCatcher.focus();
+			        }
+		        }
+	        };
+	        //on kaybord release
+	        this.on_keyboardup_action = function (event) {
+		        //ctrl
+		        if (event.ctrlKey == false && ctrl_pressed == true) {
+			        ctrl_pressed = false;
+		        }
+		        //command
+		        else if(event.metaKey == false && command_pressed == true){
+			        command_pressed = false;
+			        ctrl_pressed = false;
+		        }
+	        };
+	        //draw pasted image to canvas
+	        this.paste_createImage = function (source) {
+		        var pastedImage = new Image();
+		        pastedImage.onload = function () {
+			        if(autoresize == true){
+				        //resize
+				        canvas.width = pastedImage.width;
+				        canvas.height = pastedImage.height;
+			        }
+			        else{
+				        //clear canvas
+				        ctx.clearRect(0, 0, canvas.width, canvas.height);
+			        }
+			        ctx.drawImage(pastedImage, 0, 0);
+		        };
+		        pastedImage.src = source;
+	        };
+        }
+
+    </script>
+</div>

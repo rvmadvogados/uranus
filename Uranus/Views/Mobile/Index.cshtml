@@ -1,0 +1,78 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+@using Uranus.Suite.App_Code
+
+<html>
+<head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Agenda RVM Advogados</title>
+
+    <link href="~/Content/CSS/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/fonts/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/CSS/form-elements.css" rel="stylesheet">
+    <link href="~/Content/CSS/style.mobile.css" rel="stylesheet">
+
+    <script src="~/Scripts/nprogress.js"></script>
+    <script>
+        NProgress.start();
+    </script>
+</head>
+<body>
+    <div class="wrapper">
+        <div id="one">
+        </div>
+        <div id="two">
+            <form id="login-mobile-form" action="/Login/Validar" method="POST" enctype="multipart/form-data">
+                <div style="margin: 0 50px 0 50px !important; padding: 0 !important; min-height: 10px !important;">
+                    <img src="~/Content/Images/logo-mobile.png" style="max-width: 100% !important;" />
+                </div>
+                <div>
+                    <div class="row" style="min-height: 10px !important;">
+                        <div class="form-group" style="margin: 0 20px 0 10px !important; min-height: 10px !important;">
+                            <label>Usuário</label>
+                            <input type="text" class="form-control" placeholder="Informe o Usuário" id="Usuario" name="Usuario" data-msg-required="Por favor, insira o nome do Usuário." data-rule-required="true" />
+                        </div>
+                    </div>
+                    <div class="row" style="min-height: 10px !important;">
+                        <div class="form-group" style="margin: 0 20px 0 10px !important; min-height: 10px !important;">
+                            <label>Senha</label>
+                            <input type="password" class="form-control" placeholder="Informe a Senha" id="Senha" name="Senha" data-msg-required="Por favor, insira a sua Senha." data-rule-required="true" />
+                        </div>
+                    </div>
+                    <div id="login-alert-error" class="hidden" style="margin-bottom: 0px !important; padding: 0px 19px 0px 7px !important; min-height: 0px !important;">
+                        <div class="alert alert-danger" style="min-height: 0px !important; margin-bottom: 0px !important;">
+                            <b>Aviso:</b><br />Acesso não autorizado, credenciais inválidas.
+                        </div>
+                    </div>
+                    <div class="row" style="min-height: 10px !important; margin-top: 0; padding-top: 0;">
+                        <div class="form-group" style="margin: 0 20px 0 10px !important; min-height: 10px !important;">
+                            <button type="submit" class="btn btn-primary mt-3">Entrar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/validates_me.js"></script>
+
+    <script src="~/Scripts/jquery.mask.js"></script>
+
+    <script>
+        NProgress.start();
+    </script>
+</body>
+</html>

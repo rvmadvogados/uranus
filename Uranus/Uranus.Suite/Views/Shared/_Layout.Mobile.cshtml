@@ -1,0 +1,799 @@
+﻿<!DOCTYPE html>
+
+@using Uranus.Business;
+@using Uranus.Suite.App_Code;
+
+<html>
+<head>
+    <title>Agenda RVM Advogados</title>
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/Content/CSS/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/fonts/CSS/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/CSS/animate.min.css" rel="stylesheet">
+
+    <!-- Custom styling plus plugins -->
+    <link href="~/Content/CSS/custom.css" rel="stylesheet">
+    <link href="~/Content/CSS/maps/jquery-jvectormap-2.0.1.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/CSS/icheck/flat/yellow.css" rel="stylesheet" />
+    <link href="~/Content/CSS/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet">
+    <link href="~/Content/CSS/floatexamples.css" rel="stylesheet" type="text/css" />
+
+
+    <link href="~/Content/CSS/datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="~/Content/CSS/calendar/fullcalendar.css" rel="stylesheet">
+    <link href="~/Content/CSS/fullcalendar.print.css" rel="stylesheet" media="print">
+
+    <!-- select2 -->
+    <link href="~/Content/CSS/select/select2.min.css" rel="stylesheet">
+
+    <!-- password -->
+    <link href="~/Content/CSS/password.css" rel="stylesheet" type="text/css" />
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <!-- chart -->
+    <script src="~/Scripts/chartjs/chart.min.js"></script>
+
+    <!-- moris -->
+    <script src="~/Scripts/moris/raphael-min.js"></script>
+    <script src="~/Scripts/moris/morris.min.js"></script>
+
+    <script src="~/Scripts/nprogress.js"></script>
+    <script>
+        NProgress.start();
+    </script>
+
+    <!--[if lt IE 9]>
+        <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+        <![endif]-->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <style type="text/css">
+        /* better progress bar styles for the bootstrap demo */
+        .pass-strength-visible input.form-control,
+        input.form-control:focus {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .pass-strength-visible .pass-graybar,
+        .pass-strength-visible .pass-colorbar,
+        .form-control:focus + .pass-wrapper .pass-graybar,
+        .form-control:focus + .pass-wrapper .pass-colorbar {
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+    </style>
+
+</head>
+
+<body class="nav-md">
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">Mensagem do Sistema</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente sair do Sistema?</h4>
+                </div>
+                <div class="modal-footer">
+                    @Html.ActionLink("buttonOut", "DestroySession", "Login", "Sim", "margin: 0;", "btn btn-primary")
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="myModalMsg" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title">Mensagem do Sistema</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você está sem créditos disponíveis para realizar essa consulta!</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalMensagem" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="Atualizar();"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title"><label>Aviso</label></h3>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalMensagemResposta"></h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="Atualizar();">Ok</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container body">
+        <div class="main_container">
+            <!-- page content -->
+            <div class="right_col" role="main">
+                @RenderBody()
+            </div>
+            <!-- /page content -->
+        </div>
+    </div>
+
+    <div id="custom_notifications" class="custom-notifications dsp_none">
+        <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group"></ul>
+        <div class="clearfix"></div>
+        <div id="notif-group" class="tabbed_notifications"></div>
+    </div>
+
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/validates_me.js"></script>
+
+    <!-- gauge js -->
+    <script type="text/javascript" src="~/Scripts/gauge/gauge.min.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/gauge/gauge_demo.js"></script>*@
+    <!-- bootstrap progress js -->
+    <script src="~/Scripts/progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="~/Scripts/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- icheck -->
+    <script src="~/Scripts/icheck/icheck.min.js"></script>
+    <!-- daterangepicker -->
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/daterangepicker.js"></script>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script src="~/Scripts/custom.js"></script>
+    <script src="~/Scripts/calendar/fullcalendar.min.js"></script>
+    <!-- flot js -->
+    <!--[if lte IE 8]><script type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.orderBars.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.time.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/date.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.spline.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/curvedLines.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.resize.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/valida_cpf_cnpj.js"></script>
+
+    <script>
+
+        $("#ClienteCNPJ").mask("99.999.999/9999-99");
+        $("#ClienteCEP").mask("99999-999");
+        $("#ClienteTelefone").mask("(99) 9999-9999?9");
+
+        $("#ClienteCEP").keyup(function () {
+
+            if ($("#ClienteCEP").val().length == 9) {
+
+                $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + $("#ClienteCEP").val(), function () {
+
+                    if (resultadoCEP["tipo_logradouro"] != '') {
+
+                        if (resultadoCEP["resultado"]) {
+
+                            $("#ClienteLogradouro").val(unescape(resultadoCEP["logradouro"]));
+                            $("#ClienteBairro").val(unescape(resultadoCEP["bairro"]));
+                            $("#ClienteNumero").focus();
+
+                            $("#ClienteTipoLogradouro option").filter(function (index) {
+                                return $(this).text() == unescape(resultadoCEP["tipo_logradouro"]);
+                            }).attr('selected', 'selected');
+
+                            $("#ClienteEstado option").filter(function (index) {
+                                return $(this).val() == unescape(resultadoCEP["uf"]);
+                            }).attr('selected', 'selected');
+
+                            CarregarMunicipios(unescape(resultadoCEP["uf"]), unescape(resultadoCEP["cidade"]));
+                            //$("#ClienteMunicipio option").filter(function (index) {
+                            //    return $(this).text() == unescape(resultadoCEP["cidade"]);
+                            //}).attr('selected', 'selected');
+
+                        }
+                    }
+                });
+
+                $("#ClienteTipoLogradouro").prop('disabled', false);
+                $("#ClienteLogradouro").prop('disabled', false);
+                $("#ClienteNumero").prop('disabled', false);
+                $("#ClienteComplemento").prop('disabled', false);
+                $("#ClienteBairro").prop('disabled', false);
+                $("#ClienteMunicipio").prop('disabled', false);
+                $("#ClienteEstado").prop('disabled', false);
+            }
+            else {
+                $("#ClienteTipoLogradouro").prop('disabled', true);
+                $("#ClienteLogradouro").prop('disabled', true);
+                $("#ClienteNumero").prop('disabled', true);
+                $("#ClienteComplemento").prop('disabled', true);
+                $("#ClienteBairro").prop('disabled', true);
+                $("#ClienteMunicipio").prop('disabled', true);
+                $("#ClienteEstado").prop('disabled', true);
+            }
+
+        });
+
+    </script>
+
+    <!-- skycons -->
+    <script src="~/Scripts/skycons/skycons.js"></script>
+    <script>
+        var icons = new Skycons({
+            "color": "#73879C"
+        }),
+            list = [
+                "clear-day", "clear-night", "partly-cloudy-day",
+                "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+                "fog"
+            ],
+            i;
+
+        for (i = list.length; i--;)
+            icons.set(list[i], list[i]);
+
+        icons.play();
+    </script>
+
+    <!-- datepicker -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var cb = function (start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            var optionSet1 = {
+                startDate: moment().subtract(29, 'days'),
+                endDate: moment(),
+                minDate: '01/01/2012',
+                maxDate: '12/31/2015',
+                dateLimit: {
+                    days: 60
+                },
+                showDropdowns: true,
+                showWeekNumbers: true,
+                timePicker: false,
+                timePickerIncrement: 1,
+                timePicker12Hour: true,
+                ranges: {
+                    'Hoje': [moment(), moment()],
+                    'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Últimos 7 dias': [moment().subtract(6, 'days'), moment()],
+                    'Últimos 30 dias': [moment().subtract(29, 'days'), moment()],
+                    'Este mês': [moment().startOf('month'), moment().endOf('month')],
+                    'Mês passado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                opens: 'left',
+                buttonClasses: ['btn btn-default'],
+                applyClass: 'btn-small btn-primary',
+                cancelClass: 'btn-small',
+                format: 'MM/DD/YYYY',
+                separator: ' to ',
+                locale: {
+                    applyLabel: 'Enviar',
+                    cancelLabel: 'Limpar',
+                    fromLabel: 'De',
+                    toLabel: 'Para',
+                    customRangeLabel: 'Personalizadas',
+                    daysOfWeek: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    firstDay: 1
+                }
+            };
+            $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+            $('#reportrange').daterangepicker(optionSet1, cb);
+            $('#reportrange').on('show.daterangepicker', function () {
+                console.log("show event fired");
+            });
+            $('#reportrange').on('hide.daterangepicker', function () {
+                console.log("hide event fired");
+            });
+            $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
+                console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+            });
+            $('#reportrange').on('cancel.daterangepicker', function (ev, picker) {
+                console.log("cancel event fired");
+            });
+            $('#options1').click(function () {
+                $('#reportrange').data('daterangepicker').setOptions(optionSet1, cb);
+            });
+            $('#options2').click(function () {
+                $('#reportrange').data('daterangepicker').setOptions(optionSet2, cb);
+            });
+            $('#destroy').click(function () {
+                $('#reportrange').data('daterangepicker').remove();
+            });
+        });
+    </script>
+
+    <script src="~/Scripts/jquery.fullscreen-min.js" type="text/javascript"></script>
+
+    <!-- Datatables -->
+    <script src="~/Scripts/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/tools/js/dataTables.tableTools.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('input.tableflat').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+        });
+
+        var asInitVals = new Array();
+    </script>
+
+    <!-- /datepicker -->
+    <!-- /footer content -->
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <!-- password -->
+    <script src="~/Scripts/emojione.min.js"></script>
+    <script src="~/Scripts/password.js"></script>
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function ($) {
+
+            // Linked to username input
+            $('#SenhaAux').password({
+                username: '#username',
+                showPercent: true
+            });
+
+            // Custom events (enables button on certain score)
+            // Check the readme for a detailed list of events
+            $('#submit').attr('disabled', true);
+            $('#events').password().on('password.score', function (e, score) {
+                if (score > 75) {
+                    $('#submit').removeAttr('disabled');
+                } else {
+                    $('#submit').attr('disabled', true);
+                }
+            });
+        });
+
+        $('#buttonEnviarEmails').click(function (evt) {
+
+            var options = {};
+            options.url = "/Agendas/EnviarSemanal"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Envio de E-mails das Agendas da Próxima Semana realizado sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else {
+
+                    $('#modalMensagemResposta').html(json.motivo);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+
+        });
+
+        $('#buttonAlterarSenha').click(function (evt) {
+
+            $("#senha-form").validate();
+
+            if ($('#senha-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", @Uranus.Suite.Sessao.Usuario.ID);
+                dados.append("SenhaAux", $("#SenhaAux").val());
+                dados.append("ConfirmaSenhaAux", $("#ConfirmaSenhaAux").val());
+
+                var options = {};
+                options.url = "/Usuarios/AlterarSenha"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Nova Senha salva com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $('#senha-form').trigger("reset");
+                        $('#events').password().trigger("reset");
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function pv(value) {
+
+            // 1,235.12
+            var val = value.replace(",", "").replace(".", ",");
+
+            return val;
+
+        }
+
+        function vp(value) {
+
+            // 1.235,12
+            var val = value.replace(".", "").replace(",", ".");
+
+            return val;
+
+        }
+
+        function mascaraValor(valor) {
+
+            valor = valor.toString().replace(/\D/g, "");
+            valor = valor.toString().replace(/(\d)(\d{14})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{11})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{8})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{5})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{2})$/, "$1,$2");
+
+            return valor
+        }
+
+        function randomPassword() {
+            var length = 10;
+            var chars = "abcdefghijklmnopqrstuvwxyz!#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890";
+            var pass = "";
+            for (var x = 0; x < length; x++) {
+                var i = Math.floor(Math.random() * chars.length);
+                pass += chars.charAt(i);
+            }
+            return pass;
+        }
+
+        $(document).ready(function () {
+            //Initialize tooltips
+            $('.nav-tabs > li a[title]').tooltip();
+
+            //Wizard
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+
+                var $target = $(e.target);
+
+                if ($target.parent().hasClass('disabled')) {
+                    return false;
+                }
+            });
+
+            $(".next-step").click(function (e) {
+
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                nextTab($active);
+
+            });
+            $(".prev-step").click(function (e) {
+
+                var $active = $('.wizard .nav-tabs li.active');
+                prevTab($active);
+
+            });
+        });
+
+        function nextTab(elem) {
+            $(elem).next().find('a[data-toggle="tab"]').click();
+        }
+
+        function prevTab(elem) {
+            $(elem).prev().find('a[data-toggle="tab"]').click();
+        }
+
+    </script>
+
+    <!-- Empresa Info -->
+    <script>
+
+        $("#EmpresaCNPJ").mask("99.999.999/9999-99");
+        $("#EmpresaCEP").mask("99999-999");
+        $("#EmpresaTelefone").mask("(99) 9999-9999?9");
+
+        $("#EmpresaCEP").keyup(function () {
+
+            if ($("#EmpresaCEP").val().length == 9) {
+
+                $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + $("#EmpresaCEP").val(), function () {
+
+                    if (resultadoCEP["tipo_logradouro"] != '') {
+
+                        if (resultadoCEP["resultado"]) {
+
+                            $('#EmpresaEstado').html($('#EmpresaEstado').html().replace('selected', ''));
+                            $("#EmpresaEstado option").filter(function (index) {
+                                return $(this).val() == unescape(resultadoCEP["uf"]);
+                            }).attr('selected', 'selected');
+
+                            CarregarInfoCidades(unescape(resultadoCEP["uf"]), unescape(resultadoCEP["cidade"]));
+
+                            $("#EmpresaLogradouro").val(unescape(resultadoCEP["tipo_logradouro"]) + " " + unescape(resultadoCEP["logradouro"]));
+                            $("#EmpresaBairro").val(unescape(resultadoCEP["bairro"]));
+                            $("#EmpresaNumero").focus();
+
+                        }
+                    }
+                });
+            }
+
+        });
+
+        function EmpresaAlterar() {
+            $("#empresa-info-form").validate().resetForm();
+
+            var options = {};
+            options.url = "/Empresa/Consultar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#EmpresaId').val(json.empresa[0].Id);
+
+                    CarregarInfoEstados(json.empresa[0].UF);
+                    CarregarInfoCidades(json.empresa[0].UF, json.empresa[0].Cidade)
+
+                    $('#EmpresaCNPJ').val(FormatNumber(json.empresa[0].CNPJ, '##.###.###/####-##'));
+                    $('#EmpresaRazao').val(json.empresa[0].Razao);
+                    $('#EmpresaCEP').val(FormatNumber(json.empresa[0].CEP, '#####-###'));
+                    $('#EmpresaLogradouro').val(json.empresa[0].Logradouro);
+                    $('#EmpresaNumero').val(json.empresa[0].Numero);
+                    $('#EmpresaComplemento').val(json.empresa[0].Complemento);
+                    $('#EmpresaBairro').val(json.empresa[0].Bairro);
+                    $('#EmpresaTelefone').val(FormatNumber(json.empresa[0].Telefone, '(##) ####-####'));
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarInfoEstados(UF) {
+
+            var options = {};
+            options.url = "/Estados/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.estados;
+
+                    $('#EmpresaEstado').html("");
+                    var select = $('#EmpresaEstado');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Estado")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (UF == rows[index].sigla) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarInfoCidades(UF, Cidade) {
+
+            var dados = new window.FormData();
+            dados.append("UF", UF);
+
+            var options = {};
+            options.url = "/Cidades/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.cidades;
+                    $('#EmpresaCidade').html("");
+                    var select = $('#EmpresaCidade');
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione a Cidade")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (Cidade == rows[index].cidade) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#EmpresaEstado').change(function (evt) {
+
+            CarregarInfoCidades($("#EmpresaEstado").val(), "");
+
+        });
+
+        $('#buttonInfoSalvar').click(function (evt) {
+
+            $("#empresa-info-form").validate();
+
+            if ($('#empresa-info-form').valid()) {
+
+                var dados = new window.FormData();
+
+                dados.append("Id", $("#EmpresaId").val());
+                dados.append("CNPJ", $("#EmpresaCNPJ").val());
+                dados.append("Razao", $("#EmpresaRazao").val());
+                dados.append("CEP", $("#EmpresaCEP").val());
+                dados.append("Logradouro", $("#EmpresaLogradouro").val());
+                dados.append("Numero", $("#EmpresaNumero").val());
+                dados.append("Complemento", $("#EmpresaComplemento").val());
+                dados.append("Bairro", $("#EmpresaBairro").val());
+                dados.append("Estado", $("#EmpresaEstado").val());
+                dados.append("Cidade", $("#EmpresaCidade").val());
+                dados.append("Telefone", $("#EmpresaTelefone").val());
+
+                var options = {};
+                options.url = "/Empresa/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').html('Informações salvas com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#empresa-info-form").validate().resetForm();
+
+                    } else {
+
+                        $('#modalMensagemResposta').text('Erro ao salvar os dados do Cliente, se o problema persistir entre em contado com o suporte!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function FormatNumber(value, pattern) {
+            var i = 0,
+                phone = value.toString();
+            return pattern.replace(/#/g, _ => phone[i++]);
+        }
+
+    </script>
+
+    <script>
+        NProgress.done();
+    </script>
+</body>
+</html>

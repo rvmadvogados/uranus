@@ -1,0 +1,793 @@
+﻿@{
+    ViewBag.Title = "Agendas em Massa";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="agendas-massa-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Nova Agenda em Massa</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class='col-md-3'>
+                                <div class="form-group">
+                                    <label class="titlefield">Data Início <span class="required">*</span></label>
+                                    <div id="DataInicio" name="DataInicio" class="input-group date" data-date-format="dd/mm/yyyy">
+                                        <input id="DataInicioValor" name="DataInicioValor" class="form-control" type="text" data-msg-required="Por favor, insira uma data de início." data-rule-required="true" readonly />
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-md-3'>
+                                <div class="form-group">
+                                    <label class="titlefield">Data Fim <span class="required">*</span></label>
+                                    <div id="DataFim" name="DataFim" class="input-group date" data-date-format="dd/mm/yyyy">
+                                        <input id="DataFimValor" name="DataFimValor" class="form-control" type="text" data-msg-required="Por favor, insira uma data de final." data-rule-required="true" readonly />
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-md-3'>
+                                <div class="form-group">
+                                    <label class="titlefield">Hora Início <span class="required">*</span></label>
+                                    <select id="HoraInicio" name="HoraInicio" class="form-control placeholder" data-msg-required="Por favor, selecione uma Hora de Início." data-rule-required="true">
+                                        <option value="">Selecione a Hora Inicial</option>
+                                        <option value="06:00">06:00</option>
+                                        <option value="07:00">07:00</option>
+                                        <option value="08:00">08:00</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                        <option value="19:00">19:00</option>
+                                        <option value="20:00">20:00</option>
+                                        <option value="21:00">21:00</option>
+                                        <option value="22:00">22:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class='col-md-3'>
+                                <div class="form-group">
+                                    <label class="titlefield">Hora Fim <span class="required">*</span></label>
+                                    <select id="HoraFim" name="HoraFim" class="form-control placeholder" data-msg-required="Por favor, selecione uma Hora de Fim." data-rule-required="true">
+                                        <option value="">Selecione a Hora Final</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Assunto <span class="required">*</span></label>
+                                    <select id="Assunto" name="Assunto" class="form-control placeholder" data-msg-required="Por favor, selecione um Assunto." data-rule-required="true">
+                                        <option value="">Selecione o Assunto</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Sede <span class="required">*</span></label>
+                                    <select id="Sede" name="Sede" class="form-control placeholder" data-msg-required="Por favor, selecione uma Sede." data-rule-required="true">
+                                        <option value="">Selecione a Sede</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Profissional <span class="required">*</span></label>
+                                    <select id="Profissional" name="Profissional" class="form-control placeholder" data-msg-required="Por favor, selecione o Profissional." data-rule-required="true">
+                                        <option value="">Selecione o Profissional</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="titlefield">Incluir Intervalo de Almoço?</label>
+                                <br />
+                                <div class="radio-item">
+                                    <input type="radio" id="IntervaloSim" name="Intervalo" value="S" checked>
+                                    <label for="IntervaloSim">Sim</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="IntervaloNao" name="Intervalo" value="N">
+                                    <label for="IntervaloNao">Não</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Descrição <span class="red">(Limite de 250 caracteres)</span> <span id="DescriptionRequired" class="required hidden">*</span></label>
+                                    <textarea class="form-control" style="height: 55px;" id="Descricao" name="Descricao" maxlength="250" data-msg-required="Por favor, informe uma Descrição." data-rule-required="false"></textarea>
+                                    <label id="DescriptionError" for="Descricao" class="error hidden">Por favor, informe uma Descrição.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalVisualizar" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title">Visualizar Agenda em Massa</h3>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped responsive-utilities jambo_table">
+                        <thead>
+                            <tr class="headings">
+                                <th>Data </th>
+                                <th>Hora </th>
+                                <th>Sede </th>
+                                @*<th>Sala </th>*@
+                                <th>Profissional </th>
+                                <th>Status </th>
+                            </tr>
+                        </thead>
+                        <tbody id="historico">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Agenda em Massa</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir essa Agenda em Massa?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar Agendas em Massa</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            @using (Html.BeginForm("Index", "AgendasEmMassa", FormMethod.Get, new { id = "agendas-em-massa-filtro-form" }))
+                                            {
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Sede</label><br />
+                                                        <select id="FiltrarSede" name="FiltrarSede" class="select2_single form-control" style="height: 40px !important; width: 100% !important;"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Profissional</label><br />
+                                                        <select id="FiltrarProfissional" name="FiltrarProfissional" class="select2_single form-control" style="height: 40px !important; width: 100% !important;"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Período</label>
+                                                        <div class="input-group date" style="margin: 0 !important;">
+                                                            <input id="FiltrarPeriodo" name="FiltrarPeriodo" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarPeriodo" readonly />
+                                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("DataInicio", header: "Data Início"),
+                                     grid.Column("DataFim", header: "Data Fim"),
+                                     grid.Column("HoraInicio", header: "Hora Início"),
+                                     grid.Column("HoraFim", header: "Hora Fim"),
+                                     grid.Column("AgendasTipos.Nome", header: "Assunto"),
+                                     grid.Column("Sedes.Nome", header: "Sede"),
+                                     grid.Column("Profissionais.Pessoas.Nome", header: "Profissional"),
+                                     grid.Column("Intervalo", header: "Intervalo", format: (item) => new HtmlString((item["Intervalo"] ? "Sim" : "Não"))),
+                                     grid.Column("Criadas", header: "Criadas", format: (item) => new  HtmlString(String.Format("{0} / {1}", item.Criadas.ToString().PadLeft(3, '0'), Uranus.Common.Util.SearchforPossibleSchedulesCreated(item.DataInicio, item.DataFim, item.HoraInicio, item.HoraFim, item.Intervalo).ToString().PadLeft(3, '0')))),
+                                     grid.Column("ID", header: "Ações", canSort:false,
+                                     format:
+                    @<text>
+                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalVisualizar' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.DataInicio.ToString() + '"' + ");'>Excluir</a>")
+                    </text>)
+});
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <!-- mask -->
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+    <script>
+
+        $('#FiltrarPeriodo').daterangepicker();
+
+        $('input[name="FiltrarPeriodo"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="FiltrarPeriodo"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        CarregarSedes();
+        CarregarProfissionais("");
+
+        function CarregarTiposAgendas() {
+            var options = {};
+            options.url = "/TiposAgendas/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.tipos;
+                    $('#Assunto').html("");
+                    var select = $('#Assunto');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Assunto")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#FiltrarSede').html("");
+                    var select = $('#FiltrarSede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarSede').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSede)));
+                    $('#FiltrarSede').trigger('change');
+
+
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#Sede').change(function (evt) {
+
+            CarregarSalas($("#Sede").val(), "");
+
+        });
+
+        function CarregarSalas(IdSede, IdSala) {
+
+            var dados = new window.FormData();
+            dados.append("IdSede", IdSede);
+
+            var options = {};
+            options.url = "/Salas/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.salas;
+                    $('#Sala').html("");
+                    var select = $('#Sala');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sala")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (IdSala == rows[index].Id) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].Id).html(rows[index].Nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarProfissionais(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#FiltrarProfissional').html("");
+                    var select = $('#FiltrarProfissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProfissional').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProfissional)));
+                    $('#FiltrarProfissional').trigger('change');
+
+                    $('#Profissional').html("");
+                    var select = $('#Profissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Novo() {
+            $('#modalLabelTitle').text('Nova Agenda em Massa');
+
+            $("#DataFim").datepicker({
+                format: 'dd/mm/yyyy',
+                language: 'pt-BR',
+                autoclose: true,
+                todayHighlight: true,
+                orientation: "bottom",
+                daysOfWeekDisabled: [0, 6],
+                startDate: new Date().addDays(1),
+                clearBtn: true,
+                datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+            }).datepicker('update', new Date().addDays(1));
+
+            $("#DataInicio").datepicker({
+                format: 'dd/mm/yyyy',
+                language: 'pt-BR',
+                autoclose: true,
+                todayHighlight: true,
+                orientation: "bottom",
+                daysOfWeekDisabled: [0, 6],
+                startDate: new Date().addDays(1),
+                clearBtn: true,
+                datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+            }).datepicker('update', new Date().addDays(1));
+
+            $("#DataInicio").change(function () {
+
+                $("#DataFim").datepicker("destroy");
+
+                $("#DataFim").datepicker({
+                    format: 'dd/mm/yyyy',
+                    language: 'pt-BR',
+                    autoclose: true,
+                    todayHighlight: true,
+                    orientation: "bottom",
+                    daysOfWeekDisabled: [0, 6],
+                    startDate: $("#DataInicioValor").val(),
+                    clearBtn: true,
+                    datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+                }).datepicker('update', $("#DataInicioValor").val());
+
+            });
+
+            $("#HoraInicio").change(function () {
+
+                $('#HoraFim').html("");
+                var select = $('#HoraFim');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione a Hora Final")
+                );
+
+                var index = ($('#HoraInicio option:selected').val().substring(0, $('#HoraInicio option:selected').val().indexOf(":")) - 5);
+
+                for (var i = 0; i < (18 - index); i++) {
+
+                    var hour = String('00' + ((index + i) + 5)).slice(-2) + ':00';
+
+                    select.append(
+                        $('<option' + (i == 0 ? ' selected' : '') + '></option>').val(hour).html(hour)
+                    );
+
+                }
+
+            });
+
+            CarregarTiposAgendas();
+            CarregarSedes();
+            CarregarProfissionais("");
+
+            $('#HoraInicio').val("");
+            $('#HoraFim').val("");
+            $('#Sala').html("");
+            var select = $('#Sala');
+            select.append(
+                $('<option selected disabled></option>').val("").html("Selecione a Sala")
+            );
+            $('input[name=Intervalo][value="S"]').prop('checked', true).trigger('change');
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#agendas-massa-form").validate().resetForm();
+        }
+
+        function Visualizar(Id) {
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/AgendasEmMassa/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var content = "";
+
+                    for (var i = 0; i < json.historico.length; i++) {
+
+                        content = content + "<tr>";
+                        content = content + "    <td class='" + (json.historico[i].IdAgenda != null ? 'green' : 'red') + "'>" + json.historico[i].Data + "</td>";
+                        content = content + "    <td class='" + (json.historico[i].IdAgenda != null ? 'green' : 'red') + "'>" + json.historico[i].Hora + "</td>";
+                        content = content + "    <td class='" + (json.historico[i].IdAgenda != null ? 'green' : 'red') + "'>" + json.historico[i].Sede + "</td>";
+                        //content = content + "    <td class='" + (json.historico[i].IdAgenda != null ? 'green' : 'red') + "'>" + json.historico[i].Sala + "</td>";
+                        content = content + "    <td class='" + (json.historico[i].IdAgenda != null ? 'green' : 'red') + "'>" + json.historico[i].Profissional + "</td>";
+                        content = content + "    <td class='" + (json.historico[i].IdAgenda != null ? 'green' : 'red') + "'>" + json.historico[i].Status + "</td>";
+                        content = content + "</tr>";
+
+                    }
+
+                    $('#historico').html(content);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir essa Agenda em Massa (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#agendas-massa-form").validate();
+
+            if ($('#agendas-massa-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("DataInicio", $("#DataInicioValor").val());
+                dados.append("DataFim", $("#DataFimValor").val());
+                dados.append("HoraInicio", $("#HoraInicio").val());
+                dados.append("HoraFim", $("#HoraFim").val());
+                dados.append("Assunto", $("#Assunto").val());
+                dados.append("Sede", $("#Sede").val());
+                dados.append("Profissional", $("#Profissional").val());
+                dados.append("Intervalo", $("input[type='radio'][name='Intervalo']:checked").val());
+                dados.append("SedeNome", $("#Sede option:selected").text());
+                dados.append("ProfissionalNome", $("#Profissional option:selected").text());
+                dados.append("MotivoConsulta", $("#Descricao").val());
+
+                var options = {};
+                options.url = "/AgendasEmMassa/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('h4').text('Agenda em Massa salva com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#agendas-massa-form").validate().resetForm();
+
+                    }
+                    else
+                    {
+
+                        if (json.codigo == '90') {
+
+                            $('h4').text('Já existe agendamento neste período para este profissional!');
+                            $('#modalMensagem').attr('data-backdrop', 'static');
+                            $('#modalMensagem').attr('data-keyboard', 'false');
+                            $('#modalMensagem').modal('show');
+                            $("#agendas-massa-form").validate().resetForm();
+
+                        }
+                        else {
+                            if (json.codigo == '80') {
+
+                                $('h4').text('Problema no agendamento em massa, favor contactar com o suporte!');
+                                $('#modalMensagem').attr('data-backdrop', 'static');
+                                $('#modalMensagem').attr('data-keyboard', 'false');
+                                $('#modalMensagem').modal('show');
+                                $("#agendas-massa-form").validate().resetForm();
+
+                            }
+
+                        }
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/AgendasEmMassa/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Agenda em Massa excluída com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#agendas-massa-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir a Agenda em Massa (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão da Agenda em Massa (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function LimparFiltro() {
+
+            $('#FiltrarSede').val("");
+            $('#FiltrarSede').trigger('change');
+            $('#FiltrarProfissional').val("");
+            $('#FiltrarProfissional').trigger('change');
+            $('#FiltrarPeriodo').val("");
+            
+            $('#agendas-em-massa-filtro-form').submit();
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../AgendasEmMassa');
+        }
+
+    </script>
+
+</div>

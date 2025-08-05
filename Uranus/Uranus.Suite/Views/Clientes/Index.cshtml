@@ -1,0 +1,3082 @@
+﻿@{
+    ViewBag.Title = "Cadastros";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idPessoa" name="idPessoa" value="">
+    <input type="hidden" id="vTelefone" name="vTelefone" value="">
+    <input type="hidden" id="vEmail" name="vEmail" value="">
+    <input type="hidden" id="titulo" name="titulo" value="">
+    <input type="hidden" id="vAlterar" name="vAlterar" value=0>
+
+    <style>
+
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+
+    </style>
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Cadastro</label></h3>
+                </div>
+                <div class="modal-body">
+                    <div id="Alerta" class="hidden">
+                        <div id="alertas"></div>
+                        <div class="modal-footer">
+                            <button id="buttonSalvarAlerta" type="button" class="btn btn-primary" style="margin: 0;" onclick="FecharAlerta();">Ok</button>
+                            <br />
+                            <label id='LabelAlertaFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente excluir esse(s) alerta(s)?&nbsp;&nbsp;&nbsp;</label><a id='acceptAlerta' class='btn btn-default btn-xs' style='display: none;' onclick='FecharAlertaSim()'>Sim</a><a id='go_backAlerta' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharAlertaNao()'>Não</a>
+                        </div>
+                    </div>
+                    <div id="Cadastro" class="hidden">
+                        <div class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Dados Pessoais</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="cliente-form">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">CPF/CNPJ <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o CPF ou CNPJ" id="CPFCNPJ" name="CPFCNPJ" onblur="ValidaCPFCNPJ();" data-mask-for-cpf-cnpj />
+                                            <label id="CPFCNPJValidate" name="CPFCNPJValidate" for="CPFCNPJ" class="error hidden"> Por favor, insira o CPF/CNPJ.</label>
+                                            <label id="CPFCNPJValidate2" name="CPFCNPJValidate2" for="CPFCNPJ" class="error2 hidden"> Por favor, insira o CPF/CNPJ.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome <span id="nomeRequired" class="required">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Informe o Nome do Cliente" id="Nome" name="Nome" />
+                                            <label id="NomeValidate" name="NomeValidate" for="Nome" class="error hidden"> Por favor, insira o Nome do Cliente.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="titlefield">Cliente <span id="clienteRequired" class="required">*</span></label>
+                                        <br />
+                                        <div class="radio-item">
+                                            <input type="radio" id="ClienteSim" name="Cliente" value="S">
+                                            <label for="ClienteSim">Sim</label>
+                                        </div>
+                                        <div class="radio-item">
+                                            <input type="radio" id="ClienteNao" name="Cliente" value="N">
+                                            <label for="ClienteNao">Não</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">RG</label>
+                                            <input type="text" class="form-control" placeholder="Informe o RG" id="RG" name="RG" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Profissão</label>
+                                            <input type="text" class="form-control" placeholder="Informe a Profissão do Cliente" id="Profissao" name="Profissao" maxlength="100" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nacionalidade</label>
+                                            <input type="text" class="form-control" placeholder="Informe a Nacionalidade do Cliente" id="Nacionalidade" name="Nacionalidade" maxlength="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data de Nascimento</label>
+                                            <input type="text" class="form-control" placeholder="Informe a Data de Nascimento" id="DataNascimento" name="DataNascimento" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Estado Civil</label>
+                                            <select id="EstadoCivil" name="EstadoCivil" class="form-control placeholder">
+                                                <option value="" style="background-color: #eaeaea;">Selecione o Estado Civil</option>
+                                                <option value="solteiro">solteiro</option>
+                                                <option value="solteira">solteira</option>
+                                                <option value="divorciado">divorciado</option>
+                                                <option value="divorciada">divorciada</option>
+                                                <option value="separado">separado</option>
+                                                <option value="separada">separada</option>
+                                                <option value="casado">casado</option>
+                                                <option value="casada">casada</option>
+                                                <option value="viúvo">viúvo</option>
+                                                <option value="viúva">viúva</option>
+                                                <option value="união estável">união estável</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome da Mãe</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Nome da Mãe" id="NomeMae" name="NomeMae" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">CEP <span class="required">*</span> </label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o CEP" id="CEP" name="CEP" onkeyup="BuscarCEP()" />
+                                            <label id="CEPValidate" name="CEPValidate" for="CEP" class="error hidden"> Por favor, insira o CEP.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Logradouro <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o Logradouro" id="Logradouro" name="Logradouro" />
+                                            <label id="LogradouroValidate" name="LogradouroValidate" for="Logradouro" class="error hidden"> Por favor, insira o nome do logradouro.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o Número" id="Numero" name="Numero" />
+                                            <label id="NumeroValidate" name="NumeroValidate" for="Numero" class="error hidden"> Por favor, insira o n&uacute;mero.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Complemento</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Complemento" id="Complemento" name="Complemento" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Bairro <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o Bairro" id="Bairro" name="Bairro" />
+                                            <label id="BairroValidate" name="BairroValidate" for="Bairro" class="error hidden"> Por favor, insira o nome do bairro.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Estado <span class="required">*</span></label>
+                                            <select id="Estado" name="Estado" class="form-control requireds"></select>
+                                            <label id="EstadoValidate" name="EstadoValidate" for="Estado" class="error hidden"> Por favor, selecione um estado.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Cidade <span class="required">*</span></label>
+                                            <select id="Cidade" name="Cidade" class="form-control requireds">
+                                                <option value="" style="background-color: #eaeaea;">Selecione a Cidade</option>
+                                            </select>
+                                            <label id="CidadeValidate" name="CidadeValidate" for="Cidade" class="error hidden"> Por favor, selecione uma cidade.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Unidade de Origem <span class="required">*</span></label>
+                                            <select id="Sede" name="Sede" class="form-control requireds">
+                                                <option value="" style="background-color: #eaeaea;">Selecione uma Sede</option>
+                                            </select>
+                                            <label id="SedeValidate" name="SedeValidate" for="Sede" class="error hidden"> Por favor, selecione uma sede.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Senha meu INSS </label>
+                                            <input type="text" class="form-control" placeholder="Informe a Senha do INSS" id="SenhaMeuINSS" name="SenhaMeuINSS" maxlength="30" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">LGPD</label>
+                                            <select id="LGPDAutorizado" name="LGPDAutorizado" class="form-control placeholder">
+                                                <option value="" style="background-color: #eaeaea;">Selecione o Status da LGPD</option>
+                                                <option value="Sem Retorno">Sem Retorno</option>
+                                                <option value="Autorizado">Autorizado</option>
+                                                <option value="Não Autorizado">Não Autorizado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="titlefield">Etiqueta <span id="etiquetaRequired" class="required">*</span></label>
+                                        <br />
+                                        <div class="radio-item">
+                                            <input type="radio" id="EtiquetaSim" name="Etiqueta" value="S">
+                                            <label for="EtiquetaSim">Sim</label>
+                                        </div>
+                                        <div class="radio-item">
+                                            <input type="radio" id="EtiquetaNao" name="Etiqueta" value="N">
+                                            <label for="EtiquetaNao">Não</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">PDF Autorização LGPD <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 4MB por arquivo)</label></label>
+                                            <div id="upload" class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#LGPDFileUpload').click();" />
+                                                <input type="file" id="LGPDFileUpload" name="LGPDUpload" accept="application/pdf" value="4194304" />
+                                                <span id="LGPDFileName" name="LGPDFileName" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Tipo de Indicação</label>
+                                            <input type="text" class="form-control " id="ClienteTipoIndicacao" name="ClienteTipoIndicacao" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="titlefield">Indicação Derivada</label><br />
+                                            <input type="text" class="form-control " id="ClienteNomeIndicacao" name="ClienteNomeIndicacao" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Observação Vínculo</label>
+                                            <input type="text" class="form-control" id="ClienteVinculo" name="ClienteVinculo" maxlength="100" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Indicação Originária</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Complemento" id="IndicacaoOriginaria" name="IndicacaoOriginaria" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="titlefield">Indicação Parceiro</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Complemento" id="IndicacaoProfissional" name="IndicacaoProfissional" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Observação <span class="red">(Limite de 250 caracteres)</span></label>
+                                            <textarea class="form-control" placeholder="Informe uma Observação" id="Observacao" name="Observacao" rows="3" maxlength="250"> </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Cadastro</label>
+                                                    <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Cadastro</label>
+                                                    <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Alteração</label>
+                                                    <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Alteração</label>
+                                                    <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                <div class="modal-footer">
+                                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharCliente();">Fechar</button>
+                                    <br />
+                                    <label id='LabelClienteFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptCliente' class='btn btn-default btn-xs' style='display: none;' onclick='FecharClienteSim()'>Sim</a><a id='go_backCliente' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharClienteNao()'>Não</a>
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadostelefonicos-alert-validate">
+                                    <strong>AVISO:</strong> É necessário incluir um telefone como principal para contato.
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadosemails-alert-validate">
+                                    <strong>AVISO:</strong> É necessário incluir um e-mail como principal para contato.
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <!-- Dados Telefônicos -->
+                        <div id="DadosTelefonicos" class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Lista de Telefones</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="cliente-dadostelefonicos-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="DadosTelefonicosAccordion" role="tablist" aria-multiselectable="true">
+                                    Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                </div>
+                                <div class="alert alert-success hidden" id="cliente-dadostelefonicos-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado de dados telefônicos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-success hidden" id="cliente-dadostelefonicos-alert-removed">
+                                    <strong>SUCESSO:</strong> Exclusão de dados telefônicos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadostelefonicos-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de dados telefônicos.
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadostelefonicos-alert-error2">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de dados telefônicos.
+                                </div>
+                                <div class="alert alert-warning hidden" id="cliente-dadostelefonicos-alert-warning">
+                                    <strong>ERRO:</strong> Esse telefone já está cadastrado para esse Cliente.
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Dados E-mails -->
+                        <div id="DadosEmails" class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Lista de E-mails</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="cliente-dadosemails-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="DadosEmailsAccordion" role="tablist" aria-multiselectable="true">
+                                    Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                </div>
+                                <div class="alert alert-success hidden" id="cliente-dadosemails-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado da lista de e-mails realizada com sucesso.
+                                </div>
+                                <div class="alert alert-success hidden" id="cliente-dadosemails-alert-removed">
+                                    <strong>SUCESSO:</strong> Exclusão da lista de e-mails realizada com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadosemails-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da lista de e-mails.
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadosemails-alert-error2">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão da lista de e-mails.
+                                </div>
+                                <div class="alert alert-warning hidden" id="cliente-dadosemails-alert-warning">
+                                    <strong>ERRO:</strong> Esse e-mail já está cadastrado para esse Cliente.
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalIndicacao" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Indicação</label></h3>
+                </div>
+                <div class="modal-body">
+                    <div id="ClienteIndicacao" class="hidden">
+                        <div class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Indicação</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="clienteindicacao-form">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Tipo de Indicação</label>
+                                            <select id="TipoIndicacao" name="TipoIndicacao" style="width: 100% !important;" class=" form-control placeholder">
+                                                <option value="" style="background-color: #eaeaea;">Selecione o Tipo </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label id="LabelIndicacao" class="titlefield ">Nome da Indicação</label><br />
+                                            <input type="text" class="form-control hidden" placeholder="Informe o Nome de quem Indicou" id="NomeIndicacao" name="NomeIndicacao" />
+                                            <select id="Parceiros" name="Parceiros" class="form-control placeholder hidden">
+                                                <option value="" style="background-color: #eaeaea;">Selecione o Parceiro</option>
+                                            </select>
+                                            <select id="Profissionais" name="Profissionais" class="form-control placeholder hidden">
+                                                <option value="" style="background-color: #eaeaea;">Selecione o Profissional</option>
+                                            </select>
+                                            <select id="Clientes" name="Clientes" class="select2_single form-control" style="width: 100% !important;">
+                                                <option value="" style="background-color: #eaeaea;">Selecione o Cliente</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Observação Vínculo</label>
+                                            <input type="text" class="form-control" placeholder="Informe um Vínculo" id="Vinculo" name="Vinculo" maxlength="100" />
+                                        </div>
+                                    </div>
+                                </div>
+                                @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Cadastro Indicação</label>
+                                                    <input type="text" class="form-control" id="DataCadastroIndicacao" name="DataCadastroIndicacao" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Cadastro Indicação</label>
+                                                    <input type="text" class="form-control" id="UsuarioCadastroIndicacao" name="UsuarioCadastroIndicacao" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Alteração Indicação</label>
+                                                    <input type="text" class="form-control" id="DataAlteracaoIndicacao" name="DataAlteracaoIndicacao" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Alteração Indicação</label>
+                                                    <input type="text" class="form-control" id="UsuarioAlteracaoIndicacao" name="UsuarioAlteracaoIndicacao" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                                <div class="modal-footer">
+                                    <button id="buttonSalvarIndicacao" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFecharIndicacao" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharIndicacao();">Fechar</button>
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadostelefonicos-alert-validate">
+                                    <strong>AVISO:</strong> É necessário incluir um telefone como principal para contato.
+                                </div>
+                                <div class="alert alert-danger hidden" id="cliente-dadosemails-alert-validate">
+                                    <strong>AVISO:</strong> É necessário incluir um e-mail como principal para contato.
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Cliente</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluirPergunta">Você deseja realmente excluir esse Cliente?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalNovoAlerta" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="alerta-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Alerta</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Mensagem de Alerta <span class="red">(Limite de 150 caracteres)</span><span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe uma Mensagem de Alerta" id="Mensagem" name="Mensagem" data-msg-required="Por favor, insira uma Mensagem de Alerta." data-rule-required="true" maxlength="150" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonInserirAlerta" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalVisualizarAlerta" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="alerta-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Alertas</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div id="alertas"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvarAlerta" type="button" class="btn btn-primary" style="margin: 0;" onclick="FecharAlerta();">Ok</button>
+                        <br />
+                        <label id='LabelAlertaFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente excluir esse(s) alerta(s)?&nbsp;&nbsp;&nbsp;</label><a id='acceptAlerta' class='btn btn-default btn-xs' style='display: none;' onclick='FecharAlertaSim()'>Sim</a><a id='go_backAlerta' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharAlertaNao()'>Não</a>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Cadastros</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        @using (Html.BeginForm("Index", "Clientes", FormMethod.Get, null))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome</label>
+                                                        <input id="FiltrarNome" name="FiltrarNome" type="FiltrarNome" class="form-control" placeholder="Informe o Nome" value="@ViewBag.FiltrarNome" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">CPF/CNPJ </label>
+                                                        <input id="FiltrarCpf" name="FiltrarCpf" type="FiltrarCpf" class="form-control" placeholder="Informe o CPF/CNPJ" value="@ViewBag.FiltrarCpf" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Telefone</label>
+                                                        <input id="FiltrarFone" name="FiltrarFone" type="FiltrarFone" class="form-control" placeholder="Informe o Telefone" value="@ViewBag.FiltrarFone" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">E-mail</label>
+                                                        <input id="FiltrarEmail" name="FiltrarEmail" type="FiltrarEmail" class="form-control" placeholder="Informe o E-mail" value="@ViewBag.FiltrarEmail" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Data Nascimento</label>
+                                                        <input id="FiltrarDataNascimento" name="FiltrarDataNascimento" type="FiltrarDataNascimento" class="form-control" placeholder="Informe a Data de Nascimento" value="@ViewBag.FiltrarDataNascimento" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <div class="form-group">
+                                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" data-backdrop="static" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarNome').val('');$('#FiltrarCpf').val('');$('#FiltrarFone').val('');$('#FiltrarEmail').val('');$('#FiltrarDataNascimento').val('');">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                    tableStyle: "webgrid",
+                                    fillEmptyRows: false,
+                                    headerStyle: "webgrid-header",
+                                    alternatingRowStyle: "webgrid-alternating-row",
+                                    rowStyle: "webgrid-row-style",
+                                    selectedRowStyle: "webgrid-selected-row",
+                                    footerStyle: "webgrid-footer",
+                                    mode: WebGridPagerModes.All,
+                                    firstText: "Primeiro",
+                                    previousText: "Anterior",
+                                    nextText: "Próximo",
+                                    lastText: "Último",
+                                    numericLinksCount: 5,
+                                    columns: new[] {
+                                        grid.Column("Nome", header: "Nome"),
+                                        grid.Column("Cpf", header: "CPF/CNPJ", format: (item) => new HtmlString(item.Cpf != null ? (item.Cpf.Length == 11 ? Uranus.Common.Util.FormatCPF(item.Cpf) : Uranus.Common.Util.FormatCNPJ(item.Cpf)) : string.Empty)),
+                                        grid.Column("Fones", header: "Telefones"),
+                                        grid.Column("ID", header: "Ações", canSort:false,
+                                        format:
+                    @<text>
+                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
+                        @Html.Raw("<a class='btn btn-info btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalNovoAlerta' onclick='NovoAlerta(" + item.IDPessoa + ");'>Alertar</a>")
+                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalIndicacao' data-backdrop='static' onclick='AlterarIndicacao(" + item.Id + ");'>Indicação</a>")
+                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                {
+                            @Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ", " + item.IDPessoa + ");'>Excluir</a>")
+                                                }
+                        }
+                    </text>)
+ });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/valida_cpf_cnpj.js"></script>
+
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/validates_me.js"></script>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+        $(window).load(function () {
+
+            $("#TipoIndicacao").select2({
+                placeholder: "Selecione o Tipo",
+                allowClear: true,
+                tags: true,
+                maximumSelectionLength: 100
+            });
+
+        });
+
+        //$(window).load(function () {
+
+        //    $("#Parceiros").select2({
+        //        placeholder: "Selecione o Parceiro",
+        //        allowClear: true,
+        //        tags: true,
+        //        maximumSelectionLength: 100
+        //    });
+
+        //});
+        //$(window).load(function () {
+
+        //    $("#Profissionais").select2({
+        //        placeholder: "Selecione o Profissional",
+        //        allowClear: true,
+        //        tags: true,
+        //        maximumSelectionLength: 100
+        //    });
+
+        //});
+
+        $('input[type=radio][name=Cliente]').change(function () {
+
+            $('.requireds').attr('data-rule-required', 'false');
+
+            if (this.value == 'S') {
+                $('.required').removeClass('hidden');
+            }
+            else if (this.value == 'N') {
+                $('.required').addClass("hidden");
+                $('#nomeRequired').removeClass('hidden');
+                $('#clienteRequired').removeClass('hidden');
+                $('#clienteRequired').removeClass('hidden');
+                $('#etiquetaRequired').removeClass('hidden');
+                $('#etiquetaRequired').removeClass('hidden');
+                $('#CPFCNPJValidate').addClass('hidden');
+                $('#CPFCNPJValidate2').addClass('hidden');
+                $('#CEPValidate').addClass('hidden');
+                $('#LogradouroValidate').addClass('hidden');
+                $('#NumeroValidate').addClass('hidden');
+                $('#BairroValidate').addClass('hidden');
+                $('#EstadoValidate').addClass('hidden');
+                $('#CidadeValidate').addClass('hidden');
+                $('#SedeValidate').addClass('hidden');
+            }
+
+        });
+
+        $('input[type=file]').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $(document).on('keydown', '[data-mask-for-cpf-cnpj]', function (e) {
+            var digit = e.key.replace(/\D/g, '');
+            var value = $(this).val().replace(/\D/g, '');
+            var size = value.concat(digit).length;
+            $(this).mask((size <= 11) ? '000.000.000-00' : '00.000.000/0000-00');
+        });
+
+        function BuscarCEP() {
+
+            if ($("#CEP").val().length == 9) {
+                jQuery.when(
+                    jQuery.getJSON("https://viacep.com.br/ws/" + $("#CEP").val() + "/json")
+                ).done(function (json) {
+                    CarregarEstados(json.uf);
+                    //$("#Estado").val(json.state);
+                    CarregarCidades(unescape(json.uf), unescape(json.localidade));
+
+                    $("#Logradouro").val(json.logradouro);
+                    $("#Bairro").val(json.bairro);
+
+                });
+
+            }
+        }
+
+        $("#RG").mask("99999999999999");
+        $("#DataNascimento").mask("99/99/9999");
+        $("#CEP").mask("99999-999");
+
+        function CarregarEstados(UF) {
+
+            var options = {};
+            options.url = "/Estados/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.estados;
+
+                    $('#Estado').html("");
+                    var select = $('#Estado');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Estado")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (UF == rows[index].sigla) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarCidades(UF, Cidade) {
+
+            var dados = new window.FormData();
+            dados.append("UF", UF);
+
+            var options = {};
+            options.url = "/Cidades/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    var rows = json.cidades;
+                    $('#Cidade').html("");
+                    var select = $('#Cidade');
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione a Cidade")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (Cidade == rows[index].cidade) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#Estado').change(function (evt) {
+
+            CarregarCidades($("#Estado").val(), "");
+
+        });
+
+        CarregarTiposIndicacoes();
+        CarregarParceiros();
+        CarregarProfissionais();
+        CarregarSedes();
+
+        function CarregarTiposIndicacoes() {
+
+            var options = {};
+            options.url = "/TiposIndicacoes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.indicacoes;
+
+                    $('#TipoIndicacao').html("");
+                    var select = $('#TipoIndicacao');
+
+                    select.append(
+                        $('<option selected disabled style="width: 100% !important;" style="background-color: #eaeaea;"></option>').val("").html("Selecione o Tipo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    }
+
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarParceiros() {
+
+            var options = {};
+            options.url = "/Parceiros/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.parceiros;
+
+                    $('#Parceiros').html("");
+                    var select = $('#Parceiros');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Parceiro")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    }
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarProfissionais() {
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+
+                    $('#Profissionais').html("");
+                    var select = $('#Profissionais');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Profissional")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    }
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/ListarClientes"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $("#Clientes").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $(document.body).on("change", "#TipoIndicacao", function () {
+
+            var dados = new window.FormData();
+            dados.append("Id", this.value);
+
+            var options = {};
+            options.url = "/TiposIndicacoes/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    @{
+                        var alterar = 0;
+
+                        if (Sessao.Usuario.Nivel == 5)
+                        {
+                            alterar = 1;
+                        }
+                    }
+
+                    if ($('#vAlterar').val() == 1) {
+                        ShowIndicacao(json.indicacao[0].Tipo, $('#vAlterar').val());
+                    }
+                    else {
+                        ShowIndicacao(json.indicacao[0].Tipo, @alterar);
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        });
+
+        function ShowIndicacao(Id, Alterar) {
+
+            if (Id == 1) {
+
+                // Outros
+                $("#LabelIndicacao").removeClass("hidden");
+                $("#NomeIndicacao").removeClass("hidden");
+                $("#Parceiros").addClass("hidden");
+                $("#Profissionais").addClass("hidden");
+                $("#Clientes").addClass("hidden");
+                $("#Clientes").next(".select2-container").hide();
+
+            } else if (Id == 2) {
+
+                // Parceiro
+                $("#LabelIndicacao").removeClass("hidden");
+                $("#NomeIndicacao").addClass("hidden");
+                $("#Parceiros").removeClass("hidden");
+                $("#Profissionais").addClass("hidden");
+                $("#Clientes").next(".select2-container").hide();
+
+            } else if (Id == 3) {
+
+                // Profissional
+                $("#LabelIndicacao").removeClass("hidden");
+                $("#NomeIndicacao").addClass("hidden");
+                $("#Parceiros").addClass("hidden");
+                $("#Profissionais").removeClass("hidden");
+                $("#Clientes").next(".select2-container").hide();
+
+            } else if (Id == 5) {
+
+                // Cliente
+                $("#LabelIndicacao").removeClass("hidden");
+                $("#NomeIndicacao").addClass("hidden");
+                $("#Parceiros").addClass("hidden");
+                $("#Profissionais").addClass("hidden");
+                $("#Clientes").next(".select2-container").show();
+
+
+            } else {
+
+                // FaceBook ou Site
+                $("#LabelIndicacao").addClass("hidden");
+                $("#NomeIndicacao").addClass("hidden");
+                $("#Parceiros").addClass("hidden");
+                $("#Profissionais").addClass("hidden");
+                $("#Clientes").next(".select2-container").hide();
+
+            }
+
+            if (Alterar == 1) {
+                $('#TipoIndicacao').attr('disabled', false);
+                $('#NomeIndicacao').attr('disabled', false);
+                $('#Parceiros').attr('disabled', false);
+                $('#Profissionais').attr('disabled', false);
+                $('#Clientes').attr('disabled', false);
+            }
+            else
+            {
+                $('#TipoIndicacao').attr('disabled', true);
+                $('#NomeIndicacao').attr('disabled', true);
+                $('#Parceiros').attr('disabled', true);
+                $('#Profissionais').attr('disabled', true);
+                $('#Clientes').attr('disabled', true);
+            }
+        }
+
+        //function ShowVinculo(Id ) {
+
+        //    if (Id == 2) {
+
+        //        // Parceiro
+        //        $("#LabelIndicacao").removeClass("hidden");
+        //        $("#VinculoParceiro").removeClass("hidden");
+        //        $("#Vinculo").addClass("hidden");
+
+
+
+        //    } else if (Id == 3) {
+
+        //        // Profissional
+        //        $("#LabelIndicacao").removeClass("hidden");
+        //        $("#VinculoParceiro").addClass("hidden");
+        //        $("#Vinculo").removeClass("hidden");
+
+        //    }
+        //}
+
+        function Novo() {
+            $('#vAlterar').val('1');
+            $('#modalLabelTitle').text('Novo Cliente');
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val('');
+            $('#CPFCNPJ').attr('disabled', false);
+            $('#CPFCNPJ').val('');
+            $('#RG').attr('disabled', false);
+            $('#RG').val('');
+            $('#Profissao').attr('disabled', false);
+            $('#Profissao').val('');
+            $('#Nacionalidade').attr('disabled', false);
+            $('#Nacionalidade').val('');
+            $('#DataNascimento').attr('disabled', false);
+            $('#DataNascimento').val('');
+            $('#EstadoCivil').attr('disabled', false);
+            $('#EstadoCivil').val('');
+            $('#NomeMae').attr('disabled', false);
+            $('#NomeMae').val('');
+            $('input[name=Cliente][value="S"]').attr('disabled', false);
+            $('input[name=Cliente][value="N"]').attr('disabled', false);
+            $('input[name=Cliente][value="S"]').prop('checked', true).trigger('change');
+            $('input[name=Etiqueta][value="S"]').attr('disabled', false);
+            $('input[name=Etiqueta][value="N"]').attr('disabled', false);
+            $('input[name=Etiqueta][value="S"]').prop('checked', true).trigger('change');
+            $('#CEP').attr('disabled', false);
+            $('#CEP').val('');
+            $('#Logradouro').attr('disabled', false);
+            $('#Logradouro').val('');
+            $('#Numero').attr('disabled', false);
+            $('#Numero').val('');
+            $('#Complemento').attr('disabled', false);
+            $('#Complemento').val('');
+            $('#Bairro').attr('disabled', false);
+            $('#Bairro').val('');
+            $('#Estado').attr('disabled', false);
+            $('#Estado').val('');
+            $('#Cidade').attr('disabled', false);
+            $('#Cidade').val('');
+            $('#SenhaMeuINSS').attr('disabled', false);
+            $('#SenhaMeuINSS').val('');
+            $('#LGPDAutorizado').attr('disabled', false);
+            $('#LGPDAutorizado').val('');
+            $('#Sede').attr('disabled', false);
+            $('#Sede').val('');
+            $('#Vinculo').attr('disabled', false);
+            $('#Vinculo').val('');
+            //$('#TipoIndicacao').attr('disabled', false);
+            //$('#TipoIndicacao').val('');
+            //$('#NomeIndicacao').attr('disabled', false);
+            //$('#NomeIndicacao').val('');
+            $('#ClienteParceiros').attr('disabled', false);
+            //$('#Profissionais').attr('disabled', false);
+            //$('#Clientes').attr('disabled', false);
+            $('#Etiqueta').attr('disabled', false);
+            $('#Observacao').attr('disabled', false);
+            $('#Observacao').val('');
+            $('#ClienteVinculo').attr('disabled', false);
+            $('#ClienteVinculo').val('');
+            $('#ClienteTipoIndicacao').attr('disabled', false);
+            $('#ClienteTipoIndicacao').val('');
+            $('#ClienteNomeIndicacao').attr('disabled', false);
+            $('#ClienteNomeIndicacao').val('');
+            $('#ClienteParceiros').attr('disabled', false);
+
+            //$("#LabelIndicacao").addClass("hidden");
+            //$("#NomeIndicacao").addClass("hidden");
+            //$("#Parceiros").addClass("hidden");
+            //$("#Profissionais").addClass("hidden");
+            //$("#Clientes").addClass("hidden");
+
+            $('#DataCadastro').val('');
+            $('#UsuarioCadastro').val('');
+            $('#DataAlteracao').val('');
+            $('#UsuarioAlteracao').val('');
+
+            $("#cliente-dadostelefonicos-alert-validate").addClass("hidden");
+            $("#cliente-dadosemails-alert-validate").addClass("hidden");
+
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $('#idPessoa').val(0);
+            $("#cliente-form").validate().resetForm();
+
+            $("#DadosTelefonicos").hide();
+            $("#DadosEmails").hide();
+
+            $('#upload').attr('disabled', false);
+            $('#LGPDFileName').html("Nenhum arquivo selecionado");
+
+            CarregarEstados("");
+
+            $('#Alerta').addClass('hidden');
+            $('#Cadastro').removeClass('hidden');
+
+        }
+
+        function Visualizar(Id) {
+            $('#modalLabelTitle').text('Visualizar Cliente');
+            $('#Nome').attr('disabled', true);
+            $('#CPFCNPJ').attr('disabled', true);
+            $('#RG').attr('disabled', true);
+            $('#Profissao').attr('disabled', true);
+            $('#Nacionalidade').attr('disabled', true);
+            $('#DataNascimento').attr('disabled', true);
+            $('#EstadoCivil').attr('disabled', true);
+            $('#NomeMae').attr('disabled', true);
+            $('#CEP').attr('disabled', true);
+            $('#Logradouro').attr('disabled', true);
+            $('#Numero').attr('disabled', true);
+            $('#Complemento').attr('disabled', true);
+            $('#Bairro').attr('disabled', true);
+            $('#Estado').attr('disabled', true);
+            $('#Cidade').attr('disabled', true);
+            $('#SenhaMeuINSS').attr('disabled', true);
+            $('#LGPDAutorizado').attr('disabled', true);
+            $('#Sede').attr('disabled', true);
+            $('#IndicacaoOriginaria').attr('disabled', true);
+            $('#IndicacaoProfissional').attr('disabled', true);
+            $('#Vinculo').attr('disabled', true);
+            $('#ClienteTipoIndicacao').attr('disabled', true);
+            $('input[name=Cliente][value="S"]').attr('disabled', true);
+            $('input[name=Cliente][value="N"]').attr('disabled', true);
+            $('input[name=Etiqueta][value="S"]').attr('disabled', true);
+            $('input[name=Etiqueta][value="N"]').attr('disabled', true);
+            $('#ClienteNomeIndicacao').attr('disabled', true);
+            //$('#Parceiros').attr('disabled', true);
+            //$('#Profissionais').attr('disabled', true);
+            //$('#Clientes').attr('disabled', true);
+            $('#IndicacaoOriginaria').val('');
+            $('#IndicacaoProfissional').val('');
+            $('#Vinculo').val('');
+            $('#Observacao').attr('disabled', true);
+            $('#buttonSalvar').attr('disabled', true);
+            $("#cliente-form").validate().resetForm();
+
+            $('#upload').attr('disabled', true);
+
+            $("#cliente-dadostelefonicos-alert-validate").addClass("hidden");
+            $("#cliente-dadosemails-alert-validate").addClass("hidden");
+
+            $("#DadosTelefonicos").show();
+            $("#DadosEmails").show();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Clientes/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    CarregarEstados(json.cliente[0].Estado);
+                    CarregarCidades(json.cliente[0].Estado, json.cliente[0].Cidade);
+                    $('#id').val(Id);
+                    $('#idPessoa').val(json.cliente[0].IdPessoa);
+                    $('#Nome').val(json.cliente[0].Nome);
+
+                    if (json.cliente[0].CPFCNPJ != null) {
+                        if (json.cliente[0].CPFCNPJ.length > 11) {
+                            $('#CPFCNPJ').val(FormatNumber(json.cliente[0].CPFCNPJ, '##.###.###/####-##'));
+                        }
+                        else {
+                            $('#CPFCNPJ').val(FormatNumber(json.cliente[0].CPFCNPJ, '###.###.###-##'));
+                        }
+                    }
+
+                    $('#RG').val(json.cliente[0].RG);
+                    $('#Profissao').val(json.cliente[0].Profissao);
+                    $('#Nacionalidade').val(json.cliente[0].Nacionalidade);
+                    $('#CEP').val(FormatNumber(json.cliente[0].CEP, '#####-###'));
+                    $('#Logradouro').val(json.cliente[0].Logradouro);
+                    $('#Numero').val(json.cliente[0].Numero);
+                    $('#Complemento').val(json.cliente[0].Complemento);
+                    $('#Bairro').val(json.cliente[0].Bairro);
+                    $('#DataNascimento').val(json.cliente[0].DataNascimento);
+                    $('#EstadoCivil').val(json.cliente[0].EstadoCivil);
+
+                    var cliente = "N"
+                    if (json.cliente[0].Cliente) {
+                        cliente = "S"
+                    }
+
+                    $('input[name=Cliente][value="' + cliente + '"]').prop('checked', true).trigger('change');
+
+                    var etiqueta = "N"
+                    if (json.cliente[0].Etiqueta) {
+                        etiqueta = "S"
+                    }
+
+                    $('input[name=Etiqueta][value="' + etiqueta + '"]').prop('checked', true).trigger('change');
+
+                    $('#NomeMae').val(json.cliente[0].NomeMae);
+                    $('#SenhaMeuINSS').val(json.cliente[0].SenhaMeuINSS);
+                    $('#LGPDAutorizado').val(json.cliente[0].LGPDAutorizado);
+                    $('#Sede').val(json.cliente[0].Sede);
+                    $('#ClienteVinculo').val(json.cliente[0].Indicacao);
+                    //$('#ClienteTipoIndicacao').val(json.cliente[0].TipoIndicacaoNome);
+
+                    $('#ClienteVinculo').val(json.cliente[0].Vinculo);
+
+                    if (json.cliente[0].TipoIndicacaoNome != null) {
+                        $('#ClienteTipoIndicacao').val(json.cliente[0].TipoIndicacaoNome);
+                    }
+                    else {
+                        $('#ClienteTipoIndicacao').val("");
+                    }
+
+                    if (json.cliente[0].Tipo == 1) {
+                        $('#ClienteNomeIndicacao').val(json.cliente[0].Indicacao);
+                    }
+                    else {
+                        if (json.cliente[0].Tipo == 2) {
+                            $('#ClienteNomeIndicacao').val(json.cliente[0].ParceiroNome);
+                        }
+                        else {
+                            if (json.cliente[0].Tipo == 3) {
+                                $('#ClienteNomeIndicacao').val(json.cliente[0].ProfissionalNome);
+                            }
+                            else {
+                                if (json.cliente[0].Tipo == 5) {
+                                    $('#ClienteNomeIndicacao').val(json.cliente[0].ClienteNome);
+                                }
+                                else {
+                                    $('#ClienteNomeIndicacao').val("");
+                                }
+
+                            }
+                        }
+                    }
+
+                    $('#IndicacaoOriginaria').val("");
+                    $('#IndicacaoProfissional').val("");
+                    if (json.cliente[0].VinculoProfissionalNome != null) {
+                        $('#IndicacaoOriginaria').val(json.cliente[0].VinculoProfissionalNome);
+                    }
+
+                    if (json.cliente[0].VinculoParceiroNome != null) {
+                        $('#IndicacaoProfissional').val(json.cliente[0].VinculoParceiroNome);
+                    }
+
+                    //$('#Parceiros').val(json.cliente[0].Parceiro);
+                    //$('#Profissionais').val(json.cliente[0].Profissional);
+                    $('#Observacao').val(json.cliente[0].Observacao);
+
+                    $('#DataCadastro').val(json.cliente[0].DataCadastro);
+                    $('#UsuarioCadastro').val(json.cliente[0].UsuarioCadastro);
+                    $('#DataAlteracao').val(json.cliente[0].DataAlteracao);
+                    $('#UsuarioAlteracao').val(json.cliente[0].UsuarioAlteracao);
+
+                    ShowDadosTelefonicos("Visualizar");
+                    ShowDadosEmails("Visualizar");
+
+                    $('#Clientes').append($('<option selected></option>').val(json.cliente[0].IdCliente).html(json.cliente[0].ClienteNome));
+                    $('#Clientes').trigger('change');
+                    $('#Clientes').val(json.cliente[0].Cliente);
+
+                    //ShowIndicacao(json.cliente[0].Tipo, 0);
+
+                    //var vinculo = 0;
+                    //if (json.cliente[0].IdVinculoParceiro != null) {
+                    //    vinculo = 2;
+                    //    $('#VinculoParceiro').val(json.cliente[0].VinculoParceiroNome);
+
+                    //}
+                    //else {
+                    //    if (json.cliente[0].IdVinculo != null) {
+                    //        vinculo = 3;
+                    //        $('#Vinculo').val(json.cliente[0].VinculoProfissionalNome);
+                    //    }
+                    //}
+                    //ShowVinculo(vinculo);
+
+                    $('#LGPDFileName').html(json.arquivo);
+
+                    VisualizarAlerta(json.cliente[0].IdPessoa, 'Visualizar Cliente');
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+            $('#modalLabelTitle').text('Alterar Cliente');
+            $('#Nome').attr('disabled', false);
+            $('#CPFCNPJ').attr('disabled', false);
+            $('#RG').attr('disabled', false);
+            $('#Profissao').attr('disabled', false);
+            $('#Nacionalidade').attr('disabled', false);
+            $('#DataNascimento').attr('disabled', false);
+            $('#EstadoCivil').attr('disabled', false);
+            $('#NomeMae').attr('disabled', false);
+            $('#CEP').attr('disabled', false);
+            $('#Logradouro').attr('disabled', false);
+            $('#Numero').attr('disabled', false);
+            $('#Complemento').attr('disabled', false);
+            $('#Bairro').attr('disabled', false);
+            $('#Estado').attr('disabled', false);
+            $('#Cidade').attr('disabled', false);
+            $('input[name=Cliente][value="S"]').attr('disabled', false);
+            $('input[name=Cliente][value="N"]').attr('disabled', false);
+            $('input[name=Etiqueta][value="S"]').attr('disabled', false);
+            $('input[name=Etiqueta][value="N"]').attr('disabled', false);
+
+            $('#LGPDAutorizado').attr('disabled', false);
+            $('#SenhaMeuINSS').attr('disabled', false);
+            $('#Sede').attr('disabled', false);
+            $('#Vinculo').attr('disabled', false);
+            $('#ClienteTipoIndicacao').attr('disabled', false);
+            $('#ClienteTipoIndicacao').val('');
+            $('#ClienteNomeIndicacao').attr('disabled', false);
+            $('#ClienteNomeIndicacao').val('');
+            $('#Observacao').attr('disabled', false);
+            $('#IndicacaoOriginaria').val('');
+            $('#Vinculo').val('');
+
+
+            $('#buttonSalvar').attr('disabled', false);
+            $("#cliente-form").validate().resetForm();
+
+            $('#upload').attr('disabled', false);
+
+            $("#cliente-dadostelefonicos-alert-validate").addClass("hidden");
+            $("#cliente-dadosemails-alert-validate").addClass("hidden");
+
+            $("#DadosTelefonicos").show();
+            $("#DadosEmails").show();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Clientes/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    CarregarEstados(json.cliente[0].Estado);
+                    CarregarCidades(json.cliente[0].Estado, json.cliente[0].Cidade);
+
+                    $('#id').val(Id);
+                    $('#idPessoa').val(json.cliente[0].IdPessoa);
+                    $('#Nome').val(json.cliente[0].Nome);
+
+                    if (json.cliente[0].CPFCNPJ != null) {
+                        if (json.cliente[0].CPFCNPJ.length > 11) {
+                            $('#CPFCNPJ').val(FormatNumber(json.cliente[0].CPFCNPJ, '##.###.###/####-##'));
+                        }
+                        else {
+                            $('#CPFCNPJ').val(FormatNumber(json.cliente[0].CPFCNPJ, '###.###.###-##'));
+                        }
+                    }
+
+                    $('#RG').val(json.cliente[0].RG);
+                    $('#Profissao').val(json.cliente[0].Profissao);
+                    $('#Nacionalidade').val(json.cliente[0].Nacionalidade);
+                    $('#CEP').val(FormatNumber(json.cliente[0].CEP, '#####-###'));
+                    $('#Logradouro').val(json.cliente[0].Logradouro);
+                    $('#Numero').val(json.cliente[0].Numero);
+                    $('#Complemento').val(json.cliente[0].Complemento);
+                    $('#Bairro').val(json.cliente[0].Bairro);
+
+                    var cliente = "N"
+                    if (json.cliente[0].Cliente) {
+                        cliente = "S"
+                    }
+
+                    $('input[name=Cliente][value="' + cliente + '"]').prop('checked', true).trigger('change');
+
+                    var etiqueta = "N"
+                    if (json.cliente[0].Etiqueta) {
+                        etiqueta = "S"
+                    }
+
+                    $('input[name=Etiqueta][value="' + etiqueta + '"]').prop('checked', true).trigger('change');
+
+                    $('#DataNascimento').val(json.cliente[0].DataNascimento);
+                    $('#EstadoCivil').val(json.cliente[0].EstadoCivil);
+                    $('#NomeMae').val(json.cliente[0].NomeMae);
+                    $('#SenhaMeuINSS').val(json.cliente[0].SenhaMeuINSS);
+                    $('#LGPDAutorizado').val(json.cliente[0].LGPDAutorizado);
+                    $('#Observacao').val(json.cliente[0].Observacao);
+                    $('#Sede').val(json.cliente[0].Sede);
+                    $('#Vinculo').val(json.cliente[0].Vinculo);
+
+                    $('#ClienteVinculo').val(json.cliente[0].Vinculo);
+
+                    if (json.cliente[0].TipoIndicacaoNome != null) {
+                        $('#ClienteTipoIndicacao').val(json.cliente[0].TipoIndicacaoNome);
+                    }
+                    else {
+                        $('#ClienteTipoIndicacao').val("");
+                    }
+                    if (json.cliente[0].Tipo == 1) {
+                        $('#ClienteNomeIndicacao').val(json.cliente[0].Indicacao);
+                    }
+                    else {
+                        if (json.cliente[0].Tipo == 2) {
+                            $('#ClienteNomeIndicacao').val(json.cliente[0].ParceiroNome);
+                        }
+                        else {
+                            if (json.cliente[0].Tipo == 3) {
+                                $('#ClienteNomeIndicacao').val(json.cliente[0].ProfissionalNome);
+                            }
+                            else {
+                                if (json.cliente[0].Tipo == 5) {
+                                    $('#ClienteNomeIndicacao').val(json.cliente[0].ClienteNome);
+                                }
+                                else {
+                                    $('#ClienteNomeIndicacao').val("");
+                                }
+                            }
+                        }
+                    }
+
+                    $('#IndicacaoOriginaria').val("");
+                    $('#IndicacaoProfissional').val("");
+                    if (json.cliente[0].VinculoProfissionalNome != null) {
+                        $('#IndicacaoOriginaria').val(json.cliente[0].VinculoProfissionalNome);
+                    }
+
+                    if (json.cliente[0].VinculoParceiroNome != null) {
+                        $('#IndicacaoProfissional').val(json.cliente[0].VinculoParceiroNome);
+                    }
+
+                    $('#DataCadastro').val(json.cliente[0].DataCadastro);
+                    $('#UsuarioCadastro').val(json.cliente[0].UsuarioCadastro);
+                    $('#DataAlteracao').val(json.cliente[0].DataAlteracao);
+                    $('#UsuarioAlteracao').val(json.cliente[0].UsuarioAlteracao);
+                    $('#Clientes').append($('<option selected></option>').val(json.cliente[0].IdCliente).html(json.cliente[0].ClienteNome));
+                    $('#Clientes').trigger('change');
+                    $('#Clientes').val(json.cliente[0].IdCliente);
+
+
+                    $('#vAlterar').val('0');
+
+                    if (json.cliente[0].Tipo == null) {
+                        $('#vAlterar').val('1');
+                    }
+
+                    @{
+                        alterar = 0;
+
+                        if (Sessao.Usuario.Nivel == 5)
+                        {
+                            alterar = 1;
+                        }
+                    }
+
+                    ShowDadosTelefonicos("Alterar");
+                    ShowDadosEmails("Alterar");
+
+
+                    //var vinculo = 0;
+                    //if (json.cliente[0].IdVinculoParceiro != null) {
+                    //    vinculo = 2;
+                    //    $('#VinculoParceiro').val(json.cliente[0].VinculoParceiroNome);
+
+                    //}
+                    //else {
+                    //    if (json.cliente[0].IdVinculo != null) {
+                    //        vinculo = 3;
+                    //        $('#Vinculo').val(json.cliente[0].VinculoProfissionalNome);
+                    //    }
+                    //}
+                    //ShowVinculo(vinculo);
+
+                    $('#LGPDFileName').html(json.arquivo);
+
+                    VisualizarAlerta(json.cliente[0].IdPessoa, 'Alterar Cliente');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function AlterarIndicacao(Id) {
+            $('#ClienteIndicacao').removeClass('hidden');
+
+            $('#modalLabelTitle').text('Indicação');
+            $('#Vinculo').attr('disabled', false);
+            $('#TipoIndicacao').attr('disabled', false);
+            $('#NomeIndicacao').attr('disabled', false);
+            $('#Parceiros').attr('disabled', false);
+            $('#Profissionais').attr('disabled', false);
+            $('#Clientes').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', false);
+            $("#clienteindicacao-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Clientes/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+
+                    $('#id').val(Id);
+
+                    $('#TipoIndicacao').append($('<option selected></option>').val(json.cliente[0].TipoIndicacao).html(json.cliente[0].TipoIndicacaoNome));
+                    $('#TipoIndicacao').trigger('change');
+                    $('#TipoIndicacao').val(json.cliente[0].TipoIndicacao);
+
+                    $('#Parceiros').append($('<option selected></option>').val(json.cliente[0].Parceiro).html(json.cliente[0].ParceiroNome));
+                    $('#Parceiros').trigger('change');
+                    $('#Parceiros').val(json.cliente[0].Parceiro);
+
+                    $('#Profissionais').append($('<option selected></option>').val(json.cliente[0].Profissional).html(json.cliente[0].ProfissionalNome));
+                    $('#Profissionais').trigger('change');
+                    $('#Profissionais').val(json.cliente[0].Profissional);
+
+                    $('#Clientes').append($('<option selected></option>').val(json.cliente[0].IdCliente).html(json.cliente[0].ClienteNome));
+                    $('#Clientes').trigger('change');
+                    $('#Clientes').val(json.cliente[0].IdCliente);
+
+                    $('#Vinculo').val(json.cliente[0].Vinculo);
+                    $('#NomeIndicacao').val(json.cliente[0].Indicacao);
+
+                    $('#DataCadastroIndicacao').val(json.cliente[0].DataCadastroIndicacao);
+                    $('#UsuarioCadastroIndicacao').val(json.cliente[0].UsuarioCadastroIndicacao);
+                    $('#DataAlteracaoIndicacao').val(json.cliente[0].DataAlteracaoIndicacao);
+                    $('#UsuarioAlteracaoIndicacao').val(json.cliente[0].UsuarioAlteracaoIndicacao);
+
+                    $('#vAlterar').val('0');
+
+                    @{
+                        var alterarindicacao = 0;
+                        if (Sessao.Usuario.Nivel == 5)
+                        {
+                            alterarindicacao = 1;
+                        }
+                    }
+
+                    if (json.cliente[0].TipoIndicacao == null) {
+                        $('#vAlterar').val('1');
+                    }
+
+                    if ($('#vAlterar').val() == 1) {
+                        ShowIndicacao(json.cliente[0].Tipo, $('#vAlterar').val());
+
+                    }
+                    else {
+                        ShowIndicacao(json.cliente[0].Tipo, @alterarindicacao);
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome, IdPessoa) {
+            $('#modalLabelExcluirPergunta').text('Você deseja realmente excluir esse Cliente (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+            $('#idPessoa').val(IdPessoa);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            var validate = true;
+            var clienteChecked = $("input[type='radio'][name='Cliente']:checked").val();
+
+            if ($('#Nome').val() == null || $('#Nome').val().length == 0) {
+                $('#NomeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NomeValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#CPFCNPJ').val() == null || $('#CPFCNPJ').val().length == 0)) {
+                $('#CPFCNPJValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else if (!valida_cpf_cnpj($("#CPFCNPJ").val()) && $("input[type='radio'][name='Cliente']:checked").val() == "S") {
+                if ($('#CPFCNPJ').val().length > 14) {
+                    $('#CPFCNPJValidate2').text('CNPJ informado não é válido.');
+                }
+                else {
+                    $('#CPFCNPJValidate2').text('CPF informado não é válido.');
+                }
+                $('#CPFCNPJValidate2').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#CPFCNPJValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#CEP').val() == null || $('#CEP').val().length == 0)) {
+                $('#CEPValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#CEPValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#Logradouro').val() == null || $('#Logradouro').val().length == 0)) {
+                $('#LogradouroValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#LogradouroValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#Numero').val() == null || $('#Numero').val().length == 0)) {
+                $('#NumeroValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NumeroValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#Bairro').val() == null || $('#Bairro').val().length == 0)) {
+                $('#BairroValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#BairroValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#Estado').val() == null || $('#Estado').val().length == 0)) {
+                $('#EstadoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EstadoValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#Cidade').val() == null || $('#Cidade').val().length == 0)) {
+                $('#CidadeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#CidadeValidate').addClass('hidden');
+            }
+
+            if (clienteChecked == "S" && ($('#Sede').val() == null || $('#Sede').val().length == 0)) {
+                $('#SedeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#SedeValidate').addClass('hidden');
+            }
+
+            if (validate) {
+
+                if ($("input[type='radio'][name='Cliente']:checked").val() == "S" || $('#CPFCNPJ').val().length > 0) {
+                    var dados = new window.FormData();
+                    dados.append("CPFCNPJ", $('#CPFCNPJ').val());
+                    dados.append("IdCliente", $("#id").val());
+
+                    var options = {};
+                    options.url = "/Clientes/ValidarCPFCNPJExistente"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.cache = false;
+                    options.complete = function (data) {
+                        var json = $.parseJSON(data.responseText);
+                        if (json.response == "success") {
+                            $('#CPFCNPJValidate2').addClass('hidden');
+
+                            $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                            var dados = new window.FormData();
+                            dados.append("Id", $("#id").val());
+                            dados.append("IdPessoa", $("#idPessoa").val());
+                            dados.append("Nome", $("#Nome").val());
+                            dados.append("CPFCNPJ", $("#CPFCNPJ").val());
+                            dados.append("RG", $("#RG").val());
+                            dados.append("Profissao", $("#Profissao").val());
+                            dados.append("Nacionalidade", $("#Nacionalidade").val());
+                            dados.append("CEP", $("#CEP").val());
+                            dados.append("Logradouro", $("#Logradouro").val());
+                            dados.append("Numero", $("#Numero").val());
+                            dados.append("Complemento", $("#Complemento").val());
+                            dados.append("Bairro", $("#Bairro").val());
+                            dados.append("Estado", $("#Estado").val());
+                            dados.append("Cidade", $("#Cidade").val());
+
+                            dados.append("Cliente", $("input[type='radio'][name='Cliente']:checked").val());
+                            dados.append("Etiqueta", $("input[type='radio'][name='Etiqueta']:checked").val());
+
+                            dados.append("DataNascimento", $("#DataNascimento").val());
+                            dados.append("EstadoCivil", $("#EstadoCivil").val());
+                            dados.append("NomeMae", $("#NomeMae").val());
+                            dados.append("SenhaMeuINSS", $("#SenhaMeuINSS").val());
+                            dados.append("LGPDAutorizado", $("#LGPDAutorizado").val());
+                            dados.append("IdSede", $("#Sede").val());
+                            dados.append("Vinculo", $("#Vinculo").val());
+                            dados.append("IdTipoIndicacao", $("#TipoIndicacao").val());
+                            dados.append("Indicacao", $("#NomeIndicacao").val());
+                            dados.append("IdParceiro", $("#Parceiros").val());
+                            dados.append("IdProfissional", $("#Profissionais").val());
+                            dados.append("IdCliente", $("#Clientes").val());
+                            dados.append("Observacao", $("#Observacao").val());
+
+                            var arquivo = document.getElementById("LGPDFileUpload").files[0];
+                            dados.append("LGPDArquivo", arquivo);
+
+                            var options = {};
+                            options.url = "/Clientes/Salvar"
+                            options.type = "POST";
+                            options.data = dados;
+                            options.asyn = true;
+                            options.contentType = false;
+                            options.processData = false;
+                            options.dataType = "application/json; charset=utf-8";
+                            options.cache = false;
+                            options.complete = function (data) {
+
+                                var json = $.parseJSON(data.responseText);
+
+                                if (json.codigo == '00') {
+
+                                    $("#id").val(json.id);
+                                    $("#idPessoa").val(json.idPessoa);
+
+                                    if ($("input[type='radio'][name='Cliente']:checked").val() == 'S') {
+                                        ValidarDadoTelefonicos(json.idPessoa);
+                                        ValidarDadoEmails(json.idPessoa);
+                                    }
+
+                                    $("#DadosTelefonicos").show();
+                                    $("#DadosEmails").show();
+
+                                    setTimeout(function () {
+                                        if ($("#vTelefone").val() == "success" || $("input[type='radio'][name='Cliente']:checked").val() == 'N') {
+                                            $("#buttonSalvar").html("Salvar");
+                                            $('#modalMensagemResposta').text('Cliente salvo com sucesso!');
+                                            $('#modalMensagem').attr('data-backdrop', 'static');
+                                            $('#modalMensagem').attr('data-keyboard', 'false');
+                                            $('#modalMensagem').modal('show');
+                                            $("#cliente-form").validate().resetForm();
+                                            $('#modalNovo').modal('hide');
+
+                                        }
+                                    }, 2000);
+
+                                }
+                            };
+                            $.ajax(options);
+
+                            evt.preventDefault();
+                        }
+                        else {
+                            if ($('#CPFCNPJ').val().length > 14) {
+                                $('#CPFCNPJValidate2').text('CNPJ informado já existe.');
+                            }
+                            else {
+                                $('#CPFCNPJValidate2').text('CPF informado já existe.');
+                            }
+                            $('#CPFCNPJValidate2').removeClass('hidden').css("display", "");
+                            return false;
+                        }
+                    };
+                    $.ajax(options);
+                }
+                else {
+                    $('#CPFCNPJValidate2').addClass('hidden');
+
+                    $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $("#id").val());
+                    dados.append("IdPessoa", $("#idPessoa").val());
+                    dados.append("Nome", $("#Nome").val());
+                    dados.append("CPFCNPJ", $("#CPFCNPJ").val());
+                    dados.append("RG", $("#RG").val());
+                    dados.append("Profissao", $("#Profissao").val());
+                    dados.append("Nacionalidade", $("#Nacionalidade").val());
+                    dados.append("CEP", $("#CEP").val());
+                    dados.append("Logradouro", $("#Logradouro").val());
+                    dados.append("Numero", $("#Numero").val());
+                    dados.append("Complemento", $("#Complemento").val());
+                    dados.append("Bairro", $("#Bairro").val());
+                    dados.append("Estado", $("#Estado").val());
+                    dados.append("Cidade", $("#Cidade").val());
+
+                    dados.append("Cliente", $("input[type='radio'][name='Cliente']:checked").val());
+                    dados.append("Etiqueta", $("input[type='radio'][name='Etiqueta']:checked").val());
+
+                    dados.append("DataNascimento", $("#DataNascimento").val());
+                    dados.append("EstadoCivil", $("#EstadoCivil").val());
+                    dados.append("NomeMae", $("#NomeMae").val());
+                    dados.append("SenhaMeuINSS", $("#SenhaMeuINSS").val());
+                    dados.append("LGPDAutorizado", $("#LGPDAutorizado").val());
+                    dados.append("IdSede", $("#Sede").val());
+                    dados.append("Vinculo", $("#Vinculo").val());
+                    dados.append("IdTipoIndicacao", $("#TipoIndicacao").val());
+                    dados.append("Indicacao", $("#NomeIndicacao").val());
+                    dados.append("IdParceiro", $("#Parceiros").val());
+                    dados.append("IdProfissional", $("#Profissionais").val());
+                    dados.append("IdCliente", $("#Clientes").val());
+                    dados.append("Observacao", $("#Observacao").val());
+
+                    var arquivo = document.getElementById("LGPDFileUpload").files[0];
+                    dados.append("LGPDArquivo", arquivo);
+
+                    var options = {};
+                    options.url = "/Clientes/Salvar"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.cache = false;
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.codigo == '00') {
+
+                            $("#id").val(json.id);
+                            $("#idPessoa").val(json.idPessoa);
+
+                            if ($("input[type='radio'][name='Cliente']:checked").val() == 'S') {
+                                ValidarDadoTelefonicos(json.idPessoa);
+                                ValidarDadoEmails(json.idPessoa);
+                            }
+
+                            $("#DadosTelefonicos").show();
+                            $("#DadosEmails").show();
+
+                            setTimeout(function () {
+                                if ($("#vTelefone").val() == "success" || $("input[type='radio'][name='Cliente']:checked").val() == 'N') {
+                                    $("#buttonSalvar").html("Salvar");
+                                    $('#modalMensagemResposta').text('Cliente salvo com sucesso!');
+                                    $('#modalMensagem').attr('data-backdrop', 'static');
+                                    $('#modalMensagem').attr('data-keyboard', 'false');
+                                    $('#modalMensagem').modal('show');
+                                    $("#cliente-form").validate().resetForm();
+                                    $('#modalNovo').modal('hide');
+
+                                }
+                            }, 2000);
+
+                        }
+                    };
+                    $.ajax(options);
+
+                    evt.preventDefault();
+                }
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonSalvarIndicacao').click(function (evt) {
+
+            $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+            var dados = new window.FormData();
+
+            dados.append("Id", $("#id").val());
+            dados.append("Vinculo", $("#Vinculo").val());
+            dados.append("IdTipoIndicacao", $("#TipoIndicacao").val());
+            dados.append("Indicacao", $("#NomeIndicacao").val());
+            dados.append("IdParceiro", $("#Parceiros").val());
+            dados.append("IdProfissional", $("#Profissionais").val());
+            dados.append("IdCliente", $("#Clientes").val());
+
+            var options = {};
+            options.url = "/Clientes/SalvarIndicacao"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.cache = false;
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.codigo == '00') {
+
+                            $("#id").val(json.id);
+                            setTimeout(function () {
+                                $("#buttonSalvarIndicacao").html("Salvar");
+                                $('#modalMensagemResposta').text('Indicação salvo com sucesso!');
+                                $('#modalMensagem').attr('data-backdrop', 'static');
+                                $('#modalMensagem').attr('data-keyboard', 'false');
+                                $('#modalMensagem').modal('show');
+                                $("#clienteindicacao-form").validate().resetForm();
+                                $('#modalIndicacao').modal('hide');
+
+                            }, 2000);
+
+                        }
+                    };
+                    $.ajax(options);
+
+                    evt.preventDefault();
+        });
+
+        function ValidarDadoTelefonicos(Id) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", Id);
+
+            var options = {};
+            options.url = "/Clientes/ValidarDadosTelefonicos"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.cache = false;
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                $("#buttonSalvar").html("Salvar");
+
+                if (json.response == "success") {
+
+                    $("#cliente-dadostelefonicos-alert-validate").addClass("hidden");
+                    $("#vTelefone").val("success");
+
+                }
+                else {
+
+                    $("#cliente-dadostelefonicos-alert-validate").removeClass("hidden");
+                    $("#vTelefone").val("");
+                    ShowDadosTelefonicos("Alterar");
+
+                    return false;
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ValidarDadoEmails(Id) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", Id);
+
+            var options = {};
+            options.url = "/Clientes/ValidarDadosEmails"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.cache = false;
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                $("#buttonSalvar").html("Salvar");
+
+                if (json.response == "success") {
+
+                    $("#cliente-dadosemails-alert-validate").addClass("hidden");
+                    $("#vEmail").val("success");
+
+                }
+                else {
+
+                    $("#vEmail").val("");
+                    ShowDadosEmails("Alterar");
+
+                    return false;
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#idPessoa").val());
+
+            $('#id').val('');
+            $('#idPessoal').val('');
+
+            var options = {};
+            options.url = "/Clientes/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Cliente excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#profissinal-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').html('Não foi possível excluir o Cliente (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.<br /><br />' + json.mensagens);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Cliente (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Clientes');
+        }
+
+        function ShowDadosTelefonicos(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Clientes/CarregarDadosTelefonicos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosTelefonicosAccordion').html(json.telefones);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#ClienteDadoTelefonico" + i + "Numero").attr('disabled', true);
+                            $("#ClienteDadoTelefonico" + i + "Ramal").attr('disabled', true);
+                            $("#ClienteDadoTelefonico" + i + "TipoAparelho").attr('disabled', true);
+                            $("#ClienteDadoTelefonico" + i + "TipoLinha").attr('disabled', true);
+                            $("#ClienteDadoTelefonico" + i + "Status").attr('disabled', true);
+                            $("#ClienteDadoTelefonico" + i + "Principal").attr('disabled', true);
+                            $("#ClienteDadoTelefonico" + i + "Observacao").attr('disabled', true);
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").hide();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").hide();
+                        }
+                        else {
+
+                            $("#ClienteDadoTelefonico" + i + "Numero").attr('disabled', false);
+                            $("#ClienteDadoTelefonico" + i + "Ramal").attr('disabled', false);
+                            $("#ClienteDadoTelefonico" + i + "TipoAparelho").attr('disabled', false);
+                            $("#ClienteDadoTelefonico" + i + "TipoLinha").attr('disabled', false);
+                            $("#ClienteDadoTelefonico" + i + "Status").attr('disabled', false);
+                            $("#ClienteDadoTelefonico" + i + "Principal").attr('disabled', false);
+                            $("#ClienteDadoTelefonico" + i + "Observacao").attr('disabled', false);
+
+                            $("#ClienteDadoTelefonico" + i + "Numero").mask("(99) 9999-9999?9");
+                            $("#ClienteDadoTelefonico" + i + "Ramal").mask("9999999999");
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").show();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoTelefonicoSalvar_Click(index) {
+
+            $("#cliente-dadostelefonicos-form").validate();
+
+            if ($('#cliente-dadostelefonicos-form').valid()) {
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Numero", $('#ClienteDadoTelefonico' + index + 'Numero').val());
+                dados.append("Ramal", $('#ClienteDadoTelefonico' + index + 'Ramal').val());
+                dados.append("TipoAparelho", $('#ClienteDadoTelefonico' + index + 'TipoAparelho').val());
+                dados.append("TipoLinha", $('#ClienteDadoTelefonico' + index + 'TipoLinha').val());
+                dados.append("Status", $('#ClienteDadoTelefonico' + index + 'Status').val());
+                dados.append("Principal", $('#ClienteDadoTelefonico' + index + 'Principal').val());
+                dados.append("Observacao", $('#ClienteDadoTelefonico' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Clientes/SalvarDadosTelefonicos";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#cliente-dadostelefonicos-alert-success").removeClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        ShowDadosTelefonicos("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#cliente-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#cliente-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error").removeClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#cliente-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#cliente-dadostelefonicos-alert-warning").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoTelefonicoExcluir_Click(index) {
+
+            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoTelefonico" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+
+                    var options = {};
+                    options.url = "/Clientes/ExcluirDadosTelefonicos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#cliente-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-removed").removeClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-error2").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-warning").addClass("hidden");
+
+                            ShowDadosTelefonicos("Alterar");
+                        }
+                        else {
+                            $("#cliente-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-removed").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-error2").removeClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#cliente-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-removed").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-error2").addClass("hidden");
+                            $("#cliente-dadostelefonicos-alert-warning").addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+        }
+
+        function ShowDadosEmails(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Clientes/CarregarDadosEmails";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosEmailsAccordion').html(json.emails);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#ClienteDadoEmail" + i + "Email").attr('disabled', true);
+                            $("#ClienteDadoEmail" + i + "Status").attr('disabled', true);
+                            $("#ClienteDadoEmail" + i + "Principal").attr('disabled', true);
+                            $("#ClienteDadoEmail" + i + "Observacao").attr('disabled', true);
+
+                            $("#ButtonDadoEmail" + i + "Incluir").hide();
+                            $("#ButtonDadoEmail" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#ClienteDadoEmail" + i + "Email").attr('disabled', false);
+                            $("#ClienteDadoEmail" + i + "Status").attr('disabled', false);
+                            $("#ClienteDadoEmail" + i + "Principal").attr('disabled', false);
+                            $("#ClienteDadoEmail" + i + "Observacao").attr('disabled', false);
+
+                            $("#ButtonDadoEmail" + i + "Incluir").show();
+                            $("#ButtonDadoEmail" + i + "Excluir").show();
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoEmailSalvar_Click(index) {
+
+            $("#cliente-dadosemails-form").validate();
+
+            if ($('#cliente-dadosemails-form').valid()) {
+
+                $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoEmail" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoEmail' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Email", $('#ClienteDadoEmail' + index + 'Email').val());
+                dados.append("Status", $('#ClienteDadoEmail' + index + 'Status').val());
+                dados.append("Principal", $('#ClienteDadoEmail' + index + 'Principal').val());
+                dados.append("Observacao", $('#ClienteDadoEmail' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Clientes/SalvarDadosEmails";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#cliente-dadosemails-alert-success").removeClass("hidden");
+                        $("#cliente-dadosemails-alert-error").addClass("hidden");
+                        $("#cliente-dadosemails-alert-removed").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error2").addClass("hidden");
+                        $("#cliente-dadosemails-alert-warning").addClass("hidden");
+
+                        ShowDadosEmails("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#cliente-dadosemails-alert-success").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error").addClass("hidden");
+                        $("#cliente-dadosemails-alert-removed").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error2").addClass("hidden");
+                        $("#cliente-dadosemails-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoEmail" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#cliente-dadosemails-alert-success").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error").removeClass("hidden");
+                        $("#cliente-dadosemails-alert-removed").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error2").addClass("hidden");
+                        $("#cliente-dadosemails-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoEmail" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#cliente-dadosemails-alert-success").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error").addClass("hidden");
+                        $("#cliente-dadosemails-alert-removed").addClass("hidden");
+                        $("#cliente-dadosemails-alert-error2").addClass("hidden");
+                        $("#cliente-dadosemails-alert-warning").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoEmailExcluir_Click(index) {
+
+            $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoEmail" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoEmail" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoEmail" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoEmail" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoEmail' + index).val());
+
+                    var options = {};
+                    options.url = "/Clientes/ExcluirDadosEmails";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#cliente-dadosemails-alert-success").addClass("hidden");
+                            $("#cliente-dadosemails-alert-error").addClass("hidden");
+                            $("#cliente-dadosemails-alert-removed").removeClass("hidden");
+                            $("#cliente-dadosemails-alert-error2").addClass("hidden");
+                            $("#cliente-dadosemails-alert-warning").addClass("hidden");
+
+                            ShowDadosEmails("Alterar");
+                        }
+                        else {
+                            $("#cliente-dadosemails-alert-success").addClass("hidden");
+                            $("#cliente-dadosemails-alert-error").addClass("hidden");
+                            $("#cliente-dadosemails-alert-removed").addClass("hidden");
+                            $("#cliente-dadosemails-alert-error2").removeClass("hidden");
+                            $("#cliente-dadosemails-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoEmail" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#cliente-dadosemails-alert-success").addClass("hidden");
+                            $("#cliente-dadosemails-alert-error").addClass("hidden");
+                            $("#cliente-dadosemails-alert-removed").addClass("hidden");
+                            $("#cliente-dadosemails-alert-error2").addClass("hidden");
+                            $("#cliente-dadosemails-alert-warning").addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoEmail" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoEmail" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        function VisualizarPDF(url) {
+
+            window.open(url, '_blank');
+
+        }
+
+        function ExcluirPDF() {
+
+            $("#ButtonClientePDFExcluir").attr('disabled', true);
+            $("#ButtonClientePDFExcluir").html("Apagando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelClienteFileExcluirConfirmacao").show();
+            $("#acceptFile").show();
+            $("#go_backFile").show();
+
+        }
+
+        function ExcluirPDFSim(nome) {
+
+            $("#LabelClienteFileExcluirConfirmacao").hide();
+            $("#acceptFile").hide();
+            $("#go_backFile").hide();
+
+            $("#ButtonClientePDFExcluir").text("Apagar");
+            $("#ButtonClientePDFExcluir").attr('disabled', false);
+
+            var dados = new window.FormData();
+            dados.append("Arquivo", nome);
+
+            var options = {};
+            options.url = "/Clientes/ExcluirPDF";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+                    $("#LGPDFileName").html("Nenhum arquivo encontrado");
+                }
+                else {
+                    $("#LGPDFileName").html("Falha ao tentar apagar o arquivo PDF");
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirPDFNao() {
+
+            $("#LabelClienteFileExcluirConfirmacao").hide();
+            $("#acceptFile").hide();
+            $("#go_backFile").hide();
+
+            $("#ButtonClientePDFExcluir").text("Apagar");
+            $("#ButtonClientePDFExcluir").attr('disabled', false);
+
+        }
+
+        function ValidaCPFCNPJ() {
+            if (!valida_cpf_cnpj($("#CPFCNPJ").val()) && $("input[type='radio'][name='Cliente']:checked").val() == "S") {
+
+                if ($('#CPFCNPJ').val().length > 14) {
+
+                    $('#CPFCNPJValidate2').text('CNPJ informado não é válido.');
+
+                }
+                else {
+
+                    $('#CPFCNPJValidate2').text('CPF informado não é válido.');
+
+                }
+
+                $('#CPFCNPJValidate2').removeClass('hidden').css("display", "");
+
+            } else {
+
+                if ($("input[type='radio'][name='Cliente']:checked").val() == "S") {
+                    var dados = new window.FormData();
+                    dados.append("CPFCNPJ", $('#CPFCNPJ').val());
+                    dados.append("IdCliente", $("#id").val());
+                    var options = {};
+                    options.url = "/Clientes/ValidarCPFCNPJExistente"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.cache = false;
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "success") {
+
+                            $('#CPFCNPJValidate2').addClass('hidden');
+
+                        }
+                        else {
+
+                            if ($('#CPFCNPJ').val().length > 14) {
+
+                                $('#CPFCNPJValidate2').text('CNPJ informado já existe.');
+
+                            }
+                            else {
+
+                                $('#CPFCNPJValidate2').text('CPF informado já existe.');
+
+                            }
+
+                            $('#CPFCNPJValidate2').removeClass('hidden').css("display", "");
+
+                        }
+
+                    };
+                    $.ajax(options);
+                }
+                else {
+
+                    $('#CPFCNPJValidate2').addClass('hidden');
+
+                }
+
+            }
+
+        }
+
+        function FecharCliente() {
+
+            if ($('#modalLabelTitle').text() == 'Visualizar Cliente') {
+                $('#modalNovo').modal('hide');
+            }
+            else {
+                $("#buttonFechar").attr('disabled', true);
+                $("#buttonFechar").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+                $("#LabelClienteFecharConfirmacao").show();
+                $("#acceptCliente").show();
+                $("#go_backCliente").show();
+            }
+
+        }
+
+        function FecharClienteSim() {
+
+            $("#LabelClienteFecharConfirmacao").hide();
+            $("#acceptCliente").hide();
+            $("#go_backCliente").hide();
+
+            $("#buttonFechar").text("Fechar");
+            $("#buttonFechar").attr('disabled', false);
+
+            $("#modalNovo").modal("hide");
+
+        }
+
+        function FecharClienteNao() {
+
+            $("#LabelClienteFecharConfirmacao").hide();
+            $("#acceptCliente").hide();
+            $("#go_backCliente").hide();
+
+            $("#buttonFechar").text("Fechar");
+            $("#buttonFechar").attr('disabled', false);
+
+        }
+
+        function FecharIndicacao() {
+
+              $('#modalIndicacao').modal('hide');
+        //    if ($('#modalLabelTitle').text() == 'Visualizar Cliente') {
+        //        $('#modalIndicacao').modal('hide');
+        //    }
+        //    else {
+        //        $("#buttonFecharIndicacao").attr('disabled', true);
+        //        $("#buttonFecharIndicacao").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+        //    }
+        }
+
+        function NovoAlerta(Id) {
+            $("#alerta-form").validate().resetForm();
+            $('#idPessoa').val(Id);
+            $("#Mensaqgem").val("");
+        }
+
+        function VisualizarAlerta(IdPessoa, Titulo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", IdPessoa);
+            dados.append("Tipo", "P");
+
+            var options = {};
+            options.url = "/Alertas/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00' && json.alertas.length > 0) {
+
+                    $('#alertas').html(json.alertas);
+
+                    $('#modalLabelTitle').text('Visualizar Alertas');
+                    $('#Alerta').removeClass('hidden');
+                    $('#Cadastro').addClass('hidden');
+
+                    $('#titulo').text(Titulo);
+                }
+                else {
+
+                    $('#modalLabelTitle').text(Titulo);
+                    $('#Alerta').addClass('hidden');
+                    $('#Cadastro').removeClass('hidden');
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#buttonInserirAlerta').click(function (evt) {
+
+            $("#alerta-form").validate();
+
+            if ($('#alerta-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("NumeroProcesso", "Cadastro");
+                dados.append("Mensagem", $("#Mensagem").val());
+
+                var options = {};
+                options.url = "/Alertas/Inserir"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $("#alerta-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function FecharAlerta() {
+
+            var searchIDs = $("input:checked[name='alertas[]']").map(function () {
+                return $(this).val();
+            });
+
+            var total = searchIDs.get().length;
+
+            if (total > 0) {
+
+                $("#buttonSalvarAlerta").attr('disabled', true);
+                $("#buttonSalvarAlerta").html("Ok <i class='fa fa-spinner fa-spin'></i>");
+
+                $("#LabelAlertaFecharConfirmacao").show();
+                $("#acceptAlerta").show();
+                $("#go_backAlerta").show();
+
+            }
+            else {
+
+                $('#modalLabelTitle').text($('#titulo').text());
+                $('#Alerta').addClass('hidden');
+                $('#Cadastro').removeClass('hidden');
+
+            }
+
+        }
+
+        function FecharAlertaSim() {
+
+            var searchIDs = $("input:checked[name='alertas[]']").map(function () {
+                return $(this).val();
+            });
+
+            var dados = new window.FormData();
+            dados.append("IdAlertas", searchIDs.get());
+
+            var options = {};
+            options.url = "/Alertas/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#LabelAlertaFecharConfirmacao").hide();
+                    $("#acceptAlerta").hide();
+                    $("#go_backAlerta").hide();
+
+                    $("#buttonSalvarAlerta").text("Ok");
+                    $("#buttonSalvarAlerta").attr('disabled', false);
+
+                    $('#Alerta').addClass('hidden');
+                    $('#Cadastro').removeClass('hidden');
+
+                    $('#modalLabelTitle').text($('#titulo').text());
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function FecharAlertaNao() {
+
+            $("#LabelAlertaFecharConfirmacao").hide();
+            $("#acceptAlerta").hide();
+            $("#go_backAlerta").hide();
+
+            $("#buttonSalvarAlerta").text("Ok");
+            $("#buttonSalvarAlerta").attr('disabled', false);
+
+        }
+
+    </script>
+
+</div>

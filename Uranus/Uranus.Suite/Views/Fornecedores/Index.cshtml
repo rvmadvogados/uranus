@@ -1,0 +1,1478 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Fornecedores Cadastrar";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalNovo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row" style="width: 100% !important;">
+                        <div class="col-md-10">
+                            <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Fornecedor</label></h4>
+                        </div>
+                        <div class="col-md-2" style="float: right !important;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <form id="fornecedor-form">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Tipo de Pessoa <span class="required">*</span></label>
+                                    <select id="TipoPessoa" name="TipoPessoa" class="form-control" data-msg-required="Por favor, selecione um Tipo de Pessoa." data-rule-required="true">
+                                        <option value="">Selecione um Tipo</option>
+                                        <option value="F">Física</option>
+                                        <option value="J">Jurídica</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">CPF/CNPJ <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o CPF ou CNPJ" id="CPFCNPJ" name="CPFCNPJ" data-mask-for-cpf-cnpj data-msg-required="Por favor, insira o CPF/CNPJ." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Nome do Cliente" id="Nome" name="Nome" data-msg-required="Por favor, insira o Nome do Cliente." data-rule-required="true" maxlength="50" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">RG</label>
+                                    <input type="text" class="form-control" placeholder="Informe o RG" id="RG" name="RG" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Inscrição Estadual</label>
+                                    <input type="text" class="form-control" placeholder="Informe o IE" id="IE" name="IE" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Inscrição Municipal</label>
+                                    <input type="text" class="form-control" placeholder="Informe a IM" id="IM" name="IM" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">CNAE</label>
+                                    <input type="text" class="form-control" placeholder="Informe o CNAE" id="CNAE" name="CNAE" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 hidden">
+                                <div class="form-group">
+                                    <label class="titlefield">Vendedor</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Vendedor" id="Vendedor" name="Vendedor" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="titlefield">Status <span class="required">*</span></label>
+                                <br />
+                                <div class="radio-item">
+                                    <input type="radio" id="AtivoSim" name="Ativo" value="S">
+                                    <label for="AtivoSim">Ativo</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="AtivoNao" name="Ativo" value="N">
+                                    <label for="AtivoNao">Inativo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Limite de Crédito</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Limite" id="LimiteCredito" name="LimiteCredito" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="titlefield">Estrangeiro</label>
+                                <br />
+                                <div class="radio-item">
+                                    <input type="radio" id="EstrangeiroSim" name="Estrangeiro" value="S">
+                                    <label for="EstrangeiroSim">Sim</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="EstrangeiroNao" name="Estrangeiro" value="N">
+                                    <label for="EstrangeiroNao">Não</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">CEP <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o CEP" id="CEP" name="CEP" data-msg-required="Por favor, insira o CEP." data-rule-required="true" maxlength="9" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Logradouro <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Logradouro" id="Logradouro" name="Logradouro" data-msg-required="Por favor, insira o nome do logradouro." data-rule-required="true" maxlength="100" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Número <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Número" id="Numero" name="Numero" data-msg-required="Por favor, insira o n&uacute;mero." data-rule-required="true" maxlength="10" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Complemento</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Complemento" id="Complemento" name="Complemento" maxlength="20" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Bairro <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Bairro" id="Bairro" name="Bairro" data-msg-required="Por favor, insira o nome do bairro." data-rule-required="true" maxlength="21" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Estado <span class="required">*</span></label>
+                                    <select id="Estado" name="Estado" class="form-control placeholder" data-msg-required="Por favor, selecione um estado." data-rule-required="true"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Cidade <span class="required">*</span></label>
+                                    <select id="Cidade" name="Cidade" class="form-control placeholder" data-msg-required="Por favor, selecione uma cidade." data-rule-required="true">
+                                        <option value="" style="background-color: #eaeaea;">Selecione a Cidade</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                </div>
+
+
+                <!-- Dados Telefônicos -->
+                <div id="DadosTelefonicos" class="feedback-box">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Lista de Telefones</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <form id="fornecedor-dadostelefonicos-form" class="feedback-form">
+                        <div class="panel-group mt-25" id="DadosTelefonicosAccordion" role="tablist" aria-multiselectable="true">
+                            Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                        <hr />
+                        <div class="alert alert-success hidden" id="fornecedor-dadostelefonicos-alert-success">
+                            <strong>SUCESSO:</strong> Cadastrado de dados telefônicos realizado com sucesso.
+                        </div>
+                        <div class="alert alert-success hidden" id="fornecedor-dadostelefonicos-alert-removed">
+                            <strong>SUCESSO:</strong> Exclusão de dados telefônicos realizado com sucesso.
+                        </div>
+                        <div class="alert alert-danger hidden" id="fornecedor-dadostelefonicos-alert-error">
+                            <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de dados telefônicos.
+                        </div>
+                        <div class="alert alert-danger hidden" id="fornecedor-dadostelefonicos-alert-error2">
+                            <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de dados telefônicos.
+                        </div>
+                        <div class="alert alert-warning hidden" id="fornecedor-dadostelefonicos-alert-warning">
+                            <strong>ERRO:</strong> Esse telefone já está cadastrado para esse Cliente.
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Dados E-mails -->
+                <div id="DadosEmails" class="feedback-box">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>Lista de E-mails</h2>
+                            <hr />
+                        </div>
+                    </div>
+                    <form id="fornecedor-dadosemails-form" class="feedback-form">
+                        <div class="panel-group mt-25" id="DadosEmailsAccordion" role="tablist" aria-multiselectable="true">
+                            Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                        <hr />
+                        <div class="alert alert-success hidden" id="fornecedor-dadosemails-alert-success">
+                            <strong>SUCESSO:</strong> Cadastrado da lista de e-mails realizada com sucesso.
+                        </div>
+                        <div class="alert alert-success hidden" id="fornecedor-dadosemails-alert-removed">
+                            <strong>SUCESSO:</strong> Exclusão da lista de e-mails realizada com sucesso.
+                        </div>
+                        <div class="alert alert-danger hidden" id="fornecedor-dadosemails-alert-error">
+                            <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da lista de e-mails.
+                        </div>
+                        <div class="alert alert-danger hidden" id="fornecedor-dadosemails-alert-error2">
+                            <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão da lista de e-mails.
+                        </div>
+                        <div class="alert alert-warning hidden" id="fornecedor-dadosemails-alert-warning">
+                            <strong>ERRO:</strong> Esse e-mail já está cadastrado para esse Cliente.
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row" style="width: 100% !important;">
+                        <div class="col-md-10">
+                            <h4 class="modal-title"><label>Excluir Fornecedor</label></h4>
+                        </div>
+                        <div class="col-md-2" style="float: right !important;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluir" name="modalLabelExcluir">Você deseja realmente excluir esse Fornecedor?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Criar e Filtrar Fornecedor</h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content" style="padding-bottom: 0px !important;">
+
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" data-backdrop="static" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            @using (Html.BeginForm("Index", "Fornecedores", FormMethod.Get, null))
+                                            {
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Procura na Coluna Nome</label>
+                                                            <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group" style="vertical-align: bottom !important;">
+                                                            <button type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                            &nbsp;
+                                                            <button type="submit" class="btn btn-secondary" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                 htmlAttributes: new { id = "MainTable" },
+                                 tableStyle: "webgrid",
+                                 fillEmptyRows: false,
+                                 headerStyle: "webgrid-header",
+                                 alternatingRowStyle: "webgrid-alternating-row",
+                                 rowStyle: "webgrid-row-style",
+                                 selectedRowStyle: "webgrid-selected-row",
+                                 footerStyle: "webgrid-footer",
+                                 mode: WebGridPagerModes.All,
+                                 firstText: "Primeiro",
+                                 previousText: "Anterior",
+                                 nextText: "Próximo",
+                                 lastText: "Último",
+                                 numericLinksCount: 5,
+                                 columns: new[] {
+                                 //grid.Column("ID", header: "Código"),
+                                 grid.Column("Nome", header: "Nome"),
+                                 grid.Column("CpfCnpj", header: "CPF / CNPJ", format: (item) => new HtmlString((item["CpfCnpj"] != null ? (item["CpfCnpj"].Length == 11 ? Uranus.Common.Util.FormatCPF(item.CpfCnpj) : Uranus.Common.Util.FormatCNPJ(item.CpfCnpj)) : String.Empty))),
+                                 grid.Column("Municipio", header: "Município"),
+                                 grid.Column("ID", header: "Ações", canSort:false,
+                                 format:
+                @<text>
+                    @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                    @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                    @Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' data-backdrop='static' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")
+                </text>)
+});
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    @*<script src="~/Content/vendors/jquery/dist/jquery.js"></script>*@
+
+    <!-- maskMoney -->
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <!-- mask -->
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+    <!-- select2 -->
+    @*<script src="~/Content/js/select/select2.full.js"></script>*@
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+
+    <script>
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        $('#LimiteCredito').maskMoney({ thousands: '.', decimal: ',', symbolStay: true });
+
+        $('#CEP').mask("99999-999");
+        $("#CEP").keyup(function () {
+            if ($("#CEP").val().length == 9) {
+                $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + $("#CEP").val(), function () {
+
+                    if (resultadoCEP["tipo_logradouro"] != '') {
+
+                        if (resultadoCEP["resultado"]) {
+
+                            $('#Estado').html($('#Estado').html().replace('selected', ''));
+                            $("#Estado option").filter(function (index) {
+                                return $(this).val() == unescape(resultadoCEP["uf"]);
+                            }).attr('selected', 'selected');
+
+                            CarregarCidades(unescape(resultadoCEP["uf"]), unescape(resultadoCEP["cidade"]));
+
+                            $("#Logradouro").val(unescape(resultadoCEP["tipo_logradouro"]) + " " + unescape(resultadoCEP["logradouro"]));
+                            $("#Bairro").val(unescape(resultadoCEP["bairro"]));
+                            $("#Numero").focus();
+
+                        }
+                    }
+                });
+            }
+
+        });
+
+        function CarregarEstados(UF) {
+
+            var options = {};
+            options.url = "/Estados/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.estados;
+
+                    $('#Estado').html("");
+                    var select = $('#Estado');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Estado")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (UF == rows[index].sigla) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarCidades(UF, Cidade) {
+
+            var dados = new window.FormData();
+            dados.append("UF", UF);
+
+            var options = {};
+            options.url = "/Cidades/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.cidades;
+                    $('#Cidade').html("");
+                    var select = $('#Cidade');
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione a Cidade")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (Cidade.toUpperCase() == (rows[index].cidade).toUpperCase()) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#Estado').change(function (evt) {
+
+            CarregarCidades($("#Estado").val(), "");
+
+        });
+
+        function Novo() {
+            $('#modalLabelTitle').text('Novo Fornecedor');
+
+            $('#TipoPessoa').attr('disabled', false);
+            $('#TipoPessoa').val('');
+            $('#CPFCNPJ').attr('disabled', false);
+            $('#CPFCNPJ').val('');
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val('');
+
+            $('input[name=Ativo][value="S"]').attr('disabled', false);
+            $('input[name=Ativo][value="N"]').attr('disabled', false);
+            $('input[name=Ativo][value="S"]').prop('checked', true).trigger('change');
+
+            $('#RG').attr('disabled', false);
+            $('#RG').val('');
+            $('#IE').attr('disabled', false);
+            $('#IE').val('');
+            $('#IM').attr('disabled', false);
+            $('#IM').val('');
+            $('#CNAE').attr('disabled', false);
+            $('#CNAE').val('');
+
+            $('#Vendedor').attr('disabled', false);
+            $('#Vendedor').val('');
+            $('#LimiteCredito').attr('disabled', false);
+            $('#LimiteCredito').val('');
+
+            $('input[name=Estrangeiro][value="S"]').attr('disabled', false);
+            $('input[name=Estrangeiro][value="N"]').attr('disabled', false);
+            $('input[name=Estrangeiro][value="S"]').prop('checked', true).trigger('change');
+
+            $('#CEP').attr('disabled', false);
+            $('#CEP').val('');
+            $('#Logradouro').attr('disabled', false);
+            $('#Logradouro').val('');
+            $('#Numero').attr('disabled', false);
+            $('#Numero').val('');
+            $('#Complemento').attr('disabled', false);
+            $('#Complemento').val('');
+            $('#Bairro').attr('disabled', false);
+            $('#Bairro').val('');
+            $('#Cidade').attr('disabled', false);
+            $('#Cidade').val('');
+            $('#Estado').attr('disabled', false);
+            $('#Estado').val('');
+
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#fornecedor-form").validate().resetForm();
+
+            CarregarEstados("");
+        }
+
+        function Visualizar(Id) {
+
+            $('#modalLabelTitle').text('Visualizar Fornecedor');
+
+            $('#TipoPessoa').attr('disabled', true);
+            $('#CPFCNPJ').attr('disabled', true);
+            $('#Nome').attr('disabled', true);
+            $('input[name=Ativo][value="S"]').attr('disabled', true);
+            $('input[name=Ativo][value="N"]').attr('disabled', true);
+
+            $('#RG').attr('disabled', true);
+            $('#IE').attr('disabled', true);
+            $('#IM').attr('disabled', true);
+            $('#CNAE').attr('disabled', true);
+
+            $('#Vendedor').attr('disabled', true);
+            $('#LimiteCredito').attr('disabled', true);
+            $('input[name=Estrangeiro][value="S"]').attr('disabled', true);
+            $('input[name=Estrangeiro][value="N"]').attr('disabled', true);
+
+            $('#CEP').attr('disabled', true);
+            $('#Logradouro').attr('disabled', true);
+            $('#Numero').attr('disabled', true);
+            $('#Complemento').attr('disabled', true);
+            $('#Bairro').attr('disabled', true);
+            $('#Cidade').attr('disabled', true);
+            $('#Estado').attr('disabled', true);
+
+            $('#buttonSalvar').attr('disabled', true);
+            $("#fornecedor-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Fornecedores/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#id').val(Id);
+
+                    CarregarEstados(json.fornecedor[0].Estado);
+                    CarregarCidades(json.fornecedor[0].Estado, json.fornecedor[0].Cidade);
+
+                    $('#TipoPessoa').val(json.fornecedor[0].TipoPessoa);
+
+                    var cpfcnpj = json.fornecedor[0].CPFCNPJ;
+
+                    if (cpfcnpj.length == 11) {
+                        $('#CPFCNPJ').val(FormatNumber(json.fornecedor[0].CPFCNPJ, '###.###.###-##'));
+                    }
+                    else if (cpfcnpj.length == 14) {
+                        $('#CPFCNPJ').val(FormatNumber(json.fornecedor[0].CPFCNPJ, '##.###.###/####-##'));
+                    }
+                    else {
+                        $('#CPFCNPJ').val(json.fornecedor[0].CPFCNPJ);
+                    }
+
+                    $('#Nome').val(json.fornecedor[0].Nome);
+
+                    var ativo = "N"
+                    if (json.fornecedor[0].Ativo) {
+                        ativo = "S"
+                    }
+
+                    $('input[name=Ativo][value="' + ativo + '"]').prop('checked', true).trigger('change');
+
+                    $('#RG').val(json.fornecedor[0].RG);
+                    $('#IE').val(json.fornecedor[0].IE);
+                    $('#IM').val(json.fornecedor[0].IM);
+                    $('#CNAE').val(json.fornecedor[0].CNAE);
+
+                    $('#Vendedor').val(json.fornecedor[0].Vendedor);
+                    $('#LimiteCredito').val(json.fornecedor[0].LimiteCredito);
+                    $('input[name=Estrangeiro][value="' + ativo + '"]').prop('checked', true).trigger('change');
+
+                    $('#CEP').val(json.fornecedor[0].CEP);
+                    $('#Logradouro').val(json.fornecedor[0].Logradouro);
+                    $('#Numero').val(json.fornecedor[0].Numero);
+                    $('#Complemento').val(json.fornecedor[0].Complemento);
+                    $('#Bairro').val(json.fornecedor[0].Bairro);
+                    $('#Cidade').val(json.fornecedor[0].Cidade);
+                    $('#Estado').val(json.fornecedor[0].Estado);
+
+                    //var foneComercial = json.fornecedor[0].FoneComercial;
+
+                    //if (foneComercial.length == 10) {
+                    //    $('#FoneComercial').val(FormatNumber(json.fornecedor[0].FoneComercial, '(##) ####-####'));
+                    //}
+                    //else if (foneComercial.length == 11) {
+                    //    $('#FoneComercial').val(FormatNumber(json.fornecedor[0].FoneComercial, '(##) ####-#####'));
+                    //}
+                    //else {
+                    //    $('#FoneComercial').val(json.fornecedor[0].FoneComercial);
+                    //}
+
+                    //var fonePessoal = json.fornecedor[0].FonePessoal;
+
+                    //if (fonePessoal.length == 10) {
+                    //    $('#FonePessoal').val(FormatNumber(json.fornecedor[0].FonePessoal, '(##) ####-####'));
+                    //}
+                    //else if (fonePessoal.length == 11) {
+                    //    $('#FonePessoal').val(FormatNumber(json.fornecedor[0].FonePessoal, '(##) ####-#####'));
+                    //}
+                    //else {
+                    //    $('#FonePessoal').val(json.fornecedor[0].FonePessoal);
+                    //}
+
+                    //$('#EmailComercial').val(json.fornecedor[0].EmailComercial);
+                    //$('#EmailPessoal').val(json.fornecedor[0].EmailPessoal);
+                    $('#RG').val(json.fornecedor[0].RG);
+
+                    //var cpf = json.fornecedor[0].CPF;
+
+                    //if (cpf.length == 11) {
+                    //    $('#CPF').val(FormatNumber(json.fornecedor[0].CPF, '###.###.###-##'));
+                    //}
+                    //else {
+                    //    $('#CPF').val(fornecedor[0].CPF);
+                    //}
+
+                    ShowDadosTelefonicos("");
+                    ShowDadosEmails("");
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+
+            var tr = $('#MainTable').find('tr');
+            tr.removeClass('webgrid-selected-row');
+            tr.bind('click', function (event) {
+                tr.removeClass('webgrid-selected-row');
+                $(this).addClass('webgrid-selected-row');
+            });
+
+            $('#modalLabelTitle').text('Alterar Fornecedor');
+            $('#TipoPessoa').attr('disabled', false);
+            $('#CPFCNPJ').attr('disabled', false);
+            $('#Nome').attr('disabled', false);
+            $('input[name=Ativo][value="S"]').attr('disabled', false);
+            $('input[name=Ativo][value="N"]').attr('disabled', false);
+
+            $('#RG').attr('disabled', false);
+            $('#IE').attr('disabled', false);
+            $('#IM').attr('disabled', false);
+            $('#CNAE').attr('disabled', false);
+
+            $('#Vendedor').attr('disabled', false);
+            $('#LimiteCredito').attr('disabled', false);
+            $('input[name=Estrangeiro][value="S"]').attr('disabled', false);
+            $('input[name=Estrangeiro][value="N"]').attr('disabled', false);
+
+            $('#CEP').attr('disabled', false);
+            $('#Logradouro').attr('disabled', false);
+            $('#Numero').attr('disabled', false);
+            $('#Complemento').attr('disabled', false);
+            $('#Bairro').attr('disabled', false);
+            $('#Cidade').attr('disabled', false);
+            $('#Estado').attr('disabled', false);
+
+            $('#buttonSalvar').attr('disabled', false);
+            $("#fornecedor-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Fornecedores/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    CarregarEstados(json.fornecedor[0].Estado);
+                    CarregarCidades(json.fornecedor[0].Estado, json.fornecedor[0].Cidade);
+
+                    $('#id').val(Id);
+                    $('#TipoPessoa').val(json.fornecedor[0].TipoPessoa);
+
+                    var cpfcnpj = json.fornecedor[0].CPFCNPJ;
+
+                    if (cpfcnpj.length == 11) {
+                        $('#CPFCNPJ').val(FormatNumber(json.fornecedor[0].CPFCNPJ, '###.###.###-##'));
+                    }
+                    else if (cpfcnpj.length == 14) {
+                        $('#CPFCNPJ').val(FormatNumber(json.fornecedor[0].CPFCNPJ, '##.###.###/####-##'));
+                    }
+                    else {
+                        $('#CPFCNPJ').val(json.fornecedor[0].CPFCNPJ);
+                    }
+
+                    $('#Nome').val(json.fornecedor[0].Nome);
+
+                    var ativo = "N"
+                    if (json.fornecedor[0].Ativo) {
+                        ativo = "S"
+                    }
+
+                    $('input[name=Ativo][value="' + ativo + '"]').prop('checked', true).trigger('change');
+
+                    $('#RG').val(json.fornecedor[0].RG);
+                    $('#IE').val(json.fornecedor[0].IE);
+                    $('#IM').val(json.fornecedor[0].IM);
+                    $('#CNAE').val(json.fornecedor[0].CNAE);
+
+                    $('#Vendedor').val(json.fornecedor[0].Vendedor);
+                    $('#LimiteCredito').val(json.fornecedor[0].LimiteCredito);
+                    $('input[name=Estrangeiro][value="' + ativo + '"]').prop('checked', true).trigger('change');
+
+                    $('#CEP').val(json.fornecedor[0].CEP);
+                    $('#Logradouro').val(json.fornecedor[0].Logradouro);
+                    $('#Numero').val(json.fornecedor[0].Numero);
+                    $('#Complemento').val(json.fornecedor[0].Complemento);
+                    $('#Bairro').val(json.fornecedor[0].Bairro);
+                    $('#Cidade').val(json.fornecedor[0].Cidade);
+                    $('#Estado').val(json.fornecedor[0].Estado);
+
+                    //var foneComercial = json.fornecedor[0].FoneComercial;
+
+                    //if (foneComercial.length == 10) {
+                    //    $('#FoneComercial').val(FormatNumber(json.fornecedor[0].FoneComercial, '(##) ####-####'));
+                    //}
+                    //else if (foneComercial.length == 11) {
+                    //    $('#FoneComercial').val(FormatNumber(json.fornecedor[0].FoneComercial, '(##) ####-#####'));
+                    //}
+                    //else {
+                    //    $('#FoneComercial').val(json.fornecedor[0].FoneComercial);
+                    //}
+
+                    //var fonePessoal = json.fornecedor[0].FonePessoal;
+
+                    //if (fonePessoal.length == 10) {
+                    //    $('#FonePessoal').val(FormatNumber(json.fornecedor[0].FonePessoal, '(##) ####-####'));
+                    //}
+                    //else if (fonePessoal.length == 11) {
+                    //    $('#FonePessoal').val(FormatNumber(json.fornecedor[0].FonePessoal, '(##) ####-#####'));
+                    //}
+                    //else {
+                    //    $('#FonePessoal').val(json.fornecedor[0].FonePessoal);
+                    //}
+
+                    //$('#EmailComercial').val(json.fornecedor[0].EmailComercial);
+                    //$('#EmailPessoal').val(json.fornecedor[0].EmailPessoal);
+                    $('#RG').val(json.fornecedor[0].RG);
+
+                    //    var cpf = json.fornecedor[0].CPF;
+
+                    //    if (cpf.length == 11) {
+                    //        $('#CPF').val(FormatNumber(json.fornecedor[0].CPF, '###.###.###-##'));
+                    //    }
+                    //    else {
+                    //        $('#CPF').val(funcionario[0].CPF);
+                    //    }
+                    ShowDadosTelefonicos("");
+                    ShowDadosEmails("");
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('#modalLabelExcluir').text('Você deseja realmente excluir esse Fornecedor (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#fornecedor-form").validate();
+
+            if ($('#fornecedor-form').valid()) {
+
+                var validate = true;
+
+                if (validate) {
+                    var dados = new window.FormData();
+                    dados.append("Id", $("#id").val());
+                    dados.append("TipoPessoa", $("#TipoPessoa").val());
+                    dados.append("CPFCNPJ", $("#CPFCNPJ").val());
+                    dados.append("Nome", $("#Nome").val());
+                    dados.append("RG", $("#RG").val());
+                    dados.append("IE", $("#IE").val());
+                    dados.append("IM", $("#IM").val());
+                    dados.append("CNAE", $("#CNAE").val());
+                    dados.append("Ativo", $("input[type='radio'][name='Ativo']:checked").val());
+                    dados.append("Vendedor", $("#Vendedor").val());
+                    dados.append("LimiteCredito", $("#LimiteCredito").val());
+                    dados.append("Estrangeiro", $("input[type='radio'][name='Estrangeiro']:checked").val());
+                    dados.append("CEP", $("#CEP").val());
+                    dados.append("Logradouro", $("#Logradouro").val());
+                    dados.append("Numero", $("#Numero").val());
+                    dados.append("Complemento", $("#Complemento").val());
+                    dados.append("Bairro", $("#Bairro").val());
+                    dados.append("Municipio", $("#Cidade").val());
+                    dados.append("Estado", $("#Estado").val());
+
+                    var options = {};
+                    options.url = "/Fornecedores/Salvar"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.codigo == '00') {
+
+                            ValidarDadoTelefonicos(json.id);
+                            ValidarDadoEmails(json.id);
+                            $('#modalMensagemResposta').text('Fornecedor salvo com sucesso!');
+                            $('#modalMensagem').attr('data-backdrop', 'static');
+                            $('#modalMensagem').attr('data-keyboard', 'false');
+                            $('#modalMensagem').modal('show');
+                            Alterar(json.id)
+                            //$("#fornecedor-form").validate().resetForm();
+
+                        }
+                    };
+                    $.ajax(options);
+
+                    evt.preventDefault();
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ValidarDadoTelefonicos(Id) {
+
+            var dados = new window.FormData();
+            dados.append("IdFornecedor", Id);
+
+            var options = {};
+            options.url = "/Fornecedores/ValidarDadosTelefonicos"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.cache = false;
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+
+                    $("#fornecedor-dadostelefonicos-alert-validate").addClass("hidden");
+                    $("#vTelefone").val("success");
+
+                }
+                else {
+
+                    $("#fornecedor-dadostelefonicos-alert-validate").removeClass("hidden");
+                    $("#vTelefone").val("");
+                    ShowDadosTelefonicos("Alterar");
+
+                    return false;
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ValidarDadoEmails(Id) {
+
+            var dados = new window.FormData();
+            dados.append("IdFornecedor", Id);
+
+            var options = {};
+            options.url = "/Fornecedores/ValidarDadosEmails"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.cache = false;
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                $("#buttonSalvar").html("Salvar");
+
+                if (json.response == "success") {
+
+                    $("#fornecedor-dadosemails-alert-validate").addClass("hidden");
+                    $("#vEmail").val("success");
+
+                }
+                else {
+
+                    $("#fornecedor-dadosemails-alert-validate").removeClass("hidden");
+                    $("#vEmail").val("");
+                    ShowDadosEmails("Alterar");
+
+                    return false;
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Fornecedores/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Cliente excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#profissinal-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('#modalMensagemResposta').text('Não foi possível excluir o Cliente (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('#modalMensagemResposta').text('Ocorreu um erro que impossibilitou a exclusão do Cliente (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function ShowDadosTelefonicos(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdFornecedor", $("#id").val());
+
+            var options = {};
+            options.url = "/Fornecedores/CarregarDadosTelefonicos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosTelefonicosAccordion').html(json.telefones);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#FornecedorDadoTelefonico" + i + "Numero").attr('disabled', true);
+                            $("#FornecedorDadoTelefonico" + i + "Ramal").attr('disabled', true);
+                            $("#FornecedorDadoTelefonico" + i + "TipoAparelho").attr('disabled', true);
+                            $("#FornecedorDadoTelefonico" + i + "TipoLinha").attr('disabled', true);
+                            $("#FornecedorDadoTelefonico" + i + "Status").attr('disabled', true);
+                            $("#FornecedorDadoTelefonico" + i + "Observacao").attr('disabled', true);
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").hide();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#FornecedorDadoTelefonico" + i + "Numero").attr('disabled', false);
+                            $("#FornecedorDadoTelefonico" + i + "Ramal").attr('disabled', false);
+                            $("#FornecedorDadoTelefonico" + i + "TipoAparelho").attr('disabled', false);
+                            $("#FornecedorDadoTelefonico" + i + "TipoLinha").attr('disabled', false);
+                            $("#FornecedorDadoTelefonico" + i + "Status").attr('disabled', false);
+                            $("#FornecedorDadoTelefonico" + i + "Observacao").attr('disabled', false);
+
+                            $("#FornecedorDadoTelefonico" + i + "Numero").mask("(99) 9999-9999?9");
+                            $("#FornecedorDadoTelefonico" + i + "Ramal").mask("9999999999");
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").show();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoTelefonicoSalvar_Click(index) {
+
+            $("#fornecedor-dadostelefonicos-form").validate();
+
+            if ($('#fornecedor-dadostelefonicos-form').valid()) {
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+                dados.append("IdFornecedor", $("#id").val());
+                dados.append("Numero", $('#FornecedorDadoTelefonico' + index + 'Numero').val());
+                dados.append("Ramal", $('#FornecedorDadoTelefonico' + index + 'Ramal').val());
+                dados.append("TipoAparelho", $('#FornecedorDadoTelefonico' + index + 'TipoAparelho').val());
+                dados.append("TipoLinha", $('#FornecedorDadoTelefonico' + index + 'TipoLinha').val());
+                dados.append("Status", $('#FornecedorDadoTelefonico' + index + 'Status').val());
+                dados.append("Principal", $('#FornecedorDadoTelefonico' + index + 'Principal').val());
+                dados.append("Observacao", $('#FornecedorDadoTelefonico' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Fornecedores/SalvarDadosTelefonicos";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#fornecedor-dadostelefonicos-alert-success").removeClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        ShowDadosTelefonicos("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#fornecedor-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#fornecedor-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error").removeClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#fornecedor-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadostelefonicos-alert-warning").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoTelefonicoExcluir_Click(index) {
+
+            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoTelefonico" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+
+            var options = {};
+            options.url = "/Fornecedores/ExcluirDadosTelefonicos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "removed") {
+                    $("#fornecedor-dadostelefonicos-alert-success").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-error").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-removed").removeClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-error2").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-warning").addClass("hidden");
+
+                    ShowDadosTelefonicos("Alterar");
+                }
+                else {
+                    $("#fornecedor-dadostelefonicos-alert-success").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-error").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-removed").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-error2").removeClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-warning").addClass("hidden");
+
+                    $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                }
+
+                setTimeout(function () {
+                    $("#fornecedor-dadostelefonicos-alert-success").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-error").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-removed").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-error2").addClass("hidden");
+                    $("#fornecedor-dadostelefonicos-alert-warning").addClass("hidden");
+                }, 3000);
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ShowDadosEmails(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdFornecedor", $("#id").val());
+
+            var options = {};
+            options.url = "/Fornecedores/CarregarDadosEmails";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosEmailsAccordion').html(json.emails);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#FornecedorDadoEmail" + i + "Email").attr('disabled', true);
+                            $("#FornecedorDadoEmail" + i + "Status").attr('disabled', true);
+
+                            $("#ButtonDadoEmail" + i + "Incluir").hide();
+                            $("#ButtonDadoEmail" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#FornecedorDadoEmail" + i + "Email").attr('disabled', false);
+                            $("#FornecedorDadoEmail" + i + "Status").attr('disabled', false);
+
+                            $("#ButtonDadoEmail" + i + "Incluir").show();
+                            $("#ButtonDadoEmail" + i + "Excluir").show();
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoEmailSalvar_Click(index) {
+
+            $("#fornecedor-dadosemails-form").validate();
+
+            if ($('#fornecedor-dadosemails-form').valid()) {
+
+                $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoEmail" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoEmail' + index).val());
+                dados.append("IdFornecedor", $("#id").val());
+                dados.append("Email", $('#FornecedorDadoEmail' + index + 'Email').val());
+                dados.append("Status", $('#FornecedorDadoEmail' + index + 'Status').val());
+                dados.append("Principal", $('#FornecedorDadoEmail' + index + 'Principal').val());
+                dados.append("Status", $('#FornecedorDadoEmail' + index + 'Status').val());
+
+                var options = {};
+                options.url = "/Fornecedores/SalvarDadosEmails";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#fornecedor-dadosemails-alert-success").removeClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-warning").addClass("hidden");
+
+                        ShowDadosEmails("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#fornecedor-dadosemails-alert-success").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoEmail" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#fornecedor-dadosemails-alert-success").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error").removeClass("hidden");
+                        $("#fornecedor-dadosemails-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoEmail" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#fornecedor-dadosemails-alert-success").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-removed").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-error2").addClass("hidden");
+                        $("#fornecedor-dadosemails-alert-warning").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoEmailExcluir_Click(index) {
+
+            $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoEmail" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("Id", $('#HiddenDadoEmail' + index).val());
+
+            var options = {};
+            options.url = "/Fornecedores/ExcluirDadosEmails";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "removed") {
+                    $("#fornecedor-dadosemails-alert-success").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-error").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-removed").removeClass("hidden");
+                    $("#fornecedor-dadosemails-alert-error2").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-warning").addClass("hidden");
+
+                    ShowDadosEmails("Alterar");
+                }
+                else {
+                    $("#fornecedor-dadosemails-alert-success").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-error").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-removed").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-error2").removeClass("hidden");
+                    $("#fornecedor-dadosemails-alert-warning").addClass("hidden");
+
+                    $("#ButtonDadoEmail" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                }
+
+                setTimeout(function () {
+                    $("#fornecedor-dadosemails-alert-success").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-error").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-removed").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-error2").addClass("hidden");
+                    $("#fornecedor-dadosemails-alert-warning").addClass("hidden");
+                }, 3000);
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Fornecedores/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Fornecedor excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#fornecedor-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('#modalMensagemResposta').text('Não foi possível excluir o Fornecedor (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('#modalMensagemResposta').text('Ocorreu um erro que impossibilitou o exclusão do Fornecedor (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Fornecedores');
+        }
+
+    </script>
+
+</div>

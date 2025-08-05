@@ -1,0 +1,955 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Lançamento de Receitas";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idBancosLancamento" name="idBancosLancamento" value="">
+    <input type="hidden" id="idBanco" name="idBanco" value="">
+    <input type="hidden" id="idNumeroProcesso" name="idNumeroProcesso" value="">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="receitas-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Nova Receita</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Destino</label><br />
+                                    <select id="Destino" name="Destino" class="select2_single form-control" style="width: 100% !important;"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Número Documento </label>
+                                    <input type="text" class="form-control" placeholder="Informe o Número" id="NumeroDocumento" name="NumeroDocumento" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Documento</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="DataDocumento" name="DataDocumento" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Número Nota </label>
+                                    <input type="text" class="form-control" placeholder="Informe o Número" id="NumeroNota" name="NumeroNota" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome do Cliente </label><br />
+                                    <select id="Cliente" name="Cliente" class="select2_single form-control" style="width: 100% !important;"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Bruto</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Valor" id="ValorBruto" name="ValorBruto" onkeyup="CalcularLiquido()" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">IR Retido</label>
+                                    <input type="text" class="form-control" placeholder="Informe o IR" id="IRRetido" name="IRRetido" onkeyup="CalcularLiquido()" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Liquido</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Valor" id="Valor" name="Valor" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Pagamento</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="DataPagamento" name="DataPagamento" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Receita referente a</label><br />
+                                    <select id="Tipo" name="Tipo" class="select2_single form-control" style="width: 100% !important;"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Centro de Custo </label>
+                                    <select id="CentroCusto" name="CentroCusto" class="select2_single form-control" style="width: 100% !important;"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Área</label><br />
+                                    <select id="Area" name="Area" class="select2_single form-control" style="width: 100% !important;"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Número do Processo </label>
+                                    <select id="NumeroProcesso" name="NumeroProcesso" class="select2_single form-control" style="width: 100% !important;"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="titlefield">Observação </label>
+                                    <input type="text" class="form-control" id="Observacao" name="Observacao" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Cadastro</label>
+                                    <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Cadastro</label>
+                                    <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Alteração</label>
+                                    <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Alteração</label>
+                                    <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Receita</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir esse Receita?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Criar e Filtrar Lançamento de Receitas</h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+
+                                    @using (Html.BeginForm("Index", "FinanceiroReceitas", FormMethod.Get, null))
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Início </label>
+                                                    <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataInicio" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim </label>
+                                                    <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataFim" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Nome do Cliente</label>
+                                                    <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Centro de Custo</label>
+                                                    <select id="FiltrarSede" name="FiltrarSede" class="select2_single form-control" style="width: 100% !important;"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" data-backdrop="static" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-secondary" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                 tableStyle: "webgrid",
+                                 fillEmptyRows: false,
+                                 headerStyle: "webgrid-header",
+                                 alternatingRowStyle: "webgrid-alternating-row",
+                                 rowStyle: "webgrid-row-style",
+                                 selectedRowStyle: "webgrid-selected-row",
+                                 footerStyle: "webgrid-footer",
+                                 mode: WebGridPagerModes.All,
+                                 firstText: "Primeiro",
+                                 previousText: "Anterior",
+                                 nextText: "Próximo",
+                                 lastText: "Último",
+                                 numericLinksCount: 5,
+                                 columns: new[] {
+                                     grid.Column("Data", header: "DataDocumento", format: (item) => (item.DataDocumento == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.DataDocumento))),
+                                     grid.Column("Clientes.Pessoas.Nome", header: "Cliente"),
+                                     grid.Column("Sedes.Nome", header: "Local Atendimento"),
+                                     grid.Column("Valor", header: "Valor", format: (item) => (item.Valor != null ? string.Format("R$ {0:##,##0.00}", item.Valor) : "0,00")),
+                                     grid.Column("Id", header: "Ações", canSort:false,
+                                 format:
+                @<text>
+                    @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+                    @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
+                    @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' data-backdrop='static' onclick='Excluir(" + item.Id + ", " + '"' + item.Clientes.Pessoas.Nome + '"' + ");'>Excluir</a>")
+                </text>)
+});
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+    @*</div>*@
+<!-- /page content -->
+
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+@*<script type="text/javascript" src="~/Content/js/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>*@
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $("#Valor").maskMoney({ allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+    $("#ValorBruto").maskMoney({ allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+    $("#IRRetido").maskMoney({ allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+
+    $("#FiltrarDataInicio").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#FiltrarDataFim").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+    $("#DataDocumento").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+    $("#Vencimento").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#DataPagamento").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#FiltrarCliente").select2({
+        placeholder: "Selecione um Cliente",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            cache: false,
+            dataType: "json",
+            type: "GET",
+            url: '/Clientes/GetClientsList',
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    filter: true,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.clientes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    });
+
+    $("#Cliente").select2({
+        dropdownParent: $('#modalNovo'),
+        placeholder: "Selecione um Cliente",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            dataType: "json",
+            type: "GET",
+            url: '/Clientes/GetClientsList',
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.clientes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    });
+
+        $(document.body).on("change", "#Cliente", function () {
+
+            var dados = new window.FormData();
+            dados.append("Id", this.value);
+
+            var options = {};
+            options.url = "/Sedes/ConsultarSede"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#CentroCusto').append($('<option selected></option>').val(json.idSede).html(json.sede));
+                    $('#CentroCusto').trigger('change');
+                }
+            };
+            $.ajax(options);
+
+            CarregarProcessos(this.value)
+
+        });
+
+    CarregarDestino();
+    CarregarTipo("R");
+    CarregarSedes();
+    CarregarAreas();
+
+    function CarregarDestino() {
+
+        var dados = new window.FormData();
+        var options = {};
+        options.url = "/FinanceiroOrigem/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.financeiroorigem;
+                $('#Destino').html("0");
+                var select = $('#Destino');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione um Destino")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    function CarregarTipo(Tipo) {
+
+        var dados = new window.FormData();
+
+        dados.append("Tipo", Tipo);
+
+        var options = {};
+        options.url = "/FinanceiroTipo/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.financeirotipo;
+                $('#Tipo').html("0");
+                var select = $('#Tipo');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione um Tipo")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    function CarregarSedes() {
+
+        var dados = new window.FormData();
+        var options = {};
+        options.url = "/Sedes/ListarClientes"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.sedes;
+                $('#CentroCusto').html("0");
+                var select = $('#CentroCusto');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione um Centro de Custo")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    function CarregarAreas() {
+
+        var dados = new window.FormData();
+        var options = {};
+        options.url = "/Areas/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.areas;
+                $('#Area').html("0");
+                var select = $('#Area');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione uma Area")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    function CarregarProcessos(IdCliente) {
+
+        var dados = new window.FormData();
+        dados.append("IdCliente", IdCliente);
+
+        var options = {};
+        options.url = "/Processos/BuscarProcessosFinanceiro"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            var rows = json.processos;
+            $('#NumeroProcesso').html("0");
+            var select = $('#NumeroProcesso');
+            select.append(
+                $('<option selected></option>').val("0").html("Selecione um Processo")
+            );
+
+            for (index = 0; index < rows.length; index++) {
+
+                select.append(
+                    $('<option></option>').val(rows[index].Id).html(rows[index].NumeroProcesso)
+                );
+            }
+
+            $('#NumeroProcesso').val($('#idNumeroProcesso').val());
+            $('#NumeroProcesso').trigger('change');
+        };
+        $.ajax(options);
+    }
+
+    $(function () {
+    });
+
+    function Novo() {
+        $('#modalLabelTitle').text('Nova Receita');
+        $('#Destino').attr('disabled', false);
+        $('#Destino').val('');
+        $('#DataDocumento').attr('disabled', false);
+        $('#DataDocumento').val('');
+        $('#NumeroDocumento').attr('disabled', false);
+        $('#NumeroDocumento').val('');
+        $('#NumeroNota').attr('disabled', false);
+        $('#NumeroNota').val('');
+        $('#Tipo').attr('disabled', false);
+        $('#Tipo').val('');
+        $('#CentroCusto').attr('disabled', false);
+        $('#CentroCusto').val('');
+        $('#Area').attr('disabled', false);
+        $('#Area').val('');
+        $('#Cliente').attr('disabled', false);
+        $('#Cliente').val('');
+        $('#Valor').attr('disabled', false);
+        $('#Valor').val('');
+        $('#ValorBruto').attr('disabled', false);
+        $('#ValorBruto').val('');
+        $('#IRRetido').attr('disabled', false);
+        $('#IRRetido').val('');
+        $('#DataPagamento').attr('disabled', false);
+        $('#DataPagamento').val('');
+        $('#Observacao').attr('disabled', false);
+        $('#Observacao').val('');
+        $('#buttonSalvar').attr('disabled', false);
+        $('#id').val(0);
+        $('#idBancosLancamento').val(0);
+        $('#idBanco').val(0);
+        $("#NumeroProcesso").val("");
+        $("#NumeroProcesso").trigger('change');
+        $('#DataCadastro').val('');
+        $('#UsuarioCadastro').val('');
+        $('#DataAlteracao').val('');
+        $('#UsuarioAlteracao').val('');
+        $("#receitas-form").validate().resetForm();
+        $('#idNumeroProcesso').val(0);
+    }
+
+    function Visualizar(Id) {
+        $('#modalLabelTitle').text('Visualizar Receita');
+        $('#Destino').attr('disabled', true);
+        $('#DataDocumento').attr('disabled', true);
+        $('#NumeroDocumento').attr('disabled', true);
+        $('#NumeroNota').attr('disabled', true);
+        $('#Tipo').attr('disabled', true);
+        $('#CentroCusto').attr('disabled', true);
+        $('#Area').attr('disabled', true);
+        $('#Cliente').attr('disabled', true);
+        $('#Valor').attr('disabled', true);
+        $('#ValorBruto').attr('disabled', true);
+        $('#IRRetido').attr('disabled', true);
+        $('#DataPagamento').attr('disabled', true);
+        $('#Observacao').attr('disabled', true);
+        $('#buttonSalvar').attr('disabled', true);
+        $("#receitas-form").validate().resetForm();
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/FinanceiroReceitas/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#Destino').append($('<option selected></option>').val(json.financeiroreceitas[0].IdOrigem).html(json.financeiroreceitas[0].OrigemNome));
+                $('#Destino').trigger('change');
+
+                $('#DataDocumento').val(json.financeiroreceitas[0].DataDocumento);
+                $('#NumeroDocumento').val(json.financeiroreceitas[0].NumeroDocumento);
+                $('#NumeroNota').val(json.financeiroreceitas[0].NumeroNota);
+
+                $('#Tipo').val(json.financeiroreceitas[0].IdFinanceiroTipo);
+                $('#Tipo').trigger('change');
+
+                $('#CentroCusto').append($('<option selected></option>').val(json.financeiroreceitas[0].IdCentroCusto).html(json.financeiroreceitas[0].CentroCustoNome));
+                $('#CentroCusto').trigger('change');
+
+                $('#Area').val(json.financeiroreceitas[0].IdArea);
+                $('#Area').trigger('change');
+
+                $('#idNumeroProcesso').val(json.financeiroreceitas[0].IdProcessoAcao);
+
+                $('#Cliente').append($('<option selected></option>').val(json.financeiroreceitas[0].IdCliente).html(json.financeiroreceitas[0].ClienteNome));
+                $('#Cliente').trigger('change');
+
+                $('#Valor').val(json.financeiroreceitas[0].Valor);
+                $('#ValorBruto').val(json.financeiroreceitas[0].ValorBruto);
+                $('#IRRetido').val(json.financeiroreceitas[0].IRRetido);
+                $('#DataPagamento').val(json.financeiroreceitas[0].DataPagamento);
+                $('#Observacao').val(json.financeiroreceitas[0].Observacao);
+                $('#DataCadastro').val(json.financeiroreceitas[0].DataCadastro);
+                $('#UsuarioCadastro').val(json.financeiroreceitas[0].UsuarioCadastro);
+                $('#DataAlteracao').val(json.financeiroreceitas[0].DataAlteracao);
+                $('#UsuarioAlteracao').val(json.financeiroreceitas[0].UsuarioAlteracao);
+            }
+        };
+        $.ajax(options);
+    }
+
+    function Alterar(Id) {
+        $('#modalLabelTitle').text('Alterar Receita');
+        $('#Destino').attr('disabled', false);
+        $('#DataDocumento').attr('disabled', false);
+        $('#NumeroDocumento').attr('disabled', false);
+        $('#NumeroNota').attr('disabled', false);
+        $('#Tipo').attr('disabled', false);
+        $('#CentroCusto').attr('disabled', false);
+        $('#Area').attr('disabled', false);
+        $('#Cliente').attr('disabled', false);
+        $('#Valor').attr('disabled', true);
+        $('#ValorBruto').attr('disabled', false);
+        $('#IRRetido').attr('disabled', false);
+        $('#DataPagamento').attr('disabled', false);
+        $('#Observacao').attr('disabled', false);
+        $('#buttonSalvar').attr('disabled', false);
+        $("#receitas-form").validate().resetForm();
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/FinanceiroReceitas/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#id').val(Id);
+
+                $('#Destino').append($('<option selected></option>').val(json.financeiroreceitas[0].IdOrigem).html(json.financeiroreceitas[0].OrigemNome));
+                $('#Destino').trigger('change');
+
+                $('#DataDocumento').val(json.financeiroreceitas[0].DataDocumento);
+                $('#NumeroDocumento').val(json.financeiroreceitas[0].NumeroDocumento);
+                $('#NumeroNota').val(json.financeiroreceitas[0].NumeroNota);
+
+                $('#Tipo').val(json.financeiroreceitas[0].IdFinanceiroTipo);
+                $('#Tipo').trigger('change');
+
+                $('#CentroCusto').append($('<option selected></option>').val(json.financeiroreceitas[0].IdCentroCusto).html(json.financeiroreceitas[0].CentroCustoNome));
+                $('#CentroCusto').trigger('change');
+
+                //$('#Area').append($('<option selected></option>').val(json.financeiroreceitas[0].IdArea).html(json.financeiroreceitas[0].AreaNome));
+                //$('#Area').trigger('change');
+
+                $('#Area').val(json.financeiroreceitas[0].IdArea);
+                $('#Area').trigger('change');
+
+                $('#idNumeroProcesso').val(json.financeiroreceitas[0].IdProcessoAcao);
+
+                $('#Cliente').append($('<option selected></option>').val(json.financeiroreceitas[0].IdCliente).html(json.financeiroreceitas[0].ClienteNome));
+                $('#Cliente').trigger('change');
+
+                //$('#NumeroProcesso').append($('<option selected></option>').val(json.financeiroreceitas[0].IdProcessoAcao).html(json.financeiroreceitas[0].NumeroProcesso));
+                //$('#NumeroProcesso').trigger('change');
+
+                //$('#NumeroProcesso').val(json.financeiroreceitas[0].IdProcessoAcao);
+                //$('#NumeroProcesso').trigger('change');
+
+                $('#Valor').val(json.financeiroreceitas[0].Valor);
+                $('#ValorBruto').val(json.financeiroreceitas[0].ValorBruto);
+                $('#IRRetido').val(json.financeiroreceitas[0].IRRetido);
+
+                $('#DataPagamento').val(json.financeiroreceitas[0].DataPagamento);
+                $('#Observacao').val(json.financeiroreceitas[0].Observacao);
+                $('#idBancosLancamento').val(json.financeiroreceitas[0].IdBancosLancamento);
+                $('#idBanco').val(json.financeiroreceitas[0].IdBanco);
+
+                $('#DataCadastro').val(json.financeiroreceitas[0].DataCadastro);
+                $('#UsuarioCadastro').val(json.financeiroreceitas[0].UsuarioCadastro);
+                $('#DataAlteracao').val(json.financeiroreceitas[0].DataAlteracao);
+                $('#UsuarioAlteracao').val(json.financeiroreceitas[0].UsuarioAlteracao);
+            }
+        };
+        $.ajax(options);
+    }
+
+    function Excluir(Id, Nome) {
+        $('h4').text('Você deseja realmente excluir essa Receita (' + Nome + ')?');
+        $('#id').val(Id);
+        $('#nome').val(Nome);
+    }
+
+    $('#buttonSalvar').click(function (evt) {
+
+        $("#receitas-form").validate();
+
+        if ($('#receitas-form').valid()) {
+            var dados = new window.FormData();
+
+            dados.append("Id", $("#id").val());
+            dados.append("IdOrigem", $("#Destino").val());
+            dados.append("NumeroDocumento", $("#NumeroDocumento").val());
+            dados.append("DataDocumento", $("#DataDocumento").val());
+            dados.append("IdFinanceiroTipo", $("#Tipo").val());
+            dados.append("IdCentroCusto", $("#CentroCusto").val());
+            dados.append("IdArea", $("#Area").val());
+            dados.append("IdCliente", $("#Cliente").val());
+            dados.append("Valor", $("#Valor").val());
+            dados.append("DataPagamento", $("#DataPagamento").val());
+            dados.append("Observacao", $("#Observacao").val());
+            dados.append("IdBancosLancamento", $("#idBancosLancamento").val());
+            dados.append("ValorBruto", $("#ValorBruto").val());
+            dados.append("IRRetido", $("#IRRetido").val());
+            dados.append("IdBanco", $("#idBanco").val());
+            dados.append("IdProcessoAcao", $("#NumeroProcesso").val());
+
+            var options = {};
+            options.url = "/FinanceiroReceitas/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Receita salva com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#receitas-form").validate().resetForm();
+
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+
+    });
+
+    function ExcluirConfirmado() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/FinanceiroReceitas/Excluir"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Receita excluída com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#receitas-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir a Receita (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão da Receita (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function Atualizar() {
+        $(location).attr('href', '../FinanceiroReceitas');
+    }
+
+    function CalcularLiquido() {
+        var valor = 0;
+        var valorBruto = 0;
+        var irRetido = 0;
+
+        valorBruto = $('#ValorBruto').val().replace(/[.]/g, '').replace(',', '.');
+        irRetido = $('#IRRetido').val().replace(/[.]/g, '').replace(',', '.');
+
+        valor = valorBruto - irRetido;
+
+        $('#Valor').val((valor > 0.0 ? numberToReal(valor) : '0,00'));
+
+    }
+
+</script>
+
+@*</div>*@

@@ -1,0 +1,2486 @@
+﻿@{
+    ViewBag.Title = "Processos \\ Agenda de Prazos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="idProcesso" name="idProcesso" value="0">
+    <input type="hidden" id="idAcao" name="idAcao" value="0">
+    <input type="hidden" id="idAcaoEvento" name="idAcaoEvento" value="0">
+    <input type="hidden" id="eventoDescricaoOriginal" name="eventoDescricaoOriginal" value="">
+    <input type="hidden" id="DescricaoOriginal" name="DescricaoOriginal" value="">
+    <input type="hidden" id="excluirAgenda" name="excluirAgenda" value="0">
+    <input type="hidden" id="numeroProcesso" name="numeroProcesso" value="">
+    <input type="hidden" id="IdProcessAction" value="0" />
+
+    <style>
+
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+
+    <div class="x_panel">
+
+        <div class="x_title">
+            <h2>
+                Filtrar e Cadastrar Agendas de Prazos
+            </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a id="tab-listar" href="#tab_content_listar" role="tab" data-toggle="tab" aria-expanded="true">Listar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-cadastrar" href="#tab_content_cadastrar" role="tab" data-toggle="tab" aria-expanded="false">Cadastrar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-visualizar" href="#tab_content_visualizar" role="tab" data-toggle="tab" aria-expanded="false">Visualizar</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_listar" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        @{ WebGrid grid = new WebGrid(Model); }
+
+                                        @using (Html.BeginForm("Agendar", "Processos", FormMethod.Get, new { id = "evento-filtro-form" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Número do Processo</label>
+                                                        <select id="FiltrarProcesso" name="FiltrarProcesso" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Cliente</label>
+                                                        <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Data 1º Prazo</label>
+                                                        <div id="FiltrarDataPrazoEvento1" name="FiltrarDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
+                                                            <input id="FiltrarPrazoEvento1" name="FiltrarPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarPrazoEvento1" readonly />
+                                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Data 2º Prazo</label>
+                                                        <div id="FiltrarDataPrazoEvento2" name="FiltrarDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
+                                                            <input id="FiltrarPrazoEvento2" name="FiltrarPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarPrazoEvento2" readonly />
+                                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Evento</label>
+                                                        <select id="FiltrarEvento" name="FiltrarEvento" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Profissional</label>
+                                                        <select id="FiltrarProfissional" name="FiltrarProfissional" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Data de Lançamento</label>
+                                                        <div id="FiltrarDataCadastro" name="FiltrarDataCadastro" class="input-group date" style="margin: 0 !important;">
+                                                            <input id="FiltrarCadastro" name="FiltrarCadastro" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarCadastro" readonly />
+                                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Juízo</label>
+                                                        <select id="FiltrarVara" name="FiltrarVara" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                    htmlAttributes: new { id = "MainTable" },
+                                                    tableStyle: "webgrid",
+                                                    fillEmptyRows: false,
+                                                    headerStyle: "webgrid-header",
+                                                    alternatingRowStyle: "webgrid-alternating-row",
+                                                    rowStyle: "webgrid-row-style",
+                                                    selectedRowStyle: "webgrid-selected-row",
+                                                    footerStyle: "webgrid-footer",
+                                                    mode: WebGridPagerModes.All,
+                                                    firstText: "Primeiro",
+                                                    previousText: "Anterior",
+                                                    nextText: "Próximo",
+                                                    lastText: "Último",
+                                                    numericLinksCount: 5,
+                                                    columns: new[] {
+                                                     grid.Column("NumeroProcesso", header: "Número do Processo"),
+                                                     grid.Column("Autor", header: "Autor"),
+                                                     grid.Column("Reu", header: "Réu"),
+                                                     grid.Column("Prazo1", header: "Data 1º Prazo", format: (item) => (item.Prazo1 == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.Prazo1))),
+                                                     grid.Column("Prazo2", header: "Data 2º Prazo", format: (item) => (item.Prazo2 == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.Prazo2))),
+                                                     grid.Column("Evento", header: "Evento"),
+                                                     grid.Column("VaraSigla", header: "Juízo"),
+                                                     grid.Column("Profissional", header: "Nome do Profissional"),
+                                                     grid.Column("DataCadastro", header: "Data de Lançamento", format: (item) => (item.DataCadastro == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.DataCadastro))),
+                                                     grid.Column("Id", header: "Ações", canSort:false,
+                                                     format:
+                                    @<text>
+                                        @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+                                        @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
+
+                                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                               {
+                                            @Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.Id + ", " + '"' + item.Profissional + '"' + ", " + '"' + item.NumeroProcesso + '"' + ");'>Excluir</a>")
+                                                               }
+                                        }
+                                    </text>)
+});
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_cadastrar" aria-labelledby="tab-cadastrar">
+                        <!-- Agenda -->
+                        <div class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 id="TituloAgenda"><b>Nova Agenda do Profissional</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="agenda-form">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome do Cliente</label>
+                                            <select id="Cliente" name="Cliente" class="select2_single form-control" style="width: 100% !important;"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número do Processo <span class="required">*</span></label>
+                                            <select id="NumeroProcesso" name="NumeroProcesso" class="select2_single form-control" style="width: 100% !important;"></select>
+                                            <select id="NumeroProcessoAux" name="NumeroProcessoAux" class="form-control hidden" style="width: 100% !important; height: 40px !important;"></select>
+                                            <label id="NumeroProcessoValidate" name="NumeroProcessoValidate" for="NumeroProcesso" class="error hidden"> Por favor, selecione um Número do Processo.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Evento <span class="required">*</span></label>
+                                            <select id="Evento" name="Evento" class="select2_single form-control" style="width: 100% !important;"></select>
+                                            <label id="EventoValidate" name="EventoValidate" for="Evento" class="error hidden"> Por favor, selecione um Evento.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Profissional <span class="required">*</span></label>
+                                            <select id="Profissional" name="Profissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                            <label id="ProfissionalValidate" name="ProfissionalValidate" for="Profissional" class="error hidden"> Por favor, selecione um Profissional.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data 1º Prazo <span class="required">*</span></label>
+                                            <div id="DataPrazoEvento1" name="DataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
+                                                <input id="PrazoEvento1" name="PrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                            <label id="DataPrazoEvento1Validate" name="DataPrazoEvento1Validate" for="DataPrazoEvento1" class="error hidden"> Por favor, infomar o primeiro prazo.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data 2º Prazo</label>
+                                            <div id="DataPrazoEvento2" name="DataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
+                                                <input id="PrazoEvento2" name="PrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                            <label id="DataPrazoEvento2Validate" name="DataPrazoEvento2Validate" for="DataPrazoEvento2" class="error hidden"> Por favor, infomar o segundo prazo. Ele tem ser maior que o primeiro prazo.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label id="LabelPDF" class="titlefield">PDF</label>
+                                            <div id="PDF"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Descrição</label>
+                                            <textarea id="Descricao" name="Descricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Cadastro</label>
+                                            <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Cadastro</label>
+                                            <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Alteração</label>
+                                            <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Alteração</label>
+                                            <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                                </div>
+                                <div class="alert alert-success hidden" id="processo-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado da agenda do profissional realizada com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="processo-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da agenda do profissional.
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_visualizar" aria-labelledby="tab-visualizar">
+                        <div id="VisualizarAgenda" name="VisualizarAgenda">
+                            <p>Nenhuma agenda foi selecionada para visualização.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalVisualizarAlerta" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <form id="alerta-form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                            <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Alertas</label></h3>
+                        </div>
+                        <div class="modal-body">
+                            <div id="alertas"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="buttonSalvarAlerta" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div id="modalExcluir" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title" id="modalLabelExcluir">Excluir Processos/Agendar</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Você deseja realmente excluir essa Processos/Agendar?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="modalCriarEvento" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <form id="evento-form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Criar Evento</label></h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número do Processo <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Número do Processo" id="EventoNumeroProcesso" name="EventoNumeroProcesso" style="height: 40px !important;" data-msg-required="Por favor, insira o Número do Processo." data-rule-required="true" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="titlefield">Evento <span class="required">*</span></label>
+                                        <select id="EventoEvento" name="EventoEvento" class="select2_single form-control" style="width: 100% !important;"></select>
+                                        <label id="EventoEventoValidate" name="EventoEventoValidate" for="EventoEvento" class="error hidden"> Por favor, selecione um Evento.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Agendar para o profissional</label>
+                                        <select id="EventoProfissional" name="EventoProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Data 1º Prazo</label>
+                                        <div id="EventoDataPrazoEvento1" name="EventoDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
+                                            <input id="EventoPrazoEvento1" name="EventoPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                        </div>
+                                        <label id="EventoDataPrazoEvento1Validate" name="EventoDataPrazoEvento1Validate" for="EventoDataPrazoEvento1" class="error hidden">Por favor, informe o primeiro prazo.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Data 2º Prazo</label>
+                                        <div id="EventoDataPrazoEvento2" name="EventoDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
+                                            <input id="EventoPrazoEvento2" name="EventoPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                        </div>
+                                        <label id="EventoDataPrazoEvento2Validate" name="EventoDataPrazoEvento2Validate" for="EventoDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">PDF <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 10MB por arquivo)</label></label>
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoFileUpload1').click();" />
+                                            <input type="file" id="EventoFileUpload1" name="EProcUpload1" accept="application/pdf" value="10485760" />
+                                            <span id="EventoFileName1" name="EventoFileName1" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoFileUpload1Validate" name="EventoFileUpload1Validate" for="EventoFileUpload1" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoFileUpload2').click();" />
+                                            <input type="file" id="EventoFileUpload2" name="EProcUpload2" accept="application/pdf" value="10485760" />
+                                            <span id="EventoFileName2" name="EventoFileName2" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoFileUpload2Validate" name="EventoFileUpload2Validate" for="EventoFileUpload2" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoFileUpload3').click();" />
+                                            <input type="file" id="EventoFileUpload3" name="EProcUpload3" accept="application/pdf" value="10485760" />
+                                            <span id="EventoFileName3" name="EventoFileName3" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoFileUpload3Validate" name="EventoFileUpload3Validate" for="EventoFileUpload3" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoFileUpload4').click();" />
+                                            <input type="file" id="EventoFileUpload4" name="EProcUpload4" accept="application/pdf" value="10485760" />
+                                            <span id="EventoFileName4" name="EventoFileName4" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoFileUpload4Validate" name="EventoFileUpload4Validate" for="EventoFileUpload4" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoFileUpload5').click();" />
+                                            <input type="file" id="EventoFileUpload5" name="EProcUpload5" accept="application/pdf" value="10485760" />
+                                            <span id="EventoFileName5" name="EventoFileName5" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoFileUpload5Validate" name="EventoFileUpload5Validate" for="EventoFileUpload5" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Descrição <label class="titlefieldcomment"> <span class="red">(tamanho máximo do texto de 1MB)</label></label>
+                                        <textarea id="EventoDescricao" name="EventoDescricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                        <label id="EventoDescricaoValidate" name="EventoDescricaoValidate" for="EventoDescricao" class="error hidden">Por favor, informe uma descrição com até 1MB.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="buttonSalvarEvento" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                            &nbsp;
+                            <button id="buttonFecharEvento" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharEvento();">Fechar</button>
+                            <br />
+                            <label id='LabelEventoFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptEvento' class='btn btn-default btn-xs' style='display: none;' onclick='FecharEventoSim()'>Sim</a><a id='go_backEvento' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharEventoNao()'>Não</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div id="modalCumprirPrazo" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <form id="evento-cumprir-prazo-form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title"><label id="modalLabelTitle2" name="modalLabelTitle2">Criar Evento</label></h3>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número do Processo <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Número do Processo" id="EventoCumprirPrazoNumeroProcesso" name="EventoCumprirPrazoNumeroProcesso" style="height: 40px !important;" data-msg-required="Por favor, insira o Número do Processo." data-rule-required="true" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="titlefield">Evento <span class="required">*</span></label>
+                                        <select id="EventoCumprirPrazoEvento" name="EventoCumprirPrazoEvento" class="select2_single form-control" style="width: 100% !important;"></select>
+                                        <label id="EventoCumprirPrazoEventoValidate" name="EventoCumprirPrazoEventoValidate" for="EventoCumprirPrazoEvento" class="error hidden"> Por favor, selecione um Evento.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">PDF <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 10MB por arquivo)</label></label>
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoCumprirPrazoFileUpload1').click();" />
+                                            <input type="file" id="EventoCumprirPrazoFileUpload1" name="EventoCumprirPrazoUpload1" accept="application/pdf" value="10485760" />
+                                            <span id="EventoCumprirFileName1" name="EventoCumprirFileName1" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoCumprirPrazoFileUpload1Validate" name="EventoCumprirPrazoFileUpload1Validate" for="EventoCumprirPrazoFileUpload1" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoCumprirPrazoFileUpload2').click();" />
+                                            <input type="file" id="EventoCumprirPrazoFileUpload2" name="EventoCumprirPrazoUpload2" accept="application/pdf" value="10485760" />
+                                            <span id="EventoCumprirFileName2" name="EventoCumprirFileName2" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoCumprirPrazoFileUpload2Validate" name="EventoCumprirPrazoFileUpload2Validate" for="EventoCumprirPrazoFileUpload2" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoCumprirPrazoFileUpload3').click();" />
+                                            <input type="file" id="EventoCumprirPrazoFileUpload3" name="EventoCumprirPrazoUpload3" accept="application/pdf" value="10485760" />
+                                            <span id="EventoCumprirFileName3" name="EventoCumprirFileName3" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoCumprirPrazoFileUpload3Validate" name="EventoCumprirPrazoFileUpload3Validate" for="EventoCumprirPrazoFileUpload3" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoCumprirPrazoFileUpload4').click();" />
+                                            <input type="file" id="EventoCumprirPrazoFileUpload4" name="EventoCumprirPrazoUpload4" accept="application/pdf" value="10485760" />
+                                            <span id="EventoCumprirFileName4" name="EventoCumprirFileName4" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoCumprirPrazoFileUpload4Validate" name="EventoCumprirPrazoFileUpload4Validate" for="EventoCumprirPrazoFileUpload4" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                        <br />
+                                        <div class="upload">
+                                            <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#EventoCumprirPrazoFileUpload5').click();" />
+                                            <input type="file" id="EventoCumprirPrazoFileUpload5" name="EventoCumprirPrazoUpload5" accept="application/pdf" value="10485760" />
+                                            <span id="EventoCumprirFileName5" name="EventoCumprirFileName5" class="fileName">Nenhum arquivo selecionado</span>
+                                        </div>
+                                        <label id="EventoCumprirPrazoFileUpload5Validate" name="EventoCumprirPrazoFileUpload5Validate" for="EventoCumprirPrazoFileUpload5" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Descrição <label class="titlefieldcomment"> <span class="red">(tamanho máximo do texto de 1MB)</label></label>
+                                        <textarea id="EventoCumprirPrazoDescricao" name="EventoCumprirPrazoDescricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                        <label id="EventoCumprirPrazoDescricaoValidate" name="EventoCumprirPrazoDescricaoValidate" for="EventoCumprirPrazoDescricao" class="error hidden">Por favor, informe uma descrição com até 1MB.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="buttonSalvarEventoCumprirPrazo" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                            &nbsp;
+                            <button id="buttonFecharEventoCumprirPrazo" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharCumprirPrazo();">Fechar</button>
+                            <br />
+                            <label id='LabelCumprirPrazoFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptCumprirPrazo' class='btn btn-default btn-xs' style='display: none;' onclick='FecharCumprirPrazoSim()'>Sim</a><a id='go_backCumprirPrazo' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharCumprirPrazoNao()'>Não</a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div id="modalVisualizarProcesso" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+
+                <!-- Modal content-->
+                <form id="evento-form">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                            <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Processo</label></h3>
+                        </div>
+                        <div class="modal-body">
+                            <div id="VisualizarProcesso" name="VisualizarProcesso">
+                                <p>Nenhum processo foi selecionado para visualização.</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script>
+
+        $('input[type=file]').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        var select = $('#FiltrarCliente');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+        );
+        $('#FiltrarCliente').trigger('change');
+
+        select = $('#FiltrarProcesso');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProcesso))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarProcesso)))
+        );
+        $('#FiltrarProcesso').trigger('change');
+
+        select = $('#FiltrarEvento');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarEvento))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarEvento)))
+        );
+        $('#FiltrarEvento').trigger('change');
+
+        select = $('#FiltrarVara');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarVara))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarVara)))
+        );
+        $('#FiltrarVara').trigger('change');
+
+        $("#FiltrarCliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#FiltrarEvento").select2({
+            placeholder: "Selecione um Evento",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#FiltrarProcesso").select2({
+            placeholder: "Selecione um Processo",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: "/Processos/GetProcessList",
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.acoes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $('#FiltrarPrazoEvento1').daterangepicker();
+
+        $('input[name="FiltrarPrazoEvento1"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="FiltrarPrazoEvento1"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $('#FiltrarPrazoEvento2').daterangepicker();
+
+        $('input[name="FiltrarPrazoEvento2"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="FiltrarPrazoEvento2"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $("#FiltrarProfissional").select2({
+            placeholder: "&nbsp;",
+            allowClear: true,
+            tags: true
+        });
+
+        $('#FiltrarCadastro').daterangepicker();
+
+        $("#FiltrarVara").select2({
+            placeholder: "Selecione um Juízo",
+            allowClear: true,
+            tags: true
+        });
+
+        $('input[name="FiltrarCadastro"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="FiltrarCadastro"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        //$("#Cliente").select2({
+        //    placeholder: "Selecione um Cliente",
+        //    allowClear: true,
+        //    tags: true,
+        //    minimumInputLength: 3,
+        //    ajax: {
+        //        dataType: "json",
+        //        type: "GET",
+        //        url: '/Clientes/GetClientsList',
+        //        delay: 250,
+        //        cache: true,
+        //        data: function (params) {
+        //            params.page = params.page || 1;
+        //            return {
+        //                search: params.term,
+        //                filter: true,
+        //                page: params.page
+        //            };
+        //        },
+        //        processResults: function (data, params) {
+        //            return {
+        //                results: data.clientes,
+        //                pagination: {
+        //                    more: (params.page * 10) < data.total
+        //                }
+        //            };
+        //        }
+        //    }
+        //}).on("change", function (e) {
+
+        //    var Cliente = $('#Cliente').select2("val");
+        //    if (Cliente != null && Cliente.length > 0) {
+
+        //        $('#NumeroProcesso').select2().next().hide();
+        //        $('#NumeroProcessoAux').removeClass('hidden');
+
+        //        var dados = new window.FormData();
+        //        dados.append("Cliente", Cliente);
+
+        //        var options = {};
+        //        options.url = "/Processos/ListarProcessosCliente"
+        //        options.type = "POST";
+        //        options.data = dados;
+        //        options.asyn = true;
+        //        options.contentType = false;
+        //        options.processData = false;
+        //        options.dataType = "application/json; charset=utf-8";
+        //        options.complete = function (data) {
+
+        //            var json = $.parseJSON(data.responseText);
+
+        //            if (json.codigo == '00') {
+
+        //                var rows = json.processos;
+        //                $('#NumeroProcessoAux').html("");
+        //                var select = $('#NumeroProcessoAux');
+        //                select.append(
+        //                    $('<option selected disabled></option>').val("").html("Selecione um Processo")
+        //                );
+
+        //                for (index = 0; index < rows.length; index++) {
+        //                    select.append(
+        //                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+        //                    );
+        //                }
+
+        //            }
+
+        //        };
+        //        $.ajax(options);
+
+        //    }
+        //    else {
+
+        //        $('#NumeroProcesso').select2().next().show();
+
+        //        $("#NumeroProcesso").select2({
+        //            placeholder: "Selecione um Processo",
+        //            allowClear: true,
+        //            tags: true,
+        //            minimumInputLength: 3,
+        //            ajax: {
+        //                dataType: "json",
+        //                type: "GET",
+        //                url: '/Processos/GetProcessList',
+        //                delay: 250,
+        //                cache: true,
+        //                data: function (params) {
+        //                    params.page = params.page || 1;
+        //                    return {
+        //                        search: params.term,
+        //                        page: params.page
+        //                    };
+        //                },
+        //                processResults: function (data, params) {
+        //                    return {
+        //                        results: data.acoes,
+        //                        pagination: {
+        //                            more: (params.page * 10) < data.total
+        //                        }
+        //                    };
+        //                }
+        //            }
+        //        });
+
+        //        $('#NumeroProcessoAux').addClass('hidden');
+        //        $('#NumeroProcessoAux').html("");
+
+        //    }
+
+        //});
+
+        $("#NumeroProcesso").select2({
+            placeholder: "Selecione um Processo",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Processos/GetProcessList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.acoes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#DataPrazoEvento1").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#DataPrazoEvento2").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#Profissional").select2({
+            placeholder: "&nbsp;",
+            allowClear: true,
+            tags: true
+        });
+
+        CKEDITOR.replace('Descricao', {
+            language: 'pt',
+            height: 200
+        });
+
+        $("#EventoEvento").select2({
+            placeholder: "Selecione um Evento",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#EventoProfissional").select2({
+            placeholder: "&nbsp;",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#EventoDataPrazoEvento1").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#EventoDataPrazoEvento2").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#EventoCumprirPrazoEvento").select2({
+            placeholder: "Selecione um Evento",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#Evento").select2({
+            placeholder: "Selecione um Evento",
+            allowClear: true,
+            tags: true
+        });
+
+        CKEDITOR.replace('EventoDescricao', {
+            language: 'pt',
+            height: 200
+        });
+
+        CKEDITOR.replace('EventoCumprirPrazoDescricao', {
+            language: 'pt',
+            height: 200
+        });
+
+        $(document.body).on("change", "#EventoEvento", function () {
+
+            var dados = new window.FormData();
+            dados.append("Id", this.value);
+
+            var options = {};
+            options.url = "/Eventos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    if (json.evento[0] != null && json.evento[0].Texto != null) {
+
+                        var texto = $('#eventoDescricaoOriginal').val() + "<br><br>" + json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                        CKEDITOR.instances["EventoDescricao"].setData(unescape(texto));
+
+                    }
+                    else {
+
+                        CKEDITOR.instances["EventoDescricao"].setData(unescape($('#eventoDescricaoOriginal').val()));
+
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        });
+
+        $(document.body).on("change", "#Evento", function () {
+
+            var dados = new window.FormData();
+            dados.append("Id", this.value);
+
+            var options = {};
+            options.url = "/Eventos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    if (json.evento[0] != null && json.evento[0].Texto != null) {
+
+                        var texto = $('#DescricaoOriginal').val() + "<br><br>" + json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                        CKEDITOR.instances["Descricao"].setData(unescape(texto));
+
+                    }
+                    else {
+
+                        CKEDITOR.instances["Descricao"].setData(unescape($('#DescricaoOriginal').val()));
+
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        });
+
+        CarregarProfissionais("");
+        CarregarEventos();
+        CarregarVaras();
+
+        function CarregarProfissionais(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#Profissional').html("");
+                    var select = $('#Profissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("&nbsp;")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#EventoProfissional').html("");
+                    var select = $('#EventoProfissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("&nbsp;")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProfissional').html("");
+                    var select = $('#FiltrarProfissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("&nbsp;")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Nome).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProfissional').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProfissional)));
+                    $('#FiltrarProfissional').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarAcoes(IdProcesso) {
+
+            NProgress.start();
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", IdProcesso);
+
+            var options = {};
+            options.url = "/Processos/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.processos.Data;
+                    $('#FiltrarProcesso').html("");
+                    var select = $('#FiltrarProcesso');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Processo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProcesso').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProcesso)));
+                    $('#FiltrarProcesso').trigger('change');
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarEventos() {
+
+            var options = {};
+            options.url = "/Eventos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.eventos;
+
+                    $('#Evento').html("");
+                    var select = $('#Evento');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#EventoEvento').html("");
+                    var select = $('#EventoEvento');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#EventoCumprirPrazoEvento').html("");
+                    var select = $('#EventoCumprirPrazoEvento');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#FiltrarEvento').html("");
+                    var select = $('#FiltrarEvento');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Nome).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#FiltrarEvento').val(@Html.Raw(Json.Encode(ViewBag.FiltrarEvento)));
+                    $('#FiltrarEvento').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarVaras() {
+            var options = {};
+            options.url = "/Varas/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.varas;
+
+                    $('#FiltrarVara').html("");
+                    var select = $('#FiltrarVara');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Juízo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarVara').val(@Html.Raw(Json.Encode(ViewBag.FiltrarVara)));
+                    $('#FiltrarVara').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Novo() {
+            $('#TituloAgenda').text('Nova Agenda do Profissional');
+            $('#Profissional').attr('disabled', false);
+            $('#Profissional').val('');
+            $('#Profissional').trigger('change');
+            $('#NumeroProcesso').attr('disabled', false);
+            $('#NumeroProcesso').val('');
+            $('#NumeroProcesso').trigger('change');
+            $('#Profissional').val('');
+            $('#PrazoEvento1').val('');
+            $('#PrazoEvento2').val('');
+            //$("#PrazoEvento2").prop('disabled', false);
+            CKEDITOR.instances["Descricao"].setData("");
+            $('#LabelPDF').text('');
+            $('#PDF').text('');
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#agenda-form").validate().resetForm();
+        }
+
+        function Visualizar(Id) {
+
+            $('#VisualizarAgenda').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Processos/ConsultaAgendaProfissional"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var agenda = "";
+                    agenda += "<div class='feedback-box' style='margin-left: 0 !important; margin-right: 0 !important;'>";
+                    agenda += "    <div class='row'>";
+                    agenda += "        <div class='col-md-12'>";
+                    agenda += "            <h4><b>Agenda do Profissional</b></h4>";
+                    agenda += "            <hr />";
+                    agenda += "        </div>";
+                    agenda += "    </div>";
+                    agenda += "    <div class='row'>";
+                    agenda += "        <div class='col-md-12'>";
+                    agenda += "            <table width='100%'>";
+                    agenda += "                <thead>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <th>Nome do Cliente</th>";
+                    agenda += "                        <th>Número do Processo</th>";
+                    agenda += "                        <th>Juizo</th>";
+                    agenda += "                        <th>Evento</th>";
+                    agenda += "                        <th>Data 1º Prazo</th>";
+                    agenda += "                        <th>Data 2º Prazo</th>";
+                    agenda += "                        <th>Nome do Profissional</th>";
+                    agenda += "                    </tr>";
+                    agenda += "                </thead>";
+                    agenda += "                <tbody>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <td>" + json.agenda[0].Cliente + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].NumeroProcesso + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].Juizo + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].CodigoEvento + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].Prazo1 + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].Prazo2 + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].NomeProfissional + "</td>";
+                    agenda += "                    </tr>";
+                    agenda += "                </tbody>";
+                    agenda += "            </table>";
+                    agenda += "            <br />";
+                    agenda += "            <table width='100%'>";
+                    agenda += "                <thead>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <th>PDF</th>";
+                    agenda += "                    </tr>";
+                    agenda += "                </thead>";
+                    agenda += "                <tbody>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <td>" + json.pdf + "</td>";
+                    agenda += "                    </tr>";
+                    agenda += "                </tbody>";
+                    agenda += "            </table>";
+                    agenda += "            <br />";
+                    agenda += "            <table width='100%'>";
+                    agenda += "                <thead>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <th>Descrição</th>";
+                    agenda += "                    </tr>";
+                    agenda += "                </thead>";
+                    agenda += "                <tbody>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <td>" + unescape(json.agenda[0].Descricao) + "</td>";
+                    agenda += "                    </tr>";
+                    agenda += "                </tbody>";
+                    agenda += "            </table>";
+
+                    var nivel = @Uranus.Suite.Sessao.Usuario.Nivel;
+
+                    agenda += "            <br />";
+                    agenda += "            <table width='100%'>";
+                    agenda += "                <thead>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <th>Data Cadastro</th>";
+                    agenda += "                        <th>Usuário Cadastro</th>";
+                    agenda += "                        <th>Data Alteração</th>";
+                    agenda += "                        <th>Usuário Alteração</th>";
+                    agenda += "                    </tr>";
+                    agenda += "                </thead>";
+                    agenda += "                <tbody>";
+                    agenda += "                    <tr>";
+                    agenda += "                        <td>" + json.agenda[0].DataCadastro + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].UsuarioCadastro + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].DataAlteracao + "</td>";
+                    agenda += "                        <td>" + json.agenda[0].UsuarioAlteracao + "</td>";
+                    agenda += "                    </tr>";
+                    agenda += "                </tbody>";
+                    agenda += "            </table>";
+                    agenda += "            <br />";
+                    agenda += "        </div>";
+                    agenda += "    </div>";
+                    agenda += "    <div class='modal-footer'>";
+                    agenda += "       <div class='col-md-6' style='text-align: left;'>";
+                    agenda += "          <button id='ButtonCumprirPrazo' name='ButtonCumprirPrazo' type='button' class='btn btn-primary' style='margin: 0;' data-toggle='modal' data-backdrop='static' data-target='#modalCumprirPrazo' onclick='CumprirPrazo(" + json.agenda[0].Id + ", " + json.agenda[0].IdProcessosEvento + ", " + json.agenda[0].IdProcessosAcao + ", " + '"' + json.agenda[0].NumeroProcesso + '"' + ", " + json.agenda[0].IdEvento + ", " + '"' + escape(json.agenda[0].Descricao) + '"' + ", " + '"' + escape(json.arquivo1) + '"' + ", " + '"' + escape(json.arquivo2) + '"' + ", " + '"' + escape(json.arquivo3) + '"' + ", " + '"' + escape(json.arquivo4) + '"' + ", " + '"' + escape(json.arquivo5) + '"' + ");'>Cumprir Prazo</button>";
+                    agenda += "       </div>";
+                    agenda += "       <div class='col-md-1' style='text-align: center;'>";
+                    agenda += "       </div>";
+                    agenda += "       <div class='col-md-5' style='text-align: right;'>";
+                    agenda += "          <button type='button' class='btn btn-default' style='margin: 0;'data-toggle='modal' data-target='#modalVisualizarProcesso' onclick='VisualizarProcesso(" + json.agenda[0].IdProcesso + ");'>Visualizar Processo</button>";
+                    agenda += "          &nbsp;";
+                    agenda += "          <button type='button' class='btn btn-info' style='margin: 0;' data-toggle='modal' data-backdrop='static' data-target='#modalCriarEvento' onclick='CriarEvento(" + json.agenda[0].Id + ", " + json.agenda[0].IdProcessosAcao + ", " + '"' + json.agenda[0].NumeroProcesso + '"' + ");'>Criar Evento</button>";
+                    agenda += "       </div>";
+                    agenda += "    </div>";
+                    agenda += "    <div class='row'>";
+                    agenda += "       <div class='col-md-12'>";
+                    agenda += "          <div class='alert alert-success hidden' id='cumprir-prazo-alert-success'>";
+                    agenda += "             <strong>SUCESSO:</strong> Cumprimento do prazo realizado com sucesso.";
+                    agenda += "          </div>";
+                    agenda += "          <div class='alert alert-warning hidden' id='cumprir-prazo-alert-warning'>";
+                    agenda += "             <strong>ERRO:</strong> Cumprimento do prazo já realizado com sucesso.";
+                    agenda += "          </div>";
+                    agenda += "       </div>";
+                    agenda += "    </div>";
+                    agenda += "</div>";
+
+                    $('#VisualizarAgenda').html(agenda);
+
+                    if (json.agenda[0].Excluido == true) {
+
+                        $('#ButtonCumprirPrazo').addClass('hidden');
+                        $('#cumprir-prazo-alert-success').addClass('hidden')
+                        $('#cumprir-prazo-alert-warning').removeClass('hidden');
+
+                    }
+
+                    $('#IdProcessAction').val(json.agenda[0].IdProcessosAcao);
+
+                    $("#tab-visualizar").click();
+
+                    VisualizarAlerta(json.agenda[0].NumeroProcesso, json.agenda[0].IdProcesso);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+
+            NProgress.start();
+
+            $("#tab-cadastrar").click();
+            $('#tab-cadastrar').text("Alterar");
+
+            $('#TituloAgenda').text('Alterar Agenda do Profissional');
+            $('#Profissional').attr('disabled', false);
+            $('#Profissional').val('');
+            $('#Profissional').trigger('change');
+            $('#NumeroProcesso').attr('disabled', false);
+            $('#NumeroProcesso').val('');
+            $('#NumeroProcesso').trigger('change');
+            $('#Profissional').val('');
+            $('#PrazoEvento1').val('');
+            $('#PrazoEvento2').val('');
+            CKEDITOR.instances["Descricao"].setData("");
+            CKEDITOR.instances["Descricao"].setReadOnly(false);
+            $('#LabelPDF').text('PDF');
+            $('#buttonSalvar').attr('disabled', false);
+            $("#agenda-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Processos/ConsultaAgendaProfissional"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#idAcaoEvento').val(json.agenda[0].IdProcessosEvento);
+                    $('#Profissional').val(json.agenda[0].IdProfissional);
+                    $('#Profissional').trigger('change');
+                    $('#NumeroProcesso').val(json.agenda[0].IdProcessosAcao);
+                    $('#NumeroProcesso').trigger('change');
+                    $('#Evento').val(json.agenda[0].IdEvento);
+                    $('#Evento').trigger('change');
+                    $('#PrazoEvento1').val(json.agenda[0].Prazo1);
+                    $('#PrazoEvento2').val(json.agenda[0].Prazo2);
+                    CKEDITOR.instances["Descricao"].setData(unescape(json.agenda[0].Descricao));
+                    $('#eventoDescricaoOriginal').val(json.agenda[0].Descricao);
+                    $('#DescricaoOriginal').val(json.agenda[0].Descricao);
+
+                    $('#PDF').html(json.pdf);
+
+                    $('#DataCadastro').val(json.agenda[0].DataCadastro);
+                    $('#UsuarioCadastro').val(json.agenda[0].UsuarioCadastro);
+                    $('#DataAlteracao').val(json.agenda[0].DataAlteracao);
+                    $('#UsuarioAlteracao').val(json.agenda[0].UsuarioAlteracao);
+
+                    $('#NumeroProcesso').append($('<option selected></option>').val(json.agenda[0].IdProcessosAcao).html(json.agenda[0].NumeroProcesso));
+                    $('#NumeroProcesso').trigger('change');
+
+                    $('#Cliente').append($('<option selected></option>').val(json.agenda[0].IdCliente).html(json.agenda[0].Nome));
+                    $('#Cliente').trigger('change');
+
+                    VisualizarAlerta(json.agenda[0].NumeroProcesso, json.agenda[0].IdProcesso);
+
+                }
+            };
+            $.ajax(options);
+
+            NProgress.done();
+
+        }
+
+        function Excluir(Id, Nome, NumeroProcesso) {
+            $('h4').text('Você deseja realmente excluir essa Agenda do Profissional (' + Nome + " - " + NumeroProcesso + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#agenda-form").validate();
+
+            if ($('#agenda-form').valid()) {
+
+                var validate = true;
+
+                if ($('#Profissional').val() == null || !$.isNumeric($('#Profissional').val())) {
+                    $('#ProfissionalValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#ProfissionalValidate').addClass('hidden');
+                }
+
+                if (($('#NumeroProcesso').val() == null || !$.isNumeric($('#NumeroProcesso').val())) && $('#Cliente').select2("val") == null) {
+                    $('#NumeroProcessoValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else if (($('#NumeroProcessoAux').val() == null || !$.isNumeric($('#NumeroProcessoAux').val())) && $('#Cliente').select2("val") != null) {
+                        $('#NumeroProcessoValidate').removeClass('hidden').css("display", "");
+                        validate = false;
+                } else {
+                    $('#NumeroProcessoValidate').addClass('hidden');
+                }
+
+                if ($('#Evento').val() == null || !$.isNumeric($('#Evento').val())) {
+                    $('#EventoValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#EventoValidate').addClass('hidden');
+                }
+
+                if ($('#PrazoEvento1').val().length < 10) {
+                    $('#DataPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#DataPrazoEvento1Validate').addClass('hidden');
+                }
+
+                if ($('#PrazoEvento1').val() != "" || $('#PrazoEvento2').val() != "") {
+
+                    var date1 = toDate($('#PrazoEvento1').val());
+                    var date2 = toDate($('#PrazoEvento2').val());
+                    var days = (date2 - date1) / (1000 * 60 * 60 * 24);
+
+                    if (days < 0) {
+
+                        $('#DataPrazoEvento2Validate').removeClass('hidden').css("display", "");
+                        validate = false;
+
+                    }
+
+                } else {
+                    $('#DataPrazoEvento2Validate').addClass('hidden');
+                }
+
+                if (validate) {
+
+                    $("#buttonSalvar").attr('disabled', true);
+                    $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                    var descricao = escape(CKEDITOR.instances.Descricao.getData());
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $("#idAcaoEvento").val());
+
+                    if ($('#Cliente').select2("val") == null) {
+
+                        dados.append("IdProcessosAcao", $("#NumeroProcesso").val());
+
+                    }
+                    else {
+
+                        dados.append("IdProcessosAcao", $("#NumeroProcessoAux").val());
+
+                    }
+
+                    dados.append("IdProcessosEvento", $("#Evento").val());
+                    dados.append("IdProfissional", $("#Profissional").val());
+                    dados.append("Prazo1", $("#PrazoEvento1").val());
+                    dados.append("Prazo2", $("#PrazoEvento2").val());
+                    dados.append("Descricao", descricao);
+                    dados.append("IdAgendaProfissional", $("#id").val());
+                    dados.append("Excluido", false);
+
+                    var options = {};
+                    options.url = "/Processos/SalvarProcessosEventos"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "success") {
+
+                            $("#id").val(json.idagenda);
+                            $("#idAcaoEvento").val(json.id);
+
+                            $("#processo-alert-success").removeClass("hidden");
+                            $("#processo-alert-error").addClass("hidden");
+
+                            $("#buttonSalvar").text("Salvar");
+                            $("#buttonSalvar").attr('disabled', false);
+
+                        }
+                        else {
+
+                            $("#processo-alert-success").addClass("hidden");
+                            $("#processo-alert-error").removeClass("hidden");
+
+                            $("#buttonSalvar").text("Salvar");
+                            $("#buttonSalvar").attr('disabled', false);
+
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-alert-success").addClass("hidden");
+                            $("#processo-alert-error").addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    evt.preventDefault();
+
+                }
+                else {
+
+                    return false;
+
+                }
+
+            }
+            else {
+
+                return false;
+
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Processos/ExcluirAgendaProfissional"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Ação excluída com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#acao-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir a Agenda do Profissional (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão da Agenda do Profissional (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Processos/Agendar');
+        }
+
+        function CriarEvento(Id, IdAcao, NumeroProcesso) {
+
+            $('#idAcao').val(IdAcao);
+            $('#EventoNumeroProcesso').val(NumeroProcesso);
+            $("#id").val(Id);
+            $("#excluirAgenda").val("0");
+
+            $('#modalLabelTitle2').text("Criar Evento");
+            $("#EventoEvento").prop("disabled", false);
+            $('#EventoEvento').val("");
+            $('#EventoEvento').trigger('change');
+
+            $("#EventoFileUpload1").val("");
+            $("#EventoFileName1").text("Nenhum arquivo selecionado");
+            $("#EventoFileUpload2").val("");
+            $("#EventoFileName2").text("Nenhum arquivo selecionado");
+            $("#EventoFileUpload3").val("");
+            $("#EventoFileName3").text("Nenhum arquivo selecionado");
+            $("#EventoFileUpload4").val("");
+            $("#EventoFileName4").text("Nenhum arquivo selecionado");
+            $("#EventoFileUpload5").val("");
+            $("#EventoFileName5").text("Nenhum arquivo selecionado");
+
+            CKEDITOR.instances["EventoDescricao"].setData("");
+
+        }
+
+        function VisualizarProcesso(Id) {
+
+            $('#VisualizarProcesso').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+            var url = '@Url.Action("View", "Processos")';
+            url += '/?Id=' + Id;
+            $("#VisualizarProcesso").load(url);
+
+        }
+
+        function CumprirPrazo(Id, IdProcessosEvento, IdAcao, NumeroProcesso, IdEvento, Descricao, Arquivo1, Arquivo2, Arquivo3, Arquivo4, Arquivo5) {
+
+            $("#id").val(Id);
+            $("#idAcaoEvento").val(IdProcessosEvento);
+            $('#idAcao').val(IdAcao);
+            $('#EventoCumprirPrazoNumeroProcesso').val(NumeroProcesso);
+            $("#excluirAgenda").val("1");
+
+
+            $('#modalLabelTitle2').text("Cumprir Prazo do Evento");
+            $("#EventoCumprirPrazoEvento").prop("disabled", true);
+            $('#EventoCumprirPrazoEvento').val(IdEvento);
+            $('#EventoCumprirPrazoEvento').trigger('change');
+
+            CKEDITOR.instances["EventoCumprirPrazoDescricao"].setData(unescape(decodeURI(unescape(Descricao))));
+
+            $('#EventoCumprirFileName1').html(unescape(Arquivo1));
+            $('#EventoCumprirFileName2').html(unescape(Arquivo2));
+            $('#EventoCumprirFileName3').html(unescape(Arquivo3));
+            $('#EventoCumprirFileName4').html(unescape(Arquivo4));
+            $('#EventoCumprirFileName5').html(unescape(Arquivo5));
+
+        }
+
+        $('#buttonSalvarEvento').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#EventoEvento').val() == null || !$.isNumeric($('#EventoEvento').val())) {
+                $('#EventoEventoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EventoEventoValidate').addClass('hidden');
+            }
+
+            if ($('#EventoPrazoEvento1').val() != "" || $('#EventoPrazoEvento2').val() != "") {
+
+                var date1 = toDate($('#EventoPrazoEvento1').val());
+                var date2 = toDate($('#EventoPrazoEvento2').val());
+                var days = (date2 - date1) / (1000 * 60 * 60 * 24);
+
+                if (days < 0) {
+
+                    $('#EventoDataPrazoEvento2Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+
+                }
+
+            } else {
+                $('#EventoDataPrazoEvento2Validate').addClass('hidden');
+            }
+
+            if (typeof document.getElementById("EventoFileUpload1").files[0] !== "undefined") {
+                if (document.getElementById("EventoFileUpload1").files[0].size > 10485760) {
+                    $("#EventoFileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoFileUpload1").files[0].size, 1) + ".");
+                    $("#EventoFileUpload1Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoFileUpload1Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoFileUpload2").files[0] !== "undefined") {
+                if (document.getElementById("EventoFileUpload2").files[0].size > 10485760) {
+                    $("#EventoFileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoFileUpload2").files[0].size, 1) + ".");
+                    $("#EventoFileUpload2Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoFileUpload2Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoFileUpload3").files[0] !== "undefined") {
+                if (document.getElementById("EventoFileUpload3").files[0].size > 10485760) {
+                    $("#EventoFileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoFileUpload3").files[0].size, 1) + ".");
+                    $("#EventoFileUpload3Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoFileUpload3Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoFileUpload4").files[0] !== "undefined") {
+                if (document.getElementById("EventoFileUpload4").files[0].size > 10485760) {
+                    $("#EventoFileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoFileUpload4").files[0].size, 1) + ".");
+                    $("#EventoFileUpload4Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoFileUpload4Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoFileUpload5").files[0] !== "undefined") {
+                if (document.getElementById("EventoFileUpload5").files[0].size > 10485760) {
+                    $("#EventoFileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoFileUpload5").files[0].size, 1) + ".");
+                    $("#EventoFileUpload5Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoFileUpload5Validate').addClass('hidden');
+                }
+            }
+
+            //TextEncoder
+            if (escape(CKEDITOR.instances.EventoDescricao.getData()).length > 0) {
+
+                var size = new TextEncoder().encode(escape(CKEDITOR.instances.EventoDescricao.getData())).length;
+
+                if (size > 1048576) {
+                    $("#EventoDescricaoValidate").text("Por favor, informar uma descrição com até 1MB, pois esse possuí " + formatBytes(size, 1) + ".");
+                    $("#EventoDescricaoValidate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoDescricaoValidate').addClass('hidden');
+                }
+
+            }
+
+            if (validate) {
+
+                var validate = true;
+
+                if ($('#EventoEvento').val() == null || !$.isNumeric($('#EventoEvento').val())) {
+                    $('#EventoEventoValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#EventoEventoValidate').addClass('hidden');
+                }
+
+                if (validate) {
+
+                    var descricao = escape(CKEDITOR.instances.EventoDescricao.getData());
+                    var profissional = ($("#EventoProfissional").val() != null && $("#EventoProfissional").val() > 0 ? $("#EventoProfissional").val() : 0);
+
+                    var dados = new window.FormData();
+                    dados.append("Id", 0);
+                    dados.append("Origem", "");
+                    dados.append("IdProcessosAcao", $("#idAcao").val());
+                    dados.append("IdProcessosEvento", $("#EventoEvento").val());
+                    dados.append("IdProfissional", profissional);
+                    dados.append("Prazo1", $("#EventoPrazoEvento1").val());
+                    dados.append("Prazo2", $("#EventoPrazoEvento2").val());
+                    dados.append("Descricao", descricao);
+                    dados.append("IdAgendaProfissional", $("#id").val());
+
+                    var arquivo1 = document.getElementById("EventoFileUpload1").files[0];
+                    dados.append("Arquivo1", arquivo1);
+
+                    var arquivo2 = document.getElementById("EventoFileUpload2").files[0];
+                    dados.append("Arquivo2", arquivo2);
+
+                    var arquivo3 = document.getElementById("EventoFileUpload3").files[0];
+                    dados.append("Arquivo3", arquivo3);
+
+                    var arquivo4 = document.getElementById("EventoFileUpload4").files[0];
+                    dados.append("Arquivo4", arquivo4);
+
+                    var arquivo5 = document.getElementById("EventoFileUpload5").files[0];
+                    dados.append("Arquivo5", arquivo5);
+
+                    var excluir = false;
+                    if ($("#excluirAgenda").val() == "1") {
+                        excluir = true;
+                    }
+                    dados.append("Excluido", excluir);
+
+                    var options = {};
+                    options.url = "/Processos/SalvarProcessosEventos"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+                        if (json.response == "success") {
+
+                            $('#EventoEvento').val('');
+                            $('#EventoEvento').trigger('change');
+
+                            $('#EventoProfissional').val('');
+                            $('#EventoProfissional').trigger('change');
+
+                            $('#EventoPrazoEvento1').val('');
+                            $('#EventoPrazoEvento2').val('');
+
+                            CKEDITOR.instances["EventoDescricao"].setData("");
+
+                            $('#EventoFileUpload1').val('');
+                            $('#EventoFileUpload2').val('');
+                            $('#EventoFileUpload3').val('');
+                            $('#EventoFileUpload4').val('');
+                            $('#EventoFileUpload5').val('');
+
+                            $('#EventoFileName1').html('Nenhum arquivo selecionado');
+                            $('#EventoFileName2').html('Nenhum arquivo selecionado');
+                            $('#EventoFileName3').html('Nenhum arquivo selecionado');
+                            $('#EventoFileName4').html('Nenhum arquivo selecionado');
+                            $('#EventoFileName5').html('Nenhum arquivo selecionado');
+
+                        }
+                    };
+                    $.ajax(options);
+
+                    evt.preventDefault();
+
+                }
+                else {
+
+                    return false;
+
+                }
+
+            }
+            else {
+
+                return false;
+
+            }
+
+        });
+
+        $('#buttonSalvarEventoCumprirPrazo').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#EventoCumprirPrazoEvento').val() == null || !$.isNumeric($('#EventoCumprirPrazoEvento').val())) {
+                $('#EventoCumprirPrazoEventoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EventoCumprirPrazoEventoValidate').addClass('hidden');
+            }
+
+            if (typeof document.getElementById("EventoCumprirPrazoFileUpload1").files[0] !== "undefined") {
+                if (document.getElementById("EventoCumprirPrazoFileUpload1").files[0].size > 10485760) {
+                    $("#EventoCumprirPrazoFileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoCumprirPrazoFileUpload1").files[0].size, 1) + ".");
+                    $("#EventoCumprirPrazoFileUpload1Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoCumprirPrazoFileUpload1Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoCumprirPrazoFileUpload2").files[0] !== "undefined") {
+                if (document.getElementById("EventoCumprirPrazoFileUpload2").files[0].size > 10485760) {
+                    $("#EventoCumprirPrazoFileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoCumprirPrazoFileUpload2").files[0].size, 1) + ".");
+                    $("#EventoCumprirPrazoFileUpload2Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoCumprirPrazoFileUpload2Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoCumprirPrazoFileUpload3").files[0] !== "undefined") {
+                if (document.getElementById("EventoCumprirPrazoFileUpload3").files[0].size > 10485760) {
+                    $("#EventoCumprirPrazoFileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoCumprirPrazoFileUpload3").files[0].size, 1) + ".");
+                    $("#EventoCumprirPrazoFileUpload3Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoCumprirPrazoFileUpload3Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoCumprirPrazoFileUpload4").files[0] !== "undefined") {
+                if (document.getElementById("EventoCumprirPrazoFileUpload4").files[0].size > 10485760) {
+                    $("#EventoCumprirPrazoFileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoCumprirPrazoFileUpload4").files[0].size, 1) + ".");
+                    $("#EventoCumprirPrazoFileUpload4Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoCumprirPrazoFileUpload4Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("EventoCumprirPrazoFileUpload5").files[0] !== "undefined") {
+                if (document.getElementById("EventoCumprirPrazoFileUpload5").files[0].size > 10485760) {
+                    $("#EventoCumprirPrazoFileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("EventoCumprirPrazoFileUpload5").files[0].size, 1) + ".");
+                    $("#EventoCumprirPrazoFileUpload5Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoCumprirPrazoFileUpload5Validate').addClass('hidden');
+                }
+            }
+
+            //TextEncoder
+            if (escape(CKEDITOR.instances.EventoCumprirPrazoDescricao.getData()).length > 0) {
+
+                var size = new TextEncoder().encode(escape(CKEDITOR.instances.EventoCumprirPrazoDescricao.getData())).length;
+
+                if (size > 1048576) {
+                    $("#EventoCumprirPrazoDescricaoValidate").text("Por favor, informar uma descrição com até 1MB, pois esse possuí " + formatBytes(size, 1) + ".");
+                    $("#EventoCumprirPrazoDescricaoValidate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#EventoCumprirPrazoDescricaoValidate').addClass('hidden');
+                }
+
+            }
+
+            if (validate) {
+
+                var descricao = escape(CKEDITOR.instances.EventoCumprirPrazoDescricao.getData());
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#idAcaoEvento").val());
+                dados.append("Origem", "");
+                dados.append("IdProcessosAcao", $("#idAcao").val());
+                dados.append("IdProcessosEvento", $("#EventoCumprirPrazoEvento").val());
+                dados.append("IdProfissional", 0);
+                dados.append("Prazo1", "");
+                dados.append("Prazo2", "");
+                dados.append("Descricao", descricao);
+                dados.append("Arquivo", null);
+                dados.append("IdAgendaProfissional", $("#id").val());
+
+                var arquivo1 = document.getElementById("EventoCumprirPrazoFileUpload1").files[0];
+                dados.append("Arquivo1", arquivo1);
+
+                var arquivo2 = document.getElementById("EventoCumprirPrazoFileUpload2").files[0];
+                dados.append("Arquivo2", arquivo2);
+
+                var arquivo3 = document.getElementById("EventoCumprirPrazoFileUpload3").files[0];
+                dados.append("Arquivo3", arquivo3);
+
+                var arquivo4 = document.getElementById("EventoCumprirPrazoFileUpload4").files[0];
+                dados.append("Arquivo4", arquivo4);
+
+                var arquivo5 = document.getElementById("EventoCumprirPrazoFileUpload5").files[0];
+                dados.append("Arquivo5", arquivo5);
+
+                var excluir = false;
+                if ($("#excluirAgenda").val() == "1") {
+                    excluir = true;
+                }
+                dados.append("Excluido", excluir);
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosEventos"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+                    if (json.response == "success") {
+
+                        $('#ButtonCumprirPrazo').addClass('hidden');
+                        $('#cumprir-prazo-alert-success').removeClass('hidden')
+                        $('#cumprir-prazo-alert-warning').addClass('hidden');
+
+                    }
+                    else
+                    {
+
+                        $('#ButtonCumprirPrazo').removeClass('hidden');
+                        $('#cumprir-prazo-alert-success').addClass('hidden')
+                        $('#cumprir-prazo-alert-warning').addClass('hidden');
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+
+            }
+            else {
+
+                return false;
+
+            }
+
+        });
+
+        function VisualizarPDF(url) {
+
+            window.open(url, '_blank');
+
+        }
+
+        function ExcluirPDF(arquivo, index) {
+
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).attr('disabled', true);
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).html("Apagando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelProcessoEventoFile" + index + "ExcluirConfirmacao" + arquivo).show();
+            $("#accept" + arquivo + "File" + index).show();
+            $("#go_back" + arquivo + "File" + index).show();
+
+        }
+
+        function ExcluirPDFSim(arquivo, index, nome) {
+
+            $("#LabelProcessoEventoFile" + index + "ExcluirConfirmacao" + arquivo).hide();
+            $("#accept" + arquivo + "File" + index).hide();
+            $("#go_back" + arquivo + "File" + index).hide();
+
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).text("Apagar");
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).attr('disabled', false);
+
+            var dados = new window.FormData();
+            dados.append("Arquivo", nome);
+
+            var options = {};
+            options.url = "/Processos/ExcluirPDF";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+
+                    $("#EventoCumprirFileName" + arquivo).html("Nenhum arquivo encontrado");
+
+                }
+                else {
+
+                    $("#EventoCumprirFileName" + arquivo).html("Falha ao tentar apagar o arquivo PDF");
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirPDFNao(arquivo, index) {
+
+            $("#LabelProcessoEventoFile" + index + "ExcluirConfirmacao" + arquivo).hide();
+            $("#accept" + arquivo + "File" + index).hide();
+            $("#go_back" + arquivo + "File" + index).hide();
+
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).text("Apagar");
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).attr('disabled', false);
+
+        }
+
+        $('#buttonFechar').click(function (evt) {
+
+            LimparCadastro();
+
+            $("#agenda-form").submit();
+            $("#tab-listar").click();
+
+        });
+
+        $('#tab-listar').click(function (evt) {
+
+            $('#id').val("0");
+            $('#idAcaoEvento').val("0");
+            LimparCadastro();
+            //$("#agenda-form").submit();
+
+        });
+
+        $('#tab-cadastrar').click(function (evt) {
+
+            LimparCadastro();
+
+        });
+
+        function LimparCadastro() {
+
+            $('#Cliente').val('');
+            $('#Cliente').trigger('change');
+
+            $('#Profissional').val('');
+            $('#Profissional').trigger('change');
+            $('#NumeroProcesso').val('');
+            $('#NumeroProcesso').trigger('change');
+            $('#Evento').val('');
+            $('#Evento').trigger('change');
+            $('#Profissional').val('');
+            $('#PrazoEvento1').val('');
+            $('#PrazoEvento2').val('');
+            CKEDITOR.instances["Descricao"].setData("");
+            $('#LabelPDF').text('');
+            $('#PDF').text('');
+            $('#id').val(0);
+
+            $('#DataCadastro').val('');
+            $('#UsuarioCadastro').val('');
+            $('#DataAlteracao').val('');
+            $('#UsuarioAlteracao').val('');
+
+            $('#tab-cadastrar').text("Cadastrar");
+            $('#TituloAgenda').text('Nova Agenda do Profissional');
+
+            $('#VisualizarAgenda').html("<p>Nenhuma agenda foi selecionada para visualização.</p>");
+
+        }
+
+        function LimparFiltro() {
+
+            $('#FiltrarCliente').val("");
+            $('#FiltrarCliente').trigger('change');
+
+            $('#FiltrarProfissional').val("");
+            $('#FiltrarProfissional').trigger('change');
+
+            $('#FiltrarProcesso').val("");
+            $('#FiltrarProcesso').trigger('change');
+
+            $('#FiltrarPrazoEvento1').val("");
+            $('#FiltrarPrazoEvento2').val("");
+            $('#FiltrarCadastro').val("");
+
+            $('#FiltrarVara').val("");
+            $('#FiltrarVara').trigger('change');
+
+            $("#evento-filtro-form").submit();
+        }
+
+        function NovoAlerta(NumeroProcesso) {
+            $("#alerta-form").validate().resetForm();
+            $('#numeroProcesso').val(NumeroProcesso);
+            $("#Mensaqgem").val("");
+        }
+
+        function VisualizarAlerta(NumeroProcesso, IdAcao) {
+
+            var dados = new window.FormData();
+            dados.append("IdAcao", IdAcao);
+            dados.append("NumeroProcesso", NumeroProcesso);
+            dados.append("Tipo", "A");
+
+            var options = {};
+            options.url = "/Alertas/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00' && json.alertas.length > 0) {
+
+                    $('#alertas').html(json.alertas);
+
+                    $('#modalVisualizarAlerta').attr('data-backdrop', 'static');
+                    $('#modalVisualizarAlerta').attr('data-keyboard', 'false');
+                    $('#modalVisualizarAlerta').modal('show');
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#buttonSalvarAlerta').click(function (evt) {
+
+            var searchIDs = $('input:checked').map(function () {
+                return $(this).val();
+            });
+
+            var dados = new window.FormData();
+            dados.append("IdAlertas", searchIDs.get());
+
+            var options = {};
+            options.url = "/Alertas/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+
+        });
+
+        function FecharEvento() {
+
+            $("#buttonFecharEvento").attr('disabled', true);
+            $("#buttonFecharEvento").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelEventoFecharConfirmacao").show();
+            $("#acceptEvento").show();
+            $("#go_backEvento").show();
+
+        }
+
+        function FecharEventoSim() {
+
+            $("#LabelEventoFecharConfirmacao").hide();
+            $("#acceptEvento").hide();
+            $("#go_backEvento").hide();
+
+            $("#buttonFecharEvento").text("Fechar");
+            $("#buttonFecharEvento").attr('disabled', false);
+
+            $("#modalCriarEvento").modal("hide");
+
+        }
+
+        function FecharEventoNao() {
+
+            $("#LabelEventoFecharConfirmacao").hide();
+            $("#acceptEvento").hide();
+            $("#go_backEvento").hide();
+
+            $("#buttonFecharEvento").text("Fechar");
+            $("#buttonFecharEvento").attr('disabled', false);
+
+        }
+
+        function FecharCumprirPrazo() {
+
+            $("#buttonFecharEventoCumprirPrazo").attr('disabled', true);
+            $("#buttonFecharEventoCumprirPrazo").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelCumprirPrazoFecharConfirmacao").show();
+            $("#acceptCumprirPrazo").show();
+            $("#go_backCumprirPrazo").show();
+
+        }
+
+        function FecharCumprirPrazoSim() {
+
+            $("#LabelCumprirPrazoFecharConfirmacao").hide();
+            $("#acceptCumprirPrazo").hide();
+            $("#go_backCumprirPrazo").hide();
+
+            $("#buttonFecharEventoCumprirPrazo").text("Fechar");
+            $("#buttonFecharEventoCumprirPrazo").attr('disabled', false);
+
+            $("#modalCumprirPrazo").modal("hide");
+
+        }
+
+        function FecharCumprirPrazoNao() {
+
+            $("#LabelCumprirPrazoFecharConfirmacao").hide();
+            $("#acceptCumprirPrazo").hide();
+            $("#go_backCumprirPrazo").hide();
+
+            $("#buttonFecharEventoCumprirPrazo").text("Fechar");
+            $("#buttonFecharEventoCumprirPrazo").attr('disabled', false);
+
+        }
+
+    </script>
+</div>
+

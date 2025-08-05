@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "Administrativo \\ Gerar Recessos/Férias";
+}
+
+<div class="main_container">
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <!-- page content -->
+    <div role="main">
+        <form id="ferias-form">
+            <div class="row">
+                <div class="col-md-4">do q
+                    <div class="form-group">
+                        <label class="titlefield">Advogado</label>
+                        <select id="Profissional" name="Profissional" class="form-control placeholder">
+                            <option value="">Selecione o Profissional</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="titlefield">Data Inicio </label>
+                        <input id="DataInicio" name="DataInicio" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="titlefield">Data Fim </label>
+                        <input id="DataFim" name="DataFim" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="titlefield">Total Dias </label>
+                        <input id="DiasFerias" name="DiasFerias" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="titlefield">Total Dias Úteis </label>
+                        <input id="DiasRecesso" name="DiasRecesso" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" />
+                    </div>
+                </div>
+            </div>
+
+            @*<button id="GerarRemessa" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Gerar Remessa</button>*@
+            <button id="ProcessarFerias" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Processar Férias/Recessos</button>
+            @*<button id="EnviarEmail" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Enviar Email</button>*@
+        </form>
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    @*<script src="~/Content/vendors/jquery/dist/jquery.js"></script>*@
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script>
+
+        $("#DataInicio").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#DataFim").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        CarregarProfissionais();
+        function CarregarProfissionais() {
+            var dados = new window.FormData();
+            dados.append("Data", "");
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+
+                    $('#Profissional').html("");
+                    var select = $('#Profissional');
+                    select.append(
+                        $('<option selected></option>').val("").html("Selecione um colaborador")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#ProcessarFerias').click(function (evt) {
+
+            $("#ferias-form").validate();
+
+            if ($('#ferias-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("IdProfissional", $("#Profissional").val());
+                dados.append("DataInicio", $("#DataInicio").val());
+                dados.append("DataFim", $("#DataFim").val());
+                dados.append("DiasFerias", $("#DiasFerias").val());
+                dados.append("DiasRecesso", $("#DiasRecesso").val());
+
+                var options = {};
+                options.url = "/ColaboradoresFerias/GerarFerias"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Férias/Recesso gerado com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#ferias-form").validate().resetForm();
+
+                    }
+                    else {
+                        $('#modalMensagemResposta').text('Problema na geração de Férias/Recesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#ferias-form").validate().resetForm();
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+    </script>
+
+</div>

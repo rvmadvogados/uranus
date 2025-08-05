@@ -1,0 +1,996 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Fornecedores Lançamentos a Pagar";
+}
+
+@using Uranus.Common;
+@using System.Linq;
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idNotaDuplicata" name="idNotaDuplicata" value="0">
+
+    <div id="modalVisualizar" class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <!-- Modal content-->
+            <form id="estoque-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        @*<div id="Visualizar" name="Visualizar"></div>*@
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>
+                Filtrar e Lançar Fornecedores à Pagar
+            </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li id="tab-fornecedores-presentation" role="presentation" class="active">
+                        <a id="tab-fornecedores" name="tab-fornecedores" href="#tab_content_fornecedores" role="tab" data-toggle="tab" aria-expanded="true">Fornecedores</a>
+                    </li>
+                    <li id="tab-notaduplicata-presentation" role="presentation" class="hidden">
+                        <a id="tab-notaduplicata" name="tab-notaduplicata" href="#tab_content_notaduplicata" role="tab" data-toggle="tab" aria-expanded="false">Nota e Duplicata</a>
+                    </li>
+                    <li id="tab-notafiscal-presentation" role="presentation" class="hidden">
+                        <a id="tab-notafiscal" nama="tab-notafiscal" href="#tab_content_notafiscal" role="tab" data-toggle="tab" aria-expanded="false">Nota Fiscal</a>
+                    </li>
+                    <li id="tab-visualizar-presentation" role="presentation" class="hidden">
+                        <a id="tab-visualizar" name="tab-visualizar" href="#tab_content_visualizar" role="tab" data-toggle="tab" aria-expanded="false">Visualizar</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_fornecedores" aria-labelledby="tab-fornecedores" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        @{ WebGrid grid = new WebGrid(Model); }
+
+                                        @using (Html.BeginForm("Index", "FornecedoresNotas", FormMethod.Get, new { id = "nota-filtro-form" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">CPF / CNPJ</label>
+                                                        <input type="text" class="form-control" name="FiltrarCPFCNPJ" id="FiltrarCPFCNPJ" data-mask-for-cpf-cnpj maxlength="14" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Fornecedor</label>
+                                                        <input type="text" class="form-control" name="FiltrarFornecedor" id="FiltrarFornecedor" maxlength="100" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button id="Limpar" name="Limpar" type="button" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                 htmlAttributes: new { id = "MainTable" },
+                                                 tableStyle: "webgrid",
+                                                 fillEmptyRows: false,
+                                                 headerStyle: "webgrid-header",
+                                                 alternatingRowStyle: "webgrid-alternating-row",
+                                                 rowStyle: "webgrid-row-style",
+                                                 selectedRowStyle: "webgrid-selected-row",
+                                                 footerStyle: "webgrid-footer",
+                                                 mode: WebGridPagerModes.All,
+                                                 firstText: "Primeiro",
+                                                 previousText: "Anterior",
+                                                 nextText: "Próximo",
+                                                 lastText: "Último",
+                                                 numericLinksCount: 5,
+                                                    columns: grid.Columns(
+                                                    @grid.Column(null, null, format: @<text><img src='~/Content/images/plus.png' title='Clique para Mostrar/Ocultar' /><div style='display: none;'></div></text>, style: "GridAccordion"),
+grid.Column("CpfCnpj", header: "CPF / CNPJ", format: (item) => new HtmlString(item.CpfCnpj != null ? (item.CpfCnpj.Length == 11 ? Util.FormatCPF(item.CpfCnpj) : Util.FormatCNPJ(item.CpfCnpj)) : string.Empty)),
+grid.Column("Nome", header: "Nome"),
+grid.Column("Endereco", header: "Endereco"),
+grid.Column("Ativo", header: "Status", format: (item) => new HtmlString(item.Ativo != null && item.Ativo ? "Ativo" : "Inativo")),
+grid.Column("ID", header: "Ações", canSort: false,
+format:
+@<text>
+    @Html.Raw("<a class='btn btn-success btn-sm' onclick='NovaNotaDuplicata(" + item.ID + ");'>Nova Nota e Duplicata</a>")
+</text>),
+grid.Column(format: (item) =>
+{
+WebGrid childGrid = new WebGrid(source: item.FornecedoresNotas, canSort: true, canPage: true);
+List<WebGridColumn> cols = new List<WebGridColumn>();
+
+if (item.FornecedoresNotas.Count > 0)
+{
+cols.Add(childGrid.Column("NumeroDocumento", "Documento", format: (source) => (source["NumeroDocumento"] != null ? source["NumeroDocumento"] : string.Empty)));
+cols.Add(childGrid.Column("DataEmissao", "Data ", format: (source) => (source["DataEmissao"] != null ? string.Format("{0:dd/MM/yyyy}", source["DataEmissao"]) : string.Empty)));
+cols.Add(childGrid.Column("Total", "Total R$", format: (source) => (source["Total"] != null ? string.Format("R$ {0:##,##0.00}", source["Total"]) : "0,00")));
+cols.Add(childGrid.Column("Plano", "Plano"));
+cols.Add(childGrid.Column(null, "Ações", format: (source) => (
+@Html.Raw("<a class='btn btn-warning btn-sm' onclick='AlterarNotaDuplicata(" + source["ID"] + ");'>Alterar Nota e Duplicata</a>")
+)));
+}
+else
+{
+cols.Add(childGrid.Column("", "Nenhuma nota ou duplicata cadastrada.", format: (source) => (source != null ? string.Empty : string.Empty)));
+}
+
+return childGrid.GetHtml(htmlAttributes: new { @class = "ChildGrid" }, columns: cols);
+})
+
+));
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                            }
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_notaduplicata" aria-labelledby="tab-notaduplicata">
+                        <div class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2 id="TituloNotaDuplicata">Lançamentos à Pagar</h2>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="notaduplicata-form">
+                                <div class="row">
+                                    <div class="col-md-6 hidden">
+                                        <div class="form-group">
+                                            <label class="titlefield">Empresa <span class="required">*</span></label>
+                                            <select id="NotaDuplicataEmpresa" name="NotaDuplicataEmpresa" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione uma Empresa." data-rule-required="true"></select>
+                                            <label id="NotaDuplicataEmpresaValidate" name="NotaDuplicataEmpresaValidate" for="NotaDuplicataEmpresa" class="error hidden">Por favor, selecione uma Empresa.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Fornecedor <span class="required">*</span></label>
+                                            <select id="NotaDuplicataFornecedor" name="NotaDuplicataFornecedor" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione um Fornecedor." data-rule-required="true"></select>
+                                            <label id="NotaDuplicataFornecedorValidate" name="NotaDuplicataFornecedorValidate" for="NotaDuplicataFornecedor" class="error hidden"> Por favor, selecione um Fornecedor.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número do Documento</label>
+                                            <input type="text" class="form-control" id="NotaDuplicataNumero" name="NotaDuplicataNumero" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data de Emissão <span class="required">*</span></label>
+                                            <input id="NotaDuplicataData" name="NotaDuplicataData" class="form-control" placeholder="Selecione uma Data" type="text" style="height: 40px !important; cursor: pointer;" data-msg-required="Por favor, selecione uma Data." data-rule-required="true" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Plano</label>
+                                            <input type="text" class="form-control" id="NotaDuplicataPlano" name="NotaDuplicataPlano" maxlength="2" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield" style="width: 100%; text-align: right !important;">Nota Total R$</label><br />
+                                            <input type="text" class="form-control right" placeholder="Informe o Valor" id="NotaDuplicataTotal" name="NotaDuplicataTotal" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Primeiro Vencimento <span class="required">*</span></label>
+                                            <input id="NotaDuplicataVencimento" name="NotaDuplicataVencimento" class="form-control" placeholder="Selecione uma Data" type="text" style="height: 40px !important; cursor: pointer;" data-msg-required="Por favor, selecione uma Data." data-rule-required="true" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" hidden>
+                                        <div class="form-group">
+                                            <label class="titlefield">Processo</label>
+                                            <input type="text" class="form-control right" placeholder="Informe o Valor" id="NotaDuplicataProcesso" name="NotaDuplicataProcesso" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group" hidden>
+                                            <label class="titlefield">Contrato</label>
+                                            <textarea id='NotaDuplicataContrato' name="NotaDuplicataContrato" rows=3 class="form-control" placeholder="Informe aqui a Observação"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Observação</label>
+                                            <textarea id='NotaDuplicataObservacao' name="NotaDuplicataObservacao" rows=3 class="form-control" placeholder="Informe aqui a Observação"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="col-md-4">
+                                    </div>
+                                    <div class="col-md-4" style="text-align: center;">
+                                    </div>
+                                    <div class="col-md-4" style="text-align: right; padding-right: 0;">
+                                        <button id="buttonSalvarNotaDuplicata" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                        &nbsp;
+                                        <button id="buttonFecharNotaDuplicata" type="button" class="btn btn-default" style="margin: 0;">Fechar</button>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success hidden" id="orcamento-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado da nota e duplicata realizada com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="orcamento-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar a nota e duplicata.
+                                </div>
+
+                            </form>
+                        </div>
+
+                        Parcelas do Nota e Duplicata
+                        <div id="ParcelasNotaDuplicata" class="feedback-box">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>Parcelas da Nota e Duplicata</h2>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="notaduplicata-parcelas-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="ParcelasNotaDuplicatasAccordion" role="tablist" aria-multiselectable="true">
+                                    As parcelas só poderam ser cadastradas após a Nota e Duplicata ser salva.
+                                </div>
+                                <hr />
+                                <div class="alert alert-success hidden" id="parcelas-notaduplicata-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado da parcela na nota e duplicata realizada com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="parcelas-notaduplicata-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da parcela na nota e duplicata.
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_notafiscal" aria-labelledby="tab-notafiscal">
+                        <div id="VisualizarNotaFiscal" name="VisualizarNotaFiscal">
+                            <p>Nenhuma nota fiscal foi selecionada para visualização.</p>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_visualizar" aria-labelledby="tab-visualizar">
+                        <div id="Visualizar" name="Visualizar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <!-- jQuery -->
+    @*<script src="~/Content/vendors/jquery/dist/jquery.js"></script>*@
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <!-- maskMoney -->
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+
+    <!-- mask -->
+    @*<script type="text/javascript" src="~//Content/CSS/js/mask.js"></script>*@
+    <script type="text/javascript" src="~/Scripts//jquery.mask.js"></script>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        $("#NotaDuplicataTotal").maskMoney({allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+
+        $("#NotaDuplicataData").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#NotaDuplicataVencimento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        $(document).on('keydown', '[data-mask-for-cpf-cnpj]', function (e) {
+            var digit = e.key.replace(/\D/g, '');
+            var value = $(this).val().replace(/\D/g, '');
+            var size = value.concat(digit).length;
+            $(this).mask((size <= 11) ? '000.000.000-00' : '00.000.000/0000-00');
+        });
+
+        $(function () {
+            //Loop through all Child Grids.
+            $("#MainTable .ChildGrid").each(function () {
+                //Copy the Child Grid to DIV.
+                var childGrid = $(this).clone();
+                $(this).closest("TR").find("TD").eq(0).find("DIV").append(childGrid);
+
+                //Remove the Last Column from the Row.
+                $(this).parent().remove();
+            });
+
+            //Remove Last Column from Header Row.
+            $("#MainTable TH:last-child").eq(0).remove();
+        });
+
+        //Assign Click event to Plus Image.
+        $("body").on("click", "img[src*='plus.png']", function () {
+            $(this).closest("tr").after("<tr><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+            $(this).attr("src", "/Content/images/minus.png");
+        });
+
+        //Assign Click event to Minus Image.
+        $("body").on("click", "img[src*='minus.png']", function () {
+            $(this).attr("src", "/Content/images/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+
+        $('#FiltrarCPFCNPJ').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCPFCNPJ)));
+        $('#FiltrarFornecedor').val(@Html.Raw(Json.Encode(ViewBag.FiltrarFornecedor)));
+
+        $("#NotaDuplicataPlano").mask("99");
+
+        CarregarEmpresas();
+        CarregarFornecedores();
+        //CarregarVendedores();
+
+        function CarregarEmpresas() {
+
+            var options = {};
+            options.url = "/Empresa/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.empresas;
+                    $('#NotaDuplicataEmpresa').html("");
+                    var select = $('#NotaDuplicataEmpresa');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione uma Empresa")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarFornecedores() {
+
+            var options = {};
+            options.url = "/Fornecedores/Buscar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.fornecedores;
+                    $('#NotaDuplicataFornecedor').html("");
+                    var select = $('#NotaDuplicataFornecedor');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione um Fornecedor")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        //function CarregarVendedores() {
+
+        //    var options = {};
+        //    options.url = "/Vendedores/Listar"
+        //    options.type = "POST";
+        //    options.asyn = true;
+        //    options.contentType = false;
+        //    options.processData = false;
+        //    options.dataType = "application/json; charset=utf-8";
+        //    options.complete = function (data) {
+
+        //        var json = $.parseJSON(data.responseText);
+
+        //        if (json.codigo == '00') {
+
+        //            var rows = json.vendedores;
+        //            $('#NotaDuplicataVendedor').html("");
+        //            var select = $('#NotaDuplicataVendedor');
+        //            select.append(
+        //                $('<option selected></option>').val("").html("Selecione um Vendedor")
+        //            );
+
+        //            for (index = 0; index < rows.length; index++) {
+        //                select.append(
+        //                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+        //                );
+        //            }
+
+        //        }
+        //    };
+        //    $.ajax(options);
+        //}
+
+        function CalcularParcela(index) {
+
+            var saldo = 0.00;
+            var valor = $('#ParcelaNotaDuplicata' + index + 'ValorParcela').val().replace(/[.]/g, '').replace(',', '.');
+            var juros = $('#ParcelaNotaDuplicata' + index + 'Juros').val().replace(/[.]/g, '').replace(',', '.');
+            var desconto = $('#ParcelaNotaDuplicata' + index + 'Desconto').val().replace(/[.]/g, '').replace(',', '.');
+            var pago = $('#ParcelaNotaDuplicata' + index + 'ValorPago').val().replace(/[.]/g, '').replace(',', '.');
+
+            if (valor.length == 0) valor = 0.00;
+
+            if (juros.length == 0) juros = 0.00;
+
+            if (desconto.length == 0) desconto = 0.00;
+
+            if (pago.length == 0) pago = 0.00;
+            console.log("Valor " + valor);
+            console.log("juros " + juros);
+            console.log("desconto " + desconto);
+            console.log("pago " + pago);
+            saldo = (((parseFloat(valor) + parseFloat(juros)) - parseFloat(desconto)) - parseFloat(pago));
+            console.log("saldo " + saldo);
+
+            $('#ParcelaNotaDuplicata' + index + 'Saldo').val(numberToReal(saldo));
+
+        }
+
+        $('#tab-fornecedores').click(function (evt) {
+
+            //$('#tab-notaduplicata-presentation').removeClass("active");
+            $('#tab-notaduplicata-presentation').addClass("hidden");
+            //$('#tab-notafiscal-presentation').removeClass("active");
+            $('#tab-notafiscal-presentation').addClass("hidden");
+            //$('#tab-visualizar-presentation').removeClass("active");
+            $('#tab-visualizar-presentation').addClass("hidden");
+            //$('#tab-fornecedores-presentation').addClass("active");
+
+            $('#id').val("0");
+
+            LimparCadastroNotaDuplicata();
+
+            $('#Filtrar').click();
+        });
+
+        $('#tab-notaduplicata').click(function (evt) {
+
+            //$('#tab-fornecedores-presentation').removeClass("active");
+            //$('#tab-notafiscal-presentation').removeClass("active");
+            $('#tab-notafiscal-presentation').addClass("hidden");
+            //$('#tab-visualizar-presentation').removeClass("active");
+            $('#tab-visualizar-presentation').addClass("hidden");
+            $('#tab-notaduplicata-presentation').removeClass("hidden");
+            //$('#tab-notaduplicata-presentation').addClass("active");
+
+            LimparCadastroNotaDuplicata();
+
+        });
+
+        $('#tab-notafiscal').click(function (evt) {
+
+            //$('#tab-fornecedores-presentation').removeClass("active");
+            //$('#tab-notaduplicata-presentation').removeClass("active");
+            $('#tab-notaduplicata-presentation').addClass("hidden");
+            //$('#tab-visualizar-presentation').removeClass("active");
+            $('#tab-visualizar-presentation').addClass("hidden");
+            $('#tab-notafiscal-presentation').removeClass("hidden");
+            //$('#tab-notafiscal-presentation').addClass("active");
+
+        });
+
+        function NovaNotaDuplicata(IdFornecedor) {
+
+            LimparCadastroNotaDuplicata();
+
+            $("#NotaDuplicataEmpresa").val(1);
+            $("#NotaDuplicataEmpresa").trigger('change');
+
+            $("#NotaDuplicataFornecedor").val(IdFornecedor);
+            $("#NotaDuplicataFornecedor").trigger('change');
+            $("#NotaDuplicataFornecedor").prop("disabled", true);
+
+            $("#NotaDuplicataNumero").val("");
+            $("#NotaDuplicataData").val(GetTodayDate());
+            $("#NotaDuplicataTotal").text("0,00");
+            $("#NotaDuplicataObservacao").val("");
+
+            $('#ParcelasNotaDuplicatasAccordion').html("As parcelas só poderam ser cadastradas após a Nota e Duplicata ser salva.");
+
+            $("#tab-notaduplicata").click();
+            //$('#tab-notaduplicata').trigger('click');
+        }
+
+        function VisualizarNotaDuplicata(IdNotaDuplicata) {
+
+            $('#tab-fornecedores-presentation').removeClass("active");
+            $('#tab-notafiscal-presentation').removeClass("active");
+            $('#tab-notafiscal-presentation').addClass("hidden");
+            $('#tab-notaduplicata-presentation').removeClass("active");
+            $('#tab-notaduplicata-presentation').addClass("hidden");
+            $('#tab-visualizar-presentation').removeClass("hidden");
+            $('#tab-visualizar-presentation').addClass("active");
+
+            $("#tab-visualizar").click();
+            $('#tab-visualizar').trigger('click');
+
+            var dados = new window.FormData();
+            dados.append("IdNotaDuplicata", IdNotaDuplicata);
+
+            var options = {};
+            options.url = "/Pedidos/CarregarNotaDuplicata"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response = "success") {
+
+                    $('#Visualizar').html(json.visualizar);
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function AlterarNotaDuplicata(IdNotaDuplicata) {
+
+            $('#idNotaDuplicata').val(IdNotaDuplicata);
+
+            //$('#tab-notaduplicata-presentation').removeClass("active");
+
+            $('#tab-notaduplicata-presentation').removeClass("hidden");
+            //$('#tab-notaservico-presentation').addClass("active");
+
+            $("#tab-notaduplicata").click();
+
+            var dados = new window.FormData();
+            dados.append("Id", IdNotaDuplicata);
+
+            var options = {};
+            options.url = "/FornecedoresNotas/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#NotaDuplicataTotal").text(json.nota[0].Total);
+
+                    $("#NotaDuplicataEmpresa").val(json.nota[0].IdEmpresa);
+                    $("#NotaDuplicataEmpresa").trigger('change');
+
+                    $("#NotaDuplicataFornecedor").val(json.nota[0].IdFornecedor);
+                    $("#NotaDuplicataFornecedor").trigger('change');
+                    $("#NotaDuplicataFornecedor").prop("disabled", true);
+
+                    $("#NotaDuplicataNumero").val(json.nota[0].NumeroDocumento);
+                    $("#NotaDuplicataData").val(json.nota[0].DataEmissao);
+                    $("#NotaDuplicataData").val(json.nota[0].DataEmissao);
+                    $("#NotaDuplicataTotal").val(json.nota[0].Total);
+                    $("#NotaDuplicataPlano").val(json.nota[0].Plano);
+                    $("#NotaDuplicataObservacao").val(json.nota[0].Observacao);
+                    $("#NotaDuplicataVencimento").val(json.nota[0].PrimeiroVencimento);
+                    $("#NotaDuplicataContrato").val(json.nota[0].IdContrato);
+                    $("#NotaDuplicataProcesso").val(json.nota[0].IdAcao);
+
+                    $('#idNotaDuplicata').val(IdNotaDuplicata);
+
+                    ShowParcelasNotaDuplicata();
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function ShowParcelasNotaDuplicata() {
+
+            var dados = new window.FormData();
+            dados.append("IdNota", $("#idNotaDuplicata").val());
+
+            var options = {};
+            options.url = "/FornecedoresNotas/CarregarParcelas";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#ParcelasNotaDuplicatasAccordion').html(json.parcelas);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonParcelaNotaDuplicataSalvar_Click(index) {
+
+            var validated = true;
+
+            if ($('#ParcelaNotaDuplicata' + index + 'DataVencimento').val().length == 0) {
+                $('#ParcelaNotaDuplicata' + index + 'DataVencimentoValidate').removeClass('hidden');
+                validated = false;
+            }
+            else {
+                $('#ParcelaNotaDuplicata' + index + 'DataVencimentoValidate').addClass('hidden');
+            }
+
+            if ($('#ParcelaNotaDuplicata' + index + 'ValorParcela').val().length == 0 || $('#ParcelaNotaDuplicata' + index + 'ValorParcela').val() == 0) {
+                $('#ParcelaNotaDuplicata' + index + 'ValorParcelaValidate').removeClass('hidden');
+                validated = false;
+            }
+            else {
+                $('#ParcelaNotaDuplicata' + index + 'ValorParcelaValidate').addClass('hidden');
+            }
+
+            if (validated) {
+
+                $("#ButtonParcelaNotaDuplicata" + index + "Incluir").attr('disabled', true);
+                $("#ButtonParcelaNotaDuplicata" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonParcelaNotaDuplicata" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenParcelaNotaDuplicata' + index).val());
+                dados.append("IdNotaDuplicata", $("#idNotaDuplicata").val());
+                dados.append("Parcela", $('#ParcelaNotaDuplicata' + index + 'Parcela').val());
+                dados.append("Vencimento", $('#ParcelaNotaDuplicata' + index + 'DataVencimento').val());
+                dados.append("ValorParcela", $('#ParcelaNotaDuplicata' + index + 'ValorParcela').val());
+                dados.append("DataPagamento", $('#ParcelaNotaDuplicata' + index + 'DataPagamento').val());
+                dados.append("ValorPago", $('#ParcelaNotaDuplicata' + index + 'ValorPago').val());
+                dados.append("Juros", $('#ParcelaNotaDuplicata' + index + 'Juros').val());
+                dados.append("Desconto", $('#ParcelaNotaDuplicata' + index + 'Desconto').val());
+                dados.append("Saldo", $('#ParcelaNotaDuplicata' + index + 'Saldo').val());
+                dados.append("Observacao", $('#ParcelaNotaDuplicata' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/FornecedoresNotas/SalvarParcela";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+                        $("#parcelas-notaduplicata-alert-success").removeClass("hidden");
+                        $("#parcelas-notaduplicata-alert-error").addClass("hidden");
+
+                        $("#ButtonParcelaNotaDuplicata" + index + "Incluir").text("Salvar");
+                        $("#ButtonParcelaNotaDuplicata" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonParcelaNotaDuplicata" + index + "Excluir").attr('disabled', false);
+
+                        AlterarNotaDuplicata($("#idNotaDuplicata").val());
+                    }
+                    else {
+                        $("#parcelas-notaduplicata-alert-success").addClass("hidden");
+                        $("#parcelas-notaduplicata-alert-error").removeClass("hidden");
+
+                        $("#ButtonParcelaNotaDuplicata" + index + "Incluir").text("Salvar");
+                        $("#ButtonParcelaNotaDuplicata" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonParcelaNotaDuplicata" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#parcelas-notaduplicata-alert-success").addClass("hidden");
+                        $("#parcelas-notaduplicata-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+            }
+        }
+
+        function ButtonParcelaNotaDuplicataExcluir_Click(index) {
+
+            $("#ButtonParcelaNotaDuplicata" + index + "Incluir").attr('disabled', true);
+            $("#ButtonParcelaNotaDuplicata" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonParcelaNotaDuplicata" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("IdNotaDuplicata", $('#HiddenParcelaNotaDuplicata' + index).val());
+
+            var options = {};
+            options.url = "/FornecedoresNotas/ExcluirParcela";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "removed") {
+                    $("#parcelas-notaduplicata-alert-success").addClass("hidden");
+                    $("#parcelas-notaduplicata-alert-error").addClass("hidden");
+
+                    AlterarNotaDuplicata($("#idNotaDuplicata").val());
+                }
+                else {
+                    $("#parcelas-notaduplicata-alert-success").addClass("hidden");
+                    $("#parcelas-notaduplicata-alert-error").addClass("hidden");
+
+                    $("#ButtonParcelaNotaDuplicata" + index + "Excluir").text("Apagar");
+                    $("#ButtonParcelaNotaDuplicata" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonParcelaNotaDuplicata" + index + "Excluir").attr('disabled', false);
+                }
+
+                setTimeout(function () {
+                    $("#parcelas-notaduplicata-alert-success").addClass("hidden");
+                    $("#parcelas-notaduplicata-alert-error").addClass("hidden");
+                }, 3000);
+
+            };
+            $.ajax(options);
+
+        }
+
+        function Visualizar(Id) {
+
+            $('#VisualizarNotaFiscal').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+            var url = '@Url.Action("VisualizarSaida", "NotasFiscais")';
+            url += '/?Id=' + Id ;
+            $("#VisualizarNotaFiscal").load(url);
+
+            $('#tab-fornecedores-presentation').removeClass("active");
+            $('#tab-notaduplicata-presentation').removeClass("active");
+            $('#tab-notaduplicata-presentation').addClass("hidden");
+            $('#tab-notafiscal-presentation').removeClass("hidden");
+            $('#tab-notafiscal-presentation').addClass("active");
+
+            $('#tab-notafiscal').click();
+            $('#tab-notafiscal').trigger('click');
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../FornecedoresNotas');
+        }
+
+        $('#buttonSalvarNotaDuplicata').click(function (evt) {
+
+            $("#notaduplicata-form").validate();
+
+            if ($('#notaduplicata-form').valid()) {
+
+                $("#buttonSalvarNotaDuplicata").attr('disabled', true);
+                $("#buttonSalvarNotaDuplicata").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#idNotaDuplicata").val());
+                dados.append("IdEmpresa", 1);
+                dados.append("IdEmpresa", $("#NotaDuplicataEmpresa").val());
+                dados.append("IdFornecedor", $("#NotaDuplicataFornecedor").val());
+                dados.append("DataEmissao", $("#NotaDuplicataData").val());
+                dados.append("NumeroDocumento", $("#NotaDuplicataNumero").val());
+                dados.append("Total", $("#NotaDuplicataTotal").val());
+                dados.append("Plano", $("#NotaDuplicataPlano").val());
+                dados.append("Observacao", $("#NotaDuplicataObservacao").val());
+                dados.append("PrimeiroVencimento", $("#NotaDuplicataVencimento").val());
+                dados.append("IdContrato", 1);
+                dados.append("IdAcao", 1);
+                //dados.append("IdContrato", $("#NotaDuplicataContrato").val());
+                //dados.append("IdAcao", $("#NotaDuplicataProcesso").val());
+
+                var options = {};
+                options.url = "/FornecedoresNotas/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#idNotaDuplicata').val(json.id);
+
+                        $("#orcamento-alert-success").removeClass("hidden");
+                        $("#orcamento-alert-error").addClass("hidden");
+
+                        $("#buttonSalvarNotaDuplicata").text("Salvar");
+                        $("#buttonSalvarNotaDuplicata").attr('disabled', false);
+
+                        AlterarNotaDuplicata($("#idNotaDuplicata").val());
+
+                    }
+                    else {
+
+                        $("#orcamento-alert-success").addClass("hidden");
+                        $("#orcamento-alert-error").removeClass("hidden");
+
+                        $("#buttonSalvarNotaDuplicata").text("Salvar");
+                        $("#buttonSalvarNotaDuplicata").attr('disabled', false);
+
+                    }
+
+                    setTimeout(function () {
+                        $("#orcamento-alert-success").addClass("hidden");
+                        $("#orcamento-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonFecharNotaDuplicata').click(function (evt) {
+
+            $('#tab-notaduplicata-presentation').removeClass("active");
+            $('#tab-notaduplicata-presentation').addClass("hidden");
+            $('#tab-notafiscal-presentation').removeClass("active");
+            $('#tab-notafiscal-presentation').addClass("hidden");
+            $('#tab-fornecedores-presentation').addClass("active");
+
+            $('#id').val("0");
+
+            LimparCadastroNotaDuplicata();
+
+            $("#nota-filtro-form").submit();
+
+        });
+
+        function LimparFiltro() {
+
+            $('#FiltrarCPFCNPJ').val("");
+            $('#FiltrarCliente').val("");
+            $("#nota-filtro-form").submit();
+
+        }
+
+        function LimparCadastroNotaDuplicata() {
+
+            $('#id').val(0);
+            $("#idNotaDuplicata").val(0);
+            $('#NotaDuplicataEmpresa').val('');
+            $('#NotaDuplicataEmpresa').trigger('change');
+            $('#NotaDuplicataCliente').val('');
+            $('#NotaDuplicataCliente').trigger('change');
+            $("#NotaDuplicataNumero").val("");
+            $("#NotaDuplicataVendedor").val("");
+            $("#NotaDuplicataNumeroNF").val("");
+            $("#NotaDuplicataData").val("");
+            $("#NotaDuplicataTotal").text("0,00");
+            $("#NotaDuplicataVendedor").val("");
+            $("#NotaDuplicataVendedor").trigger("change");
+            $("#NotaDuplicataObservacao").val("");
+
+            $("#ParcelasNotaDuplicatasAccordion").html("As parcelas só poderam ser cadastradas após a Nota e Duplicata ser salva.");
+
+        }
+
+        $(document).ready(function () {
+
+            $("#tab-fornecedores").click();
+
+        });
+
+    </script>
+</div>

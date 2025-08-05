@@ -1,0 +1,200 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using ReportViewerForMvc;
+
+<!-- page content -->
+<div role="main">
+    <div class="">
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+
+                    @using (Html.BeginForm("Index", "RelatorioClientesIndicacao", FormMethod.Get, null))
+                    {
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Filtrar Relatório de Indicação  </h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>      
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Tipo Indicação</label>
+                                                    <select id="FiltrarIndicacao" name="FiltrarIndicacao" class="form-control"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Nome da Indicação</label>
+                                                    <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarIndicacao').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @*@Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, new { frameborder = "0", width = "500", height = "5000", style = "overflow:hidden;", scrolling = "no" })*@
+                            @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<!-- /page content -->
+<!-- datepicker -->
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $(window).load(function () {
+
+        $("#FiltrarIndicacao").select2({
+            placeholder: "Selecione uma ou mais Indicação",
+            allowClear: true,
+            tags: true,
+            maximumSelectionLength: 100
+        });
+
+    });
+
+    var select = $('#FiltrarCliente');
+    select.append(
+        $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+    );
+    $('#FiltrarCliente').trigger('change');
+
+    $("#FiltrarCliente").select2({
+            placeholder: "Selecione uma Indicacao",
+                allowClear: true,
+                    tags: true,
+                        minimumInputLength: 3,
+                            ajax: {
+                cache: false,
+                    dataType: "json",
+                        type: "GET",
+                            url: '/RelatorioClientesIndicacao/GetClientsList',
+                                delay: 250,
+                                    cache: true,
+                                        data: function (params) {
+                                            params.page = params.page || 1;
+                                            return {
+                                                search: params.term,
+                                                filter: true,
+                                                page: params.page
+                                            };
+                                        },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+
+            }
+    });
+
+    CarregarIndicacao();
+
+    function CarregarIndicacao(Data) {
+
+        var options = {};
+        options.url = "/TiposIndicacoes/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.indicacoes;
+                $('#FiltrarIndicacao').html("");
+                var select = $('#FiltrarIndicacao');
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#FiltrarIndicacao').val(@Html.Raw(Json.Encode(ViewBag.FiltrarIndicacao)));
+                $('#FiltrarIndicacao').trigger('change');
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    CarregarNomeIndicacao();
+
+    function CarregarNomeIndicacao(Data) {
+
+        var options = {};
+        options.url = "/TiposIndicacoes/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.indicacoes;
+                $('#FiltrarIndicacao').html("");
+                var select = $('#FiltrarIndicacao');
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#FiltrarIndicacao').val(@Html.Raw(Json.Encode(ViewBag.FiltrarIndicacao)));
+                $('#FiltrarIndicacao').trigger('change');
+
+            }
+        };
+        $.ajax(options);
+    }
+
+
+</script>

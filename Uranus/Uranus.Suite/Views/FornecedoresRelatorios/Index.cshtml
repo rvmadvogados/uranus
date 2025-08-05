@@ -1,0 +1,188 @@
+﻿@*@{
+        ViewBag.Title = "Financeiro \\ Fornecedores Cadastrar";
+    }*@
+@{
+    ViewBag.Title = "Financeiro \\ Relatório de Fornecedores à Pagar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using ReportViewerForMvc;
+
+<!-- page content -->
+<div role="main">
+    <div class="">
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+
+                    @using (Html.BeginForm("Index", "FornecedoresRelatorios", FormMethod.Get, null))
+                    {
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Relatório de Fornecedores à Pagar </h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Relatórios de Fornecedores</label>
+                                                    <select id="FiltrarRelatorio" name="FiltrarRelatorio" class="form-control placeholder">
+                                                        <option value="0">Selecione Relatório</option>
+                                                        <option value="1">Parcelas Em aberto por Data de Emissão</option>
+                                                        <option value="2">Parcelas Em aberto por Data de Vencimento</option>
+                                                        <option value="3">Parcelas Pagas</option>
+                                                        <option value="4">Rol de Pagamentos</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Fornecedor</label>
+                                                    <select class="select2_single form-control" id="FiltrarFornecedor" name="FiltrarFornecedor"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Inicio</label>
+                                                    <div id="FiltrarDataInicio1" name="FiltrarDataInicio1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataInicio" data-msg-required="Por favor, insira a data inicio." data-rule-required="true" readonly />
+                                                        @*<span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim</label>
+                                                    <div id="FiltrarDataFim1" name="FiltrarDataFim1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataFim" data-msg-required="Por favor, insira a data fim." data-rule-required="true" readonly />
+                                                        @*<span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarSedes').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- datepicker -->
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- maskMoney -->
+<script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+
+<!-- mask -->
+<script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+<!-- mask -->
+<script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+
+<script>
+
+    var select = $('#FiltrarFornecedor');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarFornecedor))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarFornecedor)))
+        );
+        $('#FiltrarFornecedor').trigger('change');
+
+        $("#FiltrarDataInicio").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarDataFim").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#DataPagamento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+    $("#FiltrarFornecedor").select2({
+            placeholder: "Selecione um Fornecedor",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                cache: false,
+                dataType: "json",
+                type: "GET",
+                url: '/Fornecedores/GetFornecedoresListRel',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.fornecedores,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+</script>

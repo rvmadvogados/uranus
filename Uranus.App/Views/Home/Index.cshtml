@@ -1,0 +1,940 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>API Uranus</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Simple line icons-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.5.5/css/simple-line-icons.min.css" rel="stylesheet" />
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="Content/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+    <h1 class="mb-1">API Uranus</h1>
+    <h3 class="mb-5 white"><em>Recursos relacionados a pré-cadastro e pré-agendamento.</em></h3>
+
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    <span class="opblock-summary-method green">POST</span>&nbsp;&nbsp;&nbsp;<strong>/api/cadastro</strong>&nbsp;&nbsp;&nbsp;Consulta de Cadastro
+                </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/cadastro?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/cadastro?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>CpfCnpj</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">18 caracteres</code>
+                            </td>
+                            <td>
+                                Número do CPF ou CNPJ, com as máscaras. Exemplo: <span class="orange">602.435.210-73</span> ou <span class="orange">82.481.173/0001-33</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                    </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"CpfCnpj"</span>: <span class="orange">"602.435.210-73"</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Cliente já existe na base de dados oficial;<br />
+                                <strong>Insucesso</strong> - Cliente não existe na base de dados oficial;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>CPF ou CNPJ Inválido</strong> - CPF ou CNPJ utilizado não é válido;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                    <span class="opblock-summary-method green">POST</span>&nbsp;&nbsp;&nbsp;<strong>/api/precadastro</strong>&nbsp;&nbsp;&nbsp;Inclusão de Pré-Cadastro
+                </button>
+            </h2>
+            <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/precadastro?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/precadastro?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>CpfCnpj</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">18 caracteres</code>
+                            </td>
+                            <td>
+                                Número do CPF ou CNPJ, com as máscaras. Exemplo: <span class="orange">602.435.210-73</span> ou <span class="orange">82.481.173/0001-33</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Nome</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">100 caracteres</code>
+                            </td>
+                            <td>
+                                Nome completo do cliente. Exemplo: <span class="orange">James Tiberius Kirk</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Telefone</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">15 caracteres</code>
+                            </td>
+                            <td>
+                                Número do telefone com DDD. Exemplo: <span class="orange">(51) 99966-9988</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Email</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">100 caracteres</code>
+                            </td>
+                            <td>
+                                Endereço de e-mail. Exemplo: <span class="orange">james.kirk@starfleet.org</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                    </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"CpfCnpj"</span>: <span class="orange">"602.435.210-73"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Nome"</span>: <span class="orange">"James Tiberius Kirk"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Telefone"</span>: <span class="orange">"(51) 99966-9988"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Email"</span>: <span class="orange">"james.kirk@starfleet.org"</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Id</strong>
+                                <br />
+                                <code>long</code>
+                                <br />
+                                <code class="light-green">inteiro 64</code>
+                            </td>
+                            <td>
+                                Retorna o identificador do pré-cadastro ou nulo. Exemplo: <span class="light-green">13</span> ou <span class="orange">null</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Cliente cadastrado com sucesso na base de dados oficial;<br />
+                                <strong>Insucesso</strong> - Cliente ainda não criado na base de dados oficial;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>CPF ou CNPJ Inválido</strong> - CPF ou CNPJ utilizado não é válido;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                    <span class="opblock-summary-method blue">GET</span>&nbsp;&nbsp;&nbsp;<strong>/api/consultaareas</strong>&nbsp;&nbsp;&nbsp;Consulta de Áreas
+                </button>
+            </h2>
+            <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/consultaareas?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/consultaareas?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Areas</strong>
+                                <br />
+                                <code>array</code>
+                            </td>
+                            <td>
+                                Retorna uma lista com os dados das áreas, contendo <span class="light-green">id</span> e <span class="orange">nome</span>.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Id</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Retorna o identificador da área. Exemplo: <span class="light-green">29</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Nome</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">50 caracteres</code>
+                            </td>
+                            <td>
+                                Retorna o nome da área. Exemplo: <span class="orange">Previdenciário</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Encontrada a lista de áreas para o id informado;<br />
+                                <strong>Insucesso</strong> - Não foi possível encontrar a lista de áreas para o id informado;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingFour">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+                    <span class="opblock-summary-method green">POST</span>&nbsp;&nbsp;&nbsp;<strong>/api/consultaprofissionaisarea</strong>&nbsp;&nbsp;&nbsp;Consulta de Profissionais por Área
+                </button>
+            </h2>
+            <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/consultaprofissionaisarea?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/consultaprofissionaisarea?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>IdArea</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Identificador da área. Exemplo: <span class="light-green">2</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"IdArea"</span>: <span class="light-green">2</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Profissionais</strong>
+                                <br />
+                                <code>array</code>
+                            </td>
+                            <td>
+                                Retorna uma lista com os dados dos profissionais, contendo <span class="orange">id</span> e <span class="orange">nome</span>.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Id</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Retorna o identificador do profissional. Exemplo: <span class="light-green">11</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Nome</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">100 caracteres</code>
+                            </td>
+                            <td>
+                                Retorna o nome do profissional. Exemplo: <span class="orange">Tony Stark</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Encontrada a lista de profissionais para o id informado;<br />
+                                <strong>Insucesso</strong> - Não foi possível encontrar a lista de profissionais para o id informado;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingFive">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                    <span class="opblock-summary-method green">POST</span>&nbsp;&nbsp;&nbsp;<strong>/api/preagendamento</strong>&nbsp;&nbsp;&nbsp;Inclusão de Pré-Agendamento
+                </button>
+            </h2>
+            <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/preagendamento?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/preagendamento?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>CpfCnpj</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">18 caracteres</code>
+                            </td>
+                            <td>
+                                Número do CPF ou CNPJ, com as máscaras. Exemplo: <span class="orange">602.435.210-73</span> ou <span class="orange">82.481.173/0001-33</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>IdProfissional</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Identificador do profissional. Exemplo: <span class="light-green">11</span> ou <span class="orange">null</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Turno</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">2000 caracteres</code>
+                            </td>
+                            <td>
+                                Descritivo com o turno(s) e/ou dia(s) e horário(s). Exemplo: <span class="orange">Turno da manhã entre as 10 as 12 horas, menos nas quintas-feiras.</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>IdArea</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Identificador do área. Exemplo: <span class="light-green">2</span> ou <span class="orange">null</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"CpfCnpj"</span>: <span class="orange">"602.435.210-73"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"IdProfissional"</span>: <span class="light-green">11</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Turno"</span>: <span class="orange">"Turno da manhã entre as 10 as 12 horas, menos nas quintas-feiras."</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"IdArea"</span>: <span class="light-green">2</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Id</strong>
+                                <br />
+                                <code>long</code>
+                                <br />
+                                <code class="light-green">inteiro 64</code>
+                            </td>
+                            <td>
+                                Retorna o identificador do pré-cadastro ou nulo. Exemplo: <span class="light-green">13</span> ou <span class="orange">null</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Pré-Agendamento cadastrado com sucesso;<br />
+                                <strong>Insucesso</strong> - Problema ao cadastrar o Pré-Agendamento;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>CPF ou CNPJ Inválido</strong> - CPF ou CNPJ utilizado não é válido;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingSix">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
+                    <span class="opblock-summary-method green">POST</span>&nbsp;&nbsp;&nbsp;<strong>/api/consultaagendamento</strong>&nbsp;&nbsp;&nbsp;Consulta de Agendamento
+                </button>
+            </h2>
+            <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/consultaagendamento?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/consultaagendamento?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Id</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Identificador do agendamento. Exemplo: <span class="light-green">11</span>
+                                <br />
+                                <code>CAMPO OBRIGATÓRIO</code>
+                            </td>
+                        </tr>
+                    </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Id"</span>: <span class="light-green">1</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>IdProfissional</strong>
+                                <br />
+                                <code>int</code>
+                                <br />
+                                <code class="light-green">inteiro 32</code>
+                            </td>
+                            <td>
+                                Retorna o identificador do profissional. Exemplo: <span class="light-green">68</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Data</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">10 caracteres</code>
+                            </td>
+                            <td>
+                                Retorna a data do agendamento. Exemplo: <span class="orange">09-11-2023</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Hora</strong>
+                                <br />
+                                <code>string</code>
+                                <br />
+                                <code class="orange">5 caracteres</code>
+                            </td>
+                            <td>
+                                Retorna a hora do agendamento. Exemplo: <span class="orange">13:30</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Agendamento realizado com sucesso na base de dados oficial;<br />
+                                <strong>Insucesso</strong> - Agendamento ainda não foi criado na base de dados oficial;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingSeven">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven">
+                    <span class="opblock-summary-method green">POST</span>&nbsp;&nbsp;&nbsp;<strong>/api/usuario</strong>&nbsp;&nbsp;&nbsp;Inclusão de Usuário
+                </button>
+            </h2>
+            <div id="flush-collapseSeven" class="accordion-collapse collapse" aria-labelledby="flush-headingSeven" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/usuario?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/usuario?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                          <table cellpadding="10" cellspacing="0" width="100%">
+                              <tr>
+                                  <th class="yellow" width="150">Nome</th>
+                                  <th class="yellow">Descrição</th>
+                              </tr>
+                              <tr>
+                                  <td width="150">
+                                      <strong>Login</strong>
+                                      <br />
+                                      <code>string</code>
+                                      <br />
+                                      <code class="orange">18 caracteres</code>
+                                  </td>
+                                  <td>
+                                      Número do CPF ou CNPJ, com as máscaras. Exemplo: <span class="orange">602.435.210-73</span> ou <span class="orange">82.481.173/0001-33</span>
+                                      <br />
+                                      <code>CAMPO OBRIGATÓRIO</code>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td width="150">
+                                      <strong>Senha</strong>
+                                      <br />
+                                      <code>string</code>
+                                      <br />
+                                      <code class="orange">1000 caracteres</code>
+                                  </td>
+                                  <td>
+                                      Enviar Senha já criptografada. Exemplo: <span class="orange">e987a66824620dad38ebaa8fd3d4a728027eb585</span>
+                                      <br />
+                                      <code>CAMPO OBRIGATÓRIO</code>
+                                  </td>
+                              </tr>
+                          </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Login"</span>: <span class="orange">"602.435.210-73"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Senha"</span>: <span class="orange">"e987a66824620dad38ebaa8fd3d4a728027eb585"</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Cliente já existe na base de dados oficial;<br />
+                                <strong>Insucesso</strong> - Cliente não existe na base de dados oficial;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>CPF ou CNPJ Inválido</strong> - CPF ou CNPJ utilizado não é válido;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingEight">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight">
+                    <span class="opblock-summary-method light-orange">PUT</span>&nbsp;&nbsp;&nbsp;<strong>/api/usuario</strong>&nbsp;&nbsp;&nbsp;Alteração de Usuário
+                </button>
+            </h2>
+            <div id="flush-collapseEight" class="accordion-collapse collapse" aria-labelledby="flush-headingEight" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/usuario?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/usuario?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                          <table cellpadding="10" cellspacing="0" width="100%">
+                              <tr>
+                                  <th class="yellow" width="150">Nome</th>
+                                  <th class="yellow">Descrição</th>
+                              </tr>
+                              <tr>
+                                  <td width="150">
+                                      <strong>Login</strong>
+                                      <br />
+                                      <code>string</code>
+                                      <br />
+                                      <code class="orange">18 caracteres</code>
+                                  </td>
+                                  <td>
+                                      Número do CPF ou CNPJ, com as máscaras. Exemplo: <span class="orange">602.435.210-73</span> ou <span class="orange">82.481.173/0001-33</span>
+                                      <br />
+                                      <code>CAMPO OBRIGATÓRIO</code>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td width="150">
+                                      <strong>Senha</strong>
+                                      <br />
+                                      <code>string</code>
+                                      <br />
+                                      <code class="orange">1000 caracteres</code>
+                                  </td>
+                                  <td>
+                                      Enviar Senha já criptografada. Exemplo: <span class="orange">e987a66824620dad38ebaa8fd3d4a728027eb585</span>
+                                      <br />
+                                      <code>CAMPO OBRIGATÓRIO</code>
+                                  </td>
+                              </tr>
+                          </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"CpfCnpj"</span>: <span class="orange">"602.435.210-73"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Senha"</span>: <span class="orange">"e987a66824620dad38ebaa8fd3d4a728027eb585"</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Cliente já existe na base de dados oficial;<br />
+                                <strong>Insucesso</strong> - Cliente não existe na base de dados oficial;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>CPF ou CNPJ Inválido</strong> - CPF ou CNPJ utilizado não é válido;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingNine">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine">
+                    <span class="opblock-summary-method blue">GET</span>&nbsp;&nbsp;&nbsp;<strong>/api/usuario</strong>&nbsp;&nbsp;&nbsp;Consulta de Usuário
+                </button>
+            </h2>
+            <div id="flush-collapseNine" class="accordion-collapse collapse" aria-labelledby="flush-headingNine" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    URL de Exemplo <span class="light-blue">Produção</span>:
+                    <br />
+                    <span class="yellow">https://uranusapi.rvmadvogados.com.br/api/usuario?token=chave</span>
+                    <br /><br />
+                    URL de Exemplo <span class="light-blue">Homologação</span>:
+                    <br />
+                    <span class="yellow">https://uranusapiteste.rvmadvogados.com.br/api/usuario?token=chave</span>
+                    <br /><br /><br />
+                    <strong class="title">Parâmetros</strong>
+                    <br /><br />
+                          <table cellpadding="10" cellspacing="0" width="100%">
+                              <tr>
+                                  <th class="yellow" width="150">Nome</th>
+                                  <th class="yellow">Descrição</th>
+                              </tr>
+                              <tr>
+                                  <td width="150">
+                                      <strong>Login</strong>
+                                      <br />
+                                      <code>string</code>
+                                      <br />
+                                      <code class="orange">18 caracteres</code>
+                                  </td>
+                                  <td>
+                                      Número do CPF ou CNPJ, com as máscaras. Exemplo: <span class="orange">602.435.210-73</span> ou <span class="orange">82.481.173/0001-33</span>
+                                      <br />
+                                      <code>CAMPO OBRIGATÓRIO</code>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td width="150">
+                                      <strong>Senha</strong>
+                                      <br />
+                                      <code>string</code>
+                                      <br />
+                                      <code class="orange">1000 caracteres</code>
+                                  </td>
+                                  <td>
+                                      Enviar Senha já criptografada. Exemplo: <span class="orange">e987a66824620dad38ebaa8fd3d4a728027eb585</span>
+                                      <br />
+                                      <code>CAMPO OBRIGATÓRIO</code>
+                                  </td>
+                              </tr>
+                          </table>
+                    <br /><br />
+                    <strong class="title">Corpo <span class="subtitle">(Body)</span></strong>
+                    <br /><br />
+                    <div class="content">
+                        <span class="white">
+                            {<br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"CpfCnpj"</span>: <span class="orange">"602.435.210-73"</span>,
+                            <br />
+                            &nbsp;&nbsp;&nbsp;<span class="light-blue">"Senha"</span>: <span class="orange">"e987a66824620dad38ebaa8fd3d4a728027eb585"</span>
+                            <br />
+                            }
+                        </span>
+                    </div>
+                    <br /><br />
+                    <strong class="title">Respostas</strong>
+                    <br /><br />
+                    <table cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th class="yellow" width="150">Nome</th>
+                            <th class="yellow">Descrição</th>
+                        </tr>
+                        <tr>
+                            <td width="150">
+                                <strong>Status</strong>
+                                <br />
+                                <code>string</code>
+                            </td>
+                            <td>
+                                <strong>Sucesso</strong> - Cliente já existe na base de dados oficial;<br />
+                                <strong>Insucesso</strong> - Cliente não existe na base de dados oficial;<br />
+                                <strong>Token Inválido</strong> - Chave de acesso utilizada não é mais válida;<br />
+                                <strong>CPF ou CNPJ Inválido</strong> - CPF ou CNPJ utilizado não é válido;<br />
+                                <strong>Falha</strong> - Erro inespedado <code>(Exception)</code>.
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="Content/js/scripts.js"></script>
+</body>
+</html>

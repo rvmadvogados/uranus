@@ -1,0 +1,616 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+
+<link href="~/Content/CSS/animate.min.css" rel="stylesheet">
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+            <div class="row x_title">
+                <div class="col-md-6">
+                    <h3>Atividades do Servidor</h3>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-right" style="background: #fff; padding: 5px 10px; border: 1px solid #ccc">
+                        <small>@Model.NomeServidor</small>
+                    </div>
+                </div>
+            </div>
+            <div class="x_content">
+                <div class="demo-container" style="height: 100px">
+                    <!-- top tiles -->
+                    <div class="row tile_count">
+                        <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                            <div class="left"></div>
+                            <div class="">
+                                <span class="count_top"><i class="fa fa-users"></i> Usuários Conectados</span>
+                                <div class="count">@Model.UsuariosConectados</div>
+                                <span class="count_bottom">
+                                    @{
+                                        if (decimal.Parse(Model.UsuariosAtivos) < decimal.Parse("33,33"))
+                                        {
+                                            @Html.Raw("<i class='red'>");
+                                        }
+                                        else if (decimal.Parse(Model.UsuariosAtivos) > decimal.Parse("66,66"))
+                                        {
+                                            @Html.Raw("<i class='green'>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<i class='orange'>");
+                                        }
+                                    }
+
+                                    @(Model.UsuariosAtivos)%
+                                    @Html.Raw("</i>")
+                                    Neste Momento
+                                </span>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                            <div class="left"></div>
+                            <div class="">
+                                <span class="count_top"><i class="fa fa-crosshairs"></i> CPU Velocidade</span> <span style="font-size: 10px !important;">(GHz)</span>
+                                <div class="count">@Model.ProcessadorVelocidade</div>
+                                <span class="count_bottom">
+                                    @{
+                                        if (int.Parse(Model.ProcessadorUtilizacao) < 33)
+                                        {
+                                            @Html.Raw("<i class='green'>");
+                                        }
+                                        else if (int.Parse(Model.ProcessadorUtilizacao) > 66)
+                                        {
+                                            @Html.Raw("<i class='red'>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<i class='orange'>");
+                                        }
+                                    }
+
+                                    @(Model.ProcessadorUtilizacao)%
+                                    @Html.Raw("</i>")
+                                    CPU Utilização
+                                </span>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                            <div class="left"></div>
+                            <div class="">
+                                <span class="count_top"><i class="fa fa-tasks"></i> Memória Disponível</span> <span style="font-size: 10px !important;">(MB)</span>
+                                <div class="count">@Model.MemoriaDisponivel</div>
+                                <span class="count_bottom">
+                                    @{
+                                        if (decimal.Parse(Model.MemoriaLivre) < decimal.Parse("33,33"))
+                                        {
+                                            @Html.Raw("<i class='red'>");
+                                        }
+                                        else if (decimal.Parse(Model.MemoriaLivre) > decimal.Parse("66,66"))
+                                        {
+                                            @Html.Raw("<i class='green'>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<i class='orange'>");
+                                        }
+                                    }
+
+                                    @(Model.MemoriaLivre)%
+                                    @Html.Raw("</i>")
+                                    Memória Livre
+                                </span>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                            <div class="left"></div>
+                            <div class="">
+                                <span class="count_top"><i class="fa fa-tasks"></i> Memória Total</span> <span style="font-size: 10px !important;">(MB)</span>
+                                <div class="count">@Model.MemoriaTotal</div>
+                                <span class="count_bottom">
+                                    @{
+                                        if (decimal.Parse(Model.MemoriaOcupada) < decimal.Parse("33,33"))
+                                        {
+                                            @Html.Raw("<i class='green'>");
+                                        }
+                                        else if (decimal.Parse(Model.MemoriaOcupada) > decimal.Parse("66,66"))
+                                        {
+                                            @Html.Raw("<i class='red'>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<i class='orange'>");
+                                        }
+                                    }
+
+                                    @(Model.MemoriaOcupada)%
+                                    @Html.Raw("</i>")
+                                    Memória Ocupada
+                                </span>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                            <div class="left"></div>
+                            <div class="">
+                                <span class="count_top"><i class="fa fa-database"></i> Espaço Disponível</span> <span style="font-size: 10px !important;">(MB)</span>
+                                <div class="count">@Model.EspacoDisponivel</div>
+                                <span class="count_bottom">
+                                    @{
+                                        if (decimal.Parse(Model.EspacoLivre) < decimal.Parse("33,33"))
+                                        {
+                                            @Html.Raw("<i class='red'>");
+                                        }
+                                        else if (decimal.Parse(Model.EspacoLivre) > decimal.Parse("66,66"))
+                                        {
+                                            @Html.Raw("<i class='green'>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<i class='orange'>");
+                                        }
+                                    }
+
+                                    @(Model.EspacoLivre)%
+                                    @Html.Raw("</i>")
+                                    Espaço Livre
+                                </span>
+                            </div>
+                        </div>
+                        <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                            <div class="left"></div>
+                            <div class="">
+                                <span class="count_top"><i class="fa fa-database"></i> Espaço Total</span> <span style="font-size: 10px !important;">(MB)</span>
+                                <div class="count">@Model.EspacoTotal</div>
+                                <span class="count_bottom">
+                                    @{
+                                        if (decimal.Parse(Model.EspacoOcupada) < decimal.Parse("33,33"))
+                                        {
+                                            @Html.Raw("<i class='green'>");
+                                        }
+                                        else if (decimal.Parse(Model.EspacoOcupada) > decimal.Parse("66,66"))
+                                        {
+                                            @Html.Raw("<i class='red'>");
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("<i class='orange'>");
+                                        }
+                                    }
+
+                                    @(Model.EspacoOcupada)%
+                                    @Html.Raw("</i>")
+                                    Espaço Ocupada
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /top tiles -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+            <div class="row x_title">
+                <div class="col-md-6">
+                    <h3>Atividades da Agenda</h3>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-right" style="background: #fff; padding: 5px 10px; border: 1px solid #ccc">
+                        <small>Gráfico do mês de @DateTime.Now.ToString("MMMM") de @DateTime.Now.ToString("yyyy")</small>
+                    </div>
+                </div>
+            </div>
+            <div class="x_content">
+                <div class="demo-container" style="height:250px">
+                    <div id="graficoAgendas" class="demo-placeholder" style="width: 100%; height:250px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- flot js -->
+<!--[if lte IE 8]><script type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.pie.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.orderBars.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.time.min.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/date.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.spline.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.stack.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/curvedLines.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.resize.js"></script>
+<!-- flot -->
+
+<script>
+
+    var plot1 = $.plot($("#graficoAgendas"), [{
+        label: "&nbsp;Liberadas",
+        data: @Model.AgendasDisponiveis,
+        lines: {
+            fillColor: "rgba(150, 202, 89, 0.12)"
+        },
+        points: {
+            fillColor: "#fff"
+        },
+    },
+    {
+        label: "&nbsp;Confirmadas",
+        data: @Model.AgendasConfirmadas,
+        lines: {
+            fillColor: "rgba(150, 202, 89, 0.12)"
+        },
+        points: {
+            fillColor: "#fff"
+        },
+    }], {
+        series: {
+            curvedLines: {
+                apply: true,
+                active: true,
+                monotonicFit: true
+            }
+        },
+            colors: ["#22B14C", "#E74C3C"],
+        grid: {
+            borderWidth: {
+                top: 0,
+                right: 0,
+                bottom: 1,
+                left: 1
+            },
+            borderColor: {
+                bottom: "#7F8790",
+                left: "#7F8790"
+            }
+        },
+        xaxis: {
+            tickColor: "rgba(51, 51, 51, 0.06)",
+            tickSize: [1, "day"],
+            axisLabel: "Date",
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: "Verdana, Arial",
+            axisLabelPadding: 10,
+            mode: "time", timeformat: "%d", minTickSize: [1, "day"]
+        },
+        yaxis: {
+            ticks: 8,
+            tickColor: "rgba(51, 51, 51, 0.06)",
+        },
+        tooltip: false,
+        responsive: true
+    });
+
+
+    //$("#placeholder3xx3").length && $.plot($("#placeholder3xx3"), [
+    //    data1, data2
+    //], {
+    //    series: {
+    //        lines: {
+    //            show: false,
+    //            fill: true
+    //        },
+    //        splines: {
+    //            show: true,
+    //            tension: 0.4,
+    //            lineWidth: 1,
+    //            fill: 0.4
+    //        },
+    //        points: {
+    //            radius: 0,
+    //            show: true
+    //        },
+    //        shadowSize: 2
+    //    },
+    //    grid: {
+    //        verticalLines: true,
+    //        hoverable: true,
+    //        clickable: true,
+    //        tickColor: "#d5d5d5",
+    //        borderWidth: 1,
+    //        color: '#fff'
+    //    },
+    //    colors: ["rgba(38, 185, 154, 0.38)", "rgba(3, 88, 106, 0.38)"],
+    //    xaxis: {
+    //        tickColor: "rgba(51, 51, 51, 0.06)",
+    //        mode: "time",
+    //        tickSize: [1, "day"],
+    //        //tickLength: 10,
+    //        axisLabel: "Date",
+    //        axisLabelUseCanvas: true,
+    //        axisLabelFontSizePixels: 12,
+    //        axisLabelFontFamily: 'Verdana, Arial',
+    //        axisLabelPadding: 10
+    //        //mode: "time", timeformat: "%m/%d/%y", minTickSize: [1, "day"]
+    //    },
+    //    yaxis: {
+    //        ticks: 8,
+    //        tickColor: "rgba(51, 51, 51, 0.06)",
+    //    },
+    //    tooltip: false
+    //});
+
+
+    //flot options
+    //var options = {
+    //    series: {
+    //        curvedLines: {
+    //            apply: true,
+    //            active: true,
+    //            monotonicFit: true
+    //        }
+    //    },
+    //    colors: ["#22B14C", "#E74C3C"],
+    //    grid: {
+    //        borderWidth: {
+    //            top: 0,
+    //            right: 0,
+    //            bottom: 1,
+    //            left: 1
+    //        },
+    //        borderColor: {
+    //            bottom: "#7F8790",
+    //            left: "#7F8790"
+    //        }
+    //    }
+    //};
+    //var plot = $("#placeholder3xx3").length && $.plot($("#placeholder3xx3"), [{
+    //    label: "Liberadas",
+    //    data: data1,
+    //    lines: {
+    //        fillColor: "rgba(150, 202, 89, 0.12)"
+    //    },
+    //    points: {
+    //        fillColor: "#fff"
+    //    }
+    //},
+    //{
+    //    label: "Confirmadas",
+    //    data: data2,
+    //    lines: {
+    //        fillColor: "rgba(150, 202, 89, 0.12)"
+    //    },
+    //    points: {
+    //        fillColor: "#fff"
+    //    }
+    //}], options);
+
+    function gd(year, month, day) {
+        return new Date(year, month - 1, day).getTime();
+    }
+
+</script>
+<!-- /flot -->
+
+<div class="row">
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <h2>Usuários Conectados</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <h4>Quantidades de Sessões do Usuário Conectado</h4>
+                @{
+                    int i = 1;
+
+                    foreach (var item in Model.UsuariosLogados)
+                    {
+                        <div class="widget_summary @(i % 2 == 0 ? "even" : "odd2")">
+                            <div class="w_left w_80">
+                                <span>@item.Usuario</span>
+                            </div>
+                            <div class="w_right w_20">
+                                <span>@item.Total</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        i++;
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="x_panel tile fixed_height_320 overflow_hidden">
+            <div class="x_title">
+                <h2>Sistema Operacional Usado</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                <table class="" style="width:100%">
+                    <tr>
+                        <th style="width:37%;">
+                            <p>Top 5</p>
+                        </th>
+                        <th>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                                <p class="">Dispositivo</p>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                <p class="">Progresso</p>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id="sistemaOperacional" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        </td>
+                        <td>
+                            <table class="tile_info">
+                                @{
+                                    i = 1;
+
+                                    var Color = "blue";
+
+                                    foreach (var item in Model.SistemasOperacionais)
+                                    {
+                                        if (i == 2)
+                                        {
+                                            Color = "green";
+                                        }
+                                        else if (i == 3)
+                                        {
+                                            Color = "purple";
+                                        }
+                                        else if (i == 4)
+                                        {
+                                            Color = "aero";
+                                        }
+                                        else if (i == 5)
+                                        {
+                                            Color = "red";
+                                        }
+
+                                        <tr>
+                                            <td>
+                                                <p><i class="fa fa-square @Color"></i>@item.Nome </p>
+                                            </td>
+                                            <td>@(item.Percentual)%</td>
+                                        </tr>
+
+                                        i++;
+                                    }
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+        <div class="x_panel tile fixed_height_320 overflow_hidden">
+            <div class="x_title">
+                <h2>Navegador Usado</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                <table class="" style="width:100%">
+                    <tr>
+                        <th style="width:37%;">
+                            <p>Top 5</p>
+                        </th>
+                        <th>
+                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                                <p class="">Dispositivo</p>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                <p class="">Progresso</p>
+                            </div>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <canvas id="navegador" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                        </td>
+                        <td>
+                            <table class="tile_info">
+                                @{
+                                    i = 1;
+
+                                    Color = "blue";
+
+                                    foreach (var item in Model.Navegadores)
+                                    {
+                                        if (i == 2)
+                                        {
+                                            Color = "green";
+                                        }
+                                        else if (i == 3)
+                                        {
+                                            Color = "purple";
+                                        }
+                                        else if (i == 4)
+                                        {
+                                            Color = "aero";
+                                        }
+                                        else if (i == 5)
+                                        {
+                                            Color = "red";
+                                        }
+
+                                        <tr>
+                                            <td>
+                                                <p><i class="fa fa-square @Color"></i>@item.Nome </p>
+                                            </td>
+                                            <td>@(item.Percentual)%</td>
+                                        </tr>
+
+                                        i++;
+                                    }
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- dashbord linegraph -->
+<script>
+
+    var doughnutDataSO = [
+        {
+            value: @(Model.SistemasOperacionais.Count >= 1 ? Model.SistemasOperacionais[0].Total : 0),
+            color: "#365873"
+        },
+        {
+            value: @(Model.SistemasOperacionais.Count >= 2 ? Model.SistemasOperacionais[1].Total : 0),
+            color: "#22B14C"
+        },
+        {
+            value: @(Model.SistemasOperacionais.Count >= 3 ? Model.SistemasOperacionais[2].Total : 0),
+            color: "#9B59B6"
+        },
+        {
+            value: @(Model.SistemasOperacionais.Count >= 4 ? Model.SistemasOperacionais[3].Total : 0),
+            color: "#9CC2CB"
+        },
+        {
+            value: @(Model.SistemasOperacionais.Count >= 5 ? Model.SistemasOperacionais[4].Total : 0),
+            color: "#E74C3C"
+        }
+    ];
+
+    var myDoughnut = new Chart(document.getElementById("sistemaOperacional").getContext("2d")).Doughnut(doughnutDataSO);
+
+    var doughnutDataBW = [
+        {
+            value: @(Model.Navegadores.Count >= 1 ? Model.Navegadores[0].Total : 0),
+            color: "#365873"
+        },
+        {
+            value: @(Model.Navegadores.Count >= 2 ? Model.Navegadores[1].Total : 0),
+            color: "#22B14C"
+        },
+        {
+            value: @(Model.Navegadores.Count >= 3 ? Model.Navegadores[2].Total : 0),
+            color: "#9B59B6"
+        },
+        {
+            value: @(Model.Navegadores.Count >= 4 ? Model.Navegadores[3].Total : 0),
+            color: "#9CC2CB"
+        },
+        {
+            value: @(Model.Navegadores.Count >= 5 ? Model.Navegadores[4].Total : 0),
+            color: "#E74C3C"
+        }
+    ];
+    var myDoughnut = new Chart(document.getElementById("navegador").getContext("2d")).Doughnut(doughnutDataBW);
+
+</script>
+<!-- /dashbord linegraph -->

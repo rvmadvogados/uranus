@@ -1,0 +1,369 @@
+﻿@{
+    ViewBag.Title = "Cadastros Sistêmicos \\ Auditoria";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalVisualizar" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            Modal content
+            <form id="auditoria-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Auditoria</label></h3>
+                    </div>
+                    <div id="Auditoria" name="Auditoria" class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Filtrar Auditoria</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        @using (Html.BeginForm("Index", "Auditoria", FormMethod.Get, new { id = "auditoria-filtro-form" }))
+                                        {
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Período</label>
+                                                    <div id="DataPeriodo" name="DataPeriodo" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="Data" name="Data" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.Data" readonly />
+                                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Número do Processo</label>
+                                                    <input type="text" class="form-control" placeholder="Informe o Número do Processo" id="numeroProcesso" name="numeroProcesso" value="@ViewBag.numeroProcesso" style="height: 40px !important;" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Nome Cliente</label>
+                                                    <input type="text" class="form-control" placeholder="Informe o Nome do Cliente" id="Nome" name="Nome" value="@ViewBag.numeroProcesso" style="height: 40px !important;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Módulo</label>
+                                                        <select id="Modulo" name="Modulo" class="select2_single form-control">
+                                                            <option value="">Selecione um Módulo</option>
+                                                            <option value="Agenda">Agenda</option>
+                                                            <option value="Cadastro">Cadastro</option>
+                                                            <option value="Processo">Processo</option>
+                                                            <option value="Tratamento de Prazo">Tratamento de Prazo</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Tipo</label>
+                                                        <select id="Tipo" name="Tipo" class="select2_single form-control">
+                                                            <option value="">Selecione um Tipo</option>
+                                                            <option value="Agendada">Agendada</option>
+                                                            <option value="Cancelada">Cancelada</option>
+                                                            <option value="Dados Básicos">Dados Básicos</option>
+                                                            <option value="Email">Email</option>
+                                                            <option value="Liberada">Liberada</option>
+                                                            <option value="Telefone">Telefone</option>
+                                                            <option value="Inicial">Inicial</option>
+                                                            <option value="Autor">Autor</option>
+                                                            <option value="Ação">Ação</option>
+                                                            <option value="Réu e Advogado">Réu e Advogado</option>
+                                                            <option value="Evento">Evento</option>
+                                                            <option value="Agenda do Profissional">Agenda do Profissional</option>
+                                                            <option value="Processos EPROC">Processos EPROC</option>
+                                                            <option value="Processos WEBJUR">Processos WEBJUR</option>
+                                                            <option value="Processos OAB">Processos OAB</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Ação</label>
+                                                        <select id="Acao" name="Acao" class="select2_single form-control">
+                                                            <option value="">Selecione uma Ação</option>
+                                                            <option value="Inserido">Inserido</option>
+                                                            <option value="Alterado">Alterado</option>
+                                                            <option value="Excluído">Excluído</option>
+                                                            <option value="Capturado">Capturado</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Usuário</label>
+                                                        <select id="Usuario" name="Usuario" class="select2_single form-control">
+                                                            <option value="">Selecione um Usuário</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button id="Limpar" name="Limpar" type="button" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                tableStyle: "webgrid",
+                                fillEmptyRows: false,
+                                headerStyle: "webgrid-header",
+                                alternatingRowStyle: "webgrid-alternating-row",
+                                rowStyle: "webgrid-row-style",
+                                selectedRowStyle: "webgrid-selected-row",
+                                footerStyle: "webgrid-footer",
+                                mode: WebGridPagerModes.All,
+                                firstText: "Primeiro",
+                                previousText: "Anterior",
+                                nextText: "Próximo",
+                                lastText: "Último",
+                                numericLinksCount: 5,
+                                columns: new[] {
+                                grid.Column("DataHora", header: "Data Hora", format: (item) => string.Format("{0:dd/MM/yyyy HH:mm}", item.DataHora)),
+                                grid.Column("Modulo", header: "Módulo"),
+                                grid.Column("Tipo", header: "Tipo"),
+                                grid.Column("Acao", header: "Ação"),
+                                grid.Column("Usuario", header: "Usuário"),
+                                grid.Column("ID", header: "Ações", canSort:false,
+                                format:
+                    @<text>
+                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalVisualizar' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+                    </text>)
+         });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        $('#Data').daterangepicker();
+
+        $('input[name="Data"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        });
+
+        $('input[name="Data"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+
+        $("#Modulo").select2({
+            placeholder: "Selecione um Módulo",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#Tipo").select2({
+            placeholder: "Selecione um Tipo",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#Acao").select2({
+            placeholder: "Selecione uma Ação",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#Usuario").select2({
+            placeholder: "Selecione um Usuário",
+            allowClear: true,
+            tags: true
+        });
+
+        CarregarUsuarios();
+
+        function CarregarUsuarios() {
+
+            var options = {};
+            options.url = "/Usuarios/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.usuarios;
+                    $('#Usuario').html("");
+                    var select = $('#Usuario');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione o Usuário")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#Usuario').val(@Html.Raw(Json.Encode(ViewBag.Usuario)));
+                    $('#Usuario').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#Modulo').val(@Html.Raw(Json.Encode(ViewBag.Modulo)));
+        $('#Modulo').trigger('change');
+
+        $('#Tipo').val(@Html.Raw(Json.Encode(ViewBag.Tipo)));
+        $('#Tipo').trigger('change');
+
+        $('#Acao').val(@Html.Raw(Json.Encode(ViewBag.Acao)));
+        $('#Acao').trigger('change');
+
+        function Visualizar(Id) {
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Auditoria/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var html = "";
+
+                    html += "<table width='100%'>";
+                    html += "    <thead>";
+                    html += "        <tr>";
+                    html += "            <th>Data Hora</th>";
+                    html += "            <th>Módulo</th>";
+                    html += "            <th>Tipo</th>";
+                    html += "            <th>Ação</th>";
+                    html += "            <th>Usuário</th>";
+                    html += "        </tr>";
+                    html += "    </thead>";
+                    html += "    <tbody>";
+                    html += "        <tr>";
+                    html += "            <td>" + json.auditoria[0].DataHora + "</td>";
+                    html += "            <td>" + json.auditoria[0].Modulo + "</td>";
+                    html += "            <td>" + json.auditoria[0].Tipo + "</td>";
+                    html += "            <td>" + json.auditoria[0].Acao + "</td>";
+                    html += "            <td>" + json.auditoria[0].Usuario + "</td>";
+                    html += "        </tr>";
+                    html += "    </tbody>";
+                    html += "</table>";
+                    html += "<br />";
+
+                    $.each(json.auditoria[0].Log.split(';'), function (index, value) {
+                        html += unescape(value) + "<br />";
+                    });
+
+                    $('#Auditoria').html(html);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Auditoria');
+        }
+
+        function LimparFiltro() {
+
+            $('#Data').val("");
+            $('#numeroProcesso').val("");
+            $('#Modulo').val("");
+            $('#Modulo').trigger('change');
+            $('#Tipo').val("");
+            $('#Tipo').trigger('change');
+            $('#Acao').val("");
+            $('#Acao').trigger('change');
+            $('#Usuario').val("");
+            $('#Usuario').trigger('change');
+
+            $("#auditoria-filtro-form").submit();
+        }
+
+    </script>
+
+</div>

@@ -1,0 +1,1401 @@
+﻿@{
+    ViewBag.Title = "Cadastro de Contratos";
+}
+
+<div class="main_container">
+
+    <style>
+
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+
+
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="idCliente" name="idCliente" value="">
+    <input type="hidden" id="idEmpresa" name="idEmpresa" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idAcaoEvento" name="idAcaoEvento" value="">
+
+    <div id="modalNovo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="contratosclientes-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Contrato</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            @*<div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número Contrato </label>
+                                        <input type="text" class="form-control" id="NumeroContrato" name="NumeroContrato" />
+                                    </div>
+                                </div>*@
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Cliente <span class="required">*</span></label><br />
+                                    <select id="Cliente" name="Cliente" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="ClienteValidate" name="ClienteValidate" for="Cliente" class="error hidden"> Por favor, selecione um Cliente.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Sede </label>
+                                    <input type="text" class="form-control" id="NomeSede" name="NomeSede" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Área <span class="required">*</span></label>
+                                    <select id="Area" name="Area" class="select2_single form-control" style="width: 100% !important;" data-msg-required="Por favor, selecione uma Área." data-rule-required="true"></select>
+                                    <label id="AreaValidate" name="AreaValidate" for="Area" class="error hidden"> Por favor, selecione uma Área.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="titlefield">Profissional <span class="required">*</span></label><br />
+                                    <select id="Profissional" name="Profissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="ProfissionalValidate" name="ProfissionalValidate" for="Profissional" class="error hidden"> Por favor, selecione um profissional.</label>
+
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="titlefield">Objeto <span class="required">*</span></label><br />
+                                    <select id="Acao" name="Acao" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="AcaoValidate" name="AcaoValidate" for="Acao" class="error hidden"> Por favor, selecione um objeto.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data <span class="required">*</span></label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="Data" name="Data" data-msg-required="Por favor, insira Data." data-rule-required="true" readonly />
+                                </div>
+                            </div>
+                            @*<div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número Processo </label>
+                                        <input type="text" class="form-control" id="NumeroProcesso" name="NumeroProcesso" />
+                                    </div>
+                                </div>*@
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Anexar Contrato <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 4MB por arquivo)</label></label>
+                                    <div id="upload" class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ContratoFileUpload').click();" />
+                                        <input type="file" id="ContratoFileUpload" name="ContratoUpload" accept="application/pdf" value="4194304" />
+                                        <span id="ContratoFileName" name="ContratoFileName" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Honorários </label>
+                                    <input type="text" class="form-control" id="ValorHonorarios" name="ValorHonorarios" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Saldo Honorários </label>
+                                    <input type="text" class="form-control" id="SaldoHonorarios" name="SaldoHonorarios" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Forma de Pagamento</label>
+                                    <select id="FormaPagamento" name="FormaPagamento" class="select2_single form-control">
+                                        <option value="">Selecione uma Forma</option>
+                                        <option value="1">Dinheiro</option>
+                                        <option value="2">Cartão Débito</option>
+                                        <option value="3">Cartão Crédito</option>
+                                        <option value="4">Boleto Bancário</option>
+                                        <option value="5">Depósito Bancário</option>
+                                        <option value="6">PIX</option>
+                                        <option value="7">PIX BB</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Condição Pagto</label>
+                                    <select id="CondicaoPagamento" name="CondicaoPagamento" class="select2_single form-control">
+                                        <option value="">Selecione uma Condição</option>
+                                        <option value="1">À Vista</option>
+                                        <option value="2">À Prazo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Nº Meses </label>
+                                    <input type="text" class="form-control" id="NumeroMeses" name="NumeroMeses" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">1º Vencimento </label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="PrimeiroVencimento" name="PrimeiroVencimento" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Parcela </label>
+                                    <input type="text" class="form-control" id="ValorParcela" name="ValorParcela" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome do Banco </label><br />
+                                    <select id="Banco" name="Banco" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    @* <label id="ClienteValidate" name="ClienteValidate" for="Cliente" class="error hidden"> Por favor, selecione um Cliente.</label>*@
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Pagamento </label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="DataPagamento" name="DataPagamento" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Observação </label>
+                                    <input type="text" class="form-control" id="Observacao" name="Observacao" />
+                                </div>
+                            </div>
+                        </div>
+
+                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                            {
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Cadastro</label>
+                                            <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Cadastro</label>
+                                            <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Alteração</label>
+                                            <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Alteração</label>
+                                            <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Financeiro</label>
+                                            <input type="text" class="form-control" id="DataFinanceiro" name="DataFinanceiro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Financeiro</label>
+                                            <input type="text" class="form-control" id="UsuarioFinanceiro" name="UsuarioFinanceiro" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="col-md-4">
+                            <button id="buttonFinanceiro" type="button" class="btn btn-info" style="margin: 10;" data-dismiss="modal">Atualizar Financeiro</button>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4">
+                            <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                            &nbsp;
+                            <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row" style="width: 100% !important;">
+                        <div class="col-md-10">
+                            <h4 class="modal-title"><label>Excluir Contrato</label></h4>
+                        </div>
+                        <div class="col-md-2" style="float: right !important;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluir" name="modalLabelExcluir">Você deseja realmente excluir esse Contrato</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Criar e Filtrar Contratos de Clientes</h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+
+                                    @using (Html.BeginForm("Index", "ClientesContratos", FormMethod.Get, null))
+                                    {
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Início </label>
+                                                    <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataInicio" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim </label>
+                                                    <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataFim" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Número Contrato</label>
+                                                    <input id="FiltrarNumeroContrato" name="FiltrarNumeroContrato" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarNumeroContrato" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Nome do Cliente</label>
+                                                    <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Local de Atendimento</label>
+                                                    <select id="FiltrarSede" name="FiltrarSede" class="select2_single form-control" style="width: 100% !important;"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Tipo de Área</label>
+                                                    <select id="FiltrarArea" name="FiltrarArea" class="select2_single form-control"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" data-backdrop="static" data-keyboard="false" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-secondary" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                 htmlAttributes: new { id = "MainTable" },
+                                 tableStyle: "webgrid",
+                                 fillEmptyRows: false,
+                                 headerStyle: "webgrid-header",
+                                 alternatingRowStyle: "webgrid-alternating-row",
+                                 rowStyle: "webgrid-row-style",
+                                 selectedRowStyle: "webgrid-selected-row",
+                                 footerStyle: "webgrid-footer",
+                                 mode: WebGridPagerModes.All,
+                                 firstText: "Primeiro",
+                                 previousText: "Anterior",
+                                 nextText: "Próximo",
+                                 lastText: "Último",
+                                 numericLinksCount: 5,
+                                 columns: new[] {
+                                 grid.Column("Data", header: "Data", format: (item) => (item.Data == null ? string.Empty : string.Format("{0:dd/MM/yyyy}", item.Data))),
+                                 //grid.Column("NumeroContrato", header: "Nº Contrato"),
+                                 grid.Column("Profissionais.Pessoas.Nome", header: "Profissional"),
+                                 grid.Column("Clientes.Pessoas.Nome", header: "Cliente"),
+                                 grid.Column("ProcessosCadastroAcao.Acao", header: "Objeto"),
+                                 grid.Column("Clientes.NomeIndicacao", header: "Indicação"),
+                                 grid.Column("ID", header: "Ações", canSort:false,
+                                 format:
+                @<text>
+
+                    @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                    @if (item.DataFinanceiro == null)
+                        {
+                    @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                        }
+                        else
+                        {
+                    @Html.Raw("Contrato já integrado no financeiro.")
+                        }
+                    @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ");'>Excluir</a>")
+                    @*@Html.Raw("<a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Data + '"' + ");'>Excluir</a>")*@
+                </text>)
+});
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    @*<script src="~/Content/vendors/jquery/dist/jquery.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    @*<script type="text/javascript" src="~/Content/js/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+
+
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        $('input[type=file]').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $("#ValorHonorarios").maskMoney({ allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+        $("#SaldoHonorarios").maskMoney({ allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+        $("#ValorParcela").maskMoney({ allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+
+        $("#FiltrarDataInicio").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarDataFim").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#Data").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#PrimeiroVencimento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#DataPagamento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+
+        $("#FiltrarCliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                cache: false,
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+
+        $('#FiltrarSede').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSede)));
+        $('#FiltrarSede').trigger('change');
+
+        $('#FiltrarArea').val(@Html.Raw(Json.Encode(ViewBag.FiltrarArea)));
+        $('#FiltrarArea').trigger('change');
+
+        $("#FiltrarArea").select2({
+            placeholder: "Selecione uma Área",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#Cliente").select2({
+            dropdownParent: $('#modalNovo'),
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#Acao").select2({
+            dropdownParent: $('#modalNovo'),
+            placeholder: "Selecione um Objeto",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Acao/GetAcaoList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.acoes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#Profissional").select2({
+            dropdownParent: $('#modalNovo'),
+            placeholder: "Selecione um Profissional",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: '/Profissionais/GetProfissionaisList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.profissionais,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $('#Cliente').change(function () {
+            var dados = new window.FormData();
+
+            dados.append("Id", $('#Cliente option:selected').val());
+            var options = {};
+            options.url = "/Clientes/ConsultarSede"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#NomeSede').val(json.sede);
+                }
+            };
+            $.ajax(options);
+
+        });
+
+
+        $('#NumeroMeses').on('keyup', function () {
+            var _numeromeses = $(this).val();
+
+            if (_numeromeses > 1) {
+
+                var _valorHonorarios = parseFloat($('#ValorHonorarios').val().replace('R$ ', '').replace('.', '').replace(',', '.')).toFixed(2);
+                var _saldoHonorarios = parseFloat($('#SaldoHonorarios').val().replace('R$ ', '').replace('.', '').replace(',', '.')).toFixed(2);
+
+                $("#ValorParcela").val(numberToReal(((_valorHonorarios - _saldoHonorarios) / _numeromeses)).replace('.', ''));
+
+            }
+            else {
+                $("#ValorParcela").val("0");
+            }
+        });
+
+        CarregarAreas();
+        CarregarSedes();
+        CarregarClientes();
+        CarregarBancos();
+
+        function CarregarAreas(index, value) {
+            var options = {};
+            options.url = "/Areas/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.areas;
+
+                    $('#Area').html("");
+                    var select = $('#Area');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Área")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#Area').val(value);
+                    $('#Area').trigger('change');
+
+
+                    $('#FiltrarArea').html("");
+                    var select = $('#FiltrarArea');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Área")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarArea').val(@Html.Raw(Json.Encode(ViewBag.FiltrarArea)));
+                    $('#FiltrarArea').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarSedes(index, value) {
+            var options = {};
+
+            options.url = "/Sedes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+
+                    $('#FiltrarSede').html("");
+                    var select = $('#FiltrarSede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarSede').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSede)));
+                    $('#FiltrarSede').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarClientes() {
+
+            var dados = new window.FormData();
+            var options = {};
+            options.url = "/Clientes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.clientes;
+                    $('#Cliente').html("0");
+                    var select = $('#Cliente');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione um Cliente")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarCliente').html("0");
+                    var select = $('#FiltrarCliente');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione um Cliente")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarBancos() {
+
+            var dados = new window.FormData();
+            var options = {};
+            options.url = "/Bancos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.bancos;
+                    $('#Banco').html("0");
+                    var select = $('#Banco');
+                    select.append(
+                        $('<option selected></option>').val("0").html("Selecione um Banco")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Novo() {
+
+            $('#modalLabelTitle').text('Novo Contrato');
+            $('#Numerocontrato').attr('disabled', false);
+            $('#Numerocontrato').val('');
+            $('#Profissional').attr('disabled', false);
+            $('#Profissional').val('');
+            $('#Cliente').attr('disabled', false);
+            $('#Cliente').val('');
+            $('#NomeSede').attr('disabled', false);
+            $('#NomeSede').val('');
+            $('#Area').attr('disabled', false);
+            $('#Area').val('');
+            $('#Data').attr('disabled', false);
+            $('#Data').val('');
+            $('#ValorHonorarios').attr('disabled', false);
+            $('#ValorHonorarios').val('0');
+            $('#SaldoHonorarios').attr('disabled', false);
+            $('#SaldoHonorarios').val('0');
+            $('#FormaPagamento').attr('disabled', false);
+            $('#FormaPagamento').val('');
+            $('#Acao').attr('disabled', false);
+            $('#Acao').val('');
+            $('#CondicaoPagamento').attr('disabled', false);
+            $('#CondicaoPagamento').val('');
+            $('#NumeroMeses').attr('disabled', false);
+            $('#NumeroMeses').val('1');
+            $('#PrimeiroVencimento').attr('disabled', false);
+            $('#PrimeiroVencimento').val('');
+            $('#ValorParcela').attr('disabled', false);
+            $('#ValorParcela').val('0');
+            $('#Observacao').attr('disabled', false);
+            $('#Observacao').val('');
+            $('#NumeroProcesso').attr('disabled', false);
+            $('#NumeroProcesso').val('');
+
+            $('#DataCadastro').val('');
+            $('#UsuarioCadastro').val('');
+            $('#DataAlteracao').val('');
+            $('#UsuarioAlteracao').val('');
+            $('#DataFinanceiro').val('');
+            $('#UsuarioFinanceiro').val('');
+
+
+            $('#upload').attr('disabled', false);
+            $('#ContratoFileName').html("Nenhum arquivo selecionado");
+
+            $('#buttonSalvar').attr('disabled', false);
+            $('#buttonFinanceiro').attr('disabled', false);
+            $('#id').val(0);
+            $('#idAcaoEvento').val(0);
+            
+            $("#contratosclientes-form").validate().resetForm();
+        }
+
+        function Visualizar(Id) {
+
+            $('#modalLabelTitle').text('Visualizar Cadastro de Contrato');
+            $('#Numerocontrato').attr('disabled', false);
+            $('#Numerocontrato').val('');
+            $('#Profissional').attr('disabled', false);
+            $('#Profissional').val('');
+            $('#Cliente').attr('disabled', false);
+            $('#Cliente').val('');
+            $('#NomeSede').attr('disabled', false);
+            $('#NomeSede').val('');
+            $('#Area').attr('disabled', false);
+            $('#Area').val('');
+            $('#Data').attr('disabled', false);
+            $('#Data').val('');
+            $('#ValorHonorarios').attr('disabled', false);
+            $('#ValorHonorarios').val('');
+            $('#SaldoHonorarios').attr('disabled', false);
+            $('#SaldoHonorarios').val('');
+            $('#FormaPagamento').attr('disabled', false);
+            $('#FormaPagamento').val('');
+            $('#Acao').attr('disabled', false);
+            $('#Acao').val('');
+            $('#CondicaoPagamento').attr('disabled', false);
+            $('#CondicaoPagamento').val('');
+            $('#NumeroMeses').attr('disabled', false);
+            $('#NumeroMeses').val('');
+            $('#PrimeiroVencimento').attr('disabled', false);
+            $('#PrimeiroVencimento').val('');
+            $('#ValorParcela').attr('disabled', false);
+            $('#ValorParcela').val('');
+            $('#Observacao').attr('disabled', false);
+            $('#Observacao').val('');
+            $('#Banco').attr('disabled', false);
+            $('#Banco').val('');
+            $('#DataPagamento').attr('disabled', false);
+            $('#DataPagamento').val('');
+            $('#NumeroProcesso').attr('disabled', false);
+            $('#NumeroProcesso').val('');
+
+            $("#contratosclientes-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/ClientesContratos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#NumeroContrato').val(json.clientescontratos[0].NumeroContrato);
+
+                    $('#Profissional').append($('<option selected></option>').val(json.clientescontratos[0].IdProfissional).html(json.clientescontratos[0].NomeProfissional));
+                    $('#Profissional').trigger('change');
+
+                    $('#Cliente').append($('<option selected></option>').val(json.clientescontratos[0].IdCliente).html(json.clientescontratos[0].NomeCliente));
+                    $('#Cliente').trigger('change');
+                    $('#NomeSede ').val(json.clientescontratos[0].NomeSede);
+
+                    $('#Area').val(json.clientescontratos[0].IdArea);
+                    $('#Data').val(json.clientescontratos[0].Data);
+                    $('#ValorHonorarios').val(json.clientescontratos[0].ValorHonorarios);
+                    $('#SaldoHonorarios').val(json.clientescontratos[0].SaldoHonorarios);
+                    $('#FormaPagamento').val(json.clientescontratos[0].FormaPagamento);
+
+                    $('#Acao').append($('<option selected></option>').val(json.clientescontratos[0].IdAcao).html(json.clientescontratos[0].NomeAcao));
+                    $('#Acao').trigger('change');
+
+                    $('#CondicaoPagamento').val(json.clientescontratos[0].CondicaoPagamento);
+                    $('#NumeroMeses').val(json.clientescontratos[0].NumeroMeses);
+                    $('#PrimeiroVencimento').val(json.clientescontratos[0].PrimeiroVencimento);
+                    $('#ValorParcela').val(json.clientescontratos[0].ValorParcela);
+
+                    $('#Observacao').val(json.clientescontratos[0].Observacao);
+                    $('#DataPagamento').val(json.clientescontratos[0].DataPagamento);
+
+                    $('#NumeroProcesso').val(json.clientescontratos[0].NumeroProcesso);
+
+                    $('#Banco').append($('<option selected></option>').val(json.clientescontratos[0].IdBanco).html(json.clientescontratos[0].NomeBanco));
+                    $('#Banco').trigger('change');
+
+                    $('#DataCadastro').val(json.clientescontratos[0].DataCadastro);
+                    $('#UsuarioCadastro').val(json.clientescontratos[0].UsuarioCadastro);
+                    $('#DataAlteracao').val(json.clientescontratos[0].DataAlteracao);
+                    $('#UsuarioAlteracao').val(json.clientescontratos[0].UsuarioAlteracao);
+                    $('#DataFinanceiro').val(json.clientescontratos[0].DataFinanceiro);
+                    $('#UsuarioFinanceiro').val(json.clientescontratos[0].UsuarioFinanceiro);
+
+                    $('#ContratoFileName').html(json.arquivo);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+
+            $('#modalLabelTitle').text('Alterar Cadastro de Contratos');
+
+            $('#Numerocontrato').attr('disabled', false);
+            $('#Profissional').attr('disabled', false);
+            $('#Cliente').attr('disabled', false);
+            $('#NomeSede').attr('disabled', false);
+            $('#Area').attr('disabled', false);
+            $('#Data').attr('disabled', false);
+            $('#ValorHonorarios').attr('disabled', false);
+            $('#SaldoHonorarios').attr('disabled', false);
+            $('#FormaPagamento').attr('disabled', false);
+            $('#Acao').attr('disabled', false);
+            $('#CondicaoPagamento').attr('disabled', false);
+            $('#NumeroMeses').attr('disabled', false);
+            $('#PrimeiroVencimento').attr('disabled', false);
+            $('#ValorParcela').attr('disabled', false);
+            $('#Observacao').attr('disabled', false);
+            $('#Banco').attr('disabled', false);
+            $('#DataPagamento').attr('disabled', false);
+            $('#NumeroProcesso').attr('disabled', false);
+
+            $("#contratosclientes-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/ClientesContratos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#id').val(Id);
+
+                    $('#idAcaoEvento').val(json.clientescontratos[0].IdAcaoEvento);
+
+                    $('#NumeroContrato').val(json.clientescontratos[0].NumeroContrato);
+
+                    $('#Profissional').append($('<option selected></option>').val(json.clientescontratos[0].IdProfissional).html(json.clientescontratos[0].NomeProfissional));
+                    $('#Profissional').trigger('change');
+
+                    $('#Cliente').append($('<option selected></option>').val(json.clientescontratos[0].IdCliente).html(json.clientescontratos[0].NomeCliente));
+                    $('#Cliente').trigger('change');
+
+                    $('#NomeSede').val(json.clientescontratos[0].NomeSede);
+
+                    $('#Area').val(json.clientescontratos[0].IdArea);
+                    $('#Data').val(json.clientescontratos[0].Data);
+                    $('#ValorHonorarios').val(json.clientescontratos[0].ValorHonorarios);
+                    $('#SaldoHonorarios').val(json.clientescontratos[0].SaldoHonorarios);
+                    $('#FormaPagamento').val(json.clientescontratos[0].FormaPagamento);
+
+                    $('#Acao').append($('<option selected></option>').val(json.clientescontratos[0].IdAcao).html(json.clientescontratos[0].NomeAcao));
+                    $('#Acao').trigger('change');
+
+                    $('#CondicaoPagamento').val(json.clientescontratos[0].CondicaoPagamento);
+                    $('#NumeroMeses').val(json.clientescontratos[0].NumeroMeses);
+
+                    if (json.clientescontratos[0].PrimeiroVencimento != "0/0/") {
+                        $('#PrimeiroVencimento').val(json.clientescontratos[0].PrimeiroVencimento);
+                    }
+
+                    $('#ValorParcela').val(json.clientescontratos[0].ValorParcela);
+                    $('#Observacao').val(json.clientescontratos[0].Observacao);
+                    if (json.clientescontratos[0].DataPagamento != "0/0/") {
+                        $('#DataPagamento').val(json.clientescontratos[0].DataPagamento);
+                    }
+                    $('#NumeroProcesso').val(json.clientescontratos[0].NumeroProcesso);
+
+                    $('#Banco').append($('<option selected></option>').val(json.clientescontratos[0].IdBanco).html(json.clientescontratos[0].NomeBanco));
+                    $('#Banco').trigger('change');
+
+                    $('#DataCadastro').val(json.clientescontratos[0].DataCadastro);
+                    $('#UsuarioCadastro').val(json.clientescontratos[0].UsuarioCadastro);
+                    $('#DataAlteracao').val(json.clientescontratos[0].DataAlteracao);
+                    $('#UsuarioAlteracao').val(json.clientescontratos[0].UsuarioAlteracao);
+                    $('#DataFinanceiro').val(json.clientescontratos[0].DataFinanceiro);
+                    $('#UsuarioFinanceiro').val(json.clientescontratos[0].UsuarioFinanceiro);
+
+                    $('#ContratoFileName').html(json.arquivo);
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('#modalLabelExcluir').text('Você deseja realmente excluir esse Contrao (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#contratosclientes-form").validate();
+
+            if ($('#contratosclientes-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("IdAcaoEvento", $("#idAcaoEvento").val());
+
+                dados.append("NumeroContrato", $("#NumeroContrato").val());
+                dados.append("IdProfissional", $("#Profissional").val());
+                dados.append("IdCliente", $("#Cliente").val());
+                dados.append("IdArea", $("#Area").val());
+                dados.append("IdAcao", $("#Acao").val());
+                dados.append("Data", $("#Data").val());
+                dados.append("ValorHonorarios", $("#ValorHonorarios").val());
+                dados.append("SaldoHonorarios", $("#SaldoHonorarios").val());
+                dados.append("CondicaoPagamento", $("#CondicaoPagamento").val());
+                dados.append("NumeroMeses", $("#NumeroMeses").val());
+                dados.append("PrimeiroVencimento", $("#PrimeiroVencimento").val());
+                dados.append("FormaPagamento", $("#FormaPagamento").val());
+                dados.append("ValorParcela", $("#ValorParcela").val());
+                dados.append("Observacao", $("#Observacao").val());
+                dados.append("IdBanco", $("#Banco").val());
+                dados.append("DataPagamento", $("#DataPagamento").val());
+                dados.append("NumeroProcesso", $("#NumeroProcesso").val());
+
+                var arquivo = document.getElementById("ContratoFileUpload").files[0];
+                dados.append("ContratoArquivo", arquivo);
+
+                var options = {};
+                options.url = "/ClientesContratos/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Contrato salvo com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#contratosclientes-form").validate().resetForm();
+
+                    }
+                    else {
+                        if (json.codigo == '99') {
+
+
+                            $('#modalMensagemResposta').text(json.mensagem);
+                            $('#modalMensagem').attr('data-backdrop', 'static');
+                            $('#modalMensagem').attr('data-keyboard', 'false');
+                            $('#modalMensagem').modal('show');
+                            $("#contratosclientes-form").validate().resetForm();
+                        }
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonFinanceiro').click(function (evt) {
+
+            $("#contratosclientes-form").validate();
+
+            if ($('#contratosclientes-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+
+                var options = {};
+                options.url = "/ClientesContratos/FinanceiroAtualizar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Contrato integrado com o financeiro com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#contratosclientes-form").validate().resetForm();
+
+                    }
+                    else
+                    {
+                        $('#modalMensagemResposta').text('Problema ao integrar o contrato com o financeiro!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#contratosclientes-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+            $('#idCliente').val('');
+
+            var options = {};
+            options.url = "/ClientesContratos/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Contrato excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#contratosclientes-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('#modalMensagemResposta').text('Não foi possível excluir o Contrato (' + $("#nome").val() + ') ');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('#modalMensagemResposta').text('Ocorreu um erro que impossibilitou a exclusão do Contrato (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function VisualizarPDF(url) {
+
+            window.open(url, '_blank');
+
+        }
+
+        function ExcluirPDF() {
+
+            $("#ButtonContratoPDFExcluir").attr('disabled', true);
+            $("#ButtonContratoPDFExcluir").html("Apagando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelContratoFileExcluirConfirmacao").show();
+            $("#acceptFile").show();
+            $("#go_backFile").show();
+
+        }
+
+        function ExcluirPDFSim(nome) {
+
+            $("#LabelContratoFileExcluirConfirmacao").hide();
+            $("#acceptFile").hide();
+            $("#go_backFile").hide();
+
+            $("#ButtonContratoPDFExcluir").text("Apagar");
+            $("#ButtonContratoPDFExcluir").attr('disabled', false);
+
+            var dados = new window.FormData();
+            dados.append("Arquivo", nome);
+
+            var options = {};
+            options.url = "/ClientesContratos/ExcluirPDF";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+                    $("#ContratoFileName").html("Nenhum arquivo encontrado");
+                }
+                else {
+                    $("#ContratoFileName").html("Falha ao tentar apagar o arquivo PDF");
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirPDFNao() {
+
+            $("#LabelContratoFileExcluirConfirmacao").hide();
+            $("#acceptFile").hide();
+            $("#go_backFile").hide();
+
+            $("#ButtonContratoPDFExcluir").text("Apagar");
+            $("#ButtonContratoPDFExcluir").attr('disabled', false);
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../ClientesContratos');
+        }
+
+    </script>
+
+</div>

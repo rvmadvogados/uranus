@@ -1,0 +1,2696 @@
+﻿@{
+    ViewBag.Title = "Agendas";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="agendasLiberadas" name="agendasLiberadas" value="0">
+    <input type="hidden" id="idReceita" name="idReceita" value="">
+
+    <!-- page content -->
+    <div role="main">
+        @{
+            //if (Sessao.Usuario.Nivel > 1)
+            //{
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Filtrar Agenda de Compromissos</h2>
+                            <ul class="right panel_toolbox" style="list-style: none;">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="agenda-filtrar-form" data-parsley-validate class="form-horizontal form-label-left">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Local de Atendimento</label>
+                                            <select id="FiltrarSede" name="FiltrarSede" class="select2_single form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Profissional</label>
+                                            <select id="FiltrarProfissional" name="FiltrarProfissional" class="select2_single form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Assunto</label>
+                                            <select id="FiltrarAssunto" name="FiltrarAssunto" class="select2_single form-control"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Cliente</label>
+                                            <select id="FiltrarCliente" name="FiltrarCliente" class="form-control"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Inicial</label>
+                                            <div id="FiltrarDataInicial" name="FiltrarDataInicial" class="input-group date" style="margin: 0 !important;">
+                                                <input id="FiltrarDataInicialValor" name="FiltrarDataInicialValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Final</label>
+                                            <div id="FiltrarDataFinal" name="FiltrarDataFinal" class="input-group date" style="margin: 0 !important;">
+                                                <input id="FiltrarDataFinalValor" name="FiltrarDataFinalValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2" style="padding-bottom: 0px !important;">
+                                        <div class="form-group" style="margin-bottom: 0px !important; padding-top: 19px !important;">
+                                            <button type="button" class="btn btn-primary" style="margin-bottom: 0px !important;" onclick="FiltrarAgenda();">Filtrar</button>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default" style="margin-bottom: 0px !important;" onclick="LimparAgenda();">Limpar</button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 right" style="padding-bottom: 0px !important;">
+                                        <div class="form-group" style="margin-bottom: 0px !important; padding-top: 19px !important;">
+                                            <button id="buttonNovaAgendaReuniao" type="button" class="btn btn-info disabled" data-toggle="modal" data-target="#AgendarReuniaoModal" data-backdrop="static" onclick="NovaAgendaReuniao();" style="margin-bottom: 0px !important;">Agendar Reunião</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            //            }
+        }
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="AgendarReuniaoModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="agendar-reuniao-form" class="form-horizontal calender" role="form">
+                <input type="hidden" id="id" name="id" value="">
+                <input type="hidden" id="idEvent" name="idEvent" value="">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabelTitle">Agendar Reunião</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data <span class="required">*</span></label>
+                                    <div id="ReuniaoData" name="ReuniaoData" class="input-group date" style="margin: 0 !important;">
+                                        <input id="ReuniaoDataValor" name="ReuniaoDataValor" class="form-control placeholder" type="text" style="height: 40px !important;" data-msg-required="Por favor, selecione uma Data." data-rule-required="true" readonly />
+                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Hora Inicial <span class="required">*</span></label>
+                                    <select id="ReuniaoHoraInicial" name="ReuniaoHoraInicial" class="form-control" style="height: 40px !important;" data-msg-required="Por favor, selecione a Hora Inicial." data-rule-required="true">
+                                        <option value="">Selecione</option>
+                                        <option value="06:00">06:00</option>
+                                        <option value="06:15">06:15</option>
+                                        <option value="06:30">06:30</option>
+                                        <option value="06:45">06:45</option>
+                                        <option value="07:00">07:00</option>
+                                        <option value="07:15">07:15</option>
+                                        <option value="07:30">07:30</option>
+                                        <option value="07:45">07:45</option>
+                                        <option value="08:00">08:00</option>
+                                        <option value="08:15">08:15</option>
+                                        <option value="08:30">08:30</option>
+                                        <option value="08:45">08:45</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="09:15">09:15</option>
+                                        <option value="09:30">09:30</option>
+                                        <option value="09:45">09:45</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="10:15">10:15</option>
+                                        <option value="10:30">10:30</option>
+                                        <option value="10:45">10:45</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="11:15">11:15</option>
+                                        <option value="11:30">11:30</option>
+                                        <option value="11:45">11:45</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="12:15">12:15</option>
+                                        <option value="12:30">12:30</option>
+                                        <option value="12:45">12:45</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="13:15">13:15</option>
+                                        <option value="13:30">13:30</option>
+                                        <option value="13:45">13:45</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="14:15">14:15</option>
+                                        <option value="14:30">14:30</option>
+                                        <option value="14:45">14:45</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="15:15">15:15</option>
+                                        <option value="15:30">15:30</option>
+                                        <option value="15:45">15:45</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="16:15">16:15</option>
+                                        <option value="16:30">16:30</option>
+                                        <option value="16:45">16:45</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="17:15">17:15</option>
+                                        <option value="17:30">17:30</option>
+                                        <option value="17:45">17:45</option>
+                                        <option value="18:00">18:00</option>
+                                        <option value="18:15">18:15</option>
+                                        <option value="18:30">18:30</option>
+                                        <option value="18:45">18:45</option>
+                                        <option value="19:00">19:00</option>
+                                        <option value="19:15">19:15</option>
+                                        <option value="19:30">19:30</option>
+                                        <option value="19:45">19:45</option>
+                                        <option value="20:00">20:00</option>
+                                        <option value="20:15">20:15</option>
+                                        <option value="20:30">20:30</option>
+                                        <option value="20:45">20:45</option>
+                                        <option value="21:00">21:00</option>
+                                        <option value="21:15">21:15</option>
+                                        <option value="21:30">21:30</option>
+                                        <option value="21:45">21:45</option>
+                                        <option value="22:00">22:00</option>
+                                        <option value="22:15">22:15</option>
+                                        <option value="22:30">22:30</option>
+                                        <option value="22:45">22:45</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Hora Final <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="ReuniaoHoraFinal" name="ReuniaoHoraFinal" data-msg-required="Por favor, selecione a Hora Final." data-rule-required="true" style="height: 40px !important;" disabled />
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="titlefield">Assunto <span class="required">*</span></label>
+                                    <select id="ReuniaoAssunto" name="ReuniaoAssunto" class="form-control placeholder" style="height: 40px !important;" data-msg-required="Por favor, selecione um Assunto." data-rule-required="true">
+                                        <option value="">Selecione o Assunto</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Local da Reunião <span class="required">*</span></label>
+                                    <select id="ReuniaoSede" name="ReuniaoSede" class="form-control placeholder" style="height: 40px !important;" data-msg-required="Por favor, selecione um Local." data-rule-required="true">
+                                        <option value="">Selecione um Local</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Sala</label>
+                                    <select id="ReuniaoSala" name="ReuniaoSala" class="form-control placeholder" style="height: 40px !important;">
+                                        <option value="">Selecione a Sala</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Agendar para os Profissionais <span class="required">*</span></label><br />
+                                    <select id="ReuniaoProfissionais" name="ReuniaoProfissionais" class="form-control" style="height: 40px !important;" data-msg-required="Por favor, selecione os Profissionais." data-rule-required="true" multiple="multiple"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Descrição</label>
+                                    <textarea class="form-control" style="height: 55px;" id="ReuniaoDescricao" name="ReuniaoDescricao"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="AgendaProfissionais" class="row hidden"></div>
+                    </div>
+                    <div class="alert alert-warning hidden" id="agenda-reuniao-alert-error">
+                        <strong>Aviso:</strong> Existem profissionais com a agenda indisponível.
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button id="SalvarAgendaReuniao" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                &nbsp;
+                                <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Start Calender modal -->
+    <div id="CalenderModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="antoform" class="form-horizontal calender" role="form">
+                <input type="hidden" id="id" name="id" value="">
+                <input type="hidden" id="idEvent" name="idEvent" value="">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabelTitle2">Novo Agendamento</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data</label>
+                                    <input type="text" class="form-control" id="Data" name="Data" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Hora</label>
+                                    <select id="Hora" name="Hora" class="form-control" disabled="disabled"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Encaixe</label>
+                                    <br />
+                                    <div id="EncaixeCSS" name="EncaixeCSS" class="checkbox-item disabled">
+                                        <input type="checkbox" id="Encaixe" name="Encaixe" value="S">
+                                        <label for="Encaixe">Sim</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Compareceu</label>
+                                    <br />
+                                    <div id="CompareceuCSS" name="CompareceuCSS" class="checkbox-item ">
+                                        <input type="checkbox" id="Compareceu" name="Compareceu" value="S">
+                                        <label for="Compareceu">Não</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Cancelou</label>
+                                    <br />
+                                    <div id="CancelouCSS" name="CancelouCSS" class="checkbox-item ">
+                                        <input type="checkbox" id="Cancelou" name="Cancelou" value="S">
+                                        <label for="Cancelou">Sim</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Assunto <span class="required">*</span></label>
+                                    <select id="Assunto" name="Assunto" class="form-control placeholder" data-msg-required="Por favor, selecione um Assunto." data-rule-required="true">
+                                        <option value="">Selecione o Assunto</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Local de Atendimento <span class="required">*</span></label>
+                                    <select id="Sede" name="Sede" class="form-control placeholder" data-msg-required="Por favor, selecione um Local." data-rule-required="true">
+                                        <option value="">Selecione um Local</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Sala</label>
+                                    <select id="Sala" name="Sala" class="form-control placeholder">
+                                        <option value="">Selecione a Sala</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label class="titlefield">Agendar para o Profissional <span class="required">*</span></label>
+                                    <select id="Profissional" name="Profissional" class="form-control placeholder" data-msg-required="Por favor, selecione o Profissional." data-rule-required="true">
+                                        <option value="">Selecione o Profissional</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor R$</label>
+                                    <input type="text" class="form-control right" placeholder="Informe o Valor" id="Valor" name="Valor" maxlength="14" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Cliente <span id="ClienteRequired" class="required hidden">*</span></label>
+                                    <br />
+                                    <select id="Cliente" name="Cliente" class="form-control"></select>
+                                    <label id="ClienteValidate" name="ClienteValidate" for="Cliente" class="error hidden"> Por favor, selecione um Cliente.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Telefone</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Telefone" id="Telefone" name="Telefone" readonly />
+                                    @*<input type="text" class="form-control" placeholder="Informe o Telefone" id="Telefone" name="Telefone"/>*@
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Tipo de Indicação</label>
+                                    <input id="TipoIndicacao" name="TipoIndicacao" class="form-control placeholder" placeholder="Selecione o cliente" readonly />
+                                        @*<option value="" style="background-color: #eaeaea;">Selecione o Tipo de Indicação</option>*@
+                                    
+                                    @*<select id="TipoIndicacao" name="TipoIndicacao" class="form-control placeholder">
+                                        <option value="" style="background-color: #eaeaea;">Selecione o Tipo de Indicação</option>
+                                    </select>*@
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label id="LabelIndicacao" class="titlefield hidden">Nome da Indicação</label>
+                                    <input type="text" class="form-control hidden" placeholder="" id="NomeIndicacao" name="NomeIndicacao" readonly />
+                                    <select id="Parceiros" name="Parceiros" class="form-control placeholder hidden">
+                                        <option value="" style="background-color: #eaeaea;">Selecione o Parceiro</option>
+                                    </select>
+                                    <select id="Profissionais" name="Profissionais" class="form-control placeholder hidden">
+                                        <option value="" style="background-color: #eaeaea;">Selecione o Profissional</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Descrição <span class="red">(Limite de 250 caracteres)</span> <span id="DescriptionRequired" class="required hidden">*</span></label>
+                                    <textarea class="form-control" style="height: 55px;" id="Descricao" name="Descricao" maxlength="250" data-msg-required="Por favor, informe uma Descrição." data-rule-required="false"></textarea>
+                                    <label id="DescriptionError" for="Descricao" class="error hidden">Por favor, informe uma Descrição.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Área</label>
+                                    <select id="Area" name="Area" class="form-control placeholder ">
+                                        <option value="" style="background-color: #eaeaea;">Selecione Area</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Forma de Pagamento</label>
+                                    <select id="FormaPagamento" name="FormaPagamento" class="select2_single form-control">
+                                        <option value="">Selecione uma Forma</option>
+                                        <option value="1">Dinheiro</option>
+                                        <option value="2">Cartão Débito</option>
+                                        <option value="3">Cartão Crédito</option>
+                                        <option value="4">Boleto Bancário</option>
+                                        <option value="5">Depósito Bancário</option>
+                                        <option value="6">PIX</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Banco</label>
+                                    <select id="Banco" name="Banco" class="form-control placeholder ">
+                                        <option value="" style="background-color: #eaeaea;">Selecione Banco</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                            {
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Cadastro</label>
+                                            <input type="text" class="form-control" id="DataCadastro" name="DataCadastro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Cadastro</label>
+                                            <input type="text" class="form-control" id="UsuarioCadastro" name="UsuarioCadastro" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data Alteração</label>
+                                            <input type="text" class="form-control" id="DataAlteracao" name="DataAlteracao" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Usuário Alteração</label>
+                                            <input type="text" class="form-control" id="UsuarioAlteracao" name="UsuarioAlteracao" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="alert alert-warning" id="agenda-profissional-alert-error" hidden="hidden">
+                        <strong>Aviso:</strong> O Profissional seleciondo já tem agenda nesta data e hora.
+                    </div>
+                    <div class="alert alert-warning" id="agenda-sede-alert-error" hidden="hidden">
+                        <strong>Aviso:</strong> A Sala selecionada nesta Sede já esta agendada nesta data e hora.
+                    </div>
+                    <div class="alert alert-warning" id="agenda-diversos-alert-error" hidden="hidden">
+                        <strong>Aviso:</strong> Problema ao salvar na agenda.
+                    </div>
+                    <div class="alert alert-warning" id="agenda-pagamentos-alert-error" hidden="hidden">
+                        <strong>Aviso:</strong> Valor informado sem informar os dados do pagamento.
+                    </div>
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="left">
+                                    <button id="ButtonRemoveEvent" type="button" class="btn btn-danger mb-2" style="margin: 0;" data-dismiss="modal" onclick="Excluir($('#id').val(), $('#idEvent').val());">Remover</button>
+                                </div>
+                            </div>
+                            @{
+                                if (Sessao.Usuario.Nivel > 1)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="center">
+                                            <button id="ButtonLiberateEvent" type="button" class="btn btn-info mb-2" style="margin: 0;" data-dismiss="modal" onclick="Liberar($('#id').val(), $('#idEvent').val());">Liberar</button>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <div class="col-md-4">
+                                <button id="ButtonSaveEvent" type="button" class="btn btn-primary antosubmit" style="margin: 0;">Salvar</button>
+                                &nbsp;
+                                <button type="button" class="btn btn-default antoclose" data-dismiss="modal" style="margin: 0;" onclick="$('#antoform').validate().resetForm();">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="fc_create" data-toggle="modal" data-target="#CalenderModal"></div>
+    <div id="fc_edit" data-toggle="modal" data-target="#CalenderModal"></div>
+    <!-- End Calender modal -->
+    <!-- /page content -->
+</div>
+
+<script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+<!-- datepicker -->
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- bootstrap-multiselect -->
+<script type="text/javascript" src="~/Scripts/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="~/Content/CSS/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css" />
+
+<script src="~/Scripts/modernizr-2.8.3.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+
+<link rel="stylesheet" href="~/Content/Choices-main/public/assets/styles/choices.min.css" />
+<script src="~/Content/Choices-main/public/assets/scripts/choices.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    });
+</script>
+
+<script>
+    let choicesCliente;
+    $("#FiltrarDataInicial").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#FiltrarDataFinal").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#ReuniaoData").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        daysOfWeekDisabled: [0, 6],
+        startDate: new Date(),
+        datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+    });
+
+    $("#Valor").maskMoney({ prefix: 'R$ ', allowNegative: true, thousands: '.', decimal: ',', affixesStay: true });
+    $("#Telefone").mask("(99) 9999-9999?9");
+
+    CarregarTiposAgendas();
+    CarregarSedes();
+    CarregarProfissionais("");
+  //  CarregarTiposIndicacoes();
+    CarregarParceiros();
+    CarregarProfissionaisIndicacao();
+
+    CarregarBancos();
+    CarregarAreas();
+
+    function CarregarBancos() {
+
+        var dados = new window.FormData();
+        var options = {};
+        options.url = "/Bancos/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.bancos;
+                $('#Banco').html("0");
+                var select = $('#Banco');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione um Banco")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+            }
+        };
+        $.ajax(options);
+    }
+    function CarregarAreas() {
+
+        var dados = new window.FormData();
+        var options = {};
+        options.url = "/Areas/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.areas;
+                $('#Area').html("0");
+                var select = $('#Area');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione uma Area")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#Cliente').change(function () {
+
+
+        // if ($('#Cliente option:selected').val() == 0 || $('#Cliente option:selected').val()) {
+        if (choicesCliente.getValue(true) === 0 ||
+            choicesCliente.getValue(true) === undefined ||
+            choicesCliente.getValue(true) === null ||
+            choicesCliente.getValue(true) === ''
+            || !choicesCliente.getValue(true))
+        {
+
+            $('#TipoIndicacao').val("");
+            $('#NomeIndicacao').val("");
+            $('#NomeIndicacao').val("");
+            $('#Telefone').val("");
+
+            $("#LabelIndicacao").addClass("hidden");
+            $("#NomeIndicacao").addClass("hidden");
+        }
+        else {
+            console.log("else")
+            var dados = new window.FormData();
+            //dados.append("Id", $('#Cliente option:selected').val());
+            dados.append("Id", choicesCliente.getValue(true));
+
+            var options = {};
+            options.url = "/Clientes/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    console.log('consulta indicacao')
+                    console.log($('#NomeIndicacao'));
+                    console.log(json.cliente[0]);
+                    $('#TipoIndicacao').val(json.cliente[0].TipoIndicacaoNome);
+                    $('#NomeIndicacao').val(json.cliente[0].Indicacao);
+                    ShowIndicacao(json.cliente[0].Tipo);
+
+                    
+                    if (json.cliente[0].Telefone != null) {
+                        if (json.cliente[0].Telefone.length == 10) {
+                            $('#Telefone').val(FormatNumber(json.cliente[0].Telefone, '(##) ####-####'));
+                        }
+                        else {
+                            $('#Telefone').val(FormatNumber(json.cliente[0].Telefone, '(##) ####-#####'));
+                        }
+                    }
+                    else {
+                        $('#Telefone').val("");
+                    }
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+    });
+
+    $('#Assunto').on('change', function () {
+
+        switch (this.value) {
+            case "1":
+            case "3":
+            case "6":
+            case "9":
+            case "10":
+            case "12":
+            case "16":
+            case "17":
+            case "18":
+                $('#ClienteRequired').removeClass('hidden');
+                break;
+            default:
+                $('#ClienteRequired').addClass('hidden');
+        }
+
+    });
+
+    $(document.body).on("change", "#TipoIndicacao", function () {
+
+        var dados = new window.FormData();
+        dados.append("Id", this.value);
+
+        var options = {};
+        options.url = "/TiposIndicacoes/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                ShowIndicacao(json.indicacao[0].Tipo);
+
+            }
+        };
+        $.ajax(options);
+
+    });
+
+    function ShowIndicacao(Id) {
+
+        console.log("Show indicação")
+        console.log(Id)
+        if (Id == 1 || Id == 2 || Id == 3 || Id == 5) {
+
+            $("#LabelIndicacao").removeClass("hidden");
+            $("#NomeIndicacao").removeClass("hidden");
+            $("#Parceiros").addClass("hidden");
+            $("#Profissionais").addClass("hidden");
+
+        } else {
+
+            $("#LabelIndicacao").addClass("hidden");
+            $("#NomeIndicacao").addClass("hidden");
+            $("#Parceiros").addClass("hidden");
+            $("#Profissionais").addClass("hidden");
+
+        }
+        //else if (Id == 2) {
+
+        //    $("#LabelIndicacao").removeClass("hidden");
+        //    $("#NomeIndicacao").addClass("hidden");
+        //    $("#Parceiros").removeClass("hidden");
+        //    $("#Profissionais").addClass("hidden");
+
+        //}
+        //else if (Id == 3) {
+
+        //    $("#LabelIndicacao").removeClass("hidden");
+        //    $("#NomeIndicacao").remove("hidden");
+        //    $("#Parceiros").addClass("hidden");
+        //  //  $("#Profissionais").removeClass("hidden");
+
+        //}
+       
+    }
+
+    var my_hour_format = function (input) {
+
+        var d = new Date(input);
+        var hour = d.getHours() + 3;
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        var minute = d.getMinutes();
+        if (minute < 10) {
+            minute = "0" + minute;
+        }
+
+        var hours = hour + ":" + minute;
+
+        return hours;
+
+    };
+
+    $(window).load(function () {
+
+        $("#FiltrarSede").select2({
+            placeholder: "Selecione um Local",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#FiltrarProfissional").select2({
+            placeholder: "Selecione um Profissional",
+            allowClear: true,
+            tags: true
+        });
+
+
+        $("#FiltrarAssunto").select2({
+            placeholder: "Selecione um Assunto",
+            allowClear: true,
+            tags: true
+        });
+
+        var events = [];
+
+        CarregarEventos();
+
+        function CarregarEventos() {
+
+            var options = {};
+            options.url = "/Agendas/Eventos"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                events = $.parseJSON(data.responseText);
+                $('#calendar').fullCalendar('refetchEvents');
+                $('#buttonNovaAgendaReuniao').removeClass('disabled');
+                NProgress.done();
+
+            };
+            $.ajax(options);
+
+        }
+
+        $('#Encaixe').click(function () {
+
+            if ($('#Encaixe').prop('checked')) {
+
+                $('#Hora').prop("disabled", false);
+                if ($('#Hora option').length == 1) {
+                    $('#Hora').append($('<option></option>').val($('#Hora').val().substring(0, 3) + "15").html($('#Hora').val().substring(0, 3) + "15"));
+                    $('#Hora').append($('<option></option>').val($('#Hora').val().substring(0, 3) + "30").html($('#Hora').val().substring(0, 3) + "30"));
+                    $('#Hora').append($('<option></option>').val($('#Hora').val().substring(0, 3) + "45").html($('#Hora').val().substring(0, 3) + "45"));
+                }
+
+            }
+            else {
+
+                $('#Hora').prop("disabled", true);
+
+            }
+
+        });
+
+        $('#Cancelou').click(function () {
+
+            if ($('#Cancelou').prop('checked')) {
+
+                $('#DescriptionRequired').removeClass('hidden');
+                $('#DescriptionError').removeClass('hidden');
+
+                if ($('#Descricao').val().length == 0) {
+                    $('#DescriptionError').css('display', 'block');
+                }
+
+                $('#Descricao').attr('data-rule-required', 'true');
+
+            }
+            else {
+
+                $('#DescriptionRequired').addClass('hidden');
+                $('#DescriptionError').addClass('hidden');
+                $('#DescriptionError').css('display', 'none');
+                $('#Descricao').removeAttr('data-rule-required');
+
+            }
+
+        });
+
+        var started;
+
+        var feriados = $('#listaFeriadosRecesso').val();
+
+        var calendar = $('#calendar').fullCalendar({
+            ignoreTimezone: false,
+            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sabado'],
+            dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+            columnFormat: {
+                month: 'ddd',
+                week: 'ddd DD',
+                day: ''
+            },
+            axisFormat: 'H:mm',
+            timeFormat: {
+                '': 'H:mm',
+                agenda: 'H:mm'
+            },
+            buttonText: {
+                today: "Hoje",
+                month: "Mês",
+                week: "Semana",
+                day: "Dia"
+            },
+            timeFormat: "HH:mm",
+            minTime: "06:00:00",
+            maxTime: "24:00:00",
+            lotDuration: '00:00:00',
+            snapDuration: '00:60:00',
+            allDayText: 'Dia todo',
+            allDaySlot: false,
+            editable: false,
+            selectable: true,
+            selectHelper: true,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            weekends: false,
+            select: function (start, end, allDay) {
+                // Criar Agenda
+                var view = $('#calendar').fullCalendar('getView');
+                if (start.isBefore(moment()) || view.name == "month" || start.isoWeekday() == 6 || start.isoWeekday() == 7 || feriados.indexOf(start.toISOString().match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}/)[0].split('-').reverse().join('/')) > 0) {
+                    $('#calendar').fullCalendar('unselect');
+                    return false;
+                }
+                else {
+                    $('#agenda-profissional-alert-error').hide();
+                    $('#agenda-sede-alert-error').hide();
+                    $('#agenda-diversos-alert-error').hide();
+                    $('#agenda-pagamentos-alert-error').hide();
+
+                    //     $("#myModalLabelTitle").text("Novo Agendamento");
+                    if (choicesCliente) {
+                        choicesCliente.removeActiveItems();
+                    }
+                    $("#Data").val(start.toISOString().match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}/)[0].split('-').reverse().join('/'));
+                    $('#Hora').empty().append($('<option selected></option>').val(my_hour_format(start)).html(my_hour_format(start)));
+                    $('#Hora').prop("disabled", true);
+
+                    $('#Encaixe').prop("disabled", false);
+                    $("#Encaixe").prop("checked", false);
+                    $("#EncaixeCSS").removeClass("disabled");
+
+                    //$('#Compareceu').prop("disabled", false);
+                    $("#Compareceu").prop("checked", false);
+                    //$("#CompareceuCSS").removeClass("disabled");
+
+                    $("#Cancelou").prop("checked", false);
+
+                    CarregarProfissionais($("#Data").val());
+
+                    $('#Assunto').val('');
+                    $('#Sede').val('');
+                    $('#Sala').val('');
+                    $('#Valor').val('');
+                    $('#Profissional').val('');
+                    $('#Cliente').val('');
+                    $('#Cliente').trigger('change');
+                    $('#TipoIndicacao').val('');
+                    $('#NomeIndicacao').val('');
+                    $('#Telefone').val('');
+                    $('#Descricao').val('');
+                    $('#FormaPagamento').val('');
+                    $('#Banco').val('');
+
+                    $('#DataCadastro').val('');
+                    $('#UsuarioCadastro').val('');
+                    $('#DataAlteracao').val('');
+                    $('#UsuarioAlteracao').val('');
+
+
+                    $("#LabelIndicacao").addClass("hidden");
+                    $("#NomeIndicacao").addClass("hidden");
+                    $("#Parceiros").addClass("hidden");
+                    $("#Profissionais").addClass("hidden");
+
+                    $('#id').val("");
+                    $('#idEvent').val("");
+                    $('#ButtonRemoveEvent').hide();
+                    $('#ButtonLiberateEvent').hide();
+                    $('#ButtonSaveEvent').show();
+
+                    $('#fc_create').click();
+
+                    started = start;
+                    ended = end;
+
+                    var futureDate = new Date(end);
+                    var todayDate = new Date(start);
+                    var milliseconds = futureDate.getTime() - todayDate.getTime();
+                    var hours = Math.floor(milliseconds / (60 * 60 * 1000));
+
+                    if (hours == 24) {
+                        allDay = true;
+                    }
+                    else {
+                        allDay = false;
+                    }
+
+                    $('.antosubmit').off('click');
+                    $(".antosubmit").on("click", function () {
+
+                        $("#antoform").validate();
+
+                        var valid = true;
+
+                        if ($('#Cancelou').prop('checked') && $('#Descricao').val().length == 0) {
+                            $('#DescriptionError').css('display', 'block');
+                            $('#DescriptionError').show();
+                            valid = false;
+                        }
+
+                        if ($('#antoform').valid() && valid) {
+
+                            switch ($("#Assunto").val()) {
+                                case "1":
+                                case "3":
+                                case "6":
+                                case "9":
+                                case "10":
+                                case "12":
+                                case "16":
+                                case "17":
+                                case "18":
+                                    if ($('#Cliente option:selected').val() == null || !$.isNumeric($('#Cliente option:selected').val())) {
+                                        $('#ClienteValidate').removeClass('hidden').css("display", "");
+                                        return false;
+                                    } else {
+                                        $('#ClienteValidate').addClass('hidden');
+                                    }
+                                    break;
+                                default:
+                                    $('#ClienteValidate').addClass('hidden');
+                            }
+
+                            if (end) {
+                                ended = end;
+                            }
+
+                            if ($('#id').val() == "") {
+
+                                //var eventDate = new Date(started);
+                                var dados = new window.FormData();
+                                dados.append("Id", 0);
+                                dados.append("Data", $("#Data").val());
+                                dados.append("Hora", $("#Hora").val());
+                                dados.append("IdTipo", $("#Assunto").val());
+                                dados.append("IdSede", $("#Sede").val());
+                                dados.append("IdSala", $("#Sala").val());
+                                dados.append("IdProfissional", $("#Profissional").val());
+                                dados.append("Valor", $("#Valor").val());
+
+                                var color = "#D5F5E3";
+
+                                if ($.isNumeric($('#Cliente option:selected').val())) {
+                                    dados.append("IdCliente", $('#Cliente option:selected').val());
+                                    color = "#F2D7D5";
+                                } else if ($('#Cliente option:selected').val() != null) {
+                                    dados.append("Cliente", $('#Cliente option:selected').val());
+                                    color = "#F2D7D5";
+                                }
+
+                                dados.append("Telefone", $("#Telefone").val());
+                                dados.append("Descricao", $("#Descricao").val());
+
+                                if ($('#Encaixe').prop('checked')) {
+                                    dados.append("Encaixe", "S");
+                                }
+                                else {
+                                    dados.append("Encaixe", "N");
+                                }
+
+                                if ($('#Compareceu').prop('checked')) {
+                                    dados.append("Compareceu", "S");
+                                }
+                                else {
+                                    dados.append("Compareceu", "N");
+                                }
+
+                                dados.append("IdTipoIndicacao", $("#TipoIndicacao").val());
+                                dados.append("Indicacao", $("#NomeIndicacao").val());
+                                dados.append("IdParceiro", $("#Parceiros").val());
+                                dados.append("IdProfissionalIndicacao", $("#Profissionais").val());
+
+                                if ($('#Cancelou').prop('checked')) {
+                                    dados.append("Cancelou", "S");
+                                }
+                                else {
+                                    dados.append("Cancelou", "N");
+                                }
+
+                                dados.append("IdFormaPagamento", $("#FormaPagamento").val());
+                                dados.append("IdBanco", $("#Banco").val());
+                                dados.append("IdArea", $("#Area").val());
+                                dados.append("IdReceita", $("#idReceita").val());
+
+                                var options = {};
+                                options.url = "/Agendas/Salvar"
+                                options.type = "POST";
+                                options.data = dados;
+                                options.asyn = true;
+                                options.contentType = false;
+                                options.processData = false;
+                                options.dataType = "application/json; charset=utf-8";
+                                options.complete = function (data) {
+
+                                    var json = $.parseJSON(data.responseText);
+
+                                    if (json.codigo == '00') {
+
+                                        started = StringToDateHour($("#Data").val(), $("#Hora").val());
+
+                                        calendar.fullCalendar('renderEvent', {
+                                            id: json.id,
+                                            title: json.title,
+                                            start: DateHourToString(started),
+                                            end: DateHourToString(($('#Encaixe').prop('checked') ? started.addMinutes(30) : started.addHours(1))),
+                                            allDay: allDay,
+                                            color: color
+                                        },
+                                            true // make the event "stick"
+                                        );
+
+                                        if ($('#Cancelou').prop('checked')) {
+
+                                            $('#calendar').fullCalendar('removeEvents', json.id);
+
+                                        }
+
+                                        calendar.fullCalendar('unselect');
+
+                                        $('.antoclose').click();
+
+                                    }
+                                    else if (json.codigo == '-90') {
+
+                                        $('#agenda-profissional-alert-error').show();
+
+                                    }
+                                    else if (json.codigo == '-80') {
+
+                                        $('#agenda-sede-alert-error').show();
+
+                                    }
+                                    else if (json.codigo == '-70') {
+
+                                        $('#agenda-diversos-alert-error').show();
+
+                                    }
+                                    else if (json.codigo == '-60') {
+
+                                        $('#agenda-pagamentos-alert-error').show();
+
+                                    }
+
+                                };
+                                $.ajax(options);
+
+                            }
+
+                            //return false;
+
+                        }
+                        else {
+
+                            return false;
+
+                        }
+
+                    });
+
+                }
+            },
+            eventClick: function (calEvent, jsEvent, view) {
+
+                $('#agenda-profissional-alert-error').hide();
+                $('#agenda-sede-alert-error').hide();
+                $('#agenda-diversos-alert-error').hide();
+                $('#agenda-pagamentos-alert-error').hide();
+
+                var dt = new Date(calEvent.start);
+
+                $('#id').val(calEvent.id);
+                $('#idEvent').val(calEvent._id);
+
+                $('#Encaixe').prop("disabled", true);
+                $('#EncaixeCSS').addClass("disabled");
+
+                //$('#Compareceu').prop("disabled", true);
+                //$('#CompareceuCSS').addClass("disabled");
+
+                $('#ButtonRemoveEvent').show();
+                $('#ButtonLiberateEvent').hide();
+
+                //if (calEvent.start.isBefore(moment())) {
+                //    $('#ButtonSaveEvent').hide();
+                //}
+                //else {
+                //    $('#ButtonSaveEvent').show();
+                //}
+
+                var dados = new window.FormData();
+                dados.append("Id", calEvent.id);
+
+                var options = {};
+                options.url = "/Agendas/Consultar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = false;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+                        CarregarProfissionais(dt.getFullYear() + "/" + (dt.getMonth() + 1) + "/" + dt.getDate(), function () {
+                            $('#Profissional').val(json.agenda[0].IdProfissional).trigger('change');
+                        });
+
+                        $('#Data').val(json.agenda[0].Data);
+                        $('#Hora').empty().append($('<option selected></option>').val(json.agenda[0].Hora).html(json.agenda[0].Hora));
+                        $('#Hora').prop("disabled", true);
+
+                        if (json.agenda[0].Encaixe == "S") {
+
+                            $("#Encaixe").prop("checked", true);
+
+                        }
+                        else {
+
+                            $('#Encaixe').prop("disabled", false);
+                            $("#Encaixe").prop("checked", false);
+                            $("#EncaixeCSS").removeClass("disabled");
+
+                        }
+
+                        if (json.agenda[0].Compareceu == "S") {
+
+                            $("#Compareceu").prop("checked", true);
+
+                        }
+                        else {
+                            $('#Compareceu').prop("disabled", false);
+                            $("#Compareceu").prop("checked", false);
+                            $("#CompareceuCSS").removeClass("disabled");
+                        }
+
+                        if (json.agenda[0].Cancelou == "S") {
+
+                            $("#Cancelou").prop("checked", true);
+
+                        }
+                        else {
+                            $('#Cancelou').prop("disabled", false);
+                            $("#Cancelou").prop("checked", false);
+                            $("#CancelouCSS").removeClass("disabled");
+                        }
+
+                        $('#Assunto').val(json.agenda[0].IdTipo);
+                        $('#Sede').val(json.agenda[0].IdSede);
+
+                        if (json.agenda[0].Valor != null) {
+                            $('#Valor').val(('R$ ' + mascaraValor(json.agenda[0].Valor.toFixed(2))));
+                        }
+
+                        $('#Profissional').val(json.agenda[0].IdProfissional);
+
+                        //if (json.agenda[0].IdCliente != null && $.isNumeric(json.agenda[0].IdCliente)) {
+                        //    $('#Cliente').append($('<option selected></option>').val(json.agenda[0].IdCliente).html(json.agenda[0].Cliente));
+                        //}
+                        //else {
+                        //    $('#Cliente').val("");
+                        //}
+                        //$('#Cliente').trigger('change');
+
+                        if (json.agenda[0].IdCliente != null && $.isNumeric(json.agenda[0].IdCliente)) {
+                            choicesCliente.removeActiveItems();
+
+                            const clienteValue = json.agenda[0].IdCliente.toString();
+                            const clienteLabel = json.agenda[0].Cliente;
+
+                            // Limpa as opções e adiciona apenas o cliente atual
+                            choicesCliente.clearChoices();
+                            choicesCliente.setChoices(
+                                [{ value: clienteValue, label: clienteLabel, selected: true, disabled: false }],
+                                'value',
+                                'label',
+                                false // false para não resetar o input, só adicionar
+                            );
+                            choicesCliente.setChoiceByValue(clienteValue);
+                        } else {
+                            choicesCliente.removeActiveItems();
+                            choicesCliente.clearChoices();
+                        }
+
+
+                        //funciona
+                        //if (json.agenda[0].IdCliente != null && $.isNumeric(json.agenda[0].IdCliente)) {
+                        //    choicesCliente.removeActiveItems();
+
+                        //    const clienteValue = json.agenda[0].IdCliente.toString();
+                        //    const clienteLabel = json.agenda[0].Cliente;
+
+                        //    let selectedValues = choicesCliente.getValue(true);
+                        //    if (!Array.isArray(selectedValues)) {
+                        //        selectedValues = selectedValues ? [selectedValues] : [];
+                        //    }
+                        //    const exists = selectedValues.includes(clienteValue);
+
+                        //    if (!exists) {
+                        //        choicesCliente.setChoices(
+                        //            [{ value: clienteValue, label: clienteLabel, selected: true, disabled: false }],
+                        //            'value',
+                        //            'label',
+                        //            false
+                        //        );
+                        //    } else {
+                        //        choicesCliente.setChoiceByValue(clienteValue);
+                        //    }
+                        //} else {
+                        //    choicesCliente.removeActiveItems();
+                        //}
+
+                        if (json.agenda[0].IdCliente != null && $.isNumeric(json.agenda[0].IdCliente) && !calEvent.start.isBefore(moment()) && json.agenda[0].Encaixe != "S") {
+                            $('#ButtonLiberateEvent').show();
+                        }
+                        else {
+                            $('#ButtonLiberateEvent').hide();
+                        }
+
+                        if (json.agenda[0].IdCliente != null && $.isNumeric(json.agenda[0].IdCliente) && !calEvent.start.isBefore(moment()) && json.agenda[0].Compareceu != "S") {
+                            $('#ButtonLiberateEvent').show();
+                        }
+                        else {
+                            $('#ButtonLiberateEvent').hide();
+                        }
+
+                        if (json.agenda[0].Telefone != null) {
+                            $('#Telefone').val(json.agenda[0].Telefone);
+                        }
+
+                        $('#Descricao').val(json.agenda[0].Descricao);
+
+                        CarregarSalas(json.agenda[0].IdSede, json.agenda[0].IdSala);
+
+                        $('#TipoIndicacao').val(json.agenda[0].TipoIndicacao);
+                        $('#NomeIndicacao').val(json.agenda[0].Indicacao);
+                        $('#Parceiros').val(json.agenda[0].Parceiro);
+                        $('#Profissionais').val(json.agenda[0].Profissional);
+
+                        $('#DataCadastro').val(json.agenda[0].DataCadastro);
+                        $('#UsuarioCadastro').val(json.agenda[0].UsuarioCadastro);
+                        $('#DataAlteracao').val(json.agenda[0].DataAlteracao);
+                        $('#UsuarioAlteracao').val(json.agenda[0].UsuarioAlteracao);
+                        $('#FormaPagamento').val(json.agenda[0].IdFormaPagamento);
+                        $('#Banco').val(json.agenda[0].IdBanco);
+                        $('#IdArea').val(json.agenda[0].IdArea);
+                        $('#idReceita').val(json.agenda[0].IdReceita);
+
+                        ShowIndicacao(json.agenda[0].Tipo);
+                    }
+                };
+                $.ajax(options);
+                //aqui
+                //$('#fc_edit').click();
+
+                $('#CalenderModal').modal('show');
+
+                $('.antosubmit').off('click');
+                $(".antosubmit").on("click", function () {
+                    var valid = true;
+
+                    if ($('#Cancelou').prop('checked') && $('#Descricao').val().length == 0) {
+                        $('#DescriptionError').css('display', 'block');
+                        $('#DescriptionError').show();
+                        valid = false;
+                    }
+
+                    $("#antoform").validate();
+
+                    if ($('#antoform').valid() && valid) {
+
+                        switch ($("#Assunto").val()) {
+                            case "1":
+                            case "3":
+                            case "6":
+                            case "9":
+                            case "10":
+                            case "12":
+                            case "16":
+                            case "17":
+                            case "18":
+                                if ($('#Cliente option:selected').val() == null || !$.isNumeric($('#Cliente option:selected').val())) {
+                                    $('#ClienteValidate').removeClass('hidden').css("display", "");
+                                    return false;
+                                } else {
+                                    $('#ClienteValidate').addClass('hidden');
+                                }
+                                break;
+                            default:
+                                $('#ClienteValidate').addClass('hidden');
+                        }
+
+                        if ($('#id').val() == calEvent.id) {
+
+                            var dados = new window.FormData();
+                            dados.append("Id", calEvent.id);
+                            dados.append("Data", $("#Data").val());
+                            dados.append("Hora", $("#Hora").val());
+                            dados.append("IdTipo", $("#Assunto").val());
+                            dados.append("IdSede", $("#Sede").val());
+                            dados.append("IdSala", $("#Sala").val());
+                            dados.append("IdProfissional", $("#Profissional").val());
+                            dados.append("Valor", $("#Valor").val());
+
+                            var color = "#D5F5E3";
+
+                            if ($.isNumeric($('#Cliente option:selected').val())) {
+                                dados.append("IdCliente", $('#Cliente option:selected').val());
+                                color = "#F2D7D5";
+                            } else if ($('#Cliente option:selected').val() != null) {
+                                dados.append("Cliente", $('#Cliente option:selected').val());
+                                color = "#F2D7D5";
+                            }
+                            dados.append("Telefone", $("#Telefone").val());
+                            dados.append("Descricao", $("#Descricao").val());
+
+                            if ($('#Encaixe').prop('checked')) {
+                                dados.append("Encaixe", "S");
+                            }
+                            else {
+                                dados.append("Encaixe", "N");
+                            }
+
+                            if ($('#Compareceu').prop('checked')) {
+                                dados.append("Compareceu", "S");
+                            }
+                            else {
+                                dados.append("Compareceu", "N");
+                            }
+
+                            if ($('#Cancelou').prop('checked')) {
+                                dados.append("Cancelou", "S");
+                            }
+                            else {
+                                dados.append("Cancelou", "N");
+                            }
+
+                            dados.append("IdTipoIndicacao", $("#TipoIndicacao").val());
+                            dados.append("Indicacao", $("#NomeIndicacao").val());
+                            dados.append("IdParceiro", $("#Parceiros").val());
+                            dados.append("IdProfissionalIndicacao", $("#Profissionais").val());
+
+                            dados.append("IdFormaPagamento", $("#FormaPagamento").val());
+                            dados.append("IdBanco", $("#Banco").val());
+                            dados.append("IdArea", $("#Area").val());
+                            dados.append("IdReceita", $("#idReceita").val());
+
+                            var horaEncaixe = "";
+
+                            var futureDate = new Date(calEvent.end);
+                            var todayDate = new Date(calEvent.start);
+                            var milliseconds = futureDate.getTime() - todayDate.getTime();
+                            var hours = Math.floor(milliseconds / (60 * 60 * 1000));
+
+                            if (hours == 1 && $('#Encaixe').prop('checked')) {
+
+                                horaEncaixe = $("#Hora").val().replace(":00", ":30");
+
+                                if ($("#Hora").val().indexOf(":30") >= 0) {
+
+                                    horaEncaixe = $("#Hora").val().replace(":30", ":00");
+
+                                }
+                            }
+
+                            dados.append("HoraEncaixe", horaEncaixe);
+
+                            var options = {};
+                            options.url = "/Agendas/Salvar"
+                            options.type = "POST";
+                            options.data = dados;
+                            options.asyn = false;
+                            options.contentType = false;
+                            options.processData = false;
+                            options.dataType = "application/json; charset=utf-8";
+                            options.complete = function (data) {
+
+                                var json = $.parseJSON(data.responseText);
+
+                                if (json.codigo == '00') {
+
+                                    var started = StringToDateHour($("#Data").val(), $("#Hora").val());
+
+                                    $('#calendar').fullCalendar('removeEvents', calEvent.id);
+
+                                    calendar.fullCalendar('renderEvent', {
+                                        id: json.id,
+                                        title: json.title,
+                                        start: DateHourToString(started),
+                                        end: DateHourToString(($('#Encaixe').prop('checked') ? started.addMinutes(30) : started.addHours(1))),
+                                        allDay: false,
+                                        color: color
+                                    },
+                                        true // make the event "stick"
+                                    );
+
+                                    if (json.evento != "") {
+
+                                        var event = $.parseJSON(json.evento);
+
+                                        $('#calendar').fullCalendar('renderEvent', event, true);
+
+                                    }
+
+                                    if ($('#Cancelou').prop('checked')) {
+
+                                        $('#calendar').fullCalendar('removeEvents', calEvent.id);
+
+                                    }
+
+                                    calendar.fullCalendar('unselect');
+
+                                    $('.antoclose').click();
+
+                                    return true;
+
+                                }
+                                else if (json.codigo == '-90') {
+
+                                    $('#agenda-profissional-alert-error').show();
+
+                                }
+                                else if (json.codigo == '-80') {
+
+                                    $('#agenda-sede-alert-error').show();
+
+                                }
+                                else if (json.codigo == '-70') {
+
+                                    $('#agenda-diversos-alert-error').show();
+
+                                }
+                                else if (json.codigo == '-60') {
+
+                                    $('#agenda-pagamentos-alert-error').show();
+
+                                }
+                            };
+
+                            $.ajax(options);
+
+                        }
+
+                    }
+                    else {
+
+                        return false;
+
+                    }
+
+                });
+                calendar.fullCalendar('unselect');
+            },
+            eventTimeFormat: { // like '14:30:00'
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                meridiem: false
+            },
+            events: function (start, end, tz, callback) {
+                callback(events);
+            },
+            dayRender: function (date, cell, view) {
+
+                var dateAux = date.toISOString().match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}/)[0].split('-').reverse().join('/');
+
+                if (feriados.indexOf(dateAux) > 0) {
+
+                    var titulo = feriados.substring(feriados.indexOf(dateAux) + 13);
+                    titulo = titulo.substring(0, titulo.indexOf(';'));
+                    $(cell).text('‣ ' + titulo);
+                    $(cell).css({ "background-color": "#FFC2C2" });
+
+                }
+
+            },
+            viewRender: function (view, element) {
+
+                if (view.type === "agendaWeek") {
+
+                    var currentdate = view.start.toISOString().match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}/)[0].split('-').reverse().join('/').split('/');
+
+                    for (var i = 0; i < 5; i++) {
+
+                        var dtAdd = new Date(currentdate[2], currentdate[1] - 1, currentdate[0]);
+                        dtAdd.setDate(dtAdd.getDate() + i);
+
+                        var dtCurrent = dtAdd.toISOString().match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}/)[0].split('-').reverse().join('/');
+
+                        if (feriados.indexOf(dtCurrent) > 0) {
+
+                            var titulo = feriados.substring(feriados.indexOf(dtCurrent) + 13);
+                            titulo = titulo.substring(0, titulo.indexOf(';'));
+
+                            var day = dtCurrent.substring(0, 2);
+
+                            switch (dtAdd.getDay()) {
+                                case 1:
+                                    // segunda
+                                    $('.fc-day-header.fc-widget-header.fc-mon').text('Seg ' + day + ' - ' + titulo);
+                                    $('.fc-mon').css({ "background-color": "#FFC2C2" });
+                                    break;
+                                case 2:
+                                    // terça
+                                    $('.fc-day-header.fc-widget-header.fc-tue').text('Ter ' + day + ' - ' + titulo);
+                                    $('.fc-tue').css({ "background-color": "#FFC2C2" });
+                                    break;
+                                case 3:
+                                    // quarta
+                                    $('.fc-day-header.fc-widget-header.fc-wed').text('Qua ' + day + ' - ' + titulo);
+                                    $('.fc-wed').css({ "background-color": "#FFC2C2" });
+                                    break;
+                                case 4:
+                                    // quinta
+                                    $('.fc-day-header.fc-widget-header.fc-thu').text('Qui ' + day + ' - ' + titulo);
+                                    $('.fc-thu').css({ "background-color": "#FFC2C2" });
+                                    break;
+                                case 5:
+                                    // sexta
+                                    $('.fc-day-header.fc-widget-header.fc-fri').text('Sex ' + day + ' - ' + titulo);
+                                    $('.fc-fri').css({ "background-color": "#FFC2C2" });
+                                    break;
+                            }
+
+                        }
+
+                    }
+
+                } else if (view.type === "agendaDay") {
+
+                    var currentdate = view.intervalStart.toISOString().match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}/)[0].split('-').reverse().join('/');
+
+                    if (feriados.indexOf(currentdate) > 0) {
+
+                        var header = $('.fc-day-header').text();
+                        var titulo = feriados.substring(feriados.indexOf(currentdate) + 13);
+                        titulo = titulo.substring(0, titulo.indexOf(';'));
+                        $('.fc-day-header').text(header + ' - ' + titulo);
+                        $('.fc-agendaDay-view').css({ "background-color": "#FFC2C2" });
+
+                    }
+                    else {
+                        $('.fc-agendaDay-view').removeAttr('style');
+                    }
+
+                }
+
+            },
+
+        });
+
+    });
+
+    function selecionarProfissionalAposCarregamento(idProfissional, tentativas = 5) {
+        if ($('#Profissional option[value="' + idProfissional + '"]').length > 0) {
+            $('#Profissional').val(idProfissional).trigger('change');
+        } else if (tentativas > 0) {
+            setTimeout(function () {
+                selecionarProfissionalAposCarregamento(idProfissional, tentativas - 1);
+            }, 300);
+        } else {
+            $('#Profissional').append($('<option></option>').val(idProfissional).html('Profissional não listado')).val(idProfissional).trigger('change');
+        }
+    }
+
+    function Liberar(Id, IdEvento) {
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+        dados.append("Data", $("#Data").val());
+        dados.append("IdTipo", $("#Assunto").val());
+        dados.append("IdSede", $("#Sede").val());
+        dados.append("IdProfissional", $("#Profissional").val());
+
+        var options = {};
+        options.url = "/Agendas/Salvar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var color = "#D5F5E3";
+                var event = $("#calendar").fullCalendar('clientEvents', IdEvento)[0];
+
+                $('#calendar').fullCalendar('removeEvents', [IdEvento]);
+
+                $('#calendar').fullCalendar('renderEvent', {
+                    id: IdEvento,
+                    title: json.title,
+                    start: event.start,
+                    end: event.end,
+                    allDay: false,
+                    color: color
+                }, true);
+
+            }
+            else if (json.codigo == '-90') {
+
+                $('#agenda-profissional-alert-error').show();
+
+            }
+            else if (json.codigo == '-80') {
+
+                $('#agenda-sede-alert-error').show();
+
+            }
+            else if (json.codigo == '-70') {
+
+                $('#agenda-diversos-alert-error').show();
+
+            }
+            else if (json.codigo == '-60') {
+
+                $('#agenda-pagamentos-alert-error').show();
+            }
+
+
+        };
+
+        $.ajax(options);
+    }
+
+    function Excluir(Id, IdEvento) {
+
+        $('#id').val('');
+        $('#idEvent').val('');
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/Agendas/Excluir"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#calendar').fullCalendar('removeEvents', IdEvento);
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function CarregarTiposAgendas() {
+        var options = {};
+        options.url = "/TiposAgendas/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.tipos;
+                $('#Assunto').html("");
+                var select = $('#Assunto');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Assunto")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#FiltrarAssunto').html("");
+                var select = $('#FiltrarAssunto');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Assunto")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#ReuniaoAssunto').html("");
+                var select = $('#ReuniaoAssunto');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Assunto")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    function CarregarSedes() {
+        var options = {};
+        options.url = "/Sedes/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.sedes;
+                $('#Sede').html("");
+                var select = $('#Sede');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Local")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#FiltrarSede').html("");
+                var select = $('#FiltrarSede');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Local")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#ReuniaoSede').html("");
+                var select = $('#ReuniaoSede');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Local")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#Sede').change(function (evt) {
+
+        CarregarSalas($("#Sede").val(), "");
+
+    });
+
+    function CarregarSalas(IdSede, IdSala) {
+
+        var dados = new window.FormData();
+        dados.append("IdSede", IdSede);
+
+        var options = {};
+        options.url = "/Salas/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.salas;
+                $('#Sala').html("");
+                var select = $('#Sala');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione a Sala")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    if (IdSala == rows[index].Id) {
+
+                        select.append(
+                            $('<option selected></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    } else {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    }
+                }
+
+                $('#ReuniaoSala').html("");
+                var select = $('#ReuniaoSala');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione a Sala")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    if (IdSala == rows[index].Id) {
+
+                        select.append(
+                            $('<option selected></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    } else {
+
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+
+                    }
+                }
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    //function CarregarProfissionais(Data) {
+
+    //    var dados = new window.FormData();
+    //    dados.append("Data", Data);
+
+    //    var options = {};
+    //    options.url = "/Profissionais/Listar"
+    //    options.type = "POST";
+    //    options.data = dados;
+    //    options.asyn = true;
+    //    options.contentType = false;
+    //    options.processData = false;
+    //    options.dataType = "application/json; charset=utf-8";
+    //    options.complete = function (data) {
+
+    //        var json = $.parseJSON(data.responseText);
+
+    //        if (json.codigo == '00') {
+
+    //            var rows = json.profissionais;
+    //            $('#Profissional').html("");
+    //            var select = $('#Profissional');
+    //            select.append(
+    //                $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+    //            );
+
+    //            for (index = 0; index < rows.length; index++) {
+    //                select.append(
+    //                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome + (rows[index].Total > 0 ? " (" + rows[index].Total + ")" : ""))
+    //                );
+    //            }
+
+    //            $('#FiltrarProfissional').html("");
+    //            var select = $('#FiltrarProfissional');
+    //            select.append(
+    //                $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+    //            );
+
+    //            for (index = 0; index < rows.length; index++) {
+    //                select.append(
+    //                    $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+    //                );
+    //            }
+
+    //            $('#ReuniaoProfissionais').html("");
+    //            var select = $('#ReuniaoProfissionais');
+
+    //            for (index = 0; index < rows.length; index++) {
+    //                select.append(
+    //                    $('<option></option>').val(rows[index].Id).html("&nbsp;" + rows[index].Nome + (rows[index].Total > 0 ? " (" + rows[index].Total + ")" : ""))
+    //                );
+    //            }
+
+    //            $('#ReuniaoProfissionais').multiselect({
+    //                enableFiltering: false,
+    //                enableHTML: false,
+    //                includeSelectAllOption: true,
+    //                nonSelectedText: 'Clique aqui para selecionar os Profissionais',
+    //                selectAllText: ' Selecionar Todos',
+    //                nSelectedText: 'selecionados',
+    //                allSelectedText: 'Todos selecionados',
+    //                resetButtonText: 'Redefinir',
+    //                numberDisplayed: 3,
+    //                buttonTextAlignment: 'left',
+    //                enableResetButton: false,
+    //                buttonWidth: '80%',
+    //                buttonHeight: '40px',
+    //                buttonClass: 'form-control-multi-select',
+    //                checkboxName: function (option) {
+    //                    return 'multiselect[]';
+    //                }
+    //            });
+
+    //    }
+    //};
+    //$.ajax(options);
+    //}
+
+    function CarregarProfissionais(Data, callback) {
+        
+        var dados = new window.FormData();
+        dados.append("Data", Data);
+
+        var options = {};
+        options.url = "/Profissionais/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.profissionais;
+                $('#Profissional').html("");
+                var select = $('#Profissional');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome + (rows[index].Total > 0 ? " (" + rows[index].Total + ")" : ""))
+                    );
+                }
+
+                $('#FiltrarProfissional').html("");
+                var select = $('#FiltrarProfissional');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#ReuniaoProfissionais').html("");
+                var select = $('#ReuniaoProfissionais');
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html("&nbsp;" + rows[index].Nome + (rows[index].Total > 0 ? " (" + rows[index].Total + ")" : ""))
+                    );
+                }
+
+                $('#ReuniaoProfissionais').multiselect({
+                    enableFiltering: false,
+                    enableHTML: false,
+                    includeSelectAllOption: true,
+                    nonSelectedText: 'Clique aqui para selecionar os Profissionais',
+                    selectAllText: ' Selecionar Todos',
+                    nSelectedText: 'selecionados',
+                    allSelectedText: 'Todos selecionados',
+                    resetButtonText: 'Redefinir',
+                    numberDisplayed: 3,
+                    buttonTextAlignment: 'left',
+                    enableResetButton: false,
+                    buttonWidth: '80%',
+                    buttonHeight: '40px',
+                    buttonClass: 'form-control-multi-select',
+                    checkboxName: function (option) {
+                        return 'multiselect[]';
+                    }
+                });
+
+                if (typeof callback === "function") {
+                    callback();
+                }
+        }
+    };
+    $.ajax(options);
+    }
+
+    function CarregarTiposIndicacoes() {
+
+        var options = {};
+        options.url = "/TiposIndicacoes/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.indicacoes;
+
+                $('#TipoIndicacao').html("");
+                var select = $('#TipoIndicacao');
+
+                select.append(
+                    $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Cliente")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+
+                }
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function CarregarParceiros() {
+
+        var options = {};
+        options.url = "/Parceiros/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.parceiros;
+
+                $('#Parceiros').html("");
+                var select = $('#Parceiros');
+
+                select.append(
+                    $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Parceiro")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+
+                }
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function CarregarProfissionaisIndicacao() {
+
+        var options = {};
+        options.url = "/Profissionais/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.profissionais;
+
+                $('#Profissionais').html("");
+                var select = $('#Profissionais');
+
+                select.append(
+                    $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Profissional")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+
+                }
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function FiltrarAgenda() {
+
+        var dados = new window.FormData();
+        dados.append("IdSede", $('#FiltrarSede').val());
+        dados.append("IdProfissional", $('#FiltrarProfissional').val());
+        dados.append("IdTipo", $('#FiltrarAssunto').val());
+
+        //if ($.isNumeric($('#FiltrarCliente option:selected').val())) {
+        //    dados.append("IdCliente", $('#FiltrarCliente option:selected').val());
+        //}
+
+        if (
+            $('#FiltrarCliente').val() &&
+            $.isNumeric($('#FiltrarCliente').val())
+        ) {
+            dados.append("IdCliente", $('#FiltrarCliente').val());
+        }
+
+        dados.append("DataInicial", $('#FiltrarDataInicialValor').val());
+        dados.append("DataFinal", $('#FiltrarDataFinalValor').val());
+
+        var options = {};
+        options.url = "/Agendas/Eventos"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            events = $.parseJSON(data.responseText);
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('addEventSource', events);
+            $('#calendar').fullCalendar('rerenderEvents');
+
+        };
+        $.ajax(options);
+
+    }
+
+    function LimparAgenda() {
+        $('#FiltrarSede').val('');
+        $('#FiltrarSede').trigger('change');
+        $('#FiltrarProfissional').val("");
+        $('#FiltrarProfissional').trigger('change');
+        $('#FiltrarCliente').val('');
+        $('#FiltrarCliente').trigger('change');
+        $('#FiltrarAssunto').val('');
+        $('#FiltrarAssunto').trigger('change');
+        $('#FiltrarDataInicialValor').val('');
+        $('#FiltrarDataFinalValor').val('');
+        if (choicesFiltrarCliente) {
+            choicesFiltrarCliente.removeActiveItems();
+            //choicesFiltrarCliente.setChoiceByValue(''); 
+        }
+        if (choicesCliente) {
+            choicesCliente.removeActiveItems();
+            //choicesFiltrarCliente.setChoiceByValue(''); 
+        }
+
+        FiltrarAgenda();
+    }
+
+    function StringToDateHour(dateStr, hourStr) {
+
+        var partsDate = dateStr.split("/");
+        var partsHour = hourStr.split(":");
+
+        return new Date(partsDate[2], partsDate[1] - 1, partsDate[0], partsHour[0], partsHour[1]);
+    }
+
+    function DateHourToString(date) {
+
+        return date.toString("yyyy-MM-ddTHH:mm:00");
+
+    }
+
+    $(document).ready(function () {
+        $(window).load(function () {
+            NProgress.done();
+        });
+    });
+
+    $('#ReuniaoDataValor').change(function (evt) {
+
+        BuscarAgendaProfissionais();
+
+    });
+
+    $('#ReuniaoHoraInicial').change(function (evt) {
+
+        if ($('#ReuniaoHoraInicial').val().length > 0) {
+            var horaAtual = $('#ReuniaoHoraInicial').val().split(":");
+            var horaNova = pad(parseInt(horaAtual[0]) + 1, 2) + ":" + horaAtual[1];
+            $('#ReuniaoHoraFinal').val(horaNova);
+        }
+
+        BuscarAgendaProfissionais();
+
+    });
+
+    $('#ReuniaoHoraFinal').change(function (evt) {
+
+        BuscarAgendaProfissionais();
+
+    });
+
+    $('#ReuniaoProfissionais').change(function (evt) {
+
+        BuscarAgendaProfissionais();
+
+    });
+
+    $('#ReuniaoSede').change(function (evt) {
+
+        CarregarSalas($("#ReuniaoSede").val(), "");
+
+    });
+
+    function NovaAgendaReuniao() {
+
+        $("#ReuniaoDataValor").val("");
+        $("#ReuniaoHoraInicial").val("");
+        $("#ReuniaoHoraFinal").val("");
+        $("#ReuniaoAssunto").val("");
+        $("#ReuniaoSede").val("");
+        $("#ReuniaoSala").val("");
+        $('#ReuniaoProfissionais').multiselect('clearSelection');
+        $("#ReuniaoDescricao").val("");
+        $("#AgendaProfissionais").text("");
+        $("#agendasLiberadas").val("0");
+
+    }
+
+    function BuscarAgendaProfissionais() {
+
+        if ($('#ReuniaoDataValor').val().length > 0 && $('#ReuniaoHoraInicial').val().length > 0 && $('#ReuniaoHoraFinal').val().length > 0 && $('#ReuniaoProfissionais').val() != null && $('#ReuniaoHoraFinal').val().replace(':', '') > $('#ReuniaoHoraInicial').val().replace(':', '')) {
+
+            var dados = new window.FormData();
+            dados.append("Data", $("#ReuniaoDataValor").val());
+            dados.append("HoraInicial", $("#ReuniaoHoraInicial").val());
+            dados.append("HoraFinal", $("#ReuniaoHoraFinal").val());
+            dados.append("Profissionais", $("#ReuniaoProfissionais").val());
+
+            var options = {};
+            options.url = "/Agendas/BuscarAgendaProfissionais"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var agendas = "";
+                    agendas += "<div class='col-md-12'>";
+                    agendas += "  <table class='table table-striped' style='width: 100% !important; font-size: 12px !important;'>";
+                    agendas += "     <thead>";
+                    agendas += "        <tr>";
+                    agendas += "           <th>Profissional</th>";
+                    agendas += "           <th>Agenda</th>";
+                    agendas += "        </tr>";
+                    agendas += "     </thead>";
+                    agendas += "     <tbody>";
+                    agendas += json.agendas;
+                    agendas += "     </tbody>";
+                    agendas += "  </table>";
+                    agendas += "</div>";
+
+                    $('#AgendaProfissionais').removeClass('hidden');
+                    $('#AgendaProfissionais').html(agendas);
+                    $("#agendasLiberadas").val(json.agendasLiberadas);
+                    $('#agenda-reuniao-alert-error').addClass('hidden');
+                }
+            };
+            $.ajax(options);
+
+        }
+        else {
+
+            $('#AgendaProfissionais').addClass('hidden');
+            $('#AgendaProfissionais').html('');
+
+        }
+
+    }
+
+    $('#SalvarAgendaReuniao').click(function (evt) {
+
+        $("#agendar-reuniao-form").validate({
+            debug: true, //retira essa linha, para o form voltar a funcionar
+            rules: {
+                'ReuniaoHoraFinal': {
+                    validaHoraFinal: "#ReuniaoHoraFinal"
+                }
+            }
+        });
+
+        if ($('#agendar-reuniao-form').valid()) {
+
+            if ($("#agendasLiberadas").val() == "1") {
+
+                var dados = new window.FormData();
+                dados.append("Data", $("#ReuniaoDataValor").val());
+                dados.append("Hora", $("#ReuniaoHoraInicial").val());
+                dados.append("Assunto", $("#ReuniaoAssunto").val());
+                dados.append("Sede", $("#ReuniaoSede").val());
+                dados.append("Sala", $("#ReuniaoSala").val());
+                dados.append("Profissionais", $("#ReuniaoProfissionais").val());
+                dados.append("Descricao", $("#ReuniaoDescricao").val());
+
+                var options = {};
+                options.url = "/Agendas/SalvarAgendaProfissionais"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#agenda-reuniao-alert-error').addClass('hidden');
+                        $('h4').text('Agenda salva com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#agendar-reuniao-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+            }
+            else {
+                $('#agenda-reuniao-alert-error').removeClass('hidden');
+                return false;
+            }
+        }
+        else {
+            return false;
+        }
+
+    });
+
+    $(document).ready(function () {
+        $.validator.addMethod("validaHoraFinal", function (value, element) {
+            var horaInicial = $('#ReuniaoHoraInicial').val();
+            return horaInicial.replace(":", "") < value.replace(":", "") || value.replace(":", "") == "";
+        }, "A Hora Final deve ser maior que a Hora Inicial");
+    });
+
+</script>
+
+<script>
+    // Instância global do Choices
+    let choicesFiltrarCliente;
+
+    // Função para buscar clientes via AJAX
+    function carregarClientesChoices(search, callback) {
+        $.ajax({
+            url: '/Clientes/GetClientsList',
+            type: 'GET',
+            dataType: 'json',
+            data: { search: search, page: 1 },
+            success: function (data) {
+                // Choices espera {value, label}
+                const options = (data.clientes || []).map(function (c) {
+                    return { value: c.id || c.Id || c.value, label: c.text || c.Nome || c.label };
+                });
+                callback(options);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        
+        choicesFiltrarCliente = new Choices('#FiltrarCliente', {
+            searchEnabled: true,
+            searchResultLimit: 20,
+            shouldSort: false,
+            placeholder: true,
+     //       placeholderValue: 'Selecione um Cliente',
+            noResultsText: 'Nenhum cliente encontrado',
+            itemSelectText: 'Selecionar',
+            removeItemButton: true
+        });
+
+        const input = document.querySelector('#FiltrarCliente + .choices input');
+        if (input) {
+            input.addEventListener('input', function (e) {
+                clearTimeout(debounceTimeout);
+                const search = e.target.value;
+                if (search.length >= 3) {
+                    debounceTimeout = setTimeout(function () {
+                        carregarClientesChoices(search, function (options) {
+                            choicesFiltrarCliente.clearChoices();
+                            choicesFiltrarCliente.setChoices(options, 'value', 'label', true);
+                        });
+                    }, 400);
+                }
+            });
+        }
+
+        carregarClientesChoices('', function (options) {
+            options.unshift({ value: '', label: 'Selecione um Cliente', customProperties: { hidden: true } });
+            choicesFiltrarCliente.setChoices(options, 'value', 'label', true);
+        });
+    });
+</script>
+
+<script>
+    
+
+    function carregarClientesChoicesCliente(search, callback) {
+        $.ajax({
+            url: '/Clientes/GetClientsList',
+            type: 'GET',
+            dataType: 'json',
+            data: { search: search, page: 1 },
+            success: function (data) {
+                const options = (data.clientes || []).map(function (c) {
+                    return { value: c.id || c.Id || c.value, label: c.text || c.Nome || c.label };
+                });
+                callback(options);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        $('#CalenderModal').on('show.bs.modal', function (e) {
+            $('#Telefone').val('');
+            if ($('#id').val()) {
+                $("#myModalLabelTitle2").text("Alterar Agendamento");
+            } else {
+                $("#myModalLabelTitle2").text("Novo Agendamento");
+            }
+        });
+
+
+
+        choicesCliente = new Choices('#Cliente', {
+            searchEnabled: true,
+            searchResultLimit: 20,
+            shouldSort: false,
+            placeholder: true,
+            placeholderValue: 'Selecione um Cliente',
+            noResultsText: 'Nenhum cliente encontrado',
+            noChoicesText: 'Digite pelo menos 3 letras para buscar',
+            itemSelectText: 'Selecionar',
+            removeItemButton: true
+        });
+
+        document.getElementById('Cliente').addEventListener('removeItem', function (event) {
+            var value = choicesCliente.getValue(true);
+            if (!value || (Array.isArray(value) && value.length === 0) || (typeof value === 'string' && value === '')) {
+                choicesCliente.clearChoices();
+            }
+        });
+
+        $(document).on('input', '.choices__input--cloned', function (e) {
+            var $choicesDropdown = $(this).closest('.choices__list--dropdown');
+            var $select = $choicesDropdown.siblings('.choices__inner').find('select#Cliente');
+            if ($select.length) {
+                const search = e.target.value;
+                if (search.length >= 3) {
+                    //carregarClientesChoicesCliente(search, function (options) {
+                    //    choicesCliente.clearChoices();
+                    //    choicesCliente.setChoices(options, 'value', 'label', true);
+                    //});
+
+                    // bug de nao selecionar o cliente ao digitar rápido
+                    carregarClientesChoicesCliente(search, function (options) {
+                        
+                        const selectedValue = choicesCliente.getValue(true);
+                        let selectedLabel = '';
+
+                        const selectedItem = options.find(opt => opt.value == selectedValue);
+                        if (selectedItem) {
+                            selectedLabel = selectedItem.label;
+                        } else if (selectedValue) {
+
+                            const current = choicesCliente.getValue();
+                            if (current && current.label) {
+                                selectedLabel = current.label;
+                            } else {
+                                selectedLabel = selectedValue;
+                            }
+
+                            options.unshift({ value: selectedValue, label: selectedLabel });
+                        }
+                        choicesCliente.clearChoices();
+                        choicesCliente.setChoices(options, 'value', 'label', true);
+
+                        if (selectedValue) {
+                            choicesCliente.setChoiceByValue(selectedValue);
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    .choices__list--dropdown .choices__item[data-value=""] {
+        display: none !important;
+    }
+    .choices__list--dropdown, .choices__list[aria-expanded] {
+        z-index: 1050 !important;
+    }
+</style>

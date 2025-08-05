@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="UranusDataSet" targetNamespace="http://tempuri.org/UranusDataSet.xsd" xmlns:mstns="http://tempuri.org/UranusDataSet.xsd" xmlns="http://tempuri.org/UranusDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Web.config" AppSettingsPropertyName="UranusConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="UranusConnectionString (Web.config)" ParameterPrefix="@" PropertyReference="AppConfig.System.Configuration.ConfigurationManager.0.ConnectionStrings.UranusConnectionString.ConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="View_Relatorios_EventosTableAdapter" GeneratorDataComponentClassName="View_Relatorios_EventosTableAdapter" Name="View_Relatorios_Eventos" UserDataComponentName="View_Relatorios_EventosTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="UranusConnectionString (Web.config)" DbObjectName="Uranus.dbo.View_Relatorios_Eventos" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="false" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT IdProfissional, NomeProfissional, IdEvento, Evento FROM dbo.View_Relatorios_Eventos</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="IdProfissional" DataSetColumn="IdProfissional" />
+              <Mapping SourceColumn="NomeProfissional" DataSetColumn="NomeProfissional" />
+              <Mapping SourceColumn="IdEvento" DataSetColumn="IdEvento" />
+              <Mapping SourceColumn="Evento" DataSetColumn="Evento" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="UranusDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="UranusDataSet" msprop:Generator_UserDSName="UranusDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="View_Relatorios_Eventos" msprop:Generator_TableClassName="View_Relatorios_EventosDataTable" msprop:Generator_TableVarName="tableView_Relatorios_Eventos" msprop:Generator_TablePropName="View_Relatorios_Eventos" msprop:Generator_RowDeletingName="View_Relatorios_EventosRowDeleting" msprop:Generator_RowChangingName="View_Relatorios_EventosRowChanging" msprop:Generator_RowEvHandlerName="View_Relatorios_EventosRowChangeEventHandler" msprop:Generator_RowDeletedName="View_Relatorios_EventosRowDeleted" msprop:Generator_UserTableName="View_Relatorios_Eventos" msprop:Generator_RowChangedName="View_Relatorios_EventosRowChanged" msprop:Generator_RowEvArgName="View_Relatorios_EventosRowChangeEvent" msprop:Generator_RowClassName="View_Relatorios_EventosRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IdProfissional" msprop:Generator_ColumnVarNameInTable="columnIdProfissional" msprop:Generator_ColumnPropNameInRow="IdProfissional" msprop:Generator_ColumnPropNameInTable="IdProfissionalColumn" msprop:Generator_UserColumnName="IdProfissional" type="xs:int" />
+              <xs:element name="NomeProfissional" msprop:Generator_ColumnVarNameInTable="columnNomeProfissional" msprop:Generator_ColumnPropNameInRow="NomeProfissional" msprop:Generator_ColumnPropNameInTable="NomeProfissionalColumn" msprop:Generator_UserColumnName="NomeProfissional" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="IdEvento" msprop:Generator_ColumnVarNameInTable="columnIdEvento" msprop:Generator_ColumnPropNameInRow="IdEvento" msprop:Generator_ColumnPropNameInTable="IdEventoColumn" msprop:Generator_UserColumnName="IdEvento" type="xs:int" />
+              <xs:element name="Evento" msprop:Generator_ColumnVarNameInTable="columnEvento" msprop:Generator_ColumnPropNameInRow="Evento" msprop:Generator_ColumnPropNameInTable="EventoColumn" msprop:Generator_UserColumnName="Evento" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

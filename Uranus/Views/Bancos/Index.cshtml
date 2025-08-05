@@ -1,0 +1,441 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Cadastro de Bancos";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="idEmpresa" name="idEmpresa" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalNovo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="banco-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Banco</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Nome do Banco" id="Nome" name="Nome" data-msg-required="Por favor, insira o Nome do Banco." data-rule-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Nº Banco <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="NumeroBanco" name="NumeroBanco" data-msg-required="Por favor, insira o Número do Banco." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Agência <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="Agencia" name="Agencia" data-msg-required="Por favor, insira o Número da Agência." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Conta <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="Conta" name="Conta" data-msg-required="Por favor, insira o Número da Conta." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Convenio <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="Convenio" name="Convenio" data-msg-required="Por favor, insira o Número do Convenio." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Carteira <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="Carteira" name="Carteira" data-msg-required="Por favor, insira o Número da Carteira." data-rule-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row" style="width: 100% !important;">
+                        <div class="col-md-10">
+                            <h4 class="modal-title"><label>Excluir Banco</label></h4>
+                        </div>
+                        <div class="col-md-2" style="float: right !important;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluir" name="modalLabelExcluir">Você deseja realmente excluir esse Banco</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Criar e Filtrar Bancos</h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content" style="padding-bottom: 0px !important;">
+
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            @using (Html.BeginForm("Index", "Bancos", FormMethod.Get, null))
+                                            {
+                                                <div class="row">
+                                                    <div class="col-md-7">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Procura na Coluna Nome</label>
+                                                            <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group" style="vertical-align: bottom !important;">
+                                                            <button type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                            &nbsp;
+                                                            <button type="submit" class="btn btn-secondary" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                 htmlAttributes: new { id = "MainTable" },
+                                 tableStyle: "webgrid",
+                                 fillEmptyRows: false,
+                                 headerStyle: "webgrid-header",
+                                 alternatingRowStyle: "webgrid-alternating-row",
+                                 rowStyle: "webgrid-row-style",
+                                 selectedRowStyle: "webgrid-selected-row",
+                                 footerStyle: "webgrid-footer",
+                                 mode: WebGridPagerModes.All,
+                                 firstText: "Primeiro",
+                                 previousText: "Anterior",
+                                 nextText: "Próximo",
+                                 lastText: "Último",
+                                 numericLinksCount: 5,
+                                 columns: new[] {
+                                 grid.Column("Nome", header: "Nome"),
+                                 grid.Column("Agencia", header: "Agência"),
+                                 grid.Column("Conta", header: "Conta"),
+                                 grid.Column("ID", header: "Ações", canSort:false,
+                                 format:
+                @<text>
+                    @Html.Raw("<a class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                    @Html.Raw("<a class='btn btn-warning btn-sm' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                    @Html.Raw("<a class='btn btn-danger btn-sm' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")
+                </text>)
+});
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    <script src="~/Content/vendors/jquery/dist/jquery.js"></script>
+
+    <script>
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        function Novo() {
+
+            $('#modalLabelTitle').text('Novo Banco');
+
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val('');
+            $('#NumeroBanco').attr('disabled', false);
+            $('#NumeroBanco').val('');
+            $('#Agencia').attr('disabled', false);
+            $('#Agencia').val('');
+            $('#Conta').attr('disabled', false);
+            $('#Conta').val('');
+            $('#Convenio').attr('disabled', false);
+            $('#Convenio').val('');
+            $('#Carteira').attr('disabled', false);
+            $('#Carteira').val('');
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $("#banco-form").validate().resetForm();
+
+        }
+
+        function Visualizar(Id) {
+
+            $('#modalLabelTitle').text('Visualizar Banco');
+            $('#Nome').attr('disabled', true);
+            $('#NumeroBanco').attr('disabled', false);
+            $('#Agencia').attr('disabled', false);
+            $('#Conta').attr('disabled', false);
+            $('#Convenio').attr('disabled', false);
+            $('#Carteira').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', true);
+            $("#banco-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Bancos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#Nome').val(json.banco[0].Nome);
+                    $('#NumeroBanco').val(json.banco[0].NumeroBanco);
+                    $('#Agencia').val(json.banco[0].Agencia);
+                    $('#Conta').val(json.banco[0].Conta);
+                    $('#Convenio').val(json.banco[0].Convenio);
+                    $('#Carteira').val(json.banco[0].Carteira);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+
+            $('#modalLabelTitle').text('Alterar Banco');
+
+            $('#Nome').attr('disabled', false);
+            $('#NumeroBanco').attr('disabled', false);
+            $('#Agencia').attr('disabled', false);
+            $('#Conta').attr('disabled', false);
+            $('#Convenio').attr('disabled', false);
+            $('#Carteira').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', false);
+            $("#banco-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Bancos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#id').val(Id);
+
+                    $('#Nome').val(json.banco[0].Nome);
+                    $('#NumeroBanco').val(json.banco[0].NumeroBanco);
+                    $('#Agencia').val(json.banco[0].Agencia);
+                    $('#Conta').val(json.banco[0].Conta);
+                    $('#Convenio').val(json.banco[0].Convenio);
+                    $('#Carteira').val(json.banco[0].Carteira);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('#modalLabelExcluir').text('Você deseja realmente excluir esse Banco (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#banco-form").validate();
+
+            if ($('#banco-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("Nome", $("#Nome").val());
+                dados.append("NumeroBanco", $("#NumeroBanco").val());
+                dados.append("Agencia", $("#Agencia").val());
+                dados.append("Conta", $("#Conta").val());
+                dados.append("Convenio", $("#Convenio").val());
+                dados.append("Carteira", $("#Carteira").val());
+
+                var options = {};
+                options.url = "/Bancos/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Banco salva com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#banco-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Bancos/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('Banco excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#banco-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('#modalMensagemResposta').text('Não foi possível excluir a Banco (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('#modalMensagemResposta').text('Ocorreu um erro que impossibilitou a exclusão do Banco (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Bancos');
+        }
+
+    </script>
+
+</div>

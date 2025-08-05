@@ -1,0 +1,820 @@
+﻿
+@{
+    ViewBag.Title = "Integração App \\ Pré-Cadastro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="IdPreCadastro" name="IdPreCadastro" value="">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Cadastro</label></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="feedback-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><b>Dados Pessoais</b></h4>
+                                <hr />
+                            </div>
+                        </div>
+                        <form id="cliente-form">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">CPF/CNPJ <span class="required">*</span></label>
+                                        <input type="text" class="form-control requireds" placeholder="Informe o CPF ou CNPJ" id="CPFCNPJ" name="CPFCNPJ" onblur="ValidaCPFCNPJ();" data-mask-for-cpf-cnpj />
+                                        <label id="CPFCNPJValidate" name="CPFCNPJValidate" for="CPFCNPJ" class="error hidden"> Por favor, insira o CPF/CNPJ.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label class="titlefield">Nome <span id="nomeRequired" class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Nome do Cliente" id="Nome" name="Nome" />
+                                        <label id="NomeValidate" name="NomeValidate" for="Nome" class="error hidden"> Por favor, insira o Nome do Cliente.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">RG</label>
+                                        <input type="text" class="form-control" placeholder="Informe o RG" id="RG" name="RG" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Profissão</label>
+                                        <input type="text" class="form-control" placeholder="Informe a Profissão do Cliente" id="Profissao" name="Profissao" maxlength="100" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Nacionalidade</label>
+                                        <input type="text" class="form-control" placeholder="Informe a Nacionalidade do Cliente" id="Nacionalidade" name="Nacionalidade" maxlength="50" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Data de Nascimento</label>
+                                        <input type="text" class="form-control" placeholder="Informe a Data de Nascimento" id="DataNascimento" name="DataNascimento" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Estado Civil</label>
+                                        <select id="EstadoCivil" name="EstadoCivil" class="form-control placeholder">
+                                            <option value="" style="background-color: #eaeaea;">Selecione o Estado Civil</option>
+                                            <option value="solteiro">solteiro</option>
+                                            <option value="solteira">solteira</option>
+                                            <option value="divorciado">divorciado</option>
+                                            <option value="divorciada">divorciada</option>
+                                            <option value="separado">separado</option>
+                                            <option value="separada">separada</option>
+                                            <option value="casado">casado</option>
+                                            <option value="casada">casada</option>
+                                            <option value="viúvo">viúvo</option>
+                                            <option value="viúva">viúva</option>
+                                            <option value="união estável">união estável</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Nome da Mãe</label>
+                                        <input type="text" class="form-control" placeholder="Informe o Nome da Mãe" id="NomeMae" name="NomeMae" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">CEP <span class="required">*</span> </label>
+                                        <input type="text" class="form-control requireds" placeholder="Informe o CEP" id="CEP" name="CEP" onkeyup="BuscarCEP()" />
+                                        <label id="CEPValidate" name="CEPValidate" for="CEP" class="error hidden"> Por favor, insira o CEP.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Logradouro <span class="required">*</span></label>
+                                        <input type="text" class="form-control requireds" placeholder="Informe o Logradouro" id="Logradouro" name="Logradouro" />
+                                        <label id="LogradouroValidate" name="LogradouroValidate" for="Logradouro" class="error hidden"> Por favor, insira o nome do logradouro.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número <span class="required">*</span></label>
+                                        <input type="text" class="form-control requireds" placeholder="Informe o Número" id="Numero" name="Numero" />
+                                        <label id="NumeroValidate" name="NumeroValidate" for="Numero" class="error hidden"> Por favor, insira o n&uacute;mero.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Complemento</label>
+                                        <input type="text" class="form-control" placeholder="Informe o Complemento" id="Complemento" name="Complemento" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Bairro <span class="required">*</span></label>
+                                        <input type="text" class="form-control requireds" placeholder="Informe o Bairro" id="Bairro" name="Bairro" />
+                                        <label id="BairroValidate" name="BairroValidate" for="Bairro" class="error hidden"> Por favor, insira o nome do bairro.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Estado <span class="required">*</span></label>
+                                        <select id="Estado" name="Estado" class="form-control requireds"></select>
+                                        <label id="EstadoValidate" name="EstadoValidate" for="Estado" class="error hidden"> Por favor, selecione um estado.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Cidade <span class="required">*</span></label>
+                                        <select id="Cidade" name="Cidade" class="form-control requireds">
+                                            <option value="" style="background-color: #eaeaea;">Selecione a Cidade</option>
+                                        </select>
+                                        <label id="CidadeValidate" name="CidadeValidate" for="Cidade" class="error hidden"> Por favor, selecione uma cidade.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Unidade de Origem <span class="required">*</span></label>
+                                        <select id="Sede" name="Sede" class="form-control requireds">
+                                            <option value="" style="background-color: #eaeaea;">Selecione uma Sede</option>
+                                        </select>
+                                        <label id="SedeValidate" name="SedeValidate" for="Sede" class="error hidden"> Por favor, selecione uma sede.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Senha meu INSS </label>
+                                        <input type="text" class="form-control" placeholder="Informe a Senha do INSS" id="SenhaMeuINSS" name="SenhaMeuINSS" maxlength="30" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">LGPD</label>
+                                        <select id="LGPDAutorizado" name="LGPDAutorizado" class="form-control placeholder">
+                                            <option value="" style="background-color: #eaeaea;">Selecione o Status da LGPD</option>
+                                            <option value="Sem Retorno">Sem Retorno</option>
+                                            <option value="Autorizado">Autorizado</option>
+                                            <option value="Não Autorizado">Não Autorizado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="titlefield">Etiqueta <span id="etiquetaRequired" class="required">*</span></label>
+                                    <br />
+                                    <div class="radio-item">
+                                        <input type="radio" id="EtiquetaSim" name="Etiqueta" value="S">
+                                        <label for="EtiquetaSim">Sim</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="EtiquetaNao" name="Etiqueta" value="N">
+                                        <label for="EtiquetaNao">Não</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Telefone <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe um Telefone" id="Telefone" name="Telefone" />
+                                        <label id="TelefoneValidate" name="TelefoneValidate" for="Telefone" class="error hidden"> Por favor, selecione um Telefone.</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="titlefield">E-mail <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe um E-mail" id="Email" name="Email" maxlength="100" />
+                                        <label id="EmailValidate" name="EmailValidate" for="Email" class="error hidden"> Por favor, selecione um E-mail.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Observação <span class="red">(Limite de 250 caracteres)</span></label>
+                                        <textarea class="form-control" placeholder="Informe uma Observação" id="Observacao" name="Observacao" rows="3" maxlength="250"> </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                &nbsp;
+                                <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharModal();">Fechar</button>
+                                <br />
+                                <label id='LabelClienteFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptCliente' class='btn btn-default btn-xs' style='display: none;' onclick='FecharModalSim()'>Sim</a><a id='go_backCliente' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharModalNao()'>Não</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("CPFCNPJ", header: "CPF / CNPJ"),
+                                     grid.Column("Nome", header: "Nome"),
+                                     grid.Column("Telefone", header: "Telefone"),
+                                     grid.Column("Email", header: "E-mail"),
+                                     grid.Column("Id", header: "Ações", canSort:false,
+                                     format:
+                    @<text>
+                        @Html.Raw("<a class='btn btn-success btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Integrar(" + item.Id + ", " + '"' + item.CPFCNPJ + '"' + ", " + '"' + item.Nome + '"' + ", " + '"' + item.Telefone + '"' + ", " + '"' + item.Email + '"' + ");'>Integrar</a>")
+                    </text>)
+});
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/valida_cpf_cnpj.js"></script>
+
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/validates_me.js"></script>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        function BuscarCEP() {
+
+            if ($("#CEP").val().length == 9) {
+
+                jQuery.when(
+                    jQuery.getJSON("https://ws.apicep.com/cep.json?code=" + $("#CEP").val())
+                ).done(function (json) {
+
+                    CarregarEstados(json.state);
+                    //$("#Estado").val(json.state);
+                    CarregarCidades(unescape(json.state), unescape(json.city));
+
+                    var endereco = json.address;
+
+                    var index = endereco.indexOf('-');
+                    if (index > 0) {
+                        endereco = endereco.substring(0, endereco.indexOf('-'));
+                    }
+
+                    $("#Logradouro").val(endereco);
+                    $("#Bairro").val(json.district);
+
+                });
+
+            }
+        }
+
+        $("#RG").mask("99999999999999");
+        $("#DataNascimento").mask("99/99/9999");
+        $("#CEP").mask("99999-999");
+        $("#Telefone").mask("(99) 9999-9999?9");
+
+        function CarregarEstados(UF) {
+
+            var options = {};
+            options.url = "/Estados/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.estados;
+
+                    $('#Estado').html("");
+                    var select = $('#Estado');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Estado")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (UF == rows[index].sigla) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarCidades(UF, Cidade) {
+
+            var dados = new window.FormData();
+            dados.append("UF", UF);
+
+            var options = {};
+            options.url = "/Cidades/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.cidades;
+                    $('#Cidade').html("");
+                    var select = $('#Cidade');
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione a Cidade")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (Cidade == rows[index].cidade) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#Estado').change(function (evt) {
+
+            CarregarCidades($("#Estado").val(), "");
+
+        });
+
+        CarregarSedes();
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/ListarClientes"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Integrar(IdPreCadastro, CpfCnpj, Nome, Telefone, Email) {
+
+            $('#vAlterar').val('1');
+            $('#modalLabelTitle').text('Novo Cliente');
+            $('#CPFCNPJ').attr('disabled', false);
+            $('#CPFCNPJ').val(CpfCnpj);
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val(Nome);
+            $('#RG').attr('disabled', false);
+            $('#RG').val('');
+            $('#Profissao').attr('disabled', false);
+            $('#Profissao').val('');
+            $('#Nacionalidade').attr('disabled', false);
+            $('#Nacionalidade').val('');
+            $('#DataNascimento').attr('disabled', false);
+            $('#DataNascimento').val('');
+            $('#EstadoCivil').attr('disabled', false);
+            $('#EstadoCivil').val('');
+            $('#NomeMae').attr('disabled', false);
+            $('#NomeMae').val('');
+            $('input[name=Cliente][value="S"]').attr('disabled', false);
+            $('input[name=Cliente][value="N"]').attr('disabled', false);
+            $('input[name=Cliente][value="S"]').prop('checked', true).trigger('change');
+            $('input[name=Etiqueta][value="S"]').attr('disabled', false);
+            $('input[name=Etiqueta][value="N"]').attr('disabled', false);
+            $('input[name=Etiqueta][value="S"]').prop('checked', true).trigger('change');
+            $('#CEP').attr('disabled', false);
+            $('#CEP').val('');
+            $('#Logradouro').attr('disabled', false);
+            $('#Logradouro').val('');
+            $('#Numero').attr('disabled', false);
+            $('#Numero').val('');
+            $('#Complemento').attr('disabled', false);
+            $('#Complemento').val('');
+            $('#Bairro').attr('disabled', false);
+            $('#Bairro').val('');
+            $('#Estado').attr('disabled', false);
+            $('#Estado').val('');
+            $('#Cidade').attr('disabled', false);
+            $('#Cidade').val('');
+            $('#SenhaMeuINSS').attr('disabled', false);
+            $('#SenhaMeuINSS').val('');
+            $('#LGPDAutorizado').attr('disabled', false);
+            $('#LGPDAutorizado').val('');
+            $('#Sede').attr('disabled', false);
+            $('#Sede').val('');
+            $('#Etiqueta').attr('disabled', false);
+
+            $('#Telefone').attr('disabled', false);
+            $('#Telefone').val(Telefone);
+            $('#Email').attr('disabled', false);
+            $('#Email').val(Email);
+
+            $('#Observacao').attr('disabled', false);
+            $('#Observacao').val('');
+
+            $('#buttonSalvar').attr('disabled', false);
+            $("#cliente-form").validate().resetForm();
+
+            CarregarEstados("");
+
+            $('#IdPreCadastro').val(IdPreCadastro);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#Nome').val() == null || $('#Nome').val().length == 0) {
+                $('#NomeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NomeValidate').addClass('hidden');
+            }
+
+            if (($('#CPFCNPJ').val() == null || $('#CPFCNPJ').val().length == 0)) {
+                $('#CPFCNPJValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else if (!valida_cpf_cnpj($("#CPFCNPJ").val()) && $("input[type='radio'][name='Cliente']:checked").val() == "S") {
+                if ($('#CPFCNPJ').val().length > 14) {
+                    $('#CPFCNPJValidate').text('CNPJ informado não é válido.');
+                }
+                else {
+                    $('#CPFCNPJValidate').text('CPF informado não é válido.');
+                }
+                $('#CPFCNPJValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#CPFCNPJValidate').addClass('hidden');
+            }
+
+            if (($('#CEP').val() == null || $('#CEP').val().length == 0)) {
+                $('#CEPValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#CEPValidate').addClass('hidden');
+            }
+
+            if (($('#Logradouro').val() == null || $('#Logradouro').val().length == 0)) {
+                $('#LogradouroValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#LogradouroValidate').addClass('hidden');
+            }
+
+            if (($('#Numero').val() == null || $('#Numero').val().length == 0)) {
+                $('#NumeroValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#NumeroValidate').addClass('hidden');
+            }
+
+            if (($('#Bairro').val() == null || $('#Bairro').val().length == 0)) {
+                $('#BairroValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#BairroValidate').addClass('hidden');
+            }
+
+            if (($('#Estado').val() == null || $('#Estado').val().length == 0)) {
+                $('#EstadoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EstadoValidate').addClass('hidden');
+            }
+
+            if (($('#Cidade').val() == null || $('#Cidade').val().length == 0)) {
+                $('#CidadeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#CidadeValidate').addClass('hidden');
+            }
+
+            if (($('#Sede').val() == null || $('#Sede').val().length == 0)) {
+                $('#SedeValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#SedeValidate').addClass('hidden');
+            }
+
+            if (($('#Telefone').val() == null || $('#Telefone').val().length == 0)) {
+                $('#TelefoneValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#TelefoneValidate').addClass('hidden');
+            }
+
+            if (($('#Email').val() == null || $('#Email').val().length == 0)) {
+                $('#EmailValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EmailValidate').addClass('hidden');
+            }
+
+            if (validate) {
+
+                $('#CPFCNPJValidate').addClass('hidden');
+
+                $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", 0);
+                dados.append("IdPessoa", 0);
+                dados.append("Nome", $("#Nome").val());
+                dados.append("CPFCNPJ", $("#CPFCNPJ").val());
+                dados.append("RG", $("#RG").val());
+                dados.append("Profissao", $("#Profissao").val());
+                dados.append("Nacionalidade", $("#Nacionalidade").val());
+                dados.append("CEP", $("#CEP").val());
+                dados.append("Logradouro", $("#Logradouro").val());
+                dados.append("Numero", $("#Numero").val());
+                dados.append("Complemento", $("#Complemento").val());
+                dados.append("Bairro", $("#Bairro").val());
+                dados.append("Estado", $("#Estado").val());
+                dados.append("Cidade", $("#Cidade").val());
+
+                dados.append("Cliente", "S");
+                dados.append("Etiqueta", $("input[type='radio'][name='Etiqueta']:checked").val());
+
+                dados.append("DataNascimento", $("#DataNascimento").val());
+                dados.append("EstadoCivil", $("#EstadoCivil").val());
+                dados.append("NomeMae", $("#NomeMae").val());
+                dados.append("SenhaMeuINSS", $("#SenhaMeuINSS").val());
+                dados.append("LGPDAutorizado", $("#LGPDAutorizado").val());
+                dados.append("IdSede", $("#Sede").val());
+                dados.append("Observacao", $("#Observacao").val());
+
+                dados.append("IdPreCadastro", $('#IdPreCadastro').val());
+                dados.append("Telefone", $("#Telefone").val());
+                dados.append("Email", $("#Email").val());
+
+                var options = {};
+                options.url = "/Clientes/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.cache = false;
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalNovo').modal('hide');
+                        $("#buttonSalvar").html("Salvar");
+                        $('#modalMensagemResposta').text('Cliente salvo com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#cliente-form").validate().resetForm();
+
+                        setTimeout(function () {
+                            Atualizar();
+                        }, 3000);
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ValidaCPFCNPJ() {
+
+            if (!valida_cpf_cnpj($("#CPFCNPJ").val()) && $("input[type='radio'][name='Cliente']:checked").val() == "S") {
+
+                if ($('#CPFCNPJ').val().length > 14) {
+
+                    $('#CPFCNPJValidate').text('CNPJ informado não é válido.');
+
+                }
+                else {
+
+                    $('#CPFCNPJValidate').text('CPF informado não é válido.');
+
+                }
+
+                $('#CPFCNPJValidate').removeClass('hidden').css("display", "");
+
+            } else {
+
+                if ($("input[type='radio'][name='Cliente']:checked").val() == "S") {
+                    var dados = new window.FormData();
+                    dados.append("CPFCNPJ", $('#CPFCNPJ').val());
+                    dados.append("IdCliente", $("#id").val());
+
+                    var options = {};
+                    options.url = "/Clientes/ValidarCPFCNPJExistente"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.cache = false;
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "success") {
+
+                            $('#CPFCNPJValidate').addClass('hidden');
+
+                        }
+                        else {
+
+                            if ($('#CPFCNPJ').val().length > 14) {
+
+                                $('#CPFCNPJValidate').text('CNPJ informado já existe.');
+
+                            }
+                            else {
+
+                                $('#CPFCNPJValidate').text('CPF informado já existe.');
+
+                            }
+
+                            $('#CPFCNPJValidate').removeClass('hidden').css("display", "");
+
+                        }
+
+                    };
+                    $.ajax(options);
+                }
+                else {
+
+                    $('#CPFCNPJValidate').addClass('hidden');
+
+                }
+
+            }
+
+        }
+
+        function FecharModal() {
+
+            if ($('#modalLabelTitle').text() == 'Visualizar Cliente') {
+                $('#modalNovo').modal('hide');
+            }
+            else {
+                $("#buttonFechar").attr('disabled', true);
+                $("#buttonFechar").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+                $("#LabelClienteFecharConfirmacao").show();
+                $("#acceptCliente").show();
+                $("#go_backCliente").show();
+            }
+
+        }
+
+        function FecharModalSim() {
+
+            $("#LabelClienteFecharConfirmacao").hide();
+            $("#acceptCliente").hide();
+            $("#go_backCliente").hide();
+
+            $("#buttonFechar").text("Fechar");
+            $("#buttonFechar").attr('disabled', false);
+
+            $("#modalNovo").modal("hide");
+
+        }
+
+        function FecharModalNao() {
+
+            $("#LabelClienteFecharConfirmacao").hide();
+            $("#acceptCliente").hide();
+            $("#go_backCliente").hide();
+
+            $("#buttonFechar").text("Fechar");
+            $("#buttonFechar").attr('disabled', false);
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../App/PreCadastro');
+        }
+
+    </script>
+
+</div>

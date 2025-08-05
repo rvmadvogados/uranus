@@ -1,0 +1,3666 @@
+﻿@{
+    ViewBag.Title = "Processos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main_container">
+    <style>
+
+        .choices__list--dropdown {
+            z-index: 3000 !important;
+        }
+
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idProcesso" name="idProcesso" value="0">
+    <input type="hidden" id="numeroProcesso" name="numeroProcesso" value="">
+    <input type="hidden" id="idAcao" name="idAcao" value="0">
+    <input type="hidden" id="IdProcessAction" value="0" />
+    <input type="hidden" id="NumberProcess" value="" />
+    <input type="hidden" id="HiddenProcessoAcaoId" value="" />
+
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>
+                Filtrar e Cadastrar Processos
+            </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a id="tab-listar" href="#tab_content_listar" role="tab" data-toggle="tab" aria-expanded="true">Listar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-cadastrar" href="#tab_content_cadastrar" role="tab" data-toggle="tab" aria-expanded="false">Cadastrar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-visualizar" href="#tab_content_visualizar" role="tab" data-toggle="tab" aria-expanded="false">Visualizar</a>
+                    </li>
+                    @*<li role="presentation" class="">
+                            <a id="tab-evento" href="#tab_content_evento" role="tab" data-toggle="tab" aria-expanded="false">Evento</a>
+                        </li>*@
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_listar" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        @{ WebGrid grid = new WebGrid(Model.Data); }
+
+                                        @using (Html.BeginForm("Index", "Processos", FormMethod.Get, new { id = "processo-filtro-form" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Número do Processo</label>
+                                                        <select id="FiltrarProcesso" name="FiltrarProcesso" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Cliente</label>
+                                                        <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Tipo de Área</label>
+                                                        <select id="FiltrarArea" name="FiltrarArea" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Status do Processo</label>
+                                                        <select id="FiltrarStatus" name="FiltrarStatus" class="select2_single form-control">
+                                                            <option value="">Selecione um Status</option>
+                                                            <option value="Ativo">Ativo</option>
+                                                            <option value="Baixado">Baixado</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Juízo</label>
+                                                        <select id="FiltrarVara" name="FiltrarVara" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button id="Limpar" name="Limpar" type="button" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                 htmlAttributes: new { id = "MainTable" },
+                                                 tableStyle: "webgrid",
+                                                 fillEmptyRows: false,
+                                                 headerStyle: "webgrid-header",
+                                                 alternatingRowStyle: "webgrid-alternating-row",
+                                                 rowStyle: "webgrid-row-style",
+                                                 selectedRowStyle: "webgrid-selected-row",
+                                                 footerStyle: "webgrid-footer",
+                                                 mode: WebGridPagerModes.All,
+                                                 firstText: "Primeiro",
+                                                 previousText: "Anterior",
+                                                 nextText: "Próximo",
+                                                 lastText: "Último",
+                                                 numericLinksCount: 5,
+                                                 columns: new[] {
+                                                    //grid.Column(columnName: null, header: "Número Processo", format: @<text>@item.ID</text>, style: "hidden"),
+                                                    grid.Column("", header: "",format: @<input type="hidden" id="ID" name="ID" value="@item.ID" />),
+grid.Column("NumeroProcesso", header: "Número Processo"),
+grid.Column("Autor", header: "Autor"),
+grid.Column("Reu", header: "Réu"),
+grid.Column("Area", header: "Área"),
+grid.Column("Vara", header: "Juízo"),
+grid.Column("Status", header: "Status"),
+grid.Column("ID", header: "Ações", canSort:false,
+format:
+                                    @<text>
+                                        @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ", " + item.IdAcao + ");'>Visualizar</a>")
+                                        @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ", " + item.IdAcao + ");'>Alterar</a>")
+
+                                        @{if (item.Status!= "Baixado")
+                                                                                                  {
+                                            @Html.Raw("<a class='btn btn-info btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalNovoAlerta' onclick='NovoAlerta(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ");'>Alertar</a>")
+                                                                                                  }
+                                        }
+
+                                        @{if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                                                                  {
+                                            @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ");'>Excluir</a>")
+                                                                                                  }
+                                            @Html.Raw("<a class='btn btn-info btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalVisualizarFinanceiro' onclick='VisualizarFinanceiro(" + item.ID + ");'>Financeiro</a>")
+                                        }
+                                    </text>)
+});
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_cadastrar" aria-labelledby="tab-cadastrar">
+                        <!-- Processos Autores -->
+                        <div id="ProcessosAutores" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Autores do Processo</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="processo-autor-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="ProcessosAutoresAccordion" role="tablist" aria-multiselectable="true">
+                                    @*Esse cadastro só será liberado após o cadastro de processo acima ser preenchido e salvo.*@
+                                    <input id='HiddenProcessoAutor1' name='HiddenProcessoAutor[]' type='hidden' value='0' />
+                                    <div class='accordion panel panel-default'>
+                                        <div class='accordion-heading panel-heading' id='ProcessoAutor1heading' role='tab'>
+                                            <h4 class='accordion-title panel-title'>
+                                                <a href='#ProcessoAutor1collapse' aria-expanded='true' data-toggle='collapse' aria-controls='ProcessoAutor1collapse' data-parent='#ProcessoAutorAccordion' role='button'>
+                                                    Autor #1
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div class='panel-collapse collapse in' id='ProcessoAutor1collapse' role='tabpanel' aria-labelledby='ProcessoAutor1heading' aria-expanded='true'>
+                                            <div class='accordion-body panel-body'>
+                                                <div class='row'>
+                                                    <div class='col-md-6'>
+                                                        <div class='form-group'>
+                                                            <label class='titlefield'>Nome do Autor <span class='required'>*</span></label>
+                                                            <br />
+                                                            <select id='ProcessoAutor1Cliente' name='ProcessoAutorCliente[]' class='select2_single form-control placeholder' data-msg-required='Por favor, selecione um Autor.' data-rule-required='true' style='width: 100% !important;'></select>
+                                                            <label id='ProcessoAutor1ClienteValidate' name='ProcessoAutorClienteValidate[]' for='ProcessoAutor1Cliente' class='error hidden'> Por favor, selecione um Autor.</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class='row'>
+                                                    <div class='col-md-4'>
+                                                        <button type='button' id='ButtonProcessoAutor1Incluir' name='ButtonProcessoAutor1Incluir' class='btn btn-primary' data-loading-text='Salvando...' onclick='ButtonProcessoAutorSalvar_Click(1);'>
+                                                            Salvar
+                                                        </button>
+                                                    </div>
+                                                    <div class='col-md-4' style='text-align: center;'>
+                                                    </div>
+                                                    <div class='col-md-4' style='text-align: right;'>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='alert alert-success hidden' id='processo-autor-alert-success-1'>
+                                            <strong>SUCESSO:</strong> Cadastrado do autor realizado com sucesso.
+                                        </div>
+                                        <div class='alert alert-danger hidden' id='processo-autor-alert-error-1'>
+                                            <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro do autor.
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Processos Partes -->
+                        <div id="ProcessosPartesAdvogados" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!--<h4><b>Réus e Advogados do Processo</b></h4>-->
+                                    <h4><b>Réus do Processo</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="processo-parte-advogados-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="ProcessosPartesAdvogadosAccordion" role="tablist" aria-multiselectable="true">
+                                    @*Esse cadastro só será liberado após o cadastro de processo acima ser preenchido e salvo.*@
+                                    <input id='HiddenProcessoParteReu1' name='HiddenProcessoParteReu[]' type='hidden' value='0' />
+                                    <input id='HiddenProcessoParteAdvogado1' name='HiddenProcessoParteAdvogado[]' type='hidden' value='0' />
+                                    <div class='accordion panel panel-default'>
+                                        <div class='accordion-heading panel-heading' id='ProcessoParteAdvogado1heading' role='tab'>
+                                            <h4 class='accordion-title panel-title'>
+                                                <a href='#ProcessoParteAdvogado1collapse' aria-expanded='true' data-toggle='collapse' aria-controls='ProcessoParteAdvogado1collapse' data-parent='#ProcessoParteAdvogadoAccordion' role='button'>
+                                                    Réu #1
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div class='panel-collapse collapse in' id='ProcessoParteAdvogado1collapse' role='tabpanel' aria-labelledby='ProcessoParteAdvogado1heading' aria-expanded='true'>
+                                            <div class='accordion-body panel-body'>
+                                                <div class='row'>
+                                                    <div class='col-md-6'>
+                                                        <div class='form-group'>
+                                                            <label class='titlefield'>Nome do Réu <span class='required'>*</span></label>
+                                                            <br />
+                                                            <select id='ProcessoParteAdvogado1Parte' name='ProcessoParteAdvogadoParte[]' class='select2_single form-control placeholder' data-msg-required='Por favor, selecione um Réu.' data-rule-required='true' style='width: 100% !important;'></select>                  <label id='ProcessoParteAdvogado1ParteValidate' name='ProcessoParteAdvogadoParteValidate[]' for='ProcessoParteAdvogado1Parte' class='error hidden'> Por favor, selecione um Réu.</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class='row'>
+                                                    <div class='col-md-4'>
+                                                        <button type='button' id='ButtonProcessoParteAdvogado1Incluir' name='ButtonProcessoParteAdvogado1Incluir' class='btn btn-primary' data-loading-text='Salvando...' onclick='ButtonProcessoParteAdvogadoSalvar_Click(1);'>
+                                                            Salvar
+                                                        </button>
+                                                    </div>
+                                                    <div class='col-md-4' style='text-align: center;'></div>
+                                                    <div class='col-md-4' style='text-align: right;'></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class='alert alert-success hidden' id='processo-parte-advogados-alert-success-1'>
+                                            <strong>SUCESSO:</strong> Cadastrado do réu realizado com sucesso.
+                                        </div>
+                                        <div class='alert alert-danger hidden' id='processo-parte-advogados-alert-error-1'>
+                                            <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro do réu.
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Processo -->
+                        <div class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 id="TituloProcesso"><b>Novo Processo</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="processo-form">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Sede</label>
+                                            <select id="Sede" name="Sede" class="form-control placeholder">
+                                                <option value="">Selecione a Sede</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label class="titlefield">Primeiro atendimento realizado por</label>
+                                            <select id="Profissional" name="Profissional" class="form-control placeholder">
+                                                <option value="">Selecione o Profissional</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 hidden">
+                                        <div class="form-group">
+                                            <label class="titlefield">Status do Processo <span class="required">*</span></label>
+                                            <select id="Status" name="Status" class="form-control placeholder" data-msg-required="Por favor, selecione um Status." data-rule-required="true">
+                                                <option value="">Selecione um Status</option>
+                                                <option value="Ativo">Ativo</option>
+                                                <option value="Baixado">Baixado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Objeto</label>
+                                            <textarea id='Objeto' name="Objeto" class="form-control placeholder" placeholder="Informe aqui o Objeto"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Observação</label>
+                                            <textarea id='Observacao' name="Observacao" class="form-control placeholder" placeholder="Informe aqui a Observação"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                                </div>
+                                <div class="alert alert-success hidden" id="processo-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado dos dados iniciais do processo realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="processo-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro inicial do processo.
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <!-- Processos Ações -->
+                        <div id="ProcessosAcoes" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Processos Vinculados</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="processo-acao-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="ProcessosAcoesAccordion" role="tablist" aria-multiselectable="true">
+                                    Esse cadastro só será liberado após o cadastro de processo acima ser preenchido e salvo.
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Processos Eventos -->
+                        <div id="ProcessosEventos" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class='row'>
+                                <div class='col-md-12'>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="left">
+                                                <h4><b>Eventos do Processo</b></h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="right">
+                                                <a id='ButtonCriarEvento' name='ButtonCriarEvento' class='btn btn-primary btn-xs hidden' data-toggle='modal' data-backdrop='static' data-target='#modalNovoEvento' onclick="NovoEvento();">Criar Evento</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="processo-evento-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="ProcessosEventosAccordion" role="tablist" aria-multiselectable="true">
+                                    Esse cadastro só será liberado após o cadastro de processo acima ser preenchido e salvo. Também é necessário a criação de uma Ação.
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_visualizar" aria-labelledby="tab-visualizar">
+                        <div id="VisualizarProcesso" name="VisualizarProcesso">
+                            <p>Nenhum processo foi selecionado para visualização.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="modalNovoAlerta" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                    <form id="alerta-form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                                <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Alerta</label></h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Mensagem de Alerta <span class="red">(Limite de 150 caracteres)</span><span class="required">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Informe uma Mensagem de Alerta" id="Mensagem" name="Mensagem" data-msg-required="Por favor, insira uma Mensagem de Alerta." data-rule-required="true" maxlength="150" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="buttonInserirAlerta" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                &nbsp;
+                                <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div id="modalVisualizarAlerta" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                    <form id="alerta-form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                                <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Alertas</label></h3>
+                            </div>
+                            <div class="modal-body">
+                                <div id="alertas"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="buttonSalvarAlerta" type="button" class="btn btn-primary" style="margin: 0;" onclick="FecharAlerta();">Ok</button>
+                                <br />
+                                <label id='LabelAlertaFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente excluir esse(s) alerta(s)?&nbsp;&nbsp;&nbsp;</label><a id='acceptAlerta' class='btn btn-default btn-xs' style='display: none;' onclick='FecharAlertaSim()'>Sim</a><a id='go_backAlerta' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharAlertaNao()'>Não</a>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div id="modalExcluir" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                            <h3 class="modal-title" id="modalLabelExcluir">Excluir Ação</h3>
+                        </div>
+                        <div class="modal-body">
+                            <h4>Você deseja realmente excluir essa Ação?</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                            &nbsp;
+                            <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="modalNovoEvento" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+
+                    <!--Modal content-->
+                    <form id="evento-form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Criar Evento</label></h3>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="idAcaoEventoView" name="idAcaoEventoView" value="0">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número do Processo</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Número do Processo" id="ViewNumeroProcesso" name="ViewNumeroProcesso" style="height: 40px !important;" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label class="titlefield">Evento <span class="required">*</span></label>
+                                            <select id="ViewEvento" name="ViewEvento" class="form-control" placeholder="Selecione um Evento"></select>
+                                            <label id="ViewEventoValidate" name="ViewEventoValidate" for="ViewEvento" class="error hidden">Por favor, selecione um Evento.</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Agendar para o Profissional</label>
+                                            <select id="ViewProfissional" name="ViewProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data 1º Prazo</label>
+                                            <div id="ViewDataPrazoEvento1" name="ViewDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
+                                                <input id="ViewPrazoEvento1" name="ViewPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Data 2º Prazo</label>
+                                            <div id="ViewDataPrazoEvento2" name="ViewDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
+                                                <input id="ViewPrazoEvento2" name="ViewPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                                <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                            <label id="ViewDataPrazoEvento2Validate" name="ViewDataPrazoEvento2Validate" for="ViewDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">PDF <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 10MB por arquivo)</label></label>
+                                            <div class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload1').click();" />
+                                                <input type="file" id="ViewFileUpload1" name="ViewUpload1" accept="application/pdf" value="10485760" />
+                                                <span id="ViewFileName1" name="ViewFileName1" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                            <label id="ViewFileUpload1Validate" name="ViewFileUpload1Validate" for="ViewFileUpload1" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                            <br />
+                                            <div class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload2').click();" />
+                                                <input type="file" id="ViewFileUpload2" name="ViewUpload2" accept="application/pdf" value="10485760" />
+                                                <span id="ViewFileName2" name="ViewFileName2" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                            <label id="ViewFileUpload2Validate" name="ViewFileUpload2Validate" for="ViewFileUpload2" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                            <br />
+                                            <div class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload3').click();" />
+                                                <input type="file" id="ViewFileUpload3" name="ViewUpload3" accept="application/pdf" value="10485760" />
+                                                <span id="ViewFileName3" name="ViewFileName3" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                            <label id="ViewFileUpload3Validate" name="ViewFileUpload3Validate" for="ViewFileUpload3" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                            <br />
+                                            <div class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload4').click();" />
+                                                <input type="file" id="ViewFileUpload4" name="ViewUpload4" accept="application/pdf" value="10485760" />
+                                                <span id="ViewFileName4" name="ViewFileName4" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                            <label id="ViewFileUpload4Validate" name="ViewFileUpload4Validate" for="ViewFileUpload4" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                            <br />
+                                            <div class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload5').click();" />
+                                                <input type="file" id="ViewFileUpload5" name="ViewUpload5" accept="application/pdf" value="10485760" />
+                                                <span id="ViewFileName5" name="ViewFileName5" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                            <label id="ViewFileUpload5Validate" name="ViewFileUpload5Validate" for="ViewFileUpload5" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                            <br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Descrição <label class="titlefieldcomment"> <span class="red">(tamanho máximo do texto de 1MB)</label></label>
+                                            <textarea id="ViewDescricao" name="ViewDescricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                            <label id="ViewDescricaoValidate" name="ViewDescricaoValidate" for="ViewDescricao" class="error hidden">Por favor, informe uma descrição com até 1MB.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="alert alert-success hidden" id="processo-evento-alert-success">
+                                    Dados cadastrados com sucesso.
+                                </div>
+                                <div class="alert alert-warning hidden" id="processo-evento-alert-warning">
+                                    <strong>AVISO:</strong> Esse processo foi baixado então não pode ser criado novo eventos.
+                                </div>
+                                <div class="alert alert-danger hidden" id="processo-evento-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro do evento.
+                                </div>
+                            </div>
+                            <div class="modal-footer" id="modalEventosFooter">
+                                <button id="buttonSalvarEventos" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                &nbsp;
+                                <button id="buttonFecharEventos" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharEvento();">Fechar</button>
+                                <br />
+                                <label id='LabelEventoFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptEvento' class='btn btn-default btn-xs' style='display: none;' onclick='FecharEventoSim()'>Sim</a><a id='go_backEvento' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharEventoNao()'>Não</a>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <div id="modalVisualizarFinanceiro" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                    <form id="financeiro-form">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                                <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Financeiro</label></h3>
+                            </div>
+                            <div class="modal-body">
+                                <div id="financeiros"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" style="margin: 0;" onclick="FecharFinanceiro();">Fechar</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="clearfix"></div>
+
+        <!-- datepicker -->
+        <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+        <!-- select2 -->
+        <script src="~/Scripts/select/select2.full.js"></script>
+
+
+        <!-- Choices includes -->
+        <link rel="stylesheet" href="~/Content/Choices-main/public/assets/styles/choices.min.css" />
+        <script src="~/Content/Choices-main/public/assets/scripts/choices.js"></script>
+        <!-- End Choices includes -->
+
+        <script>
+
+
+            var singleXhrRemove = new Choices('#ViewEvento', {
+                allowHTML: true,
+                removeItemButton: true,
+                searchPlaceholderValue: "Selecione um Evento",
+                searchResultLimit: 50, 
+                searchFields: ['label', 'value'],
+                searchFloor: 1, 
+                fuseOptions: {
+                    includeScore: true,
+                    threshold: 0.3,
+                    ignoreLocation: true, 
+                },
+            });
+
+            var tr = $('#MainTable').find('tr');
+            tr.removeClass('webgrid-selected-row');
+            tr.bind('click', function (event) {
+                tr.removeClass('webgrid-selected-row');
+                $(this).addClass('webgrid-selected-row');
+            });
+
+
+        select = $('#FiltrarProcesso');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProcesso))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarProcesso)))
+        );
+        $('#FiltrarProcesso').trigger('change');
+
+        var select = $('#FiltrarCliente');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+        );
+        $('#FiltrarCliente').trigger('change');
+
+        $('#FiltrarArea').val(@Html.Raw(Json.Encode(ViewBag.FiltrarArea)));
+        $('#FiltrarArea').trigger('change');
+
+        $('#FiltrarVara').val(@Html.Raw(Json.Encode(ViewBag.FiltrarVara)));
+        $('#FiltrarVara').trigger('change');
+
+        $('#FiltrarStatus').val(@Html.Raw(Json.Encode(ViewBag.FiltrarStatus)));
+        $('#FiltrarStatus').trigger('change');
+
+        $("#FiltrarProcesso").select2({
+            placeholder: "Selecione um Processo",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                dataType: "json",
+                type: "GET",
+                url: "/Processos/GetProcessList",
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.acoes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+        $("#FiltrarCliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                cache: false,
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        $("#FiltrarArea").select2({
+            placeholder: "Selecione uma Área",
+            allowClear: true,
+            tags: true
+        });
+        $("#FiltrarVara").select2({
+            placeholder: "Selecione um Juízo",
+            allowClear: true,
+            tags: true
+        });
+        $("#FiltrarStatus").select2({
+            placeholder: "Selecione um Status",
+            allowClear: true,
+            tags: true
+        });
+
+        if (CKEDITOR.instances['Objeto']) {
+               CKEDITOR.instances['Objeto'].destroy(true);
+        }
+        CKEDITOR.replace('Objeto', {
+            language: 'pt',
+            height: 100
+        });
+
+        if (CKEDITOR.instances['Observacao']) {
+            CKEDITOR.instances['Observacao'].destroy(true);
+        }
+        CKEDITOR.replace('Observacao', {
+            language: 'pt',
+            height: 100
+        });
+
+            $('input[type=file]').change(function (e) {
+                var fileName = $(this).val().split('\\').pop(); // pega só o nome do arquivo
+                $(this).next().html(fileName);
+            //$in = $(this);
+            //$in.next().html($in.val());
+
+        });
+
+
+        $("#ViewDataPrazoEvento1").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#ViewDataPrazoEvento2").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        CKEDITOR.replace('ViewDescricao', {
+            language: 'pt',
+            height: 200
+        });
+
+        $('ViewFileUpload1').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $('ViewFileUpload2').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $('ViewFileUpload3').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $('ViewFileUpload4').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $('ViewFileUpload5').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+        });
+
+        $('#Sede').prop('disabled', true);
+
+        CarregarSedes();
+        CarregarAcoes(0, "");
+        CarregarAreas(0, "");
+        CarregarVaras(0, "");
+        CarregarProfissionais(0, "");
+        CarregarProfissionais2("");
+
+        $(document).ready(function () {
+
+            CarregarProcessosFiltro();
+
+        });
+
+        function CarregarProcessos(index, value, property) {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/Processos/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00') {
+                    var rows = json.processos.Data;
+                    if (property == "ProcessosEventosAccordion") {
+                        $('#ProcessoEvento' + index + 'NumeroProcesso').html("");
+                        var select = $('#ProcessoEvento' + index + 'NumeroProcesso');
+                        select.append(
+                            $('<option selected disabled></option>').val("").html("Selecione um Processo")
+                        );
+
+                        for (i = 0; i < rows.length; i++) {
+                            select.append(
+                                $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                            );
+                        }
+
+                        $('#ProcessoEvento' + index + 'NumeroProcesso').val(value);
+                        $('#ProcessoEvento' + index + 'NumeroProcesso').trigger('change');
+
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarProcessosFiltro() {
+
+            var options = {};
+            options.url = "/Processos/BuscarNumeroProcesso"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.processos.Data;
+
+                    $('#FiltrarProcesso').html("");
+                    var select = $('#FiltrarProcesso');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Processox")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].NumeroProcesso).html(rows[index].NumeroProcesso)
+                        );
+                    }
+
+                    $('#FiltrarProcesso').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProcesso)));
+                    $('#FiltrarProcesso').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarSede').html("");
+                    var select = $('#FiltrarSede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Seda")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarSede').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSede)));
+                    $('#FiltrarSede').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarProfissionais(index, Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+
+                    $('#ProcessoEvento' + index + 'Profissional').html("");
+                    var select = $('#ProcessoEvento' + index + 'Profissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("&nbsp;")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    //inserindo id do profissional
+                    var idProf = $('#ProcessoEvento' + index + 'IdProfissional').val();
+                    if (idProf) {
+                        select.val(idProf).trigger('change');
+                    }
+
+                    $('#FiltrarProfissional').html("");
+                    var select = $('#FiltrarProfissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("&nbsp;")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Nome).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProfissional').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProfissional)));
+                    $('#FiltrarProfissional').trigger('change');
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarProfissionais2(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+
+                    $('#Profissional').html("");
+                    var select = $('#Profissional');
+                    select.append(
+                        $('<option selected></option>').val("").html("Não identificado")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarAcoes(index, value) {
+
+            var options = {};
+            options.url = "/Acao/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.acoes;
+
+                    $('#ProcessoAcao' + index + 'Acao').html("");
+                    var select = $('#ProcessoAcao' + index + 'Acao');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Ação")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#ProcessoAcao' + index + 'Acao').val(value);
+                    $('#ProcessoAcao' + index + 'Acao').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarVaras(index, value) {
+            var options = {};
+            options.url = "/Varas/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.varas;
+
+                    $('#ProcessoAcao' + index + 'Vara').html("");
+                    var select = $('#ProcessoAcao' + index + 'Vara');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Juízo")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#ProcessoAcao' + index + 'Vara').val(value);
+                    $('#ProcessoAcao' + index + 'Vara').trigger('change');
+
+
+                    $('#FiltrarVara').html("");
+                    var select = $('#FiltrarVara');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Juízo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarVara').val(@Html.Raw(Json.Encode(ViewBag.FiltrarVara)));
+                    $('#FiltrarVara').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarAreas(index, value) {
+            var options = {};
+            options.url = "/Areas/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.areas;
+
+                    $('#ProcessoAcao' + index + 'Area').html("");
+                    var select = $('#ProcessoAcao' + index + 'Area');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Área")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#ProcessoAcao' + index + 'Area').val(value);
+                    $('#ProcessoAcao' + index + 'Area').trigger('change');
+
+
+                    $('#FiltrarArea').html("");
+                    var select = $('#FiltrarArea');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Área")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarArea').val(@Html.Raw(Json.Encode(ViewBag.FiltrarArea)));
+                    $('#FiltrarArea').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarPartes(index, id, value) {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/Partes/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.partes;
+
+                    $('#ProcessoParteAdvogado' + index + 'Parte').html("");
+                    $('#ProcessoParteAdvogado' + index + 'Parte').select2({
+                        placeholder: "Selecione o Nome do Réu",
+                        allowClear: true,
+                        tags: true,
+                        minimumInputLength: 3,
+                        ajax: {
+                            dataType: "json",
+                            type: "GET",
+                            url: '/Clientes/GetClientsList',
+                            delay: 250,
+                            cache: true,
+                            data: function (params) {
+                                params.page = params.page || 1;
+                                return {
+                                    search: params.term,
+                                    page: params.page
+                                };
+                            },
+                            processResults: function (data, params) {
+                                return {
+                                    results: data.clientes,
+                                    pagination: {
+                                        more: (params.page * 10) < data.total
+                                    }
+                                };
+                            }
+                        }
+                    });
+
+                    if (id > 0) {
+
+                        var select = $('#ProcessoParteAdvogado' + index + 'Parte');
+                        select.append(
+                            $('<option selected></option>').val(id).html(value)
+                        );
+
+                        $('#ProcessoParteAdvogado' + index + 'Parte').trigger('change');
+
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarPartesAdvogados(index, value) {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/PartesAdvogados/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.advogados;
+
+                    $('#ProcessoParteAdvogado' + index + 'Advogado').html("");
+                    var select = $('#ProcessoParteAdvogado' + index + 'Advogado');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione o Nome do Advogado")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Nome).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#ProcessoParteAdvogado' + index + 'Advogado').val(value);
+                    $('#ProcessoParteAdvogado' + index + 'Advogado').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarEventos(index, value) {
+            var options = {};
+            options.url = "/Eventos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.eventos;
+
+                    $('#ProcessoEvento' + index + 'Evento').html("");
+                    var select = $('#ProcessoEvento' + index + 'Evento');
+                    //select.append(
+                    //    $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                    //);
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    $('#ProcessoEvento' + index + 'Evento').val(value);
+                    $('#ProcessoEvento' + index + 'Evento').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#processo-form").validate();
+
+            if ($('#processo-form').valid()) {
+
+                $("#buttonSalvar").attr('disabled', true);
+                $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var objeto = escape(CKEDITOR.instances.Objeto.getData());
+                var observacao = escape(CKEDITOR.instances.Observacao.getData());
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("IdProfissional", $("#Profissional").val());
+                dados.append("Status", $("#Status").val());
+                dados.append("Objeto", objeto);
+                dados.append("Observacao", observacao);
+
+                var options = {};
+                options.url = "/Processos/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#ProcessosAcoesAccordion').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+                        $("#processo-alert-success").removeClass("hidden");
+                        $("#processo-alert-error").addClass("hidden");
+
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+
+                        ShowProcessosAutores();
+                        ShowProcessosPartes();
+
+                        if ($("#id").val() == 0) {
+
+                            Alterar(json.id);
+
+                        }
+                        else {
+
+                            ShowProcessosAcoes();
+
+                        }
+
+                    }
+                    else {
+
+                        $("#processo-alert-success").addClass("hidden");
+                        $("#processo-alert-error").removeClass("hidden");
+
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+
+                    }
+
+                    setTimeout(function () {
+                        $("#processo-alert-success").addClass("hidden");
+                        $("#processo-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonFechar').click(function (evt) {
+
+            LimparCadastro();
+
+            $("#tab-listar").click();
+
+        });
+
+        $('#tab-listar').click(function (evt) {
+
+            $('#id').val("0");
+            LimparCadastro();
+
+        });
+
+        $('#tab-cadastrar').click(function (evt) {
+
+            $("#ProcessoAutor1Cliente").select2({
+                placeholder: "Selecione o Nome do Autor",
+                allowClear: true,
+                tags: true,
+                minimumInputLength: 3,
+                ajax: {
+                    dataType: "json",
+                    type: "GET",
+                    url: '/Clientes/GetClientsList',
+                    delay: 250,
+                    cache: true,
+                    data: function (params) {
+                        params.page = params.page || 1;
+                        return {
+                            search: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data.clientes,
+                            pagination: {
+                                more: (params.page * 10) < data.total
+                            }
+                        };
+                    }
+                }
+            });
+
+            $('#ProcessoParteAdvogado1Parte').select2({
+                placeholder: "Selecione o Nome do Réu",
+                allowClear: true,
+                tags: true,
+                minimumInputLength: 3,
+                ajax: {
+                    dataType: "json",
+                    type: "GET",
+                    url: '/Clientes/GetClientsList',
+                    delay: 250,
+                    cache: true,
+                    data: function (params) {
+                        params.page = params.page || 1;
+                        return {
+                            search: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data.clientes,
+                            pagination: {
+                                more: (params.page * 10) < data.total
+                            }
+                        };
+                    }
+                }
+            });
+
+            LimparCadastro();
+
+        });
+
+        function Visualizar(Id, NumeroProcesso, IdAcao) {
+
+
+            $('#VisualizarProcesso').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+            var url = '@Url.Action("View", "Processos")';
+            url += '/?Id=' + Id + "&IdAcao=" + IdAcao;
+            $("#VisualizarProcesso").load(url);
+            $("#tab-visualizar").click();
+
+            $('#IdProcessAction').text(IdAcao);
+            $('#NumberProcess').text(NumeroProcesso);
+
+            VisualizarAlerta(NumeroProcesso, Id);
+
+        }
+
+        function Alterar(Id, NumeroProcesso, IdAcao) {
+
+            $('#TituloProcesso').html("<b>Alterar Processo</b>");
+            $('#id').val(Id);
+
+            $('#IdProcessAction').text(IdAcao);
+            $('#numeroProcesso').val(NumeroProcesso);
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Processos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    var objeto = (json.processo[0].Objeto != null ? json.processo[0].Objeto : "");
+                    var observacao = (json.processo[0].Observacao != null ? json.processo[0].Observacao : "");
+
+                    CKEDITOR.instances["Objeto"].setData(unescape(objeto));
+                    CKEDITOR.instances["Observacao"].setData(unescape(observacao));
+
+                    $("#tab-cadastrar").click();
+
+                    $('#ProcessosAutoresAccordion').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+                    $('#ProcessosAcoesAccordion').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+                    $('#ProcessosPartesAccordion').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+                    $('#ProcessosPartesAdvogadosAccordion').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+                    $('#ProcessosEventosAccordion').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+                    $('#idProcesso').val(json.processo[0].IdProcesso);
+                    $('#Profissional').val(json.processo[0].IdProfissional);
+                    $('#Status').val(json.processo[0].Status);
+
+                    if (json.processo[0].ClienteSede && json.processo[0].IdSede != null) {
+                        $('#Sede').val(json.processo[0].IdSede);
+                    }
+                    else if (json.processo[0].ClienteSedeReu && json.processo[0].IdSedeReu != null) {
+                        $('#Sede').val(json.processo[0].IdSedeReu);
+                    }
+
+                    ShowProcessosAutores();
+                    ShowProcessosPartes();
+                    ShowProcessosAcoes();
+                    ShowProcessosEventos();
+                    VisualizarAlerta(NumeroProcesso, Id);
+
+                    CarregarProcessosAux();
+                    CarregarEventosAux();
+                    CarregarProfissionaisAux("");
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir esse Processo (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Processos/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Processo excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#processo-form").validate().resetForm();
+
+                    Atualizar();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Processo (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Processo (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function ShowProcessosAutores() {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/Processos/CarregarProcessosAutores";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#ProcessosAutoresAccordion').html(json.autores);
+
+                    length = json.count;
+                    array = json.array;
+
+                    for (var i = 1; i < (json.count + 1); i++) {
+
+                        $("#ProcessoAutor" + i + "Cliente").select2({
+                            placeholder: "Selecione o Nome do Autor",
+                            allowClear: true,
+                            tags: true,
+                            minimumInputLength: 3,
+                            ajax: {
+                                dataType: "json",
+                                type: "GET",
+                                url: '/Clientes/GetClientsList',
+                                delay: 250,
+                                cache: true,
+                                data: function (params) {
+                                    params.page = params.page || 1;
+                                    return {
+                                        search: params.term,
+                                        page: params.page
+                                    };
+                                },
+                                processResults: function (data, params) {
+                                    return {
+                                        results: data.clientes,
+                                        pagination: {
+                                            more: (params.page * 10) < data.total
+                                        }
+                                    };
+                                }
+                            }
+                        });
+
+                        if (array[i - 1].IdCustomer != null && $.isNumeric(array[i - 1].IdCustomer) && array[i - 1].IdCustomer > 0) {
+                            $('#ProcessoAutor' + i + 'Cliente').append($('<option selected></option>').val(array[i - 1].IdCustomer).html(array[i - 1].Customer));
+                            $('#ProcessoAutor' + i + 'Cliente').trigger('change');
+                        }
+
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function ButtonProcessoAutorSalvar_Click(index) {
+
+            $("#processo-autor-form").validate();
+
+            if ($('#processo-autor-form').valid()) {
+
+                if ($('#ProcessoAutor' + index + 'Cliente').val() == null || !$.isNumeric($('#ProcessoAutor' + index + 'Cliente').val())) {
+                    $('#ProcessoAutor' + index + 'ClienteValidate').removeClass('hidden').css("display", "");
+                    return false;
+                } else {
+                    $('#ProcessoAutor' + index + 'ClienteValidate').addClass('hidden');
+                }
+
+                $("#ButtonProcessoAutor" + index + "Incluir").attr('disabled', true);
+                $("#ButtonProcessoAutor" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonProcessoAutor" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenProcessoAutor' + index).val());
+                dados.append("IdProcesso", $("#idProcesso").val());
+                dados.append("IdCliente", $('#ProcessoAutor' + index + 'Cliente').val());
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosAutores";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#processo-autor-alert-success-" + index).removeClass("hidden");
+                        $("#processo-autor-alert-error-" + index).addClass("hidden");
+                        $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                        $("#processo-autor-alert-error2-" + index).addClass("hidden");
+
+                        if ($("#id").val() == 0) {
+                            $("#id").val(json.idprocesso);
+                            $("#idProcesso").val(json.idprocesso);
+                            ShowProcessosAutores();
+                            ShowProcessosPartes();
+                            ShowProcessosAcoes();
+
+                            if (($('#Sede').val() == 0 || $('#Sede').val() == "" || $('#Sede').val() == null) && json.idSede > 0) {
+                                $('#Sede').val(json.idSede);
+                            }
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-autor-alert-success-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error-" + index).addClass("hidden");
+                            $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error2-" + index).addClass("hidden");
+                            ShowProcessosAutores();
+                        }, 3000);
+
+                    }
+                    else {
+                        $("#processo-autor-alert-success-" + index).addClass("hidden");
+                        $("#processo-autor-alert-error-" + index).removeClass("hidden");
+                        $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                        $("#processo-autor-alert-error2-" + index).addClass("hidden");
+
+                        $("#ButtonProcessoAutor" + index + "Incluir").text("Salvar");
+                        $("#ButtonProcessoAutor" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonProcessoAutor" + index + "Excluir").attr('disabled', false);
+                    }
+
+                        $("#processo-autor-alert-success-" + index).addClass("hidden");
+                        $("#processo-autor-alert-error-" + index).addClass("hidden");
+                        $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                        $("#processo-autor-alert-error2-" + index).addClass("hidden");
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonProcessoAutorExcluir_Click(index) {
+
+            $("#ButtonProcessoAutor" + index + "Incluir").attr('disabled', true);
+            $("#ButtonProcessoAutor" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonProcessoAutor" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonProcessoAutor" + index + "ExcluirConfirmacao").show();
+            $("#ButtonProcessoAutor" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonProcessoAutor" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenProcessoAutor' + index).val());
+
+                    var options = {};
+                    options.url = "/Processos/ExcluirProcessosAutores";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#processo-autor-alert-success-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error-" + index).addClass("hidden");
+                            $("#processo-autor-alert-removed-" + index).removeClass("hidden");
+                            $("#processo-autor-alert-error2-" + index).addClass("hidden");
+
+                            setTimeout(function () {
+                                $("#processo-autor-alert-success-" + index).addClass("hidden");
+                                $("#processo-autor-alert-error-" + index).addClass("hidden");
+                                $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                                $("#processo-autor-alert-error2-" + index).addClass("hidden");
+                                ShowProcessosAutores();
+                            }, 3000);
+
+                        }
+                        else {
+                            $("#processo-autor-alert-success-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error-" + index).addClass("hidden");
+                            $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error2-" + index).removeClass("hidden");
+
+                            $("#ButtonProcessoAutor" + index + "Excluir").text("Apagar");
+                            $("#ButtonProcessoAutor" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonProcessoAutor" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-autor-alert-success-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error-" + index).addClass("hidden");
+                            $("#processo-autor-alert-removed-" + index).addClass("hidden");
+                            $("#processo-autor-alert-error2-" + index).addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonProcessoAutor" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonProcessoAutor" + index + "Excluir").text("Apagar");
+                    $("#ButtonProcessoAutor" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonProcessoAutor" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        function ShowProcessosPartes() {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/Processos/CarregarProcessosPartesAdvogados";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#ProcessosPartesAdvogadosAccordion').html(json.partesAdvogados);
+
+                    length = json.count;
+                    array = json.array;
+
+                    for (var i = 1; i < (json.count + 1); i++) {
+
+                        $("#ProcessoParteAdvogado" + i + "Parte").select2({
+                            placeholder: "Selecione o Nome do Réu",
+                            allowClear: true,
+                            tags: true
+                        });
+
+                        $("#ProcessoParteAdvogado" + i + "Advogado").select2({
+                            placeholder: "Selecione o Nome do Advogado",
+                            allowClear: true,
+                            tags: true
+                        });
+
+                        CarregarPartes(i, array[i - 1].IdPart, array[i - 1].Part);
+                        CarregarPartesAdvogados(i, array[i - 1].Lawyer)
+
+                        $("#ProcessoParteAdvogado" + i + "Advogado").on("change", function (e) {
+
+                            BuscarDadosAdvogado(e.currentTarget.id.replace(/[^0-9]/gi, ''), e.currentTarget.value);
+
+                        });
+
+                        $("#ProcessoParteAdvogado" + i + "TelefoneComercial").mask("(99) 9999-9999?9");
+                        $("#ProcessoParteAdvogado" + i + "Celular").mask("(99) 9999-9999?9");
+                    }
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function ButtonProcessoParteAdvogadoSalvar_Click(index) {
+
+            $("#processo-parte-advogados-form").validate();
+
+            if ($('#processo-parte-advogados-form').valid()) {
+
+                if ($('#ProcessoParteAdvogado' + index + 'Parte').val() == null || !$.isNumeric($('#ProcessoParteAdvogado' + index + 'Parte').val())) {
+                    $('#ProcessoParteAdvogado' + index + 'ParteValidate').removeClass('hidden').css("display", "");
+                    return false;
+                } else {
+                    $('#ProcessoParteAdvogado' + index + 'ParteValidate').addClass('hidden');
+                }
+
+                if ($('#ProcessoParteAdvogado' + index + 'Parte').val() == null || $('#ProcessoAutor' + index + 'Parte').val() < 0) {
+                    return false;
+                }
+
+                $("#ButtonProcessoParteAdvogado" + index + "Incluir").attr('disabled', true);
+                $("#ButtonProcessoParteAdvogado" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonProcessoParteAdvogado" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenProcessoParteAdvogado' + index).val());
+                dados.append("IdProcesso", $("#idProcesso").val());
+                dados.append("IdParte", $('#HiddenProcessoParteReu' + index).val());
+
+                if ($.isNumeric($('#ProcessoParteAdvogado' + index + 'Parte option:selected').val())) {
+                    dados.append("IdCliente", $('#ProcessoParteAdvogado' + index + 'Parte option:selected').val());
+                }
+
+                dados.append("Parte", $('#ProcessoParteAdvogado' + index + 'Parte option:selected').text());
+
+                dados.append("Advogado", $('#ProcessoParteAdvogado' + index + 'Advogado option:selected').val());
+                dados.append("NumeroOab", $('#ProcessoParteAdvogado' + index + 'OAB').val());
+                dados.append("TelefoneComercial", $('#ProcessoParteAdvogado' + index + 'TelefoneComercial').val());
+                dados.append("Celular", $('#ProcessoParteAdvogado' + index + 'Celular').val());
+                dados.append("Email", $('#ProcessoParteAdvogado' + index + 'Email').val());
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosPartesAdvogados";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#processo-parte-advogados-alert-success-" + index).removeClass("hidden");
+                        $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-removed-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+
+                        if ($("#id").val() == 0) {
+                            $("#id").val(json.idprocesso);
+                            $("#idProcesso").val(json.idprocesso);
+                            ShowProcessosAutores();
+                            ShowProcessosPartes();
+                            ShowProcessosAcoes();
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-removed-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+                            ShowProcessosPartes();
+                        }, 3000);
+                    }
+                    else {
+                        $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-error-" + index).removeClass("hidden");
+                        $("#processo-parte-advogados-alert-removed-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+
+                        $("#ButtonProcessoParteAdvogado" + index + "Incluir").text("Salvar");
+                        $("#ButtonProcessoParteAdvogado" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonProcessoParteAdvogado" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-removed-" + index).addClass("hidden");
+                        $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonProcessoParteAdvogadoExcluir_Click(index) {
+
+            $("#ButtonProcessoParteAdvogado" + index + "Incluir").attr('disabled', true);
+            $("#ButtonProcessoParteAdvogado" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonProcessoParteAdvogado" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonProcessoParteAdvogado" + index + "ExcluirConfirmacao").show();
+            $("#ButtonProcessoParteAdvogado" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonProcessoParteAdvogado" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenProcessoParteAdvogado' + index).val());
+
+                    var options = {};
+                    options.url = "/Processos/ExcluirProcessosPartesAdvogados";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-removed-" + index).removeClass("hidden");
+                            $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+
+                            setTimeout(function () {
+                                $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                                $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                                $("#processo-aparte-advogadosutor-alert-removed-" + index).addClass("hidden");
+                                $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+                                ShowProcessosPartes();
+                            }, 3000);
+
+                        }
+                        else {
+                            $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-removed-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error2-" + index).removeClass("hidden");
+
+                            $("#ButtonProcessoParteAdvogado" + index + "Excluir").text("Apagar");
+                            $("#ButtonProcessoParteAdvogado" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonProcessoParteAdvogado" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-parte-advogados-alert-success-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error-" + index).addClass("hidden");
+                            $("#processo-aparte-advogadosutor-alert-removed-" + index).addClass("hidden");
+                            $("#processo-parte-advogados-alert-error2-" + index).addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonProcessoParteAdvogado" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonProcessoParteAdvogado" + index + "Excluir").text("Apagar");
+                    $("#ButtonProcessoParteAdvogado" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonProcessoParteAdvogado" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        function ShowProcessosAcoes() {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/Processos/CarregarProcessosAcoes";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#ProcessosAcoesAccordion').html(json.acoes);
+
+                    length = json.count;
+                    array = json.array;
+
+                    if (length > 1) {
+                        $('#ButtonCriarEvento').removeClass('hidden');
+                    }
+                    else {
+                        $('#ButtonCriarEvento').addClass('hidden');
+                    }
+
+                    for (var i = 1; i < (json.count + 1); i++) {
+
+                        $("#ProcessoAcao" + i + "DataAcao").datepicker({
+                            language: 'pt-BR',
+                            autoclose: true,
+                            todayHighlight: true,
+                            orientation: "bottom",
+                            daysOfWeekDisabled: [0, 6],
+                            clearBtn: true,
+                            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+                        });
+
+                        CarregarAcoes(i, array[i - 1].IdAction);
+                        CarregarVaras(i, array[i - 1].IdStick);
+                        CarregarAreas(i, array[i - 1].IdArea);
+
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonProcessoAcaoSalvar_Click(index) {
+
+            $("#processo-acao-form").validate();
+
+            if ($('#processo-acao-form').valid()) {
+
+                $("#ButtonProcessoAcao" + index + "Incluir").attr('disabled', true);
+                $("#ButtonProcessoAcao" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonProcessoAcao" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenProcessoAcao' + index).val());
+                dados.append("IdProcesso", $("#idProcesso").val());
+                dados.append("DataAcao", $('#ProcessoAcao' + index + 'Data').val());
+
+                dados.append("NumeroProcesso", $('#ProcessoAcao' + index + 'NumeroProcesso').val());
+                dados.append("NumeroProcessoAntigo", $('#ProcessoAcao' + index + 'NumeroProcessoAntigo').val());
+
+                if ($.isNumeric($('#ProcessoAcao' + index + 'Acao option:selected').val())) {
+                    dados.append("IdAcao", $('#ProcessoAcao' + index + 'Acao option:selected').val());
+                } else if ($('#ProcessoAcao' + index + 'Acao option:selected').val() != null) {
+                    dados.append("Acao", $('#ProcessoAcao' + index + 'Acao option:selected').val());
+                }
+
+                dados.append("IdVara", $('#ProcessoAcao' + index + 'Vara option:selected').val());
+                dados.append("IdArea", $('#ProcessoAcao' + index + 'Area option:selected').val());
+                dados.append("EventoAutomatico", $("input[type='radio'][name='ProcessoAcao" + index + "EventoAutomatico']:checked").val());
+                dados.append("Status", $('#ProcessoAcao' + index + 'Status option:selected').val());
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosAcoes";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#processo-acao-alert-success-" + index).removeClass("hidden");
+                        $("#processo-acao-alert-error-" + index).addClass("hidden");
+                        $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error2-" + index).addClass("hidden");
+
+                        $('#IdProcessAction').text(json.id);
+                        CarregarProcessosAux();
+                        CarregarEventosAux();
+                        CarregarProfissionaisAux("");
+
+                        setTimeout(function () {
+                            $("#processo-acao-alert-success-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error-" + index).addClass("hidden");
+                            $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error2-" + index).addClass("hidden");
+                            ShowProcessosAcoes();
+
+                            if (json.status == "Baixado") {
+                                ShowProcessosEventos();
+                            }
+
+                        }, 3000);
+                    }
+                    else if (json.response == "warning") {
+                        $("#processo-acao-alert-success-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error-" + index).addClass("hidden");
+                        $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error2-" + index).removeClass("hidden");
+
+                        $("#ButtonProcessoAcao" + index + "Incluir").text("Salvar");
+                        $("#ButtonProcessoAcao" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonProcessoAcao" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#processo-acao-alert-success-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error-" + index).removeClass("hidden");
+                        $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error2-" + index).addClass("hidden");
+
+                        $("#ButtonProcessoAcao" + index + "Incluir").text("Salvar");
+                        $("#ButtonProcessoAcao" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonProcessoAcao" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#processo-acao-alert-success-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error-" + index).addClass("hidden");
+                        $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                        $("#processo-acao-alert-error2-" + index).addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonProcessoAcaoExcluir_Click(index) {
+
+            $("#ButtonProcessoAcao" + index + "Incluir").attr('disabled', true);
+            $("#ButtonProcessoAcao" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonProcessoAcao" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonProcessoAcao" + index + "ExcluirConfirmacao").show();
+            $("#ButtonProcessoAcao" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonProcessoAcao" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenProcessoAcao' + index).val());
+
+                    var options = {};
+                    options.url = "/Processos/ExcluirProcessosAcoes";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#processo-acao-alert-success-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error-" + index).addClass("hidden");
+                            $("#processo-acao-alert-removed-" + index).removeClass("hidden");
+                            $("#processo-acao-alert-error2-" + index).addClass("hidden");
+
+                            setTimeout(function () {
+                                $("#processo-acao-alert-success-" + index).addClass("hidden");
+                                $("#processo-acao-alert-error-" + index).addClass("hidden");
+                                $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                                $("#processo-acao-alert-error2-" + index).addClass("hidden");
+                                ShowProcessosAcoes();
+                            }, 3000);
+                        }
+                        else {
+                            $("#processo-acao-alert-success-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error-" + index).addClass("hidden");
+                            $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error2-" + index).removeClass("hidden");
+
+                            $("#ButtonProcessoAcao" + index + "Excluir").text("Apagar");
+                            $("#ButtonProcessoAcao" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonProcessoAcao" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-acao-alert-success-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error-" + index).addClass("hidden");
+                            $("#processo-acao-alert-removed-" + index).addClass("hidden");
+                            $("#processo-acao-alert-error2-" + index).addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonProcessoAcao" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonProcessoAcao" + index + "Excluir").text("Apagar");
+                    $("#ButtonProcessoAcao" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonProcessoAcao" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        function ShowProcessosEventos() {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $("#id").val());
+
+            var options = {};
+            options.url = "/Processos/CarregarProcessosEventos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+
+                    $('#ProcessosEventosAccordion').html(json.eventos);
+
+                    if (json.numeroProcesso == $('#numeroProcesso').val() && json.status == 'Baixado') {
+
+                        $("a[name*=ButtonCriarEvento]").hide();
+
+                    }
+                    else {
+
+                        $("a[name*=ButtonCriarEvento]").show();
+
+                    }
+
+                }
+
+            };
+
+            $.ajax(options);
+        }
+
+        function ButtonProcessoEventoSalvar_Click(index) {
+
+            var validate = true;
+
+            if ($('#ProcessoEvento' + index + 'NumeroProcesso').val() == null || !$.isNumeric($('#ProcessoEvento' + index + 'NumeroProcesso').val())) {
+                $('#ProcessoEvento' + index + 'NumeroProcessoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ProcessoEvento' + index + 'NumeroProcessoValidate').addClass('hidden');
+            }
+
+            if ($('#ProcessoEvento' + index + 'Evento').val() == null || !$.isNumeric($('#ProcessoEvento' + index + 'Evento').val())) {
+                $('#ProcessoEvento' + index + 'EventoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ProcessoEvento' + index + 'EventoValidate').addClass('hidden');
+            }
+
+            if ($('#ProcessoEvento' + index + 'PrazoEvento1').val() != "" || $('#ProcessoEvento' + index + 'PrazoEvento2').val() != "") {
+
+                var date1 = toDate($('#ProcessoEvento' + index + 'PrazoEvento1').val());
+                var date2 = toDate($('#ProcessoEvento' + index + 'PrazoEvento2').val());
+                var days = (date2 - date1) / (1000 * 60 * 60 * 24);
+
+                if (days < 0) {
+
+                    $('#ProcessoEvento' + index + 'PrazoEvento2Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+
+                }
+
+            } else {
+                $('#ProcessoEvento' + index + 'PrazoEvento2Validate').addClass('hidden');
+            }
+
+            if (typeof document.getElementById("ProcessoEvento" + index + "FileUpload1").files[0] !== "undefined") {
+                if (document.getElementById("ProcessoEvento" + index + "FileUpload1").files[0].size > 10485760) {
+                    $("#ProcessoEvento" + index + "FileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ProcessoEvento" + index + "FileUpload1").files[0].size, 1) + ".");
+                    $("#ProcessoEvento" + index + "FileUpload1Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $("#ProcessoEvento" + index + "FileUpload1Validate").addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ProcessoEvento" + index + "FileUpload2").files[0] !== "undefined") {
+                if (document.getElementById("ProcessoEvento" + index + "FileUpload2").files[0].size > 10485760) {
+                    $("#ProcessoEvento" + index + "FileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ProcessoEvento" + index + "FileUpload2").files[0].size, 1) + ".");
+                    $("#ProcessoEvento" + index + "FileUpload2Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $("#ProcessoEvento" + index + "FileUpload2Validate").addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ProcessoEvento" + index + "FileUpload3").files[0] !== "undefined") {
+                if (document.getElementById("ProcessoEvento" + index + "FileUpload3").files[0].size > 10485760) {
+                    $("#ProcessoEvento" + index + "FileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ProcessoEvento" + index + "FileUpload3").files[0].size, 1) + ".");
+                    $("#ProcessoEvento" + index + "FileUpload3Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $("#ProcessoEvento" + index + "FileUpload3Validate").addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ProcessoEvento" + index + "FileUpload4").files[0] !== "undefined") {
+                if (document.getElementById("ProcessoEvento" + index + "FileUpload4").files[0].size > 10485760) {
+                    $("#ProcessoEvento" + index + "FileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ProcessoEvento" + index + "FileUpload4").files[0].size, 1) + ".");
+                    $("#ProcessoEvento" + index + "FileUpload4Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $("#ProcessoEvento" + index + "FileUpload4Validate").addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ProcessoEvento" + index + "FileUpload5").files[0] !== "undefined") {
+                if (document.getElementById("ProcessoEvento" + index + "FileUpload5").files[0].size > 10485760) {
+                    $("#ProcessoEvento" + index + "FileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ProcessoEvento" + index + "FileUpload5").files[0].size, 1) + ".");
+                    $("#ProcessoEvento" + index + "FileUpload5Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $("#ProcessoEvento" + index + "FileUpload5Validate").addClass('hidden');
+                }
+            }
+
+
+            //TextEncoder
+            if (escape(CKEDITOR.instances['ProcessoEvento' + index + 'Descricao'].getData()).length > 0) {
+
+                var size = new TextEncoder().encode(escape(CKEDITOR.instances['ProcessoEvento' + index + 'Descricao'].getData())).length;
+
+                if (size > 1048576) {
+                    $("#ProcessoEvento" + index + "DescricaoValidate").text("Por favor, informar uma descrição com até 1MB, pois esse possuí " + formatBytes(size, 1) + ".");
+                    $("#ProcessoEvento" + index + "DescricaoValidate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $("#ProcessoEvento" + index + "DescricaoValidate").addClass('hidden');
+                }
+
+            }
+
+            if (validate) {
+                $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', true);
+                $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonProcessoEvento" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var descricao = escape(CKEDITOR.instances['ProcessoEvento' + index + 'Descricao'].getData());
+                var profissional = ($("#ProcessoEvento" + index + "Profissional").val() != null && $("#ProcessoEvento" + index + "Profissional").val() > 0 ? $("#ProcessoEvento" + index + "Profissional").val() : 0);
+
+                var dados = new window.FormData();
+                dados.append("Id", index);
+                dados.append("Origem", "");
+                //aqui
+                dados.append("IdProcessosAcao", $("#ProcessoEvento" + index + "NumeroProcesso").val());
+                dados.append("IdProcessosEvento", $("#ProcessoEvento" + index + "Evento").val());
+                dados.append("IdProfissional", profissional);
+                dados.append("Prazo1", $("#ProcessoEvento" + index + "PrazoEvento1").val());
+                dados.append("Prazo2", $("#ProcessoEvento" + index + "PrazoEvento2").val());
+                dados.append("Descricao", descricao);
+
+                var arquivo1 = document.getElementById("ProcessoEvento" + index + "FileUpload1").files[0];
+                dados.append("Arquivo1", arquivo1);
+
+                var arquivo2 = document.getElementById("ProcessoEvento" + index + "FileUpload2").files[0];
+                dados.append("Arquivo2", arquivo2);
+
+                var arquivo3 = document.getElementById("ProcessoEvento" + index + "FileUpload3").files[0];
+                dados.append("Arquivo3", arquivo3);
+
+                var arquivo4 = document.getElementById("ProcessoEvento" + index + "FileUpload4").files[0];
+                dados.append("Arquivo4", arquivo4);
+
+                var arquivo5 = document.getElementById("ProcessoEvento" + index + "FileUpload5").files[0];
+                dados.append("Arquivo5", arquivo5);
+
+                var agendap = $("#HiddenIdAgenda" + index).val()
+                if (agendap > 0) {
+                    dados.append("IdAgendaProfissional", $("#HiddenIdAgenda" + index).val());
+                } else {
+                    dados.append("IdAgendaProfissional", 0);
+                }
+                dados.append("Excluido", false);
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosEventos"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#processo-evento-alert-success-" + index).removeClass("hidden");
+                        $("#processo-evento-alert-error-" + index).addClass("hidden");
+                        $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                        $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                        $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+
+                        setTimeout(function () {
+                            $("#processo-evento-alert-success-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error-" + index).addClass("hidden");
+                            $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                            $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+                            ShowProcessosEventos();
+                        }, 3000);
+                    }
+                    else {
+                        $("#processo-evento-alert-success-" + index).addClass("hidden");
+                        $("#processo-evento-alert-error-" + index).removeClass("hidden");
+                        $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                        $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                        $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+
+                        $("#ButtonProcessoEvento" + index + "Incluir").text("Salvar");
+                        $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', false);
+                    }
+
+                        $("#processo-evento-alert-success-" + index).addClass("hidden");
+                        $("#processo-evento-alert-error-" + index).addClass("hidden");
+                        $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                        $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                        $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+
+                };
+
+                $.ajax(options);
+
+            }
+            else {
+                return false;
+            }
+        }
+
+        function ButtonProcessoEventoExcluir_Click(index) {
+
+            $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', true);
+            $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonProcessoEvento" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonProcessoEvento" + index + "ExcluirConfirmacao").show();
+            $("#ButtonProcessoEvento" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonProcessoEvento" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", index);
+
+                    var options = {};
+                    options.url = "/Processos/ExcluirProcessosEventos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#processo-evento-alert-success-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error-" + index).addClass("hidden");
+                            $("#processo-evento-alert-removed-" + index).removeClass("hidden");
+                            $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                            $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+
+                            setTimeout(function () {
+                                $("#processo-evento-alert-success-" + index).addClass("hidden");
+                                $("#processo-evento-alert-error-" + index).addClass("hidden");
+                                $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                                $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                                $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+                                ShowProcessosEventos();
+                            }, 3000);
+                        }
+                        else if (json.response == "error2") {
+                            $("#processo-evento-alert-success-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error-" + index).addClass("hidden");
+                            $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error2-" + index).removeClass("hidden");
+                            $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+
+                            $("#ButtonProcessoEvento" + index + "Excluir").text("Apagar");
+                            $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', false);
+                        }
+                        else if (json.response == "errorx") {
+                            $("#processo-evento-alert-success-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error-" + index).addClass("hidden");
+                            $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                            $("#processo-evento-alert-errorx-" + index).removeClass("hidden");
+
+                            $("#ButtonProcessoEvento" + index + "Excluir").text("Apagar");
+                            $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', false);
+                        }
+                        else {
+                            $("#processo-evento-alert-success-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error-" + index).addClass("hidden");
+                            $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error2-" + index).removeClass("hidden");
+                            $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+
+                            $("#ButtonProcessoEvento" + index + "Excluir").text("Apagar");
+                            $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#processo-evento-alert-success-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error-" + index).addClass("hidden");
+                            $("#processo-evento-alert-removed-" + index).addClass("hidden");
+                            $("#processo-evento-alert-error2-" + index).addClass("hidden");
+                            $("#processo-evento-alert-errorx-" + index).addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonProcessoEvento" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonProcessoEvento" + index + "Excluir").text("Apagar");
+                    $("#ButtonProcessoEvento" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonProcessoEvento" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        function BuscarDadosAdvogado(index, value) {
+
+            if (value.length > 0) {
+
+                var dados = new window.FormData();
+                dados.append("IdProcesso", $("#id").val());
+                dados.append("NomeAdvogado", value);
+
+                var options = {};
+                options.url = "/Processos/CarregarProcessosAdvogados";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = false;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+
+                        $("#ProcessoParteAdvogado" + index + "OAB").val(json.advogado[0].NumeroOab);
+                        $("#ProcessoParteAdvogado" + index + "TelefoneComercial").val(json.advogado[0].TelefoneComercial.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3"));
+                        $("#ProcessoParteAdvogado" + index + "Celular").val(json.advogado[0].Celular.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3"));
+                        $("#ProcessoParteAdvogado" + index + "Email").val(json.advogado[0].Email);
+
+                    }
+                };
+                $.ajax(options);
+
+            }
+            else {
+
+                $("#ProcessoParteAdvogado" + index + "OAB").val("");
+                $("#ProcessoParteAdvogado" + index + "TelefoneComercial").val("");
+                $("#ProcessoParteAdvogado" + index + "Celular").val("");
+                $("#ProcessoParteAdvogado" + index + "Email").val("");
+
+            }
+        }
+
+        function Atualizar() {
+            var path = '../Processos' + unescape('@Uranus.Suite.Sessao.URLParameters.Replace("&amp;", "&").Replace("&amp%3b", "&").Replace("%2c3", string.Empty)');
+            $(location).attr('href', path);
+        }
+
+        function LimparFiltro() {
+
+            var options = {};
+            options.url = "/Processos/LimparFiltroSessao ";
+            options.type = "POST";
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+
+                    $('#FiltrarProcesso').val("");
+                    $('#FiltrarProcesso').trigger('change');
+
+                    $('#FiltrarCliente').val("");
+                    $('#FiltrarCliente').trigger('change');
+
+                    $('#FiltrarArea').val("");
+                    $('#FiltrarArea').trigger('change');
+
+                    $('#FiltrarVara').val("");
+                    $('#FiltrarVara').trigger('change');
+
+                    $('#FiltrarStatus').val("");
+                    $('#FiltrarStatus').trigger('change');
+
+                    $("#processo-filtro-form").submit();
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function LimparCadastro() {
+
+            $('#Sede').val("");
+            $('#Profissional').val("");
+            $('#Status').val("");
+            CKEDITOR.instances["Objeto"].setData("");
+            CKEDITOR.instances["Observacao"].setData("");
+
+            $('#VisualizarProcesso').html("<p>Nenhum processo foi selecionado para visualização.</p>");
+
+        }
+
+        function VisualizarPDF(url) {
+
+            window.open(url, '_blank');
+
+        }
+
+        function ExcluirPDF(arquivo, index) {
+
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).attr('disabled', true);
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).html("Apagando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelProcessoEventoFile" + index + "ExcluirConfirmacao" + arquivo).show();
+            $("#accept" + arquivo + "File" + index).show();
+            $("#go_back" + arquivo + "File" + index).show();
+
+        }
+
+        function ExcluirPDFSim(arquivo, index, nome) {
+
+            $("#LabelProcessoEventoFile" + index + "ExcluirConfirmacao" + arquivo).hide();
+            $("#accept" + arquivo + "File" + index).hide();
+            $("#go_back" + arquivo + "File" + index).hide();
+
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).text("Apagar");
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).attr('disabled', false);
+
+            var dados = new window.FormData();
+            dados.append("Arquivo", nome);
+
+            var options = {};
+            options.url = "/Processos/ExcluirPDF";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == "success") {
+
+                    if ($('#modalNovoEvento').length) {
+
+                        $("#ViewFileName" + arquivo).html("Nenhum arquivo encontrado");
+
+                    }
+                    else {
+
+                        $("#ProcessoEvento" + index + "File" + arquivo + "Name").html("Nenhum arquivo encontrado");
+
+                    }
+
+                }
+                else {
+
+                    if ($('#modalNovoEvento').length) {
+
+                        $("#ViewFileName" + arquivo).html("Falha ao tentar apagar o arquivo PDF");
+
+                    }
+                    else {
+
+                        $("#ProcessoEvento" + index + "File" + arquivo + "Name").html("Falha ao tentar apagar o arquivo PDF");
+
+                    }
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ExcluirPDFNao(arquivo, index) {
+
+            $("#LabelProcessoEventoFile" + index + "ExcluirConfirmacao" + arquivo).hide();
+            $("#accept" + arquivo + "File" + index).hide();
+            $("#go_back" + arquivo + "File" + index).hide();
+
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).text("Apagar");
+            $("#ButtonProcessoEventoPDF" + index + "Excluir" + arquivo).attr('disabled', false);
+
+        }
+
+        function NovoAlerta(Id, NumeroProcesso) {
+            $("#alerta-form").validate().resetForm();
+            $('#numeroProcesso').val(NumeroProcesso);
+            $('#idAcao').val(Id);
+            $("#Mensaqgem").val("");
+        }
+
+        function VisualizarAlerta(NumeroProcesso, IdAcao) {
+
+            var dados = new window.FormData();
+            dados.append("IdAcao", IdAcao);
+            dados.append("NumeroProcesso", NumeroProcesso);
+            dados.append("Tipo", "P");
+
+            var options = {};
+            options.url = "/Alertas/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00' && json.alertas.length > 0) {
+
+                    $('#alertas').html(json.alertas);
+
+                    $('#modalVisualizarAlerta').attr('data-backdrop', 'static');
+                    $('#modalVisualizarAlerta').attr('data-keyboard', 'false');
+                    $('#modalVisualizarAlerta').modal('show');
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#buttonInserirAlerta').click(function (evt) {
+
+            $("#alerta-form").validate();
+
+            if ($('#alerta-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("IdAcao", $("#idAcao").val());
+                dados.append("NumeroProcesso", $("#numeroProcesso").val());
+                dados.append("Mensagem", $("#Mensagem").val());
+
+                var options = {};
+                options.url = "/Alertas/Inserir"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $("#alerta-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function CarregarEvento(Id, IdAction, IdEvent) {
+
+            $("#CarregarEventoDetalhe_" + Id).html("Carregando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            var dados = new window.FormData();
+            dados.append("IdEvento", Id);
+
+            var options = {};
+            options.url = "/Processos/CarregarProcessosEvento"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.response == 'success') {
+
+                    $('#CarregarEventoDetalhe_' + Id).html(json.eventos);
+
+                    ShowProcessosEventos2(Id, IdAction, IdEvent);
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function ShowProcessosEventos2(Id, IdAction, IdEvent) {
+            if (typeof Id === "undefined") {
+
+            }
+            else {
+                $("#ProcessoEvento" + Id + "NumeroProcesso").select2({
+                    placeholder: "Selecione",
+                    allowClear: true,
+                    tags: true
+                });
+
+                $("#ProcessoEvento" + Id + "Evento").select2({
+                    placeholder: "Selecione",
+                    allowClear: true,
+                    tags: true
+                });
+
+                $("#ProcessoEvento" + Id + "Profissional").select2({
+                    placeholder: "Selecione",
+                    allowClear: true,
+                    tags: true
+                });
+
+                $("#ProcessoEvento" + Id + "DataPrazoEvento1").datepicker({
+                    language: 'pt-BR',
+                    autoclose: true,
+                    todayHighlight: true,
+                    orientation: "bottom",
+                    daysOfWeekDisabled: [0, 6],
+                    clearBtn: true,
+                    datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+                });
+
+                $("#ProcessoEvento" + Id + "DataPrazoEvento2").datepicker({
+                    language: 'pt-BR',
+                    autoclose: true,
+                    todayHighlight: true,
+                    orientation: "bottom",
+                    daysOfWeekDisabled: [0, 6],
+                    clearBtn: true,
+                    datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+                });
+
+                CKEDITOR.replace('ProcessoEvento' + Id + 'Descricao', {
+                    language: 'pt',
+                    height: 100
+                });
+
+                CarregarProcessos(Id, IdAction, "ProcessosEventosAccordion");
+                CarregarEventos(Id, IdEvent);
+                CarregarProfissionais(Id, "");
+
+                var idProf = $('#ProcessoEvento' + index + 'IdProfissional').val();
+                if (idProf && idProf > 0) {
+                    $('#ProcessoEvento' + index + 'Profissional').val(idProf).trigger('change');
+                }
+
+            }
+
+        }
+
+            function NovoEvento() {
+                $('#modalLabelTitle').text('Criar Evento');
+                LimparEventoView();
+                CarregarProcessosAux(function () {
+                    var idProcesso = $('#IdProcessAction').text().trim();
+                });
+            }
+
+        //function NovoEvento() {
+        //    $('#modalLabelTitle').text('Criar Evento');
+
+        //    LimparEventoView();
+
+        //    $('#ViewNumeroProcesso').val($('#IdProcessAction').text());
+        //    //$('#ViewNumeroProcesso').trigger('change');
+        //}
+
+        $("#ViewEvento").change(function () {
+
+            var value = $("#ViewEvento option:selected").val();
+
+            if ((value != 0 || typeof value === "undefined") && value != $("#idAcaoEventoView").val()) {
+
+                $("#idAcaoEventoView").val("0");
+
+                var dados = new window.FormData();
+
+                dados.append("Id", value);
+
+                var options = {};
+                options.url = "/Eventos/Consultar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        if (json.evento[0] != null && json.evento[0].Texto != null) {
+
+                            var texto = json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                            CKEDITOR.instances["ViewDescricao"].setData(unescape(texto));
+
+                        }
+                        else {
+
+                            CKEDITOR.instances["ViewDescricao"].setData("");
+
+                        }
+
+                    }
+                };
+                $.ajax(options);
+
+            }
+
+        })
+
+        function LimparEventoView() {
+            $("#idAcaoEventoView").val("0");
+
+            $("#ViewNumeroProcesso").val("");
+            $('#evento-form')[0].reset();
+            $("#ViewEvento").val("");
+            $("#ViewProfissional").val("");
+            $("#ViewPrazoEvento1").val("");
+            $("#ViewPrazoEvento2").val("");
+            $("#ViewFileUpload1").val("");
+            $("#ViewFileName1").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload2").val("");
+            $("#ViewFileName2").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload3").val("");
+            $("#ViewFileName3").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload4").val("");
+            $("#ViewFileName4").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload5").val("");
+            $("#ViewFileName5").text("Nenhum arquivo selecionado");
+            CKEDITOR.instances["ViewDescricao"].setData("");
+        }
+
+        function FecharEvento() {
+
+            $("#buttonFecharEventos").attr('disabled', true);
+            $("#buttonFecharEventos").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#LabelEventoFecharConfirmacao").show();
+            $("#acceptEvento").show();
+            $("#go_backEvento").show();
+
+        }
+
+        function FecharEventoSim() {
+
+            $("#LabelEventoFecharConfirmacao").hide();
+            $("#acceptEvento").hide();
+            $("#go_backEvento").hide();
+
+            $("#buttonFecharEventos").text("Fechar");
+            $("#buttonFecharEventos").attr('disabled', false);
+
+            $("#modalNovoEvento").modal("hide");
+
+        }
+
+        function FecharEventoNao() {
+
+            $("#LabelEventoFecharConfirmacao").hide();
+            $("#acceptEvento").hide();
+            $("#go_backEvento").hide();
+
+            $("#buttonFecharEventos").text("Fechar");
+            $("#buttonFecharEventos").attr('disabled', false);
+
+        }
+
+        function FecharAlerta() {
+
+            var searchIDs = $("input:checked[name='alertas[]']").map(function () {
+                return $(this).val();
+            });
+
+            var total = searchIDs.get().length;
+
+            if (total > 0) {
+
+                $("#buttonSalvarAlerta").attr('disabled', true);
+                $("#buttonSalvarAlerta").html("Ok <i class='fa fa-spinner fa-spin'></i>");
+
+                $("#LabelAlertaFecharConfirmacao").show();
+                $("#acceptAlerta").show();
+                $("#go_backAlerta").show();
+
+            }
+            else {
+
+                $("#modalVisualizarAlerta").modal("hide");
+
+            }
+
+        }
+
+        function FecharAlertaSim() {
+
+            var searchIDs = $("input:checked[name='alertas[]']").map(function () {
+                return $(this).val();
+            });
+
+            var dados = new window.FormData();
+            dados.append("IdAlertas", searchIDs.get());
+
+            var options = {};
+            options.url = "/Alertas/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#LabelAlertaFecharConfirmacao").hide();
+                    $("#acceptAlerta").hide();
+                    $("#go_backAlerta").hide();
+
+                    $("#buttonSalvarAlerta").text("Ok");
+                    $("#buttonSalvarAlerta").attr('disabled', false);
+
+                    $("#modalVisualizarAlerta").modal("hide");
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function FecharAlertaNao() {
+
+            $("#LabelAlertaFecharConfirmacao").hide();
+            $("#acceptAlerta").hide();
+            $("#go_backAlerta").hide();
+
+            $("#buttonSalvarAlerta").text("Ok");
+            $("#buttonSalvarAlerta").attr('disabled', false);
+
+        }
+
+        function CarregarProcessosAux(callback) {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", $('#id').val());
+
+
+
+            var options = {};
+            options.url = "/Processos/Listar";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.processos.Data;
+                    $('#ViewNumeroProcesso').val(rows[0].Nome);
+                    $("#HiddenProcessoAcaoId").val(rows[0].Id);
+
+                    // Se houver um callback, executa
+                    if (typeof callback === "function") {
+                        callback();
+                    }
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarEventosAux() {
+
+
+            var options = {};
+            options.url = "/Eventos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.eventos;
+
+                    $('#ViewEvento').html("");
+                    var select = $('#ViewEvento');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                    var singleXhrRemove = new Choices('#ViewEvento', {
+                        allowHTML: true,
+                        removeItemButton: true,
+                        searchPlaceholderValue: "Selecione um Evento",
+                    });
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarProfissionaisAux(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#ViewProfissional').html("");
+                    var select = $('#ViewProfissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html(" ")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    var singleXhrRemove = new Choices('#ViewProfissional', {
+                        allowHTML: true,
+                        removeItemButton: true,
+                        searchPlaceholderValue: "Selecione um Profissional",
+                    });
+                }
+            };
+            $.ajax(options);
+        }
+
+            $('#buttonSalvarEventos').click(function (evt) {
+
+            $("#evento-form").validate();
+
+            if ($('#evento-form').valid()) {
+
+                var validate = true;
+
+                //if ($('#ViewNumeroProcesso').val() == null || !$.isNumeric($('#ViewNumeroProcesso').val())) {
+                if ($('#ViewNumeroProcesso').val() == null) {
+                    $('#ViewNumeroProcessoValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#ViewNumeroProcessoValidate').addClass('hidden');
+                }
+
+                if ($('#ViewEvento').val() == null || !$.isNumeric($('#ViewEvento').val())) {
+                    $('#ViewEventoValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#ViewEventoValidate').addClass('hidden');
+                }
+
+                if ($('#ViewPrazoEvento1').val() != "" || $('#ViewPrazoEvento2').val() != "") {
+
+                    var date1 = toDate($('#ViewPrazoEvento1').val());
+                    var date2 = toDate($('#ViewPrazoEvento2').val());
+                    var days = (date2 - date1) / (1000 * 60 * 60 * 24);
+
+                    if (days < 0) {
+
+                        $('#ViewDataPrazoEvento2Validate').removeClass('hidden').css("display", "");
+                        validate = false;
+
+                    }
+
+                } else {
+                    $('#ViewDataPrazoEvento2Validate').addClass('hidden');
+                }
+
+                if (typeof document.getElementById("ViewFileUpload1").files[0] !== "undefined") {
+                    if (document.getElementById("ViewFileUpload1").files[0].size > 10485760) {
+                        $("#ViewFileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload1").files[0].size, 1) + ".");
+                        $("#ViewFileUpload1Validate").removeClass("hidden").css("display", "");
+                        validate = false;
+                    }
+                    else {
+                        $('#ViewFileUpload1Validate').addClass('hidden');
+                    }
+                }
+
+                if (typeof document.getElementById("ViewFileUpload2").files[0] !== "undefined") {
+                    if (document.getElementById("ViewFileUpload2").files[0].size > 10485760) {
+                        $("#ViewFileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload2").files[0].size, 1) + ".");
+                        $("#ViewFileUpload2Validate").removeClass("hidden").css("display", "");
+                        validate = false;
+                    }
+                    else {
+                        $('#ViewFileUpload2Validate').addClass('hidden');
+                    }
+                }
+
+                if (typeof document.getElementById("ViewFileUpload3").files[0] !== "undefined") {
+                    if (document.getElementById("ViewFileUpload3").files[0].size > 10485760) {
+                        $("#ViewFileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload3").files[0].size, 1) + ".");
+                        $("#ViewFileUpload3Validate").removeClass("hidden").css("display", "");
+                        validate = false;
+                    }
+                    else {
+                        $('#ViewFileUpload3Validate').addClass('hidden');
+                    }
+                }
+
+                if (typeof document.getElementById("ViewFileUpload4").files[0] !== "undefined") {
+                    if (document.getElementById("ViewFileUpload4").files[0].size > 10485760) {
+                        $("#ViewFileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload4").files[0].size, 1) + ".");
+                        $("#ViewFileUpload4Validate").removeClass("hidden").css("display", "");
+                        validate = false;
+                    }
+                    else {
+                        $('#ViewFileUpload4Validate').addClass('hidden');
+                    }
+                }
+
+                if (typeof document.getElementById("ViewFileUpload5").files[0] !== "undefined") {
+                    if (document.getElementById("ViewFileUpload5").files[0].size > 10485760) {
+                        $("#ViewFileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload5").files[0].size, 1) + ".");
+                        $("#ViewFileUpload5Validate").removeClass("hidden").css("display", "");
+                        validate = false;
+                    }
+                    else {
+                        $('#ViewFileUpload5Validate').addClass('hidden');
+                    }
+                }
+
+                //TextEncoder
+                if (escape(CKEDITOR.instances.ViewDescricao.getData()).length > 0) {
+
+                    var size = new TextEncoder().encode(escape(CKEDITOR.instances.ViewDescricao.getData())).length;
+
+                    if (size > 1048576) {
+                        $("#ViewDescricaoValidate").text("Por favor, informar uma descrição com até 1MB, pois esse possuí " + formatBytes(size, 1) + ".");
+                        $("#ViewDescricaoValidate").removeClass("hidden").css("display", "");
+                        validate = false;
+                    }
+                    else {
+                        $('#ViewDescricaoValidate').addClass('hidden');
+                    }
+
+                }
+                if (validate) {
+                    var descricao = escape(CKEDITOR.instances.ViewDescricao.getData());
+                    var profissional = ($("#ViewProfissional").val() != null && $("#ViewProfissional").val() > 0 ? $("#ViewProfissional").val() : 0);
+                    var dados = new window.FormData();
+
+                    dados.append("Id", 0);
+                    dados.append("Origem", "");
+                    dados.append("Data", "");
+                    dados.append("IdProcessosAcao", $("#HiddenProcessoAcaoId").val());
+                    dados.append("IdProcessosEvento", $("#ViewEvento").val());
+                    dados.append("IdProfissional", profissional);
+                    dados.append("Prazo1", $("#ViewPrazoEvento1").val());
+                    dados.append("Prazo2", $("#ViewPrazoEvento2").val());
+                    dados.append("Descricao", descricao);
+
+                    var arquivo1 = document.getElementById("ViewFileUpload1").files[0];
+                    dados.append("Arquivo1", arquivo1);
+
+                    var arquivo2 = document.getElementById("ViewFileUpload2").files[0];
+                    dados.append("Arquivo2", arquivo2);
+
+                    var arquivo3 = document.getElementById("ViewFileUpload3").files[0];
+                    dados.append("Arquivo3", arquivo3);
+
+                    var arquivo4 = document.getElementById("ViewFileUpload4").files[0];
+                    dados.append("Arquivo4", arquivo4);
+
+                    var arquivo5 = document.getElementById("ViewFileUpload5").files[0];
+                    dados.append("Arquivo5", arquivo5);
+
+                    var idagenda = 0;
+                    dados.append("IdAgendaProfissional", idagenda);
+                    dados.append("Excluido", false);
+                    dados.append("IdProcessosEventoPendente", 0);
+
+
+                    var options = {};
+                    options.url = "/Processos/SalvarProcessosEventos"
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+                        var json = $.parseJSON(data.responseText);
+                        if (json.response == "success") {
+                            $('#processo-evento-alert-success').removeClass('hidden').css("display", "");;
+                            $('#processo-evento-alert-warning').addClass('hidden');
+                            $('#processo-evento-alert-error').addClass('hidden');
+                            $('#modalEventosFooter').hide();
+
+                            setTimeout(function () {
+                                $("#modalNovoEvento").modal('hide');
+                                ShowProcessosEventos();
+                                $('#modalEventosFooter').removeClass('hidden').css("display", "");
+                                $('#processo-evento-alert-success').addClass('hidden');
+                            }, 1500);
+
+
+                        }
+                        else if (json.response == "warning") {
+
+                            $('#processo-evento-alert-warning').removeClass('hidden').css("display", "");
+                            $('#processo-evento-alert-error').addClass('hidden');
+                            $('#processo-evento-alert-success').addClass('hidden');
+
+                        }
+                        else {
+                            $('#processo-evento-alert-error').removeClass('hidden').css("display", "");
+                            $('#processo-evento-alert-success').addClass('hidden');
+                            $('#processo-evento-alert-warning').addClass('hidden');
+                        }
+
+                    };
+                    $.ajax(options);
+
+                    evt.preventDefault();
+
+                    id = 0;
+
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function VisualizarFinanceiro(IdProcesso) {
+
+            var dados = new window.FormData();
+            dados.append("IdProcesso", IdProcesso);
+
+            var options = {};
+            options.url = "/Processos/ConsultarFinanceiro"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00' && json.financeiros.length > 0) {
+
+                    $('#financeiros').html(json.financeiros);
+
+                    $('#modalVisualizarFinanceiro').attr('data-backdrop', 'static');
+                    $('#modalVisualizarFinanceiro').attr('data-keyboard', 'false');
+                    $('#modalVisualizarFinanceiro').modal('show');
+                }
+            };
+            $.ajax(options);
+        }
+        function FecharFinanceiro() {
+
+            $("#modalVisualizarFinanceiro").modal("hide");
+
+        }
+        </script>
+    </div>
+</div>

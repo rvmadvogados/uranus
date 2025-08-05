@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9f29be038d75479a829bcca6f03e2fb6" Name="Diagram1" ZoomLevel="71">
+        <EntityTypeShape EntityType="UranusModel.Agendas" Width="1.5" PointX="8.25" PointY="32.625" />
+        <EntityTypeShape EntityType="UranusModel.AgendasMassaHistorico" Width="1.5" PointX="10.5" PointY="22" />
+        <EntityTypeShape EntityType="UranusModel.AgendasTipos" Width="1.5" PointX="6" PointY="20" />
+        <EntityTypeShape EntityType="UranusModel.Alertas" Width="1.5" PointX="3" PointY="58.75" />
+        <EntityTypeShape EntityType="UranusModel.Auditoria" Width="1.5" PointX="5.75" PointY="1.5" />
+        <EntityTypeShape EntityType="UranusModel.Bancos" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="UranusModel.BancosLancamentos" Width="1.5" PointX="3" PointY="3.625" />
+        <EntityTypeShape EntityType="UranusModel.Caixas" Width="1.5" PointX="15.25" PointY="16.25" />
+        <EntityTypeShape EntityType="UranusModel.Clientes" Width="1.5" PointX="6" PointY="31.375" />
+        <EntityTypeShape EntityType="UranusModel.ClientesContratos" Width="1.5" PointX="8.25" PointY="39.75" />
+        <EntityTypeShape EntityType="UranusModel.Cumpridos" Width="1.5" PointX="5.75" PointY="5.5" />
+        <EntityTypeShape EntityType="UranusModel.Documentos" Width="1.5" PointX="11.25" PointY="31.875" />
+        <EntityTypeShape EntityType="UranusModel.Email" Width="1.5" PointX="3" PointY="23.625" />
+        <EntityTypeShape EntityType="UranusModel.Feriados" Width="1.5" PointX="0.75" PointY="7.5" />
+        <EntityTypeShape EntityType="UranusModel.Fones" Width="1.5" PointX="3" PointY="17.875" />
+        <EntityTypeShape EntityType="UranusModel.Fornecedores" Width="1.5" PointX="10.75" PointY="6.625" />
+        <EntityTypeShape EntityType="UranusModel.FornecedoresContratos" Width="1.5" PointX="16" PointY="25.5" />
+        <EntityTypeShape EntityType="UranusModel.FornecedoresEmail" Width="1.5" PointX="13" PointY="19.625" />
+        <EntityTypeShape EntityType="UranusModel.FornecedoresFones" Width="1.5" PointX="13" PointY="14.625" />
+        <EntityTypeShape EntityType="UranusModel.FornecedoresNotas" Width="1.5" PointX="16" PointY="20.125" />
+        <EntityTypeShape EntityType="UranusModel.FornecedoresNotasParcelas" Width="1.5" PointX="18.25" PointY="20.25" />
+        <EntityTypeShape EntityType="UranusModel.Historicos" Width="1.5" PointX="0.75" PointY="4.125" />
+        <EntityTypeShape EntityType="UranusModel.Modelos" Width="1.5" PointX="9" PointY="44.625" />
+        <EntityTypeShape EntityType="UranusModel.NotasServicos" Width="1.5" PointX="14.25" PointY="38.875" />
+        <EntityTypeShape EntityType="UranusModel.NotasServicosParcelas" Width="1.5" PointX="16.5" PointY="40.25" />
+        <EntityTypeShape EntityType="UranusModel.Parceiros" Width="1.5" PointX="3.75" PointY="47" />
+        <EntityTypeShape EntityType="UranusModel.Pessoas" Width="1.5" PointX="0.75" PointY="25.25" />
+        <EntityTypeShape EntityType="UranusModel.Processos" Width="1.5" PointX="5.25" PointY="27.375" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosAcoes" Width="1.5" PointX="10.5" PointY="26.625" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosAcoesEventos" Width="1.5" PointX="3" PointY="33" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosAgendaProfissional" Width="1.5" PointX="5.25" PointY="23.125" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosAreas" Width="1.5" PointX="8.25" PointY="17.75" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosAutores" Width="1.5" PointX="13.25" PointY="26.5" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosCadastroAcao" Width="1.5" PointX="8.25" PointY="24.25" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosEventos" Width="1.5" PointX="0.75" PointY="41.25" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosEventosPendentes" Width="1.5" PointX="7.75" PointY="1.5" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosIndicacoesTipos" Width="1.5" PointX="3.75" PointY="44.375" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosPartes" Width="1.5" PointX="11.25" PointY="40.375" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosPartesAdvogados" Width="1.5" PointX="13.5" PointY="45.25" />
+        <EntityTypeShape EntityType="UranusModel.ProcessosVara" Width="1.5" PointX="8.25" PointY="21" />
+        <EntityTypeShape EntityType="UranusModel.Profissionais" Width="1.5" PointX="3" PointY="27.5" />
+        <EntityTypeShape EntityType="UranusModel.ProfissionaisTipos" Width="1.5" PointX="0.75" PointY="38.125" />
+        <EntityTypeShape EntityType="UranusModel.Salas" Width="1.5" PointX="6" PointY="40.625" />
+        <EntityTypeShape EntityType="UranusModel.Sedes" Width="1.5" PointX="3.75" PointY="40.625" />
+        <EntityTypeShape EntityType="UranusModel.Settings" Width="1.5" PointX="2.75" PointY="7.5" />
+        <EntityTypeShape EntityType="UranusModel.TemplatesIniciaisAposentadoria" Width="1.5" PointX="14.25" PointY="29.625" />
+        <EntityTypeShape EntityType="UranusModel.TemplatesIniciaisAposentadoriaPeriodos" Width="1.5" PointX="16.5" PointY="32.125" />
+        <EntityTypeShape EntityType="UranusModel.Usuarios" Width="1.5" PointX="0.75" PointY="33.75" />
+        <EntityTypeShape EntityType="UranusModel.UsuariosConectados" Width="1.5" PointX="3" PointY="62.25" />
+        <EntityTypeShape EntityType="UranusModel.Eventos" Width="1.5" PointX="4.75" PointY="8.5" />
+        <AssociationConnector Association="UranusModel.FK_Agendas_AgendasTipos" />
+        <AssociationConnector Association="UranusModel.FK_Agendas_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_Agendas_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_Agendas_Salas" />
+        <AssociationConnector Association="UranusModel.FK_Agendas_Sedes" />
+        <AssociationConnector Association="UranusModel.FK_Agendas_Usuarios" />
+        <AssociationConnector Association="UranusModel.FK_Alertas_Usuarios" />
+        <AssociationConnector Association="UranusModel.IdBanco_BancosLancamentos_Bancos" />
+        <AssociationConnector Association="UranusModel.IdHistorico_BancosLancamentos_Historicos" />
+        <AssociationConnector Association="UranusModel.IdHistorico_Caixa_CaixaHistoricos" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_Parceiros" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_Pessoas" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_ProcessosIndicacoesTipos" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_Sedes" />
+        <AssociationConnector Association="UranusModel.FK_Clientes_Usuarios" />
+        <AssociationConnector Association="UranusModel.FK_ClientesContratos_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_Documentos_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_NotasServicos_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_ProcessosPartes_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_TemplatesIniciaisAposentadoria_Clientes" />
+        <AssociationConnector Association="UranusModel.IdCliente_ProcessosAutores_Clientes" />
+        <AssociationConnector Association="UranusModel.IdClientes_Contratos_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_Documentos_Modelos" />
+        <AssociationConnector Association="UranusModel.FK_Documentos_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_Email_Pessoas" />
+        <AssociationConnector Association="UranusModel.FK_Fones_Pessoas" />
+        <AssociationConnector Association="UranusModel.IdFornecedor_FornecedoresContratos_Fornecedores" />
+        <AssociationConnector Association="UranusModel.IdFornecedor_FornecedoresEmail_Fornecedores" />
+        <AssociationConnector Association="UranusModel.IdFornecedor_FornecedoresFones_Fornecedores" />
+        <AssociationConnector Association="UranusModel.IdFornecedor_FornecedoresNotas_Fornecedores" />
+        <AssociationConnector Association="UranusModel.FK_FornecedoresNotasParcelas_FornecedoresNotas" />
+        <AssociationConnector Association="UranusModel.FK_NotasServicosParcelas_NotasServicos1" />
+        <AssociationConnector Association="UranusModel.FK_Profissionais_Pessoas" />
+        <AssociationConnector Association="UranusModel.FK_Processos_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_ProcessosPartes_Processos" />
+        <AssociationConnector Association="UranusModel.IdProcesso_ProcessosAcoes_Processos" />
+        <AssociationConnector Association="UranusModel.IdProcesso_ProcessosAutores_Processos" />
+        <AssociationConnector Association="UranusModel.IdAcao_ProcessosAcoes_ProcessosCadastroAcao" />
+        <AssociationConnector Association="UranusModel.IdProcessos_ProcessosPartes_ProcessosPartes" />
+        <AssociationConnector Association="UranusModel.IdProcessosAcao_ProcessosAcoesEventos_ProcessosAcoes" />
+        <AssociationConnector Association="UranusModel.IdProcessosAreas_ProcessosAcoes_ProcessosAreas" />
+        <AssociationConnector Association="UranusModel.IdVara_ProcessosAcoes_ProcessosVara" />
+        <AssociationConnector Association="UranusModel.FK_ProcessosAcoesEventos_Usuarios" />
+        <AssociationConnector Association="UranusModel.FK_ProcessosAcoesEventos_Usuarios1" />
+        <AssociationConnector Association="UranusModel.IdProcessosEvento_ProcessosAcoesEventos_ProcessosEventos" />
+        <AssociationConnector Association="UranusModel.IdProcessosEvento_ProcessosAgendaProfissional_ProcessosAcoesEventos" />
+        <AssociationConnector Association="UranusModel.IdProfissional_ProcessosAgendaProfissional_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_ProcessosPartesAdvogados_ProcessosPartes" />
+        <AssociationConnector Association="UranusModel.FK_Profissionais_ProfissionaisTipos" />
+        <AssociationConnector Association="UranusModel.FK_Profissionais_Usuarios" />
+        <AssociationConnector Association="UranusModel.FK_TemplatesIniciaisAposentadoria_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_Salas_Sedes" />
+        <AssociationConnector Association="UranusModel.FK_TemplatesIniciaisAposentadoriaPeriodos_TemplatesIniciaisAposentadoria" />
+        <AssociationConnector Association="UranusModel.FK_UsuariosConectados_UsuariosConectados" />
+        <EntityTypeShape EntityType="UranusModel.cad_pessoa_limpa" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="UranusModel.View_EventosAutomaticos" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="UranusModel.View_Processos_Listagem" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="UranusModel.View_ProcessosAgendasProfissionais_Listagem" Width="1.5" PointX="2.75" PointY="12.75" />
+        <EntityTypeShape EntityType="UranusModel.AgendasMassa" Width="1.5" PointX="18.25" PointY="26.125" />
+        <EntityTypeShape EntityType="UranusModel.PreAgendamento" Width="1.5" PointX="10.5" PointY="17.625" />
+        <EntityTypeShape EntityType="UranusModel.PreCadastro" Width="1.5" PointX="8.25" PointY="28.375" />
+        <AssociationConnector Association="UranusModel.FK_PreAgendamento_Agendas" />
+        <AssociationConnector Association="UranusModel.FK_AgendasMassa_AgendasTipos" />
+        <AssociationConnector Association="UranusModel.FK_AgendasMassa_Profissionais" />
+        <AssociationConnector Association="UranusModel.FK_AgendasMassa_Salas" />
+        <AssociationConnector Association="UranusModel.FK_AgendasMassa_Sedes" />
+        <AssociationConnector Association="UranusModel.FK_AgendasMassaHistorico_AgendasMassa" />
+        <AssociationConnector Association="UranusModel.FK_PreCadastro_Clientes" />
+        <AssociationConnector Association="UranusModel.FK_PreAgendamento_PreCadastro" />
+        <AssociationConnector Association="UranusModel.FK_PreAgendamento_ProcessosAreas" />
+        <AssociationConnector Association="UranusModel.FK_PreAgendamento_Profissionais" />
+        <EntityTypeShape EntityType="UranusModel.AppConfiguracao" Width="1.5" PointX="5.375" PointY="12.75" />
+        <EntityTypeShape EntityType="UranusModel.Profissoes" Width="1.5" PointX="7.375" PointY="12.75" />
+        <EntityTypeShape EntityType="UranusModel.PessoasUsuariosAplicativo" Width="1.5" PointX="3" PointY="49.5" />
+        <AssociationConnector Association="UranusModel.FK_PessoasUsuariosAplicativo_PessoasUsuariosAplicativo" />
+        <EntityTypeShape EntityType="UranusModel.Empresa" Width="1.5" PointX="0.75" PointY="27.25" />
+        <AssociationConnector Association="UranusModel.IdEmpresa_Caixa_Empresa" />
+        <AssociationConnector Association="UranusModel.FK_ClientesContratos_Empresa" />
+        <AssociationConnector Association="UranusModel.FK_NotasServicos_Empresa" />
+        <AssociationConnector Association="UranusModel.IdEmpresa_FornecedoresContratos_Empresa" />
+        <AssociationConnector Association="UranusModel.IdEmpresa_FornecedoresNotas_FornecedoresNotas" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

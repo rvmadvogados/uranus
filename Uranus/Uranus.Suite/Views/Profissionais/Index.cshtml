@@ -1,0 +1,1571 @@
+﻿@{
+    ViewBag.Title = "Profissionais";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idPessoa" name="idPessoa" value="">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Profissional</label></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="feedback-box">
+                        <form id="profissional-form">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Dados Pessoais</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Nome <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Nome do Profissional" id="Nome" name="Nome" data-msg-required="Por favor, insira o Nome do Profissional." data-rule-required="true" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">CPF</label>
+                                        <input type="text" class="form-control" placeholder="Informe o CPF" id="CPF" name="CPF" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">RG</label>
+                                        <input type="text" class="form-control" placeholder="Informe o RG" id="RG" name="RG" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Tipo de Profissional <span class="required">*</span></label>
+                                        <select id="TiposProfissionais" name="TiposProfissionais" class="form-control placeholder" data-msg-required="Por favor, selecione um Tipo de Profissional." data-rule-required="true">
+                                            <option value="">Selecione o Tipo de Profissional</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número OAB</label>
+                                        <input type="text" class="form-control" placeholder="Informe o Número OAB" id="OAB" name="OAB" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">CEP <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o CEP" id="CEP" name="CEP" data-msg-required="Por favor, insira o número do CEP." data-rule-required="true" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Logradouro <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Logradouro" id="Logradouro" name="Logradouro" data-msg-required="Por favor, insira o nome do logradouro." data-rule-required="true" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Número <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Número" id="Numero" name="Numero" data-msg-required="Por favor, insira o n&uacute;mero." data-rule-required="true" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Complemento</label>
+                                        <input type="text" class="form-control" placeholder="Informe o Complemento" id="Complemento" name="Complemento" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Bairro <span class="required">*</span></label>
+                                        <input type="text" class="form-control" placeholder="Informe o Bairro" id="Bairro" name="Bairro" data-msg-required="Por favor, insira o nome do bairro." data-rule-required="true" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Estado <span class="required">*</span></label>
+                                        <select id="Estado" name="Estado" class="form-control placeholder" data-msg-required="Por favor, selecione um estado." data-rule-required="true"></select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="titlefield">Cidade <span class="required">*</span></label>
+                                        <select id="Cidade" name="Cidade" class="form-control placeholder" data-msg-required="Por favor, selecione uma cidade." data-rule-required="true">
+                                            <option value="" style="background-color: #eaeaea;">Selecione a Cidade</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Data Nascimento</label>
+                                        <input type="text" class="form-control requireds" placeholder="Informe o Data de Nascimento" id="DataNascimento" name="DataNascimento" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Cargo </label>
+                                        <select id="Cargo" name="Cargo" class="form-control placeholder">
+                                            <option value="">Selecione o Cargo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Sede</label>
+                                        <select id="Sede" name="Sede" class="form-control placeholder">
+                                            <option value="">Selecione a Sede</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Área</label>
+                                        <select id="Area" name="Area" class="form-control placeholder">
+                                            <option value="">Selecione a Área</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Tipo de Contrato</label>
+                                        <select id="TipoContrato" name="TipoContrato" class="form-control placeholder">
+                                            <option value="" style="background-color: #eaeaea;">Selecione o Tipo</option>
+                                            <option value="CLT">CLT</option>
+                                            <option value="Advogado">Advogado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Status</label>
+                                        <select id="Status" name="Status" class="form-control placeholder">
+                                            <option value="" style="background-color: #eaeaea;">Selecione o Status</option>
+                                            <option value="Ativo">Ativo</option>
+                                            <option value="Inativo">Inativo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Banco </label>
+                                        <input type="text" class="form-control" placeholder="Informe o Banco" id="Banco" name="Banco" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Agência </label>
+                                        <input type="text" class="form-control" placeholder="Informe a Agência" id="Agencia" name="Agencia" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Conta </label>
+                                        <input type="text" class="form-control" placeholder="Informe a Conta" id="Conta" name="Conta" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Chave Pix </label>
+                                        <input type="text" class="form-control" placeholder="Informe a Chave Pix" id="ChavePix" name="ChavePix" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Dados Sistêmicos</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Usuário</label>
+                                        <select id="Usuarios" name="Usuarios" class="form-control placeholder">
+                                            <option value="">Selecione o Usuário</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                &nbsp;
+                                <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Dados Telefônicos -->
+                    <div id="DadosTelefonicos" class="feedback-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><b>Lista de Telefones</b></h4>
+                                <hr />
+                            </div>
+                        </div>
+                        <form id="profissional-dadostelefonicos-form" class="feedback-form">
+                            <div class="panel-group mt-25" id="DadosTelefonicosAccordion" role="tablist" aria-multiselectable="true">
+                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                            <div class="alert alert-success hidden" id="profissional-dadostelefonicos-alert-success">
+                                <strong>SUCESSO:</strong> Cadastrado de dados telefônicos realizado com sucesso.
+                            </div>
+                            <div class="alert alert-success hidden" id="profissional-dadostelefonicos-alert-removed">
+                                <strong>SUCESSO:</strong> Exclusão de dados telefônicos realizado com sucesso.
+                            </div>
+                            <div class="alert alert-danger hidden" id="profissional-dadostelefonicos-alert-error">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de dados telefônicos.
+                            </div>
+                            <div class="alert alert-danger hidden" id="profissional-dadostelefonicos-alert-error2">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de dados telefônicos.
+                            </div>
+                            <div class="alert alert-warning hidden" id="profissional-dadostelefonicos-alert-warning">
+                                <strong>ERRO:</strong> Esse telefone já está cadastrado para esse Profissional.
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Dados E-mails -->
+                    <div id="DadosEmails" class="feedback-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><b>Lista de E-mails</b></h4>
+                                <hr />
+                            </div>
+                        </div>
+                        <form id="profissional-dadosemails-form" class="feedback-form">
+                            <div class="panel-group mt-25" id="DadosEmailsAccordion" role="tablist" aria-multiselectable="true">
+                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                            <div class="alert alert-success hidden" id="profissional-dadosemails-alert-success">
+                                <strong>SUCESSO:</strong> Cadastrado da lista de e-mails realizada com sucesso.
+                            </div>
+                            <div class="alert alert-success hidden" id="profissional-dadosemails-alert-removed">
+                                <strong>SUCESSO:</strong> Exclusão da lista de e-mails realizada com sucesso.
+                            </div>
+                            <div class="alert alert-danger hidden" id="profissional-dadosemails-alert-error">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro da lista de e-mails.
+                            </div>
+                            <div class="alert alert-danger hidden" id="profissional-dadosemails-alert-error2">
+                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão da lista de e-mails.
+                            </div>
+                            <div class="alert alert-warning hidden" id="profissional-dadosemails-alert-warning">
+                                <strong>ERRO:</strong> Esse e-mail já está cadastrado para esse Profissional.
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Profissional</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalLabelExcluirPergunta">Você deseja realmente excluir esse Profissional?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Profissionais</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <div class="form-group">
+                                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovo" style="margin-top: 25px !important;" onclick="Novo();">Novo</button>
+                                                </div>
+                                            </div>
+                                            @using (Html.BeginForm("Index", "Profissionais", FormMethod.Get, null))
+                                            {
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Procura na Coluna Nome</label>
+                                                        <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Nome" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("Pessoas.Nome", header: "Nome"),
+                                     grid.Column("ProfissionaisTipos.Nome", header: "Tipo Profissional"),
+                                     grid.Column("OAB", header: "Número OAB"),
+                                     grid.Column("Usuarios.Bloqueio", header: "Status", format: (item) => new HtmlString((item.Usuarios != null ? (item.Usuarios.Bloqueio ? "Inativo" : "Ativo") : String.Empty))),
+                                     grid.Column("ID", header: "Ações", canSort:false,
+                                     format:
+                    @<text>
+                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
+                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
+                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Pessoas.Nome + '"' + ", " + item.IDPessoa + ");'>Excluir</a>")
+                    </text>)
+          });
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script type="text/javascript" src="https://uranus.rvmadvogados.com.br/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/valida_cpf_cnpj.js"></script>
+
+    <script>
+
+        $("#DataNascimento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#CPF").mask("999.999.999-99");
+        $("#RG").mask("99999999999999");
+        //$('#OAB').mask('AA999999', {
+        //    onKeyPress: function (value, event) {
+        //        event.currentTarget.value = value.toUpperCase();
+        //    }
+        //});
+        $("#CEP").mask("99999-999");
+
+        $("#CEP").keyup(function () {
+
+            if ($("#CEP").val().length == 9) {
+
+                $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + $("#CEP").val(), function () {
+
+                    if (resultadoCEP["tipo_logradouro"] != '') {
+
+                        if (resultadoCEP["resultado"]) {
+
+                            $('#Estado').html($('#Estado').html().replace('selected', ''));
+                            $("#Estado option").filter(function (index) {
+                                return $(this).val() == unescape(resultadoCEP["uf"]);
+                            }).attr('selected', 'selected');
+
+                            CarregarCidades(unescape(resultadoCEP["uf"]), unescape(resultadoCEP["cidade"]));
+
+                            $("#Logradouro").val(unescape(resultadoCEP["tipo_logradouro"]) + " " + unescape(resultadoCEP["logradouro"]));
+                            $("#Bairro").val(unescape(resultadoCEP["bairro"]));
+                            $("#Numero").focus();
+
+                        }
+                    }
+                });
+            }
+
+        });
+
+        function CarregarEstados(UF) {
+
+            var options = {};
+            options.url = "/Estados/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.estados;
+
+                    $('#Estado').html("");
+                    var select = $('#Estado');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Estado")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (UF == rows[index].sigla) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarCidades(UF, Cidade) {
+
+            var dados = new window.FormData();
+            dados.append("UF", UF);
+
+            var options = {};
+            options.url = "/Cidades/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.cidades;
+                    $('#Cidade').html("");
+                    var select = $('#Cidade');
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione a Cidade")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (Cidade == rows[index].cidade) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarTiposProfissionais() {
+
+            var options = {};
+            options.url = "/TiposProfissionais/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.tipos;
+                    $('#TiposProfissionais').html("");
+                    var select = $('#TiposProfissionais');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione o Tipo de Profissional")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        CarregarUsuarios();
+        CarregarColaboradores(0, "");
+        CarregarSedes()
+        CarregarCargos()
+
+        function CarregarUsuarios() {
+
+            var options = {};
+            options.url = "/Usuarios/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.usuarios;
+                    $('#Usuarios').html("");
+                    var select = $('#Usuarios');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione o Usuário")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarColaboradores(index, Data) {
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+            var options = {};
+            options.url = "/Colaboradores/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00') {
+                    var rows = json.profissionais;
+                    $('#FiltrarProfissional').html("");
+                    var select = $('#FiltrarProfissional');
+                    select.append($(' < option selected disabled >< /option>').val("").html("&nbsp;"));
+                    for (i = 0; i < rows.length; i++) {
+                        select.append($(' < option >< /option>').val(rows[i].Nome).html(rows[i].Nome));
+                    }
+                    $('#FiltrarProfissional').val(null);
+                    $('#FiltrarProfissional').trigger('change');
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarSede').html("");
+                    var select = $('#FiltrarSede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Seda")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    // $('#FiltrarSede').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSede)));
+                    $('#FiltrarSede').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarCargos() {
+            var options = {};
+            options.url = "/Profissoes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissao;
+                    $('#Cargo').html("");
+                    var select = $('#Cargo');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Cargo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#Estado').change(function (evt) {
+
+            CarregarCidades($("#Estado").val(), "");
+
+        });
+
+        function Novo() {
+            $('#modalLabelTitle').text('Novo Profissional');
+            $('#Nome').attr('disabled', false);
+            $('#Nome').val('');
+            $('#CPF').attr('disabled', false);
+            $('#CPF').val('');
+            $('#RG').attr('disabled', false);
+            $('#RG').val('');
+            $('#TiposProfissionais').attr('disabled', false);
+            $('#TiposProfissionais').val('');
+            $('#OAB').attr('disabled', false);
+            $('#OAB').val('');
+            $('#CEP').attr('disabled', false);
+            $('#CEP').val('');
+            $('#Logradouro').attr('disabled', false);
+            $('#Logradouro').val('');
+            $('#Numero').attr('disabled', false);
+            $('#Numero').val('');
+            $('#Complemento').attr('disabled', false);
+            $('#Complemento').val('');
+            $('#Bairro').attr('disabled', false);
+            $('#Bairro').val('');
+            $('#Estado').attr('disabled', false);
+            $('#Estado').val('');
+            $('#Cidade').attr('disabled', false);
+            $('#Cidade').val('');
+            $('#Usuarios').attr('disabled', false);
+            $('#Usuarios').val('');
+            $('#Cargo').attr('disabled', false);
+            $('#Sede').attr('disabled', false);
+            $('#TipoContrato').attr('disabled', false);
+            $('#Status').attr('disabled', false);
+            $('#Banco').attr('disabled', false);
+            $('#Agencia').attr('disabled', false);
+            $('#Conta').attr('disabled', false);
+            $('#ChavePix').attr('disabled', false);
+            $('#DataNascimento').attr('disabled', false);
+            
+            $('#buttonSalvar').attr('disabled', false);
+            $('#id').val(0);
+            $('#idPessoa').val(0);
+            $("#profissional-form").validate().resetForm();
+
+            $("#DadosTelefonicos").hide();
+            $("#DadosEmails").hide();
+
+            CarregarEstados("");
+            CarregarTiposProfissionais();
+            //CarregarUsuarios();
+        }
+
+        function Visualizar(Id) {
+            $('#modalLabelTitle').text('Visualizar Profissional');
+            $('#Nome').attr('disabled', true);
+            $('#CPF').attr('disabled', true);
+            $('#RG').attr('disabled', true);
+            $('#TiposProfissionais').attr('disabled', true);
+            $('#OAB').attr('disabled', true);
+            $('#CEP').attr('disabled', true);
+            $('#Logradouro').attr('disabled', true);
+            $('#Numero').attr('disabled', true);
+            $('#Complemento').attr('disabled', true);
+            $('#Bairro').attr('disabled', true);
+            $('#Estado').attr('disabled', true);
+            $('#Cidade').attr('disabled', true);
+            $('#Usuarios').attr('disabled', true);
+            $('#Cargo').attr('disabled', true);
+            $('#Sede').attr('disabled', true);
+            $('#Area').attr('disabled', true);
+            $('#TipoContrato').attr('disabled', true);
+            $('#Status').attr('disabled', true);
+            $('#Banco').attr('disabled', true);
+            $('#Agencia').attr('disabled', true);
+            $('#Conta').attr('disabled', true);
+            $('#ChavePix').attr('disabled', true);
+            $('#DataNascimento').attr('disabled', true);
+            
+            $('#buttonSalvar').attr('disabled', true);
+            $("#profissional-form").validate().resetForm();
+
+            $("#DadosTelefonicos").show();
+            $("#DadosEmails").show();
+
+            CarregarTiposProfissionais();
+            //CarregarUsuarios();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Profissionais/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    CarregarEstados(json.profissional[0].Estado);
+                    CarregarCidades(json.profissional[0].Estado, json.profissional[0].Cidade);
+
+                    $('#id').val(Id);
+                    $('#idPessoa').val(json.profissional[0].IdPessoa);
+                    $('#Nome').val(json.profissional[0].Nome);
+                    $('#CPF').val(json.profissional[0].CPF);
+                    $('#RG').val(json.profissional[0].RG);
+                    $('#TiposProfissionais').val(json.profissional[0].IdTipoProfissional);
+                    $('#OAB').val(json.profissional[0].OAB);
+                    $('#CEP').val(json.profissional[0].CEP);
+                    $('#Logradouro').val(json.profissional[0].Logradouro);
+                    $('#Numero').val(json.profissional[0].Numero);
+                    $('#Complemento').val(json.profissional[0].Complemento);
+                    $('#Bairro').val(json.profissional[0].Bairro);
+                    $('#Usuarios').val(json.profissional[0].IdUsuario);
+                    $('#DataNascimento').val(json.profissional[0].DataNascimento);
+                    $('#Cargo').attr('disabled', isDisable);
+                    $('#Sede').attr('disabled', isDisable);
+                    $('#Area').attr('disabled', isDisable);
+                    $('#TipoContrato').attr('disabled', isDisable);
+                    $('#Status').attr('disabled', isDisable);
+                    $('#Banco').attr('disabled', isDisable);
+                    $('#Agencia').attr('disabled', isDisable);
+                    $('#Conta').attr('disabled', isDisable);
+                    $('#ChavePix').attr('disabled', isDisable);
+
+                    ShowDadosTelefonicos("Visualizar");
+                    ShowDadosEmails("Visualizar");
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+            $('#modalLabelTitle').text('Alterar Profissional');
+            $('#Nome').attr('disabled', false);
+            $('#CPF').attr('disabled', false);
+            $('#RG').attr('disabled', false);
+            $('#TiposProfissionais').attr('disabled', false);
+            $('#OAB').attr('disabled', false);
+            $('#CEP').attr('disabled', false);
+            $('#Logradouro').attr('disabled', false);
+            $('#Numero').attr('disabled', false);
+            $('#Complemento').attr('disabled', false);
+            $('#Bairro').attr('disabled', false);
+            $('#Estado').attr('disabled', false);
+            $('#Cidade').attr('disabled', false);
+            $('#Usuarios').attr('disabled', false);
+            $('#Cargo').attr('disabled', false);
+            $('#Sede').attr('disabled', false);
+            $('#Area').attr('disabled', false);
+            $('#TipoContrato').attr('disabled', false);
+            $('#Status').attr('disabled', false);
+            $('#Banco').attr('disabled', false);
+            $('#Agencia').attr('disabled', false);
+            $('#Conta').attr('disabled', false);
+            $('#ChavePix').attr('disabled', false);
+            $('#DataNascimento').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', false);
+            $("#profissional-form").validate().resetForm();
+
+            $("#DadosTelefonicos").show();
+            $("#DadosEmails").show();
+
+            CarregarTiposProfissionais();
+            //CarregarUsuarios();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Profissionais/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    CarregarEstados(json.profissional[0].Estado);
+                    CarregarCidades(json.profissional[0].Estado, json.profissional[0].Cidade);
+
+                    $('#id').val(Id);
+                    $('#idPessoa').val(json.profissional[0].IdPessoa);
+                    $('#Nome').val(json.profissional[0].Nome);
+                    $('#CPF').val(json.profissional[0].CPF);
+                    $('#RG').val(json.profissional[0].RG);
+                    $('#TiposProfissionais').val(json.profissional[0].IdTipoProfissional);
+                    $('#OAB').val(json.profissional[0].OAB);
+                    $('#CEP').val(json.profissional[0].CEP);
+                    $('#Logradouro').val(json.profissional[0].Logradouro);
+                    $('#Numero').val(json.profissional[0].Numero);
+                    $('#Complemento').val(json.profissional[0].Complemento);
+                    $('#Bairro').val(json.profissional[0].Bairro);
+                    $('#Usuarios').val(json.profissional[0].IdUsuario);
+                    $('#Cargo').val(json.profissional[0].IdCargo);
+                    $('#Sede').val(json.profissional[0].IdSede);
+                    $('#Area').val(json.profissional[0].IdArea);
+                    $('#TipoContrato').val(json.profissional[0].TipoContrato);
+                    $('#Status').val(json.profissional[0].Status);
+                    $('#Banco').val(json.profissional[0].Banco);
+                    $('#Agencia').val(json.profissional[0].Agencia);
+                    $('#Conta').val(json.profissional[0].Conta);
+                    $('#ChavePix').val(json.profissional[0].ChavePix);
+                    $('#DataNascimento').val(json.profissional[0].DataNascimento);
+
+                    ShowDadosTelefonicos("Alterar");
+                    ShowDadosEmails("Alterar");
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome, IdPessoa) {
+
+            $('#modalLabelExcluirPergunta').text('Você deseja realmente excluir esse Profissional (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+            $('#idPessoa').val(IdPessoa);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+            $("#profissional-form").validate();
+
+            if ($('#profissional-form').valid()) {
+
+                //alert("Id " + $("#id").val());
+                //alert("IdPessoa", $("#idPessoa").val());
+                //alert("Nome", $("#Nome").val());
+                //alert("IdTipoProfissional", $("#TiposProfissionais").val());
+                //alert("OAB", $("#OAB").val());
+                //alert("CPF", $("#CPF").val());
+                //alert("RG", $("#RG").val());
+                //alert("CEP", $("#CEP").val());
+                //alert("Logradouro", $("#Logradouro").val());
+                //alert("Numero", $("#Numero").val());
+                //alert("Complemento", $("#Complemento").val());
+                //dados.append("Bairro", $("#Bairro").val());
+                //dados.append("Estado", $("#Estado").val());
+                //dados.append("Cidade", $("#Cidade").val());
+                //dados.append("IdUsuario", $("#Usuarios").val());
+                //dados.append("IdCargo", $("#Cargo").val());
+                //dados.append("IdSede", $("#Sede").val());
+                //dados.append("IdArea", $("#Area").val());
+                //dados.append("TipoContrato", $("#TipoContrato").val());
+                //dados.append("Status", $("#Status").val());
+                //dados.append("Banco", $("#Banco").val());
+                //dados.append("Agencia", $("#Agencia").val());
+                //dados.append("Conta", $("#Conta").val());
+                //dados.append("ChavePix", $("#ChavePix").val());
+                //dados.append("DataNascimento", $("#DataNascimento").val());
+
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Nome", $("#Nome").val());
+                dados.append("IdTipoProfissional", $("#TiposProfissionais").val());
+                dados.append("OAB", $("#OAB").val());
+                dados.append("CPF", $("#CPF").val());
+                dados.append("RG", $("#RG").val());
+                dados.append("CEP", $("#CEP").val());
+                dados.append("Logradouro", $("#Logradouro").val());
+                dados.append("Numero", $("#Numero").val());
+                dados.append("Complemento", $("#Complemento").val());
+                dados.append("Bairro", $("#Bairro").val());
+                dados.append("Estado", $("#Estado").val());
+                dados.append("Cidade", $("#Cidade").val());
+                dados.append("IdUsuario", $("#Usuarios").val());
+                dados.append("IdCargo", $("#Cargo").val());
+                dados.append("IdSede", $("#Sede").val());
+                dados.append("IdArea", $("#Area").val());
+                dados.append("TipoContrato", $("#TipoContrato").val());
+                dados.append("Status", $("#Status").val());
+                dados.append("Banco", $("#Banco").val());
+                dados.append("Agencia", $("#Agencia").val());
+                dados.append("Conta", $("#Conta").val());
+                dados.append("ChavePix", $("#ChavePix").val());
+                dados.append("DataNascimento", $("#DataNascimento").val());
+
+                var options = {};
+                options.url = "/Profissionais/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('h4').text('Profissional salvo com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#profissional-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#idPessoa").val());
+
+            $('#id').val('');
+            $('#idPessoal').val('');
+
+            var options = {};
+            options.url = "/Profissionais/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Profissional excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#profissinal-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Profissional (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Profissional (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Profissionais');
+        }
+
+        function ShowDadosTelefonicos(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Profissionais/CarregarDadosTelefonicos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosTelefonicosAccordion').html(json.telefones);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#ProfissionalDadoTelefonico" + i + "Numero").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "Ramal").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoAparelho").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoLinha").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "Status").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "Observacao").attr('disabled', true);
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").hide();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#ProfissionalDadoTelefonico" + i + "Numero").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "Ramal").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoAparelho").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoLinha").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "Status").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "Observacao").attr('disabled', false);
+
+                            $("#ProfissionalDadoTelefonico" + i + "Numero").mask("(99) 9999-9999?9");
+                            $("#ProfissionalDadoTelefonico" + i + "Ramal").mask("9999999999");
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").show();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoTelefonicoSalvar_Click(index) {
+
+            $("#profissional-dadostelefonicos-form").validate();
+
+            if ($('#profissional-dadostelefonicos-form').valid()) {
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Numero", $('#ProfissionalDadoTelefonico' + index + 'Numero').val());
+                dados.append("Ramal", $('#ProfissionalDadoTelefonico' + index + 'Ramal').val());
+                dados.append("TipoAparelho", $('#ProfissionalDadoTelefonico' + index + 'TipoAparelho').val());
+                dados.append("TipoLinha", $('#ProfissionalDadoTelefonico' + index + 'TipoLinha').val());
+                dados.append("Status", $('#ProfissionalDadoTelefonico' + index + 'Status').val());
+                dados.append("Principal", $('#ProfissionalDadoTelefonico' + index + 'Principal').val());
+                dados.append("Observacao", $('#ProfissionalDadoTelefonico' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Profissionais/SalvarDadosTelefonicos";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#profissional-dadostelefonicos-alert-success").removeClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        ShowDadosTelefonicos("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#profissional-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#profissional-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error").removeClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#profissional-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#profissional-dadostelefonicos-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoTelefonicoExcluir_Click(index) {
+
+            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoTelefonico" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+
+                    var options = {};
+                    options.url = "/Profissionais/ExcluirDadosTelefonicos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#profissional-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-removed").removeClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-error2").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-warning").addClass("hidden");
+
+                            ShowDadosTelefonicos("Alterar");
+                        }
+                        else {
+                            $("#profissional-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-removed").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-error2").removeClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#profissional-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-removed").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-error2").addClass("hidden");
+                            $("#profissional-dadostelefonicos-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        function ShowDadosEmails(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Profissionais/CarregarDadosEmails";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosEmailsAccordion').html(json.emails);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#ProfissionalDadoEmail" + i + "Email").attr('disabled', true);
+                            $("#ProfissionalDadoEmail" + i + "Status").attr('disabled', true);
+
+                            $("#ButtonDadoEmail" + i + "Incluir").hide();
+                            $("#ButtonDadoEmail" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#ProfissionalDadoEmail" + i + "Email").attr('disabled', false);
+                            $("#ProfissionalDadoEmail" + i + "Status").attr('disabled', false);
+
+                            $("#ButtonDadoEmail" + i + "Incluir").show();
+                            $("#ButtonDadoEmail" + i + "Excluir").show();
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoEmailSalvar_Click(index) {
+
+            $("#profissional-dadosemails-form").validate();
+
+            if ($('#profissional-dadosemails-form').valid()) {
+
+                $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoEmail" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoEmail' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Email", $('#ProfissionalDadoEmail' + index + 'Email').val());
+                dados.append("Status", $('#ProfissionalDadoEmail' + index + 'Status').val());
+                dados.append("Principal", $('#ProfissionalDadoEmail' + index + 'Principal').val());
+                dados.append("Observacao", $('#ClienteDadoEmail' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Profissionais/SalvarDadosEmails";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#profissional-dadosemails-alert-success").removeClass("hidden");
+                        $("#profissional-dadosemails-alert-error").addClass("hidden");
+                        $("#profissional-dadosemails-alert-removed").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error2").addClass("hidden");
+                        $("#profissional-dadosemails-alert-warning").addClass("hidden");
+
+                        ShowDadosEmails("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#profissional-dadosemails-alert-success").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error").addClass("hidden");
+                        $("#profissional-dadosemails-alert-removed").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error2").addClass("hidden");
+                        $("#profissional-dadosemails-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoEmail" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#profissional-dadosemails-alert-success").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error").removeClass("hidden");
+                        $("#profissional-dadosemails-alert-removed").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error2").addClass("hidden");
+                        $("#profissional-dadosemails-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoEmail" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#profissional-dadosemails-alert-success").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error").addClass("hidden");
+                        $("#profissional-dadosemails-alert-removed").addClass("hidden");
+                        $("#profissional-dadosemails-alert-error2").addClass("hidden");
+                        $("#profissional-dadosemails-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoEmailExcluir_Click(index) {
+
+            $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoEmail" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoEmail" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoEmail" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoEmail" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoEmail' + index).val());
+
+                    var options = {};
+                    options.url = "/Profissionais/ExcluirDadosEmails";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#profissional-dadosemails-alert-success").addClass("hidden");
+                            $("#profissional-dadosemails-alert-error").addClass("hidden");
+                            $("#profissional-dadosemails-alert-removed").removeClass("hidden");
+                            $("#profissional-dadosemails-alert-error2").addClass("hidden");
+                            $("#profissional-dadosemails-alert-warning").addClass("hidden");
+
+                            ShowDadosEmails("Alterar");
+                        }
+                        else {
+                            $("#profissional-dadosemails-alert-success").addClass("hidden");
+                            $("#profissional-dadosemails-alert-error").addClass("hidden");
+                            $("#profissional-dadosemails-alert-removed").addClass("hidden");
+                            $("#profissional-dadosemails-alert-error2").removeClass("hidden");
+                            $("#profissional-dadosemails-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoEmail" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#profissional-dadosemails-alert-success").addClass("hidden");
+                            $("#profissional-dadosemails-alert-error").addClass("hidden");
+                            $("#profissional-dadosemails-alert-removed").addClass("hidden");
+                            $("#profissional-dadosemails-alert-error2").addClass("hidden");
+                            $("#profissional-dadosemails-alert-warning").addClass("hidden");
+                        }, 3000);
+
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoEmail" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoEmail" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoEmail" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoEmail" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        //$('#Usuarios').change(function () {
+
+        //    var dados = new window.FormData();
+        //    dados.append("Id", $('#Usuarios option:selected').val());
+
+        //    var options = {};
+        //    options.url = "/Usuarios/Consultar"
+        //    options.type = "POST";
+        //    options.data = dados;
+        //    options.asyn = true;
+        //    options.contentType = false;
+        //    options.processData = false;
+        //    options.dataType = "application/json; charset=utf-8";
+        //    options.complete = function (data) {
+
+        //        var json = $.parseJSON(data.responseText);
+
+        //        if (json.codigo == '00') {
+
+        //            $('#Usuarios').val(json.usuario[0].Id);
+
+        //            var nivel = "Usuário";
+
+        //            if (json.usuario[0].Nivel == 3) {
+        //                nivel = "Operador";/
+        //            }
+        //            else if (json.usuario[0].Nivel == 5) {
+        //                nivel = "Administrador";
+        //            }
+
+        //            $('#UsuarioNivel').val(nivel);
+
+        //            $('#UsuarioStatus').val((json.usuario[0].Bloqueio ? "Inativo" : "Ativo"));
+
+        //        }
+        //        else {
+
+        //            $('#Usuarios').val("");
+
+        //            $('#UsuarioNivel').val("");
+
+        //            $('#UsuarioStatus').val("");
+
+        //        }
+
+        //    };
+        //    $.ajax(options);
+
+        //});
+
+    </script>
+
+</div>

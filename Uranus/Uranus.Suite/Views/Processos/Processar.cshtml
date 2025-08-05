@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Processos \\ Processar Planilhas E-PROC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class='x_panel'>
+    <div class='x_title'>
+        <h2>
+            Planilhas E-PROC em Processamento
+        </h2>
+        <ul class='nav navbar-right panel_toolbox'>
+            <li>
+                <a class='collapse-link'><i class='fa fa-chevron-up'></i></a>
+            </li>
+        </ul>
+        <div class='clearfix'></div>
+    </div>
+    <div class='x_content'>
+        <table class='table table-striped' style='font-size: 14px !important;'>
+            <thead>
+                <tr>
+                    <th>Planilha</th>
+                    <th>Data e Hora</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="Processamento" name="Processamento"></tbody>
+        </table>
+    </div>
+</div>
+<div class='clearfix'></div>
+
+<script>
+
+    var x = 0;
+
+    setInterval(function () {
+
+        var options = {};
+        options.url = "/Processos/Processamento";
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == "success") {
+
+                $('#Processamento').html(json.processamento);
+
+            }
+        };
+        $.ajax(options);
+
+
+    }, 5000); // 5 seconds
+
+</script>

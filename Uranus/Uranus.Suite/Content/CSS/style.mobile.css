@@ -1,0 +1,79 @@
+.wrapper {
+    overflow: hidden;
+}
+
+    .wrapper div {
+        min-height: 383px;
+        padding-top: 10px;
+    }
+
+#one {
+    padding-top: 10px;
+    float: left;
+    margin-right: 10px;
+    width: 250px;
+    background-image: url(../Images/background.jpg);
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+}
+
+#two {
+    padding-top: 10px;
+    overflow: hidden;
+    margin-left: 0;
+    padding-left: 0;
+    min-height: 383px;
+}
+
+@media screen and (max-width: 400px) {
+    #one {
+        padding-top: 10px;
+        float: none;
+        margin-right: 0;
+        width: auto;
+        border: 0;
+        min-height: 200px;
+    }
+
+    #two {
+        padding-top: 10px;
+        margin-right: 0;
+        padding-left: 10px;
+        min-height: 467px;
+    }
+}
+
+.row {
+    padding: 5px 10px 5px 25px !important;
+    margin-right: 0px !important;
+}
+
+.form-control {
+    border: 1px solid #CCCCCC !important;
+    border-radius: 0px !important;
+}
+
+.error {
+    color: #CC0000 !important;
+    font-weight: normal !important;
+    font-size: 12px !important;
+}
+
+.btn-primary {
+    align-self: center;
+    width: 100%;
+    padding: 14px 14px !important;
+    font-size: 18px !important;
+    letter-spacing: 2px;
+    border: none !important;
+    background-color: #ECBD4F !important;
+    color: #333333 !important;
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: #333333 !important;
+        color: #FFFFFF !important;
+    }

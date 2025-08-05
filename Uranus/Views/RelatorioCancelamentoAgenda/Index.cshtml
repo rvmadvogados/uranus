@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using ReportViewerForMvc;
+
+<!-- page content -->
+<div role="main">
+    <div class="">
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+
+                    @using (Html.BeginForm("Index", "RelatorioCancelamentoAgenda", FormMethod.Get, null))
+                    {
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Filtrar Relatório de Ausentes e Cancelados</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Inicio Agendamento</label>
+                                                    <div id="FiltrarDataInicio1" name="FiltrarDataInicio1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataInicio" readonly />
+                                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim Agendamento</label>
+                                                    <div id="FiltrarDataFim1" name="FiltrarDataFim1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataFim" readonly />
+                                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*<div class="col-md-2">
+            <div class="form-group">
+                <label class="titlefield">Data Cancelamento Inicio</label>
+                <div id="FiltrarDataCancelamentoInicio1" name="FiltrarDataCancelamentoInicio1" class="input-group date" style="margin: 0 !important;">
+                    <input id="FiltrarDataCancelamentoInicio" name="FiltrarDataCancelamentoInicio" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                    <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="titlefield">Data de Cancelamento Fim</label>
+                <div id="FiltrarDataCancelamentoFim1" name="FiltrarDataCancelamentoFim1" class="input-group date" style="margin: 0 !important;">
+                    <input id="FiltrarDataCancelamentoFim" name="FiltrarDataCancelamentoFim" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataCancelamentoFim" readonly />
+                    <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+            </div>
+        </div>*@
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Profissionais</label>
+                                                    <select id="FiltrarProfissionais" name="FiltrarProfissionais" class="form-control" multiple="multiple"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Nome do Cliente</label>
+                                                    <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control"></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Tipo </label>
+                                                    <select id="FiltrarTipo" name="FiltrarTipo" class="form-control placeholder">
+                                                        <option value="">Selecione o Tipo</option>
+                                                        <option value="Cancelado">Cancelados</option>
+                                                        <option value="Ausente">Ausentes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                    @*<button class="btn btn-primary" style="margin-top: 25px !important;" onclick="Imprimir()">Filtrar</button>*@
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarProfissionais').val('');$('#FiltrarClientes').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<!-- /page content -->
+<!-- datepicker -->
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $(window).load(function () {
+
+        $("#FiltrarProfissionais").select2({
+            placeholder: "Selecione um ou mais Profissional",
+            allowClear: true,
+            tags: true,
+            maximumSelectionLength: 100
+        });
+
+        var select = $('#FiltrarCliente');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+        );
+        $('#FiltrarCliente').trigger('change');
+
+
+        $("#FiltrarDataInicio1").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            //daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            //datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#FiltrarDataFim1").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            //daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            //datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#FiltrarDataCancelamentoInicio1").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            //daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            //datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#FiltrarDataCancelamentoFim1").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            //daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            //datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+    });
+
+    $("#FiltrarCliente").select2({
+        placeholder: "Selecione um Cliente",
+        allowClear: true,
+        tags: true,
+        minimumInputLength: 3,
+        ajax: {
+            cache: false,
+            dataType: "json",
+            type: "GET",
+            url: '/Clientes/GetClientsList',
+            delay: 250,
+            cache: true,
+            data: function (params) {
+                params.page = params.page || 1;
+                return {
+                    search: params.term,
+                    filter: true,
+                    page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data.clientes,
+                    pagination: {
+                        more: (params.page * 10) < data.total
+                    }
+                };
+            }
+        }
+    });
+
+        CarregarProfissionais();
+
+        function CarregarProfissionais() {
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#FiltrarProfissionais').html("");
+                    var select = $('#FiltrarProfissionais');
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarProfissionais').val(@Html.Raw(Json.Encode(ViewBag.FiltrarProfissionais)));
+                    $('#FiltrarProfissionais').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+f
+</script>

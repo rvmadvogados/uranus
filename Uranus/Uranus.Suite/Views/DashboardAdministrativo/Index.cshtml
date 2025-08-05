@@ -1,0 +1,304 @@
+﻿@{
+    ViewBag.Title = "Dashboard Administrativo";
+}
+
+<link href="~/Content/CSS/animate.min.css" rel="stylesheet">
+
+
+<!-- flot js -->
+<!--[if lte IE 8]><script type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.pie.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.orderBars.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.time.min.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/date.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.spline.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.stack.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/curvedLines.js"></script>
+<script type="text/javascript" src="~/Scripts/flot/jquery.flot.resize.js"></script>
+<!-- flot -->
+
+<script>
+
+    var plot1 = $.plot($("#graficoAgendas"), [{
+        label: "&nbsp;Liberadas",
+        data: @Model.AgendasDisponiveis,
+        lines: {
+            fillColor: "rgba(150, 202, 89, 0.12)"
+        },
+        points: {
+            fillColor: "#fff"
+        },
+    },
+    {
+        label: "&nbsp;Confirmadas",
+        data: @Model.AgendasConfirmadas,
+        lines: {
+            fillColor: "rgba(150, 202, 89, 0.12)"
+        },
+        points: {
+            fillColor: "#fff"
+        },
+    }], {
+        series: {
+            curvedLines: {
+                apply: true,
+                active: true,
+                monotonicFit: true
+            }
+        },
+            colors: ["#22B14C", "#E74C3C"],
+        grid: {
+            borderWidth: {
+                top: 0,
+                right: 0,
+                bottom: 1,
+                left: 1
+            },
+            borderColor: {
+                bottom: "#7F8790",
+                left: "#7F8790"
+            }
+        },
+        xaxis: {
+            tickColor: "rgba(51, 51, 51, 0.06)",
+            tickSize: [1, "day"],
+            axisLabel: "Date",
+            axisLabelUseCanvas: true,
+            axisLabelFontSizePixels: 12,
+            axisLabelFontFamily: "Verdana, Arial",
+            axisLabelPadding: 10,
+            mode: "time", timeformat: "%d", minTickSize: [1, "day"]
+        },
+        yaxis: {
+            ticks: 8,
+            tickColor: "rgba(51, 51, 51, 0.06)",
+        },
+        tooltip: false,
+        responsive: true
+    });
+
+
+    function gd(year, month, day) {
+        return new Date(year, month - 1, day).getTime();
+    }
+
+</script>
+<!-- /flot -->
+@*<style>
+        th.espacamento,
+        td.espacamento {
+            padding: 5px 5px 5px 5px !important;
+        }
+    </style>
+
+    <div class='feedback-box-rvm'>
+        <div class='row'>
+            <div class='col-md-12'>
+                <h2><b>Solicitações de Máteriais e Afins</b></h2>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-12'>
+                <table width='100%'>
+                    <thead>
+                        <tr>
+                            <th class="espacamento">Nome</th>
+                            <th class="espacamento">Data</th>
+                            <th class="espacamento">Solicitações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            //int iEspecial = 1;
+
+                            foreach (var item in Model.DashProfissionaisSolicitacoesEspeciais)
+                            {
+                                <tr>
+                                    <td class="espacamento">@item.Data</td>
+                                    <td class="espacamento">@item.Nome</td>
+                                    <td class="espacamento">@item.Solicitacao</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>*@
+
+
+
+<div class="row">
+
+    <div class="col-md-5">
+        <div class="x_panel tile fixed_height_320">
+            <div class="x_title">
+                <div class="row">
+                    <h2>Solicitações Recessos/Férias</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="row">
+                    <h5 class="col-md-5">Nome</h5>
+                    <h5 class="col-sm-2">Saldo</h5>
+                    <h5 class="col-sm-2">Dias</h5>
+                    <h5 class="col-sm-3">Data Inicio</h5>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+                <div class="x_content">
+                    @{
+                        int iRecesso = 1;
+
+                        foreach (var item in Model.DashProfissionaisSolicitacoes)
+                        {
+                            <div class="widget_summary @(iRecesso % 2 == 0 ? "even" : "odd2")">
+                                <div class="col-md-5">
+                                    <span>@item.Nome</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>@item.Saldo</span>
+                                </div>
+                                <div class="col-sm-2">
+                                    <span>@item.Dias</span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <span>@item.DataInicio</span>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            iRecesso++;
+                        }
+                    }
+                </div>
+            </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="x_panel tile fixed_height_320 overflow_hidden">
+            <div class="x_title">
+                <div class="row">
+                    <h2>Solicitações de Máteriais e Afins</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="row">
+                    <h5 class="col-md-4">Nome</h5>
+                    <h5 class="col-sm-2">Data</h5>
+                    <h5 class="col-sm-6">Solicitação</h5>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <div class="x_content">
+                @{
+                    int iEspecial = 1;
+
+                    foreach (var item in Model.DashProfissionaisSolicitacoesEspeciais)
+                    {
+                        <div class="widget_summary @(iEspecial % 2 == 0 ? "even" : "odd2")">
+                            <div class="col-md-4">
+                                <span>@item.Nome</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span>@item.Data</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <span>@item.Solicitacao</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        iEspecial++;
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-5">
+        <div class="x_panel tile fixed_height_320">
+            <div class="row">
+                <h2>Ausências</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="row">
+                <h5 class="col-md-6">Nome</h5>
+                <h5 class="col-md-3">Data Inicio</h5>
+                <h5 class="col-md-3">Data Fim</h5>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                @{
+                    int iAusencia = 1;
+
+                    foreach (var item in Model.DashProfissionaisAusencias)
+                    {
+                        <div class="widget_summary @(iAusencia % 2 == 0 ? "even" : "odd2")">
+                            <div class="col-md-6">
+                                <span>@item.Nome</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span>@item.DataInicio</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span>@item.DataFim</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        iAusencia++;
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="x_panel tile fixed_height_320 overflow_hidden">
+            <div class="x_title">
+                <div class="row">
+                    <h2>Documentos anexados últimos 10 dias</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="row">
+                    <h5 class="col-md-4">Nome</h5>
+                    <h5 class="col-sm-3">Tipo Documento</h5>
+                    <h5 class="col-sm-3">Número Documento</h5>
+                    <h5 class="col-sm-2">Data Cadastro</h5>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="x_content">
+                @{
+                    int iDocumento = 1;
+
+                    foreach (var item in Model.DashProfissionaisDocumentos)
+                    {
+                        <div class="widget_summary @(iDocumento % 2 == 0 ? "even" : "odd2")">
+                            <div class="col-md-4">
+                                <span>@item.Nome</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span>@item.TipoDocumento</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span>@item.NumeroDocumento</span>
+                            </div>
+                            <div class="col-md-2">
+                                <span>@item.DataCadastro</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        iDocumento++;
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+

@@ -1,0 +1,116 @@
+﻿@{
+    ViewBag.Title = "Administrativo \\ Enviar Arquivos de Contracheques";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Envio de Multiplos Arquivos de Contracheques</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <p>
+                    Arraste vários arquivos de Contracheques para a caixa abaixo para envio múltiplo ou clique para selecionar arquivos.
+                </p>
+                <form id="myAwesomeDropzone" action="~/ColaboradoresContracheques/FileUpload" class="dropzone" style="border: 1px solid #e5e5e5; height: 300px;">
+
+                    <!-- Campo para informar a competência -->
+                    <div class="col-md-2">
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="competencia">Competência:</label>
+                            <input type="text" id="competencia" name="competencia" class="form-control" placeholder="Ex: 102024" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="custom_notifications" class="custom-notifications dsp_none">
+    <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
+    </ul>
+    <div class="clearfix"></div>
+    <div id="notif-group" class="tabbed_notifications"></div>
+</div>
+
+<!-- chart js -->
+<script src="~/Scripts/chartjs/chart.min.js"></script>
+
+<!-- bootstrap progress js -->
+<script src="~/Scripts/progressbar/bootstrap-progressbar.min.js"></script>
+<script src="~/Scripts/nicescroll/jquery.nicescroll.min.js"></script>
+
+<!-- icheck -->
+<script src="~/Scripts/icheck/icheck.min.js"></script>
+
+<!-- dropzone -->
+<script src="~/Scripts/dropzone/dropzone.js"></script>
+
+<script>
+
+    // "myAwesomeDropzone" is the camelized version of the HTML element's ID
+    //Dropzone.options.myAwesomeDropzone = {
+    //    paramName: "file", // The name that will be used to transfer the file
+    //    maxFilesize: 5, // MB
+    //    acceptedFiles: ".pdf",
+    //    success: function (file, response) {
+
+    //        if (response.success) {
+    //            // Do what you want to do with your response
+    //            // This return statement is necessary to remove progress bar after uploading.
+    //            $(file.previewElement).find('.dz-success-message').text(response.response);
+    //            return file.previewElement.classList.add("dz-success");
+    //        }
+    //        else {
+    //            $(file.previewElement).find('.dz-error-message').text(response.response);
+    //            return file.previewElement.classList.add("dz-error");
+
+    //        }
+
+    //    }
+    //};
+
+    Dropzone.options.myAwesomeDropzone = {
+        paramName: "file", // Nome do parâmetro para o arquivo
+        maxFilesize: 5, // Tamanho máximo em MB
+        acceptedFiles: ".pdf",
+
+        // Evento chamado antes de enviar o arquivo
+        sending: function (file, xhr, formData) {
+            // Adiciona o valor do campo 'competencia' à requisição
+            var competencia = document.getElementById("competencia").value;
+            formData.append("competencia", competencia);
+        },
+
+        success: function (file, response) {
+            if (response.success) {
+                $(file.previewElement).find('.dz-success-message').text(response.response);
+                return file.previewElement.classList.add("dz-success");
+            } else {
+                $(file.previewElement).find('.dz-error-message').text(response.response);
+                return file.previewElement.classList.add("dz-error");
+            }
+        }
+    };
+
+
+    Dropzone.prototype.defaultOptions.dictDefaultMessage = "Solte os arquivos aqui para enviar";
+    Dropzone.prototype.defaultOptions.dictFallbackMessage = "Seu navegador não oferece suporte para enviar de arquivos arrastar e soltar.";
+    Dropzone.prototype.defaultOptions.dictFallbackText = "Use o formulário substituto abaixo para enviar seus arquivos, como antigamente.";
+    Dropzone.prototype.defaultOptions.dictFileTooBig = "O arquivo é muito grande ({{filesize}}MiB). Tamanho máximo do arquivo: {{maxFilesize}}MiB.";
+    Dropzone.prototype.defaultOptions.dictInvalidFileType = "Você não pode fazer envios de arquivos deste tipo.";
+    Dropzone.prototype.defaultOptions.dictResponseError = "O servidor respondeu com o código {{statusCode}}.";
+    Dropzone.prototype.defaultOptions.dictCancelUpload = "Cancelar envio";
+    Dropzone.prototype.defaultOptions.dictCancelUploadConfirmation = "Tem certeza de que deseja cancelar este envio?";
+    Dropzone.prototype.defaultOptions.dictRemoveFile = "Remover arquivo";
+    Dropzone.prototype.defaultOptions.dictMaxFilesExceeded = "Você não pode enviar mais arquivos.";
+
+</script>

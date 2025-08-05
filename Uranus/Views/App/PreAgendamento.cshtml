@@ -1,0 +1,501 @@
+﻿
+@{
+    ViewBag.Title = "Integração App \\ Pré-Agendamento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main_container">
+
+    <div id="modalNovo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Agendamento</label></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="feedback-box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4><b>Dados do Agendamento</b></h4>
+                                <hr />
+                            </div>
+                        </div>
+                        <form id="cliente-form">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Data</label>
+                                        <div id="Data" name="Data" class="input-group date" style="margin: 0 !important;">
+                                            <input id="DataValor" name="DataValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                            <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="titlefield">Hora</label>
+                                        <select id="Hora" name="Hora" class="form-control" style="height: 40px !important;">
+                                            <option value="" selected></option>
+                                            <option value="06:00">06:00</option>
+                                            <option value="06:15">06:15</option>
+                                            <option value="06:30">06:30</option>
+                                            <option value="06:45">06:45</option>
+                                            <option value="07:00">07:00</option>
+                                            <option value="07:15">07:15</option>
+                                            <option value="07:30">07:30</option>
+                                            <option value="07:45">07:45</option>
+                                            <option value="08:00">08:00</option>
+                                            <option value="08:15">08:15</option>
+                                            <option value="08:30">08:30</option>
+                                            <option value="08:45">08:45</option>
+                                            <option value="09:00">09:00</option>
+                                            <option value="09:15">09:15</option>
+                                            <option value="09:30">09:30</option>
+                                            <option value="09:45">09:45</option>
+                                            <option value="10:00">10:00</option>
+                                            <option value="10:15">10:15</option>
+                                            <option value="10:30">10:30</option>
+                                            <option value="10:45">10:45</option>
+                                            <option value="11:00">11:00</option>
+                                            <option value="11:15">11:15</option>
+                                            <option value="11:30">11:30</option>
+                                            <option value="11:45">11:45</option>
+                                            <option value="12:00">12:00</option>
+                                            <option value="12:15">12:15</option>
+                                            <option value="12:30">12:30</option>
+                                            <option value="12:45">12:45</option>
+                                            <option value="13:00">13:00</option>
+                                            <option value="13:15">13:15</option>
+                                            <option value="13:30">13:30</option>
+                                            <option value="13:45">13:45</option>
+                                            <option value="14:00">14:00</option>
+                                            <option value="14:15">14:15</option>
+                                            <option value="14:30">14:30</option>
+                                            <option value="14:45">14:45</option>
+                                            <option value="15:00">15:00</option>
+                                            <option value="15:15">15:15</option>
+                                            <option value="15:30">15:30</option>
+                                            <option value="15:45">15:45</option>
+                                            <option value="16:00">16:00</option>
+                                            <option value="16:15">16:15</option>
+                                            <option value="16:30">16:30</option>
+                                            <option value="16:45">16:45</option>
+                                            <option value="17:00">17:00</option>
+                                            <option value="17:15">17:15</option>
+                                            <option value="17:30">17:30</option>
+                                            <option value="17:45">17:45</option>
+                                            <option value="18:00">18:00</option>
+                                            <option value="18:15">18:15</option>
+                                            <option value="18:30">18:30</option>
+                                            <option value="18:45">18:45</option>
+                                            <option value="19:00">19:00</option>
+                                            <option value="19:15">19:15</option>
+                                            <option value="19:30">19:30</option>
+                                            <option value="19:45">19:45</option>
+                                            <option value="20:00">20:00</option>
+                                            <option value="20:15">20:15</option>
+                                            <option value="20:30">20:30</option>
+                                            <option value="20:45">20:45</option>
+                                            <option value="21:00">21:00</option>
+                                            <option value="21:15">21:15</option>
+                                            <option value="21:30">21:30</option>
+                                            <option value="21:45">21:45</option>
+                                            <option value="22:00">22:00</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="titlefield">Cliente <span id="ClienteRequired" class="required hidden">*</span></label>
+                                        <br />
+                                        <select id="Cliente" name="Cliente" class="select2_single form-control" style="height: 40px !important; width: 100% !important;"></select>
+                                        <label id="ClienteValidate" name="ClienteValidate" for="Cliente" class="error hidden"> Por favor, selecione um Cliente.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="titlefield">Assunto <span class="required">*</span></label>
+                                        <select id="Assunto" name="Assunto" class="form-control placeholder" data-msg-required="Por favor, selecione um Assunto." data-rule-required="true" style="height: 40px !important;">
+                                            <option value="">Selecione o Assunto</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Local de Atendimento <span class="required">*</span></label>
+                                        <select id="Sede" name="Sede" class="form-control placeholder" data-msg-required="Por favor, selecione um Local." data-rule-required="true" style="height: 40px !important;">
+                                            <option value="">Selecione um Local</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Sala</label>
+                                        <select id="Sala" name="Sala" class="form-control placeholder" style="height: 40px !important;">
+                                            <option value="">Selecione a Sala</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label class="titlefield">Agendar para o Profissional <span class="required">*</span></label>
+                                        <select id="Profissional" name="Profissional" class="form-control placeholder" data-msg-required="Por favor, selecione o Profissional." data-rule-required="true" style="height: 40px !important;">
+                                            <option value="">Selecione o Profissional</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="titlefield">Valor R$</label>
+                                        <input type="text" class="form-control right" placeholder="Informe o Valor" id="Valor" name="Valor" maxlength="14" style="height: 40px !important;" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="titlefield">Descrição <span class="red">(Limite de 250 caracteres)</span> <span id="DescriptionRequired" class="required hidden">*</span></label>
+                                        <textarea class="form-control" style="height: 55px;" id="Descricao" name="Descricao" maxlength="250" data-msg-required="Por favor, informe uma Descrição." data-rule-required="false"></textarea>
+                                        <label id="DescriptionError" for="Descricao" class="error hidden">Por favor, informe uma Descrição.</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-warning" id="agenda-profissional-alert-error" hidden="hidden">
+                                <strong>Aviso:</strong> O Profissional seleciondo já tem agenda nesta data e hora.
+                            </div>
+                            <div class="alert alert-warning" id="agenda-sede-alert-error" hidden="hidden">
+                                <strong>Aviso:</strong> A Sala selecionada nesta Sede já esta agendada nesta data e hora.
+                            </div>
+                            <div class="alert alert-warning" id="agenda-diversos-alert-error" hidden="hidden">
+                                <strong>Aviso:</strong> Problema ao salvar na agenda.
+                            </div>
+
+                            <div class="modal-footer">
+                                <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                &nbsp;
+                                <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharModal();">Fechar</button>
+                                <br />
+                                <label id='LabelClienteFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptCliente' class='btn btn-default btn-xs' style='display: none;' onclick='FecharModalSim()'>Sim</a><a id='go_backCliente' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharModalNao()'>Não</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        @{ WebGrid grid = new WebGrid(Model); }
+                        <div>
+                            @{
+                                @grid.GetHtml(
+                                     tableStyle: "webgrid",
+                                     fillEmptyRows: false,
+                                     headerStyle: "webgrid-header",
+                                     alternatingRowStyle: "webgrid-alternating-row",
+                                     rowStyle: "webgrid-row-style",
+                                     selectedRowStyle: "webgrid-selected-row",
+                                     footerStyle: "webgrid-footer",
+                                     mode: WebGridPagerModes.All,
+                                     firstText: "Primeiro",
+                                     previousText: "Anterior",
+                                     nextText: "Próximo",
+                                     lastText: "Último",
+                                     numericLinksCount: 5,
+                                     columns: new[] {
+                                     grid.Column("CpfCnpj", header: "CPF / CNPJ"),
+                                     grid.Column("PreCadastro.Nome", header: "Cliente"),
+                                     grid.Column("Turno", header: "Turno"),
+                                     grid.Column("ProcessosAreas.AreaAtuacao", header: "Área"),
+                                     grid.Column("Profissionais.Pessoas.Nome", header: "Profissional"),
+                                     grid.Column("IdCliente", header: "Ações", canSort:false,
+                                     format:
+                        @<text>
+                            @if (item.PreCadastro.IdCliente != null)
+                            {
+                            @Html.Raw("<a class='btn btn-success btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Integrar(" + item.IdCliente + ");'>Integrar</a>")
+                            }
+                            else
+                            {
+                            @Html.Raw("<span class='red'>Cliente não cadastrado</span>")
+                            }
+                        </text>)
+});
+
+                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                var totalRecord = "Nenhuma linha encontrada";
+
+                                if (grid.TotalRowCount == 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                }
+                                else if (grid.TotalRowCount > 1)
+                                {
+                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                }
+
+                                <div class="right">@totalRecord</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <!-- bootstrap-multiselect -->
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="~/Content/CSS/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css" />
+
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+
+    <script>
+
+        $("#Data").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        CarregarTiposAgendas();
+        CarregarSedes();
+        CarregarProfissionais("");
+
+        function CarregarTiposAgendas() {
+            var options = {};
+            options.url = "/TiposAgendas/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.tipos;
+                    $('#Assunto').html("");
+                    var select = $('#Assunto');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Assunto")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Local")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        $('#Sede').change(function (evt) {
+
+            CarregarSalas($("#Sede").val(), "");
+
+        });
+
+        function CarregarSalas(IdSede, IdSala) {
+
+            var dados = new window.FormData();
+            dados.append("IdSede", IdSede);
+
+            var options = {};
+            options.url = "/Salas/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.salas;
+                    $('#Sala').html("");
+                    var select = $('#Sala');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sala")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (IdSala == rows[index].Id) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].Id).html(rows[index].Nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function CarregarProfissionais(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#Profissional').html("");
+                    var select = $('#Profissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome + (rows[index].Total > 0 ? " (" + rows[index].Total + ")" : ""))
+                        );
+                    }
+
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function Integrar(Id) {
+
+        }
+
+        function FecharModal() {
+
+            if ($('#modalLabelTitle').text() == 'Visualizar Cliente') {
+                $('#modalNovo').modal('hide');
+            }
+            else {
+                $("#buttonFechar").attr('disabled', true);
+                $("#buttonFechar").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+                $("#LabelClienteFecharConfirmacao").show();
+                $("#acceptCliente").show();
+                $("#go_backCliente").show();
+            }
+
+        }
+
+        function FecharModalSim() {
+
+            $("#LabelClienteFecharConfirmacao").hide();
+            $("#acceptCliente").hide();
+            $("#go_backCliente").hide();
+
+            $("#buttonFechar").text("Fechar");
+            $("#buttonFechar").attr('disabled', false);
+
+            $("#modalNovo").modal("hide");
+
+        }
+
+        function FecharModalNao() {
+
+            $("#LabelClienteFecharConfirmacao").hide();
+            $("#acceptCliente").hide();
+            $("#go_backCliente").hide();
+
+            $("#buttonFechar").text("Fechar");
+            $("#buttonFechar").attr('disabled', false);
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../App/PreAgendamento');
+        }
+
+    </script>
+
+</div>

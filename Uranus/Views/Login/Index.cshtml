@@ -1,0 +1,228 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+@using Uranus.Suite.App_Code
+@using System.Configuration;
+
+<html>
+<head>
+    @{
+        if (ConfigurationManager.AppSettings["ApplicationName"] == "Agenda")
+        {
+            <title>Agenda RVM Advogados</title>
+        }
+        else if (ConfigurationManager.AppSettings["ApplicationName"] == "Processos")
+        {
+            <title>Processos RVM Advogados</title>
+        }
+        else
+        {
+            <title>RVM Advogados</title>
+        }
+    }
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- CSS -->
+    <link href="~/Content/CSS/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/fonts/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/CSS/form-elements.css" rel="stylesheet">
+    <link href="~/Content/CSS/style.css" rel="stylesheet">
+
+    <script src="~/Scripts/nprogress.js"></script>
+    <script>
+        NProgress.start();
+    </script>
+</head>
+<body>
+
+    <div class="container-full">
+        <div class="left">
+            <div class="row top">
+                <div class="col-sm-12">
+
+                </div>
+            </div>
+            <div class="row bottom">
+                <div class="col-sm-12" style="color: #333 !important; box-shadow: inset 1px 2000px rgba(208, 208, 208, 0.70) !important;">
+                    <h5><b>Resolução mínima de tela de 1024 x 768 pixels.</b></h5>
+                    <h5><b>@Html.AssemblyCopyright()</b></h5>
+                    <h5><b>@Html.AssemblyVersion()</b></h5>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <form id="login-form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <img src="~/Content/Images/logo-full.png" style="max-width: 100% !important;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Usuário</label>
+                            <input type="text" class="form-control" placeholder="Informe o Usuário" id="Usuario" name="Usuario" />
+                            <label id="UsuarioValidate" name="UsuarioValidate" for="Usuario" class="error hidden">Por favor, insira o nome do Usuário.</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Senha</label>
+                            <div class="input-group" id="show_hide_password">
+                                <input type="password" class="form-control" placeholder="Informe a Senha" id="Senha" name="Senha" />
+                                <div class="input-group-addon">
+                                    <a href="" style="color: #000 !important; font-size: 20px !important;"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                            <label id="SenhaValidate" name="SenhaValidate" for="Senha" class="error hidden">Por favor, insira a sua Senha.</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="login-alert-error" class="form-group hidden" style="margin-bottom: 0px !important; padding: 0px 25px 0px 25px !important;">
+                    <div class="alert alert-danger">
+                        <b>Aviso:</b> Acesso não autorizado devido a credenciais inválidas.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button id="buttonEntrar" name="buttonEntrar" type="button" class="btn btn-primary mt-3">Entrar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/validates_me.js"></script>
+
+    <script src="~/Scripts/jquery.mask.js"></script>
+
+    <script>
+        NProgress.start();
+
+        $(document).ready(function () {
+            $("#show_hide_password a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password input').attr("type") == "text") {
+                    $('#show_hide_password input').attr('type', 'password');
+                    $('#show_hide_password i').addClass("fa-eye-slash");
+                    $('#show_hide_password i').removeClass("fa-eye");
+                } else if ($('#show_hide_password input').attr("type") == "password") {
+                    $('#show_hide_password input').attr('type', 'text');
+                    $('#show_hide_password i').removeClass("fa-eye-slash");
+                    $('#show_hide_password i').addClass("fa-eye");
+                }
+            });
+        });
+
+        $("#Usuario").keypress(function () {
+            if (($(this).val().length + 1) > 0) {
+                $('#UsuarioValidate').addClass('hidden');
+            }
+        });
+
+        $("#Senha").keypress(function () {
+            if (($(this).val().length + 1) > 0) {
+                $('#SenhaValidate').addClass('hidden');
+            }
+        });
+
+        $('#buttonEntrar').click(function (evt) {
+
+            var validated = true;
+
+            if ($('#Usuario').val().length == 0) {
+                $('#UsuarioValidate').removeClass('hidden');
+                validated = false;
+            }
+            else {
+                $('#UsuarioValidate').addClass('hidden');
+            }
+
+            if ($('#Senha').val().length == 0) {
+                $('#SenhaValidate').removeClass('hidden');
+                validated = false;
+            }
+            else {
+                $('#SenhaValidate').addClass('hidden');
+            }
+
+            if (validated) {
+
+                $("#buttonEntrar").attr('disabled', true);
+                $("#buttonEntrar").html("Enviando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Usuario", $("#Usuario").val());
+                dados.append("Senha", $("#Senha").val());
+
+                var options = {};
+                options.url = "/Login/Validar";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+
+                        $("#login-alert-error").addClass("hidden");
+
+                        if (json.aplicativo == "Agenda") {
+                            $(location).attr('href', $(location).attr('href') + 'Agendas');
+                        }
+                        else if (json.aplicativo == "Processos") {
+                            $(location).attr('href', $(location).attr('href') + 'Processos');
+                        }
+                        else if (json.aplicativo == "Suite") {
+                            $(location).attr('href', $(location).attr('href') + 'Processos');
+                        }
+                        else {
+                            $(location).attr('href', $(location).attr('href') + 'Dashboard');
+                        }
+
+                    }
+                    else {
+
+                        $("#login-alert-error").removeClass("hidden");
+                        $("#buttonEntrar").attr('disabled', false);
+                        $("#buttonEntrar").text("Entrar");
+
+                    }
+
+                    setTimeout(function () {
+                        $("#login-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+            }
+
+        });
+
+    </script>
+</body>
+</html>

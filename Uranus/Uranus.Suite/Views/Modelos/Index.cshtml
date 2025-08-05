@@ -1,0 +1,647 @@
+﻿@{
+    ViewBag.Title = "Cadastros Básicos \\ Modelos de Documentos";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <div id="modalVisualizarDicionario" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="acao-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Visualizar Dicionário</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="webgrid" id="VisualizeTable">
+                                    <thead>
+                                        <tr class="webgrid-header">
+                                            <th scope="col">
+                                                Variável
+                                            </th>
+                                            <th scope="col">
+                                                Descrição
+                                            </th>
+                                            <th scope="col">
+                                                Exemplo
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="webgrid-row-style webgrid-selected-row">
+                                            <td>#ClienteNome</td>
+                                            <td>Nome do Cliente</td>
+                                            <td>João Francisco de Paula</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClienteNacionalidade</td>
+                                            <td>Nacionalidade do Cliente</td>
+                                            <td>Brasileira</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClienteEstadoCivil</td>
+                                            <td>Estado Civil do Cliente</td>
+                                            <td>Casado</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClienteProfissao</td>
+                                            <td>Profissão do Cliente</td>
+                                            <td>Analista de Sistemas</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClienteCPF</td>
+                                            <td>CPF do Cliente</td>
+                                            <td>999.999.999-99</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClienteEndereco</td>
+                                            <td>Endereço do Cliente</td>
+                                            <td>Rua Fernandes Vieira, 535 Apto 209</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClienteBairro</td>
+                                            <td>Bairro do Cliente</td>
+                                            <td>Bom Fim</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClienteCidade</td>
+                                            <td>Cidade do Cliente</td>
+                                            <td>Porto Alegre</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClienteEstado</td>
+                                            <td>Estado do Cliente</td>
+                                            <td>RS</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClienteCEP</td>
+                                            <td>CEP do Cliente</td>
+                                            <td>90.035-091</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClausulaPrimeira</td>
+                                            <td>Cláusula Primeira</td>
+                                            <td>(Texto Livre)</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClausulaSegundaBeneficios</td>
+                                            <td>Cláusula Segunda Benefícios</td>
+                                            <td>3 (três) benefícios</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClausulaSegundaValor</td>
+                                            <td>Cláusula Segunda Valor</td>
+                                            <td>R$ 1.045,00 (mil e quarenta e cinco reais)</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClausulaSegundaParcelas</td>
+                                            <td>Cláusula Segunda Parcelas</td>
+                                            <td>3 (três)</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClausulaSegundaVencimentoDia</td>
+                                            <td>Cláusula Segunda Dia do Vencimento</td>
+                                            <td>dia 15</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ClausulaSegundaVencimento</td>
+                                            <td>Cláusula Segunda Vencimento</td>
+                                            <td>(Texto Livre)</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#ClausulaSegundaPercentual</td>
+                                            <td>Cláusula Segunda Percentual</td>
+                                            <td>15% (quinze por cento)</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#CidadeEstado</td>
+                                            <td>Nome da Cidade e Sigla do Estado</td>
+                                            <td>Porto Alegre (RS)</td>
+                                        </tr>
+                                        <tr class="webgrid-row-style">
+                                            <td>#DataPorExtenso</td>
+                                            <td>Data Por Extenso</td>
+                                            <td>15 de maio de 2021</td>
+                                        </tr>
+                                        <tr class="webgrid-alternating-row">
+                                            <td>#ProfissionalNome</td>
+                                            <td>Nome do Profissional</td>
+                                            <td>Valquiria Peter Bacellar</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>
+                Filtrar Modelos de Documentos
+            </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a id="tab-listar" href="#tab_content_listar" role="tab" data-toggle="tab" aria-expanded="true">Listar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-cadastrar" href="#tab_content_cadastrar" role="tab" data-toggle="tab" aria-expanded="false">Cadastrar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-visualizar" href="#tab_content_visualizar" role="tab" data-toggle="tab" aria-expanded="false">Visualizar</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_listar" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        @{ WebGrid grid = new WebGrid(Model); }
+
+                                        @using (Html.BeginForm("Index", "Modelos", FormMethod.Get, new { id = "modelo-filtro-form" }))
+                                        {
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <div class="form-group">
+                                                        <label class="titlefield">Nome do Modelo</label>
+                                                        <select id="FiltrarNome" name="FiltrarNome" class="select2_single form-control"></select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                        <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                        &nbsp;
+                                                        <button id="Limpar" name="Limpar" type="button" class="btn btn-default" style="margin-top: 25px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                htmlAttributes: new { id = "MainTable" },
+                                                tableStyle: "webgrid",
+                                                fillEmptyRows: false,
+                                                headerStyle: "webgrid-header",
+                                                alternatingRowStyle: "webgrid-alternating-row",
+                                                rowStyle: "webgrid-row-style",
+                                                selectedRowStyle: "webgrid-selected-row",
+                                                footerStyle: "webgrid-footer",
+                                                mode: WebGridPagerModes.All,
+                                                firstText: "Primeiro",
+                                                previousText: "Anterior",
+                                                nextText: "Próximo",
+                                                lastText: "Último",
+                                                numericLinksCount: 5,
+                                                columns: new[] {
+                                                grid.Column("Nome", header: "Nome do Modelo"),
+                                                grid.Column("Id", header: "Ações", canSort:false,
+                                                format:
+                                    @<text>
+                                        @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+
+                                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10)
+                                                                                                                                                    {
+                                            @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
+                                            @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")
+                                                                                                                                                    }
+                                        }
+                                    </text>)
+});
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_cadastrar" aria-labelledby="tab-cadastrar">
+                        <!-- Modelo -->
+                        <div class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 id="TituloModelo"><b>Novo Modelo</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="modelo-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome <span class="required">*</span></label>
+                                            <input id="Nome" name="Nome" type="text" class="form-control" placeholder="Informe o Nome do Modelo" data-msg-required="Por favor, insira o Nome do Modelo." data-rule-required="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="titlefield">Modelo <span class="required">*</span></label>
+                                                </div>
+                                                <div class="col-md-6" style="text-align: right;">
+                                                    <a style="text-decoration: none !important; cursor: pointer !important;" data-toggle="modal" data-target="#modalVisualizarDicionario">Visualizar Dicionário</a>
+                                                </div>
+                                            </div>
+                                            <textarea id="Modelo" name="Modelo" class="form-control placeholder" placeholder="Informe aqui o Objeto" rows="50" data-msg-required="Por favor, insira o Modelo." data-rule-required="true"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                                </div>
+                                <div class="alert alert-success hidden" id="modelo-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado do modelos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="modelo-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro do modelo.
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_visualizar" aria-labelledby="tab-visualizar">
+                        <div id="VisualizarModelo" name="VisualizarModelo">
+                            <p>Nenhum modelo foi selecionado para visualização.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalExcluir" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title" id="modalLabelExcluir">Excluir Modelo</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Você deseja realmente excluir esse Modelo?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <!-- simditor -->
+    <script type="text/javascript" src="~/Scripts/simditor/module.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/simditor/uploader.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/simditor/hotkeys.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/simditor/dompurify.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/simditor/simditor.js"></script>
+
+    <script>
+
+        var tr = $('#VisualizeTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        var select = $('#FiltrarNome');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarNome))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarNome)))
+        );
+        $('#FiltrarNome').trigger('change');
+
+        $("#FiltrarNome").select2({
+            placeholder: "Selecione um Modelo",
+            allowClear: true,
+            tags: true
+        });
+
+
+        CKEDITOR.replace('Modelo', {
+            language: 'pt',
+            height: 1000
+        });
+        //CKEDITOR.replace('Modelo', {
+        //    language: 'pt',
+        //    height: 1000
+        //}).create(document.querySelector('#editor'), {
+        //    fontFamily: {
+        //        options: [
+        //            'default',
+        //            'Ubuntu, Arial, sans-serif',
+        //            'Ubuntu Mono, Courier New, Courier, monospace'
+        //        ]
+        //    }
+        //});
+
+        CarregarModelos();
+
+        function CarregarModelos() {
+            var options = {};
+            options.url = "/Modelos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.modelos;
+                    $('#FiltrarNome').html("");
+                    var select = $('#FiltrarNome');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Modelo")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarNome').val(@Html.Raw(Json.Encode(ViewBag.FiltrarNome)));
+                    $('#FiltrarNome').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#modelo-form").validate();
+
+            if ($('#modelo-form').valid()) {
+
+                $("#buttonSalvar").attr('disabled', true);
+                $("#buttonSalvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var modelo = escape(CKEDITOR.instances.Modelo.getData());
+
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("Nome", $("#Nome").val());
+                dados.append("Modelo", modelo);
+
+                var options = {};
+                options.url = "/Modelos/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $("#modelo-alert-success").removeClass("hidden");
+                        $("#modelo-alert-error").addClass("hidden");
+
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+
+                    }
+                    else {
+
+                        $("#modelo-alert-success").addClass("hidden");
+                        $("#modelo-alert-error").removeClass("hidden");
+
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+
+                    }
+
+                    setTimeout(function () {
+                        $("#modelo-alert-success").addClass("hidden");
+                        $("#modelo-alert-error").addClass("hidden");
+                    }, 3000);
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonFechar').click(function (evt) {
+
+            LimparCadastro();
+
+            $("#tab-listar").click();
+
+        });
+
+        $('#tab-listar').click(function (evt) {
+
+            $('#id').val("0");
+            CKEDITOR.instances["Modelo"].setData("");
+
+            LimparCadastro();
+
+        });
+
+        $('#tab-cadastrar').click(function (evt) {
+
+            LimparCadastro();
+
+        });
+
+        $('#tab-visualizar').click(function (evt) {
+
+            $('#id').val("0");
+            $('#Nome').val("");
+            CKEDITOR.instances["Modelo"].setData("");
+
+        });
+
+        function Visualizar(Id) {
+
+            $('#VisualizarModelo').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
+
+            var url = '@Url.Action("View", "Modelos")';
+            url += '/?Id=' + Id ;
+            $("#VisualizarModelo").load(url);
+            $("#tab-visualizar").click();
+
+        }
+
+        function Alterar(Id) {
+
+            $('#TituloModelo').html("<b>Alterar Modelo</b>");
+
+            $('#id').val(Id);
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Modelos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#tab-cadastrar").click();
+
+                    $('#id').val(json.modelo[0].Id);
+                    $('#Nome').val(json.modelo[0].Nome);
+
+                    var modelo = (json.modelo[0].Modelo != null ? json.modelo[0].Modelo : "");
+                    CKEDITOR.instances["Modelo"].setData(unescape(modelo));
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir esse Modelo (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Modelos/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Modelo excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#modelo-form").validate().resetForm();
+
+                    Atualizar();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Modelo (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Modelo (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+           $(location).attr('href', '../Modelos');
+        }
+
+        function LimparFiltro() {
+
+            $('#FiltrarNome').val("");
+            $('#FiltrarNome').trigger('change');
+
+            $("#modelo-filtro-form").submit();
+        }
+
+        function LimparCadastro() {
+
+            $('#Nome').val("");
+
+            $('#VisualizarModelo').html("<p>Nenhum modelo foi selecionado para visualização.</p>");
+
+        }
+
+    </script>
+</div>

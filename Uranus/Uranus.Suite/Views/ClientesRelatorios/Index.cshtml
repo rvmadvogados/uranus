@@ -1,0 +1,234 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Clientes \\ Relatório de Clientes à Receber";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using ReportViewerForMvc;
+
+<!-- page content -->
+<div role="main">
+    <div class="">
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+
+                    @using (Html.BeginForm("Index", "ClientesRelatorios", FormMethod.Get, null))
+                    {
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Relatório de Clientes à Receber </h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Relatórios de Clientes</label>
+                                                    <select id="FiltrarRelatorio" name="FiltrarRelatorio" class="form-control placeholder">
+                                                        <option value="0">Selecione Relatório</option>
+                                                        <option value="1">Parcelas Em aberto por Data de Emissão</option>
+                                                        <option value="2">Parcelas Em aberto por Data de Vencimento</option>
+                                                        <option value="3">Parcelas Pagas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            @*<div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Empresa </label>
+                                                    <select id="FiltrarEmpresa" name="FiltrarEmpresa" class="select2_single form-control" style="width: 100% !important;"></select>
+                                                </div>
+                                            </div>*@
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Cliente</label>
+                                                    <select class="select2_single form-control" id="FiltrarCliente" name="FiltrarCliente"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Inicio</label>
+                                                    <div id="FiltrarDataInicio1" name="FiltrarDataInicio1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataInicio" data-msg-required="Por favor, insira a data inicio." data-rule-required="true" readonly />
+                                                        @*<span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim</label>
+                                                    <div id="FiltrarDataFim1" name="FiltrarDataFim1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataFim" data-msg-required="Por favor, insira a data fim." data-rule-required="true" readonly />
+                                                        @*<span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarSedes').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- maskMoney -->
+<script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+
+<!-- mask -->
+<script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+<!-- mask -->
+<script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<!-- /page content -->
+<!-- datepicker -->
+<!--<script src="~/Content/vendors/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="~/Content/js/datepicker/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="~/Content/js/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>-->
+<!-- jQuery autocomplete -->
+<!--<script src="~/Content/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js"></script>-->
+<!-- select2 -->
+<!--<script src="~/Content/js/select/select2.full.js"></script>-->
+<!-- maskMoney -->
+<!--<script type="text/javascript" src="~/Content/js/jquery.maskMoney.js"></script>-->
+
+<script>
+
+        var select = $('#FiltrarCliente');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+        );
+        $('#FiltrarCliente').trigger('change');
+
+        $("#FiltrarDataInicio").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarDataFim").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#DataPagamento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarCliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                cache: false,
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsListRel',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+    CarregarEmpresas();
+    function CarregarEmpresas() {
+
+        var options = {};
+        options.url = "/Empresas/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.empresas;
+                $('#FiltrarEmpresa').html("");
+                var select = $('#FiltrarEmpresa');
+                select.append(
+                    $('<option selected></option>').val("0").html("Selecione uma Empresa")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].NomeFantasia)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+</script>

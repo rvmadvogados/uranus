@@ -1,0 +1,1548 @@
+﻿<!DOCTYPE html>
+
+@using Uranus.Suite.App_Code;
+
+<html>
+<head>
+    @{
+        if (Sessao.Aplicativo == "Agenda")
+        {
+            <title>Agenda RVM Advogados</title>
+        }
+        else if (Sessao.Aplicativo == "Processos")
+        {
+            <title>Processos RVM Advogados</title>
+        }
+        else
+        {
+            <title>RVM Advogados</title>
+        }
+    }
+
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Bootstrap core CSS -->
+    <link href="~/Content/CSS/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/fonts/CSS/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/CSS/animate.min.css" rel="stylesheet">
+
+    <!-- Custom styling plus plugins -->
+    <link href="~/Content/CSS/custom.css" rel="stylesheet">
+    <link href="~/Content/CSS/maps/jquery-jvectormap-2.0.1.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/CSS/icheck/flat/yellow.css" rel="stylesheet" />
+    <link href="~/Content/CSS/datatables/tools/css/dataTables.tableTools.css" rel="stylesheet">
+    <link href="~/Content/CSS/floatexamples.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/Content/CSS/icheck/flat/green.css" rel="stylesheet">
+
+    <link href="~/Content/CSS/datepicker/bootstrap-datepicker.css" rel="stylesheet">
+    <link href="~/Content/CSS/calendar/fullcalendar.css" rel="stylesheet">
+    <link href="~/Content/CSS/calendar/fullcalendar.print.css" rel="stylesheet" media="print">
+
+    <!-- select2 -->
+    <link href="~/Content/CSS/select/select2.min.css" rel="stylesheet">
+
+    <!-- password -->
+    <link href="~/Content/CSS/password.css" rel="stylesheet" type="text/css" />
+
+    <!-- ckeditor -->
+    <script src="~/Scripts/ckeditor_full/ckeditor.js"></script>
+
+    <script src="~/Scripts/jquery.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <!-- chart -->
+    <script src="~/Scripts/chartjs/chart.min.js"></script>
+
+    <!-- daterangepicker -->
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/daterangepicker/daterangepicker.js"></script>
+    <link href="~/Content/CSS/daterangepicker/daterangepicker.css" rel="stylesheet">
+
+    <!-- moris -->
+    <script src="~/Scripts/moris/raphael-min.js"></script>
+    <script src="~/Scripts/moris/morris.min.js"></script>
+
+    <!-- bootstrap-multiselect -->
+    <script type="text/javascript" src="~/Scripts/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="~/Content/CSS/bootstrap-multiselect/bootstrap-multiselect.css" type="text/css" />
+
+    <!-- simditor -->
+    @*<link href="~/Content/CSS/simditor/simditor.css" rel="stylesheet" type="text/css" />*@
+
+    <script src="~/Scripts/nprogress.js"></script>
+    <script>
+        NProgress.start();
+    </script>
+
+    <!--[if lt IE 9]>
+        <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+        <![endif]-->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <style type="text/css">
+        /* better progress bar styles for the bootstrap demo */
+        .pass-strength-visible input.form-control,
+        input.form-control:focus {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .pass-strength-visible .pass-graybar,
+        .pass-strength-visible .pass-colorbar,
+        .form-control:focus + .pass-wrapper .pass-graybar,
+        .form-control:focus + .pass-wrapper .pass-colorbar {
+            border-bottom-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+    </style>
+
+</head>
+
+<body class="nav-md">
+
+    <input id="listaFeriadosRecesso" type="hidden" value="@Sessao.FeriadosRecesso" />
+
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">Mensagem do Sistema</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente sair do Sistema?</h4>
+                </div>
+                <div class="modal-footer">
+                    @{
+                        try
+                        {
+                            @Html.ActionLink("buttonOut", "DestroySession", "Login", "Sim", "margin: 0;", "btn btn-primary")
+                        }
+                        catch (Exception ex)
+                        {
+                            // Response.Redirect("http://agenda.rvmadvogados.com.br/", true);
+                        }
+                    }
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--<div id="myModalSendMail" class="modal fade" role="dialog">
+        <div class="modal-dialog">-->
+    <!-- Modal content-->
+    <!--<div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="myModalLabel">Enviar Agendas da Próxima Semana</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente enviar por e-mail as agendas da próxima semana?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button id="buttonEnviarEmails" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Enviar</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>-->
+
+    <div id="myModalMsg" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title">Mensagem do Sistema</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você está sem créditos disponíveis para realizar essa consulta!</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="myModalPass" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <form id="senha-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Alterar Senha</h3>
+                    </div>
+                    <div class="modal-body">
+                        <input id="username" type="hidden" class="form-control" value="@Uranus.Suite.Sessao.Usuario.Nome" />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Senha <span class="required">*</span></label>
+                                    <div class="input-group" id="show_hide_password1">
+                                        <input type="password" class="form-control" placeholder="Informe uma Senha" id="SenhaAux" name="SenhaAux" data-msg-required="Por favor, insira uma Senha." data-rule-required="true" />
+                                        <div class="input-group-addon">
+                                            <a href="" style="color: #000 !important;"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Confirmar Senha <span class="required">*</span></label>
+                                    <div class="input-group" id="show_hide_password2">
+                                        <input type="password" class="form-control" placeholder="Informe a mesma Senha" id="ConfirmaSenhaAux" name="ConfirmaSenhaAux" data-msg-required="Por favor, insira a Senha de Confirmação." data-rule-required="true" />
+                                        <div class="input-group-addon">
+                                            <a href="" style="color: #000 !important;"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonAlterarSenha" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="myModalInfo" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="empresa-info-form" method="POST" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Alterar Informações da Empresa</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">CNPJ <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o CNPJ" id="EmpresaCNPJ" name="EmpresaCNPJ">
+                                    <input type="hidden" id="EmpresaId" name="EmpresaId" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Razão Social <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe a Razão Social" id="EmpresaRazao" name="EmpresaRazao" data-msg-required="Por favor, insira o nome da Razão Social." data-rule-required="true">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">CEP <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o CEP" id="EmpresaCEP" name="EmpresaCEP" data-msg-required="Por favor, insira o número do CEP." data-rule-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Logradouro <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Logradouro" id="EmpresaLogradouro" name="EmpresaLogradouro" data-msg-required="Por favor, insira o nome do logradouro." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Número <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Número" id="EmpresaNumero" name="EmpresaNumero" data-msg-required="Por favor, insira o n&uacute;mero." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Complemento</label>
+                                    <input type="text" class="form-control" placeholder="Informe o Complemento" id="EmpresaComplemento" name="EmpresaComplemento" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Bairro <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Bairro" id="EmpresaBairro" name="EmpresaBairro" data-msg-required="Por favor, insira o nome do bairro." data-rule-required="true" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Estado <span class="required">*</span></label>
+                                    <select id="EmpresaEstado" name="EmpresaEstado" class="form-control placeholder" data-msg-required="Por favor, selecione um estado." data-rule-required="true"></select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Cidade <span class="required">*</span></label>
+                                    <select id="EmpresaCidade" name="EmpresaCidade" class="form-control placeholder" data-msg-required="Por favor, selecione uma cidade." data-rule-required="true">
+                                        <option value="" style="background-color: #eaeaea;">Selecione a Cidade</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Telefone <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Telefone" id="EmpresaTelefone" name="EmpresaTelefone" data-msg-required="Por favor, insira o número de telefone." data-rule-required="true" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonInfoSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalMensagem" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="Atualizar();"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title"><label>Aviso</label></h3>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalMensagemResposta"></h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="Atualizar();">Ok</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0;">
+                        @Html.ActionImageLink("imagemLogo", "Index", "Agendas", "~/Content/Images/logo-maxi.png", "site_title")<br />
+                    </div>
+                    <div class="clearfix"></div>
+                    <!-- menu prile quick info -->
+                    <div class="profile_info">
+                        <span>Bem vindo,</span>
+                        <h2>
+                            @Uranus.Suite.Sessao.Usuario.Nome
+                        </h2>
+                    </div>
+                    <div class="clearfix"></div>
+                    <!-- /menu prile quick info -->
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>&nbsp;</h3>
+                            <ul class="nav side-menu">
+                                @{
+                                    <li>
+                                        <a href="~/Processos/Agendar" onclick="NProgress.start();"><i class="fa fa-tags" style="vertical-align: top !important; text-align: center !important;"></i> Agenda de Prazos</a>
+                                    </li>
+
+                                    @(Uranus.Suite.Sessao.Aplicativo == "Processos" ? Html.Raw("<li class='active'>") : Html.Raw("<li>"))
+                                    <a href="~/Processos" onclick="NProgress.start(); LimparSessao();"><i class="fa fa-legal" style="vertical-align: top !important; text-align: center !important;"></i> Processos</a>
+                                    Html.Raw("</li>");
+
+                                    @(Uranus.Suite.Sessao.Aplicativo == "Agenda" ? Html.Raw("<li class='active'>") : Html.Raw("<li>"))
+                                    <a href="~/Agendas" onclick="NProgress.start();"><i class="fa fa-calendar-o" style="vertical-align: top !important; text-align: center !important;"></i> Agenda de Compromissos</a>
+                                    Html.Raw("</li>");
+                                    <li>
+                                        <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Agendas Operações <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu" style="display: none">
+
+                                            @if (Uranus.Suite.Sessao.Usuario.Nivel > 2)
+                                            {
+                                                <li>
+                                                    <a href="~/AgendasEmMassa" onclick="NProgress.start();"><i class="fa fa-calendar" style="vertical-align: top !important; text-align: center !important;"></i> Agendas em Massa</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Agendas/Send" onclick="NProgress.start();" style="cursor: pointer;"><i class="fa fa-envelope-o" style="vertical-align: top !important; text-align: center !important;"></i> Enviar Agendas por Período</a>
+                                                </li>
+                                            }
+
+                                            <li>
+                                                <a href="~/Agendas/Period" onclick="NProgress.start();"><i class="fa fa-filter" style="vertical-align: top !important; text-align: center !important;"></i> Agendas por Período</a>
+                                            </li>
+                                        </ul>
+
+                                    </li>
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Cadastros Básicos <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/Feriados" onclick="NProgress.start();">Feriados</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Modelos" onclick="NProgress.start();">Modelos de Documentos</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="~/Parceiros" onclick="NProgress.start();">Parceiros</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="~/Acao" onclick="NProgress.start();">Processo Ação</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Areas" onclick="NProgress.start();">Processo Área</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Eventos" onclick="NProgress.start();">Processo Evento</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Varas" onclick="NProgress.start();">Processo Juízo</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Salas" onclick="NProgress.start();">Salas</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Sedes" onclick="NProgress.start();">Sedes</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/TiposAgendas" onclick="NProgress.start();">Tipos de Agendas</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="~/TiposIndicacoes" onclick="NProgress.start();">Tipos de Indicações</a>
+                                                </li>
+
+                                                <li>
+                                                    <a href="~/TiposProfissionais" onclick="NProgress.start();">Tipos de Profissionais</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                    }
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel > 0)
+                                    {
+                                        <li>
+                                            <a href="~/Clientes" onclick="NProgress.start();"><i class="fa fa-male" style="vertical-align: top !important; text-align: center !important;"></i> Cadastros</a>
+                                        </li>
+                                        <li>
+                                            <a href="~/ClientesContratos" onclick="NProgress.start();"><i class="fa fa-tags" style="vertical-align: top !important; text-align: center !important;"></i> Contratos Clientes</a>
+                                        </li>
+                                    }
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <li>
+                                            <a><i class="fa fa-gears" style="vertical-align: top !important; text-align: center !important;"></i> Controladoria <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/Auditoria" onclick="NProgress.start();">Auditoria</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Profissionais" onclick="NProgress.start();">Profissionais</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Usuarios" onclick="NProgress.start();">Usuários</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/UnificarProcessos" onclick="NProgress.start();">Unificar Processos</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioClientesEtiquetas" onclick="NProgress.start();">Emissão  Etiquetas</a>
+                                                </li>
+                                                @*<li>
+                            <a href="~/RelatorioAgendasNaoCompareceu" onclick="NProgress.start();">Relatório Agendas - Não Compareceu</a>
+                        </li>*@
+                                                <li>
+                                                    <a href="~/RelatorioCadastroClientes" onclick="NProgress.start();">Relatório de Cadastros</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioCancelamentoAgenda" onclick="NProgress.start();">Relatório de Ausentes e Cancelados</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioEventos" onclick="NProgress.start();">Relatório Eventos</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioClientesIndicacao" onclick="NProgress.start();">Relatório de Indicação</a>
+                                                </li>
+                                                @*<li>
+                            <a href="~/RelatorioClientesIndicfinanceiroorigem" onclick="NProgress.start();">Relatório de Indicação</a>
+                        </li>*@
+                                                <li>
+                                                    <a href="~/RelatorioPorSede" onclick="NProgress.start();">Relatório de Processos</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                    }
+
+
+                                    <li>
+                                        <a href="~/Documentos" onclick="NProgress.start();"><i class="fa fa-file-pdf-o" style="vertical-align: top !important; text-align: center !important;"></i> Gerar Documentos</a>
+                                    </li>
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <li>
+                                            <a href="~/Iniciais" onclick="NProgress.start();"><i class="fa fa-file-pdf-o" style="vertical-align: top !important; text-align: center !important;"></i> Gerar Iniciais</a>
+                                        </li>
+
+                                        <li class="active">
+                                            <a href="~/Dashboard" onclick="NProgress.start();"><i class="fa fa-dashboard" style="vertical-align: top !important; text-align: center !important;"></i> Dashboard</a>
+                                        </li>
+                                    }
+
+                                    @*if (Uranus.Suite.Sessao.Usuario.Nivel > 2)
+            {
+                <li>
+                    <a href="~/Agendas/Send" onclick="NProgress.start();" style="cursor: pointer;"><i class="fa fa-envelope-o" style="vertical-align: top !important; text-align: center !important;"></i> Enviar Agendas por Período</a>
+                </li>
+            }*@
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6)
+                                    {
+                                        <li>
+                                            <a href="~/Processos/Enviar" onclick="NProgress.start();"><i class="fa fa-cloud-upload" style="vertical-align: top !important; text-align: center !important;"></i> Enviar Planilhas E-PROC</a>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <a href="~/EventoAutomatico" onclick="NProgress.start();"><i class="fa fa-check-square-o" style="vertical-align: top !important; text-align: center !important;"></i> Eventos Automáticos</a>
+                                    </li>
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6)
+                                    {
+                                        <li>
+                                            <a href="~/Processos/Processar" onclick="NProgress.start();"><i class="fa fa-history" style="vertical-align: top !important; text-align: center !important;"></i> Processar Planilhas E-PROC</a>
+                                        </li>
+                                    }
+
+
+                                    <li>
+                                        <a><i class="fa fa-gears" style="vertical-align: top !important; text-align: center !important;"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu" style="display: none">
+                                            @if (Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6)
+                                            {
+                                                <li>
+                                                    <a href="~/RelatorioAgendaCompromisso" onclick="NProgress.start();">Agenda de Compromissos</a>
+                                                </li>
+                                            }
+                                            <li>
+                                                <a href="~/RelatorioAgendaProfissionaisPrazos" onclick="NProgress.start();">Agenda do Profissional</a>
+                                            </li>
+                                            @if (Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6)
+                                            {
+                                                <li>
+                                                    <a href="~/RelatorioAgendaProfissionais" onclick="NProgress.start();">Prazos Registrados</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel > 0)
+                                    {
+                                        if (Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6)
+                                        {
+                                            <li>
+                                                <a><i class="fa fa-download" style="vertical-align: top !important; text-align: center !important;"></i>Tratamento de Prazos <span class="fa fa-chevron-down"></span></a>
+                                                <ul class="nav child_menu" style="display: none">
+
+                                                    <li>
+                                                        <a href="~/Processos/CapturarEProc" onclick="NProgress.start();">Processos EPROC</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="~/Processos/CapturarOab" onclick="NProgress.start();">Processos OAB</a>
+                                                        @*<a href="~/Processos/CapturarOab" onclick="NProgress.start();">Processos OAB <span class="label label-success pull-right dark">Em Breve</span></a>*@
+                                                    </li>
+                                                    <li>
+                                                        <a href="~/Processos/CapturarWebJur" onclick="NProgress.start();">Processos WEBJUR</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+                                    }
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                    {
+                                        <li>
+                                            <a><i class="fa fa-mobile" style="vertical-align: top !important; text-align: center !important;"></i>Integração App <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+
+                                                <li>
+                                                    <a href="~/App/PreCadastro" onclick="NProgress.start();">Pré-Cadastro</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/App/PreAgendamento" onclick="NProgress.start();">Pré-Agendamento</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/App/GerarToken" onclick="NProgress.start();">Gerar Token</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    }
+
+                                    if (Uranus.Suite.Sessao.Usuario.Nivel >= 5)
+                                    {
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/BancosLancamentos" onclick="NProgress.start();">Lançamentos de Bancos</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/NotasServicos" onclick="NProgress.start();">Emitir Nota de Serviço</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/GestaoBoletos" onclick="NProgress.start();">Gestão de Boletos</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Cadastros Básicos<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/Bancos" onclick="NProgress.start();">Bancos</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Fornecedores" onclick="NProgress.start();">Fornecedores</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/Historicos" onclick="NProgress.start();">Históricos</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/FinanceiroImpostosNF" onclick="NProgress.start();">Impostos NFE</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/ClientesFinanceiroIndicacoes" onclick="NProgress.start();">Indicação Clientes</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/FinanceiroOrigem" onclick="NProgress.start();">Origem</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/FinanceiroTipo" onclick="NProgress.start();">Tipos de Receita e Despesas</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Receitas <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/ClientesPagamentosPeriodo">Baixa de Pagamentos Clientes</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/ClientesNotas" onclick="NProgress.start();">Clientes Lançamentos a Receber</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/FinanceiroReceitas" onclick="NProgress.start();">Lançamento de Receitas</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Despesas <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/FornecedoresPagamentosPeriodo">Baixa de Pagamentos Fornecedores</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/FornecedoresNotas" onclick="NProgress.start();">Fornecedores Lançamentos a Pagar</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/FinanceiroDespesas" onclick="NProgress.start();">Lançamento de Despesas</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/FornecedoresRelatorios">Relatório de Fornecedores à Pagar</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/ClientesRelatorios">Relatório de Clientes à Receber</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioFinanceiroDespesas">Relatório de Despesas por Centro de Custo</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioFinanceiroReceitas">Relatório de Receitas por Centro de Custo</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioFinanceiroDespesasAnual">Relatório de Despesas Anual por Centro de Custo</a>
+                                                </li>
+                                                <li>
+                                                    <a href="~/RelatorioFinanceiroReceitasAnual">Relatório de Receitas Anual por Centro de Custo</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Administrativo <span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu" style="display: none">
+                                                <li>
+                                                    <a href="~/Colaboradores" onclick="NProgress.start();">Gestão de Colaboradores</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                    }
+
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /sidebar menu -->
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        @{
+                            var style = "cursor: pointer;";
+
+                            if (Uranus.Suite.Sessao.Usuario.Nivel != 5)
+                            {
+                                style = "cursor: pointer; width: 33.3%;";
+                            }
+                            <a data-toggle="tooltip" data-placement="top" title="Alterar Senha" style="@style" onclick="$('#senha-form').trigger('reset'); $('#events').password().trigger('reset'); ('#SenhaAux').val(''); ('#ConfirmaSenhaAux').val('');">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="modal" data-target="#myModalPass" data-backdrop="static" data-keyboard="false"></span>
+                            </a>
+
+                            if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                            {
+                                <a data-toggle="tooltip" data-placement="top" title="Alterar Informações da Empresa" style="@style" onclick="EmpresaAlterar();">
+                                    <span class="glyphicon glyphicon-inbox" aria-hidden="true" data-toggle="modal" data-target="#myModalInfo" data-backdrop="static" data-keyboard="false"></span>
+                                </a>
+                            }
+
+                            <a data-toggle="tooltip" data-placement="top" title="Tela Cheia" style="@style" onclick="$(document).toggleFullScreen()">
+                                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            </a>
+
+                            <a data-toggle="tooltip" data-placement="top" title="Sair" style="@style">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true" data-toggle="modal" data-target="#myModal"></span>
+                            </a>
+                        }
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <nav class="" role="navigation">
+                        <div class="nav toggle" style="float: left; padding-top: 15px; width: 47px;">
+                            <a id="menu_toggle" style="cursor: pointer; cursor: hand;"><i class="fa fa-bars"></i></a>
+                        </div>
+                        <div style="float: left; padding-top: 12px; padding-bottom: 10px;">
+                            <label style="font-family: 'Roboto', sans-serif; font-weight: normal; font-size: 14pt;">@ViewBag.Title</label>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!-- /top navigation -->
+            <!-- page content -->
+            <div class="right_col" role="main">
+                @RenderBody()
+            </div>
+            <!-- /page content -->
+        </div>
+    </div>
+
+    <div id="custom_notifications" class="custom-notifications dsp_none">
+        <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group"></ul>
+        <div class="clearfix"></div>
+        <div id="notif-group" class="tabbed_notifications"></div>
+    </div>
+
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/validates_me.js"></script>
+
+    <!-- gauge js -->
+    <script type="text/javascript" src="~/Scripts/gauge/gauge.min.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/gauge/gauge_demo.js"></script>*@
+    <!-- bootstrap progress js -->
+    <script src="~/Scripts/progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="~/Scripts/nicescroll/jquery.nicescroll.min.js"></script>
+    <!-- icheck -->
+    <script src="~/Scripts/icheck/icheck.min.js"></script>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script src="~/Scripts/custom.js"></script>
+    <script src="~/Scripts/calendar/fullcalendar.min.js"></script>
+    <!-- flot js -->
+    <!--[if lte IE 8]><script type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.pie.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.orderBars.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.time.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/date.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.spline.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.stack.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/curvedLines.js"></script>
+    <script type="text/javascript" src="~/Scripts/flot/jquery.flot.resize.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+    <script type="text/javascript" src="~/Scripts/valida_cpf_cnpj.js"></script>
+
+    <!-- richtext editor -->
+    @*<script src="~/Scripts/editor/bootstrap-wysiwyg.js"></script>
+        <script src="~/Scripts/editor/external/jquery.hotkeys.js"></script>
+        <script src="~/Scripts/editor/external/google-code-prettify/prettify.js"></script>*@
+
+    <script>
+
+        $(document).ready(function () {
+            $("#show_hide_password1 a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password1 input').attr("type") == "text") {
+                    $('#show_hide_password1 input').attr('type', 'password');
+                    $('#show_hide_password1 i').addClass("fa-eye-slash");
+                    $('#show_hide_password1 i').removeClass("fa-eye");
+                } else if ($('#show_hide_password1 input').attr("type") == "password") {
+                    $('#show_hide_password1 input').attr('type', 'text');
+                    $('#show_hide_password1 i').removeClass("fa-eye-slash");
+                    $('#show_hide_password1 i').addClass("fa-eye");
+                }
+            });
+            $("#show_hide_password2 a").on('click', function (event) {
+                event.preventDefault();
+                if ($('#show_hide_password2 input').attr("type") == "text") {
+                    $('#show_hide_password2 input').attr('type', 'password');
+                    $('#show_hide_password2 i').addClass("fa-eye-slash");
+                    $('#show_hide_password2 i').removeClass("fa-eye");
+                } else if ($('#show_hide_password2 input').attr("type") == "password") {
+                    $('#show_hide_password2 input').attr('type', 'text');
+                    $('#show_hide_password2 i').removeClass("fa-eye-slash");
+                    $('#show_hide_password2 i').addClass("fa-eye");
+                }
+            });
+        });
+
+        function LimparSessao() {
+            @{
+                Uranus.Suite.Sessao.ProcessRowIndex = String.Empty;
+                Uranus.Suite.Sessao.ProcessNumber = String.Empty;
+                Uranus.Suite.Sessao.ClientName = String.Empty;
+                Uranus.Suite.Sessao.AreaType = String.Empty;
+                Uranus.Suite.Sessao.ProcessStatus = String.Empty;
+                Uranus.Suite.Sessao.Judgment = String.Empty;
+                Uranus.Suite.Sessao.URLParameters = String.Empty;
+            }
+        }
+
+        window.onload = function () {
+            setInterval("KeepSessionAlive()", 60000)
+        }
+
+        function KeepSessionAlive() {
+            url = "/KeepSessionAlive.ashx?";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", url, true);
+            xmlHttp.send();
+        }
+
+        $("#ClienteCNPJ").mask("99.999.999/9999-99");
+        $("#ClienteCEP").mask("99999-999");
+        $("#ClienteTelefone").mask("(99) 9999-9999?9");
+
+        $("#ClienteCEP").keyup(function () {
+
+            if ($("#ClienteCEP").val().length == 9) {
+
+                $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + $("#ClienteCEP").val(), function () {
+
+                    if (resultadoCEP["tipo_logradouro"] != '') {
+
+                        if (resultadoCEP["resultado"]) {
+
+                            $("#ClienteLogradouro").val(unescape(resultadoCEP["logradouro"]));
+                            $("#ClienteBairro").val(unescape(resultadoCEP["bairro"]));
+                            $("#ClienteNumero").focus();
+
+                            $("#ClienteTipoLogradouro option").filter(function (index) {
+                                return $(this).text() == unescape(resultadoCEP["tipo_logradouro"]);
+                            }).attr('selected', 'selected');
+
+                            $("#ClienteEstado option").filter(function (index) {
+                                return $(this).val() == unescape(resultadoCEP["uf"]);
+                            }).attr('selected', 'selected');
+
+                            CarregarMunicipios(unescape(resultadoCEP["uf"]), unescape(resultadoCEP["cidade"]));
+                            //$("#ClienteMunicipio option").filter(function (index) {
+                            //    return $(this).text() == unescape(resultadoCEP["cidade"]);
+                            //}).attr('selected', 'selected');
+
+                        }
+                    }
+                });
+
+                $("#ClienteTipoLogradouro").prop('disabled', false);
+                $("#ClienteLogradouro").prop('disabled', false);
+                $("#ClienteNumero").prop('disabled', false);
+                $("#ClienteComplemento").prop('disabled', false);
+                $("#ClienteBairro").prop('disabled', false);
+                $("#ClienteMunicipio").prop('disabled', false);
+                $("#ClienteEstado").prop('disabled', false);
+            }
+            else {
+                $("#ClienteTipoLogradouro").prop('disabled', true);
+                $("#ClienteLogradouro").prop('disabled', true);
+                $("#ClienteNumero").prop('disabled', true);
+                $("#ClienteComplemento").prop('disabled', true);
+                $("#ClienteBairro").prop('disabled', true);
+                $("#ClienteMunicipio").prop('disabled', true);
+                $("#ClienteEstado").prop('disabled', true);
+            }
+
+        });
+
+    </script>
+
+    <!-- skycons -->
+    <script src="~/Scripts/skycons/skycons.js"></script>
+    <script>
+        var icons = new Skycons({
+            "color": "#73879C"
+        }),
+            list = [
+                "clear-day", "clear-night", "partly-cloudy-day",
+                "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
+                "fog"
+            ],
+            i;
+
+        for (i = list.length; i--;)
+            icons.set(list[i], list[i]);
+
+        icons.play();
+    </script>
+
+    <!-- datepicker -->
+    <script type="text/javascript">
+        //$(document).ready(function () {
+
+        //    var cb = function (start, end, label) {
+        //        console.log(start.toISOString(), end.toISOString(), label);
+        //        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        //    }
+
+        //    var optionSet1 = {
+        //        startDate: moment().subtract(29, 'days'),
+        //        endDate: moment(),
+        //        minDate: '01/01/2012',
+        //        maxDate: '12/31/2015',
+        //        dateLimit: {
+        //            days: 60
+        //        },
+        //        showDropdowns: true,
+        //        showWeekNumbers: true,
+        //        timePicker: false,
+        //        timePickerIncrement: 1,
+        //        timePicker12Hour: true,
+        //        ranges: {
+        //            'Hoje': [moment(), moment()],
+        //            'Ontem': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        //            'Últimos 7 dias': [moment().subtract(6, 'days'), moment()],
+        //            'Últimos 30 dias': [moment().subtract(29, 'days'), moment()],
+        //            'Este mês': [moment().startOf('month'), moment().endOf('month')],
+        //            'Mês passado': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        //        },
+        //        opens: 'left',
+        //        buttonClasses: ['btn btn-default'],
+        //        applyClass: 'btn-small btn-primary',
+        //        cancelClass: 'btn-small',
+        //        format: 'MM/DD/YYYY',
+        //        separator: ' to ',
+        //        locale: {
+        //            applyLabel: 'Enviar',
+        //            cancelLabel: 'Limpar',
+        //            fromLabel: 'De',
+        //            toLabel: 'Para',
+        //            customRangeLabel: 'Personalizadas',
+        //            daysOfWeek: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+        //            monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        //            firstDay: 1
+        //        }
+        //    };
+        //    $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+        //    $('#reportrange').daterangepicker(optionSet1, cb);
+        //    $('#reportrange').on('show.daterangepicker', function () {
+        //        console.log("show event fired");
+        //    });
+        //    $('#reportrange').on('hide.daterangepicker', function () {
+        //        console.log("hide event fired");
+        //    });
+        //    $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
+        //        console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+        //    });
+        //    $('#reportrange').on('cancel.daterangepicker', function (ev, picker) {
+        //        console.log("cancel event fired");
+        //    });
+        //    $('#options1').click(function () {
+        //        $('#reportrange').data('daterangepicker').setOptions(optionSet1, cb);
+        //    });
+        //    $('#options2').click(function () {
+        //        $('#reportrange').data('daterangepicker').setOptions(optionSet2, cb);
+        //    });
+        //    $('#destroy').click(function () {
+        //        $('#reportrange').data('daterangepicker').remove();
+        //    });
+        //});
+    </script>
+
+    <script src="~/Scripts/jquery.fullscreen-min.js" type="text/javascript"></script>
+
+    <!-- Datatables -->
+    <script src="~/Scripts/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/Scripts/datatables/tools/js/dataTables.tableTools.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('input.tableflat').iCheck({
+                checkboxClass: 'icheckbox_flat-green',
+                radioClass: 'iradio_flat-green'
+            });
+        });
+
+        var asInitVals = new Array();
+    </script>
+
+    <!-- /datepicker -->
+    <!-- /footer content -->
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <!-- password -->
+    <script src="~/Scripts/emojione.min.js"></script>
+    <script src="~/Scripts/password.js"></script>
+
+    <script type="text/javascript">
+
+        jQuery(document).ready(function ($) {
+
+            // Linked to username input
+            $('#SenhaAux').password({
+                username: '#username',
+                showPercent: true
+            });
+
+            // Custom events (enables button on certain score)
+            // Check the readme for a detailed list of events
+            $('#submit').attr('disabled', true);
+            $('#events').password().on('password.score', function (e, score) {
+                if (score > 75) {
+                    $('#submit').removeAttr('disabled');
+                } else {
+                    $('#submit').attr('disabled', true);
+                }
+            });
+        });
+
+        //$('#buttonEnviarEmails').click(function (evt) {
+
+        //    var options = {};
+        //    options.url = "/Agendas/EnviarSemanal"
+        //    options.type = "POST";
+        //    options.asyn = true;
+        //    options.contentType = false;
+        //    options.processData = false;
+        //    options.dataType = "application/json; charset=utf-8";
+        //    options.complete = function (data) {
+
+        //        var json = $.parseJSON(data.responseText);
+        //        if (json.codigo == '00') {
+
+        //            $('#modalMensagemResposta').text('Envio de E-mails das Agendas da Próxima Semana realizado sucesso!');
+        //            $('#modalMensagem').attr('data-backdrop', 'static');
+        //            $('#modalMensagem').attr('data-keyboard', 'false');
+        //            $('#modalMensagem').modal('show');
+
+        //        }
+        //        else {
+
+        //            $('#modalMensagemResposta').html(json.motivo);
+        //            $('#modalMensagem').attr('data-backdrop', 'static');
+        //            $('#modalMensagem').attr('data-keyboard', 'false');
+        //            $('#modalMensagem').modal('show');
+
+        //        }
+        //    };
+        //    $.ajax(options);
+
+        //    evt.preventDefault();
+
+        //});
+
+        $('#buttonAlterarSenha').click(function (evt) {
+
+            $("#senha-form").validate();
+
+            if ($('#senha-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", @Uranus.Suite.Sessao.Usuario.ID);
+                dados.append("SenhaAux", $("#SenhaAux").val());
+                dados.append("ConfirmaSenhaAux", $("#ConfirmaSenhaAux").val());
+
+                var options = {};
+                options.url = "/Usuarios/AlterarSenha"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Nova Senha salva com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $('#senha-form').trigger("reset");
+                        $('#events').password().trigger("reset");
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function pv(value) {
+
+            // 1,235.12
+            var val = value.replace(",", "").replace(".", ",");
+
+            return val;
+
+        }
+
+        function vp(value) {
+
+            // 1.235,12
+            var val = value.replace(".", "").replace(",", ".");
+
+            return val;
+
+        }
+
+        function mascaraValor(valor) {
+
+            valor = valor.toString().replace(/\D/g, "");
+            valor = valor.toString().replace(/(\d)(\d{14})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{11})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{8})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{5})$/, "$1.$2");
+            valor = valor.toString().replace(/(\d)(\d{2})$/, "$1,$2");
+
+            return valor
+        }
+
+        function randomPassword() {
+            var length = 10;
+            var chars = "abcdefghijklmnopqrstuvwxyz!#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890";
+            var pass = "";
+            for (var x = 0; x < length; x++) {
+                var i = Math.floor(Math.random() * chars.length);
+                pass += chars.charAt(i);
+            }
+            return pass;
+        }
+
+        $(document).ready(function () {
+            //Initialize tooltips
+           // $('.nav-tabs > li a[title]').tooltip();
+
+            //Wizard
+            $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+
+                var $target = $(e.target);
+
+                if ($target.parent().hasClass('disabled')) {
+                    return false;
+                }
+            });
+
+            $(".next-step").click(function (e) {
+
+                var $active = $('.wizard .nav-tabs li.active');
+                $active.next().removeClass('disabled');
+                nextTab($active);
+
+            });
+            $(".prev-step").click(function (e) {
+
+                var $active = $('.wizard .nav-tabs li.active');
+                prevTab($active);
+
+            });
+        });
+
+        function nextTab(elem) {
+            $(elem).next().find('a[data-toggle="tab"]').click();
+        }
+
+        function prevTab(elem) {
+            $(elem).prev().find('a[data-toggle="tab"]').click();
+        }
+
+        function pad(str, max) {
+            str = str.toString();
+            return str.length < max ? pad("0" + str, max) : str;
+        }
+
+    </script>
+
+    <!-- Empresa Info -->
+    <script>
+
+        $("#EmpresaCNPJ").mask("99.999.999/9999-99");
+        $("#EmpresaCEP").mask("99999-999");
+        $("#EmpresaTelefone").mask("(99) 9999-9999?9");
+
+        $("#EmpresaCEP").keyup(function () {
+
+            if ($("#EmpresaCEP").val().length == 9) {
+
+                $.getScript("http://cep.republicavirtual.com.br/web_cep.php?formato=javascript&cep=" + $("#EmpresaCEP").val(), function () {
+
+                    if (resultadoCEP["tipo_logradouro"] != '') {
+
+                        if (resultadoCEP["resultado"]) {
+
+                            $('#EmpresaEstado').html($('#EmpresaEstado').html().replace('selected', ''));
+                            $("#EmpresaEstado option").filter(function (index) {
+                                return $(this).val() == unescape(resultadoCEP["uf"]);
+                            }).attr('selected', 'selected');
+
+                            CarregarInfoCidades(unescape(resultadoCEP["uf"]), unescape(resultadoCEP["cidade"]));
+
+                            $("#EmpresaLogradouro").val(unescape(resultadoCEP["tipo_logradouro"]) + " " + unescape(resultadoCEP["logradouro"]));
+                            $("#EmpresaBairro").val(unescape(resultadoCEP["bairro"]));
+                            $("#EmpresaNumero").focus();
+
+                        }
+                    }
+                });
+            }
+
+        });
+
+        function EmpresaAlterar() {
+            $("#empresa-info-form").validate().resetForm();
+
+            var options = {};
+            options.url = "/Empresa/Consultar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#EmpresaId').val(json.empresa[0].Id);
+
+                    CarregarInfoEstados(json.empresa[0].UF);
+                    CarregarInfoCidades(json.empresa[0].UF, json.empresa[0].Cidade)
+
+                    $('#EmpresaCNPJ').val(FormatNumber(json.empresa[0].CNPJ, '##.###.###/####-##'));
+                    $('#EmpresaRazao').val(json.empresa[0].Razao);
+                    $('#EmpresaCEP').val(FormatNumber(json.empresa[0].CEP, '#####-###'));
+                    $('#EmpresaLogradouro').val(json.empresa[0].Logradouro);
+                    $('#EmpresaNumero').val(json.empresa[0].Numero);
+                    $('#EmpresaComplemento').val(json.empresa[0].Complemento);
+                    $('#EmpresaBairro').val(json.empresa[0].Bairro);
+                    $('#EmpresaTelefone').val(FormatNumber(json.empresa[0].Telefone, '(##) ####-####'));
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarInfoEstados(UF) {
+
+            var options = {};
+            options.url = "/Estados/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.estados;
+
+                    $('#EmpresaEstado').html("");
+                    var select = $('#EmpresaEstado');
+
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione o Estado")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (UF == rows[index].sigla) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].sigla).html(rows[index].nome)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CarregarInfoCidades(UF, Cidade) {
+
+            var dados = new window.FormData();
+            dados.append("UF", UF);
+
+            var options = {};
+            options.url = "/Cidades/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.cidades;
+                    $('#EmpresaCidade').html("");
+                    var select = $('#EmpresaCidade');
+                    select.append(
+                        $('<option selected disabled style="background-color: #eaeaea;"></option>').val("").html("Selecione a Cidade")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+
+                        if (Cidade == rows[index].cidade) {
+
+                            select.append(
+                                $('<option selected></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        } else {
+
+                            select.append(
+                                $('<option></option>').val(rows[index].cidade).html(rows[index].cidade)
+                            );
+
+                        }
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#EmpresaEstado').change(function (evt) {
+
+            CarregarInfoCidades($("#EmpresaEstado").val(), "");
+
+        });
+
+        $('#buttonInfoSalvar').click(function (evt) {
+
+            $("#empresa-info-form").validate();
+
+            if ($('#empresa-info-form').valid()) {
+
+                var dados = new window.FormData();
+
+                dados.append("Id", $("#EmpresaId").val());
+                dados.append("CNPJ", $("#EmpresaCNPJ").val());
+                dados.append("Razao", $("#EmpresaRazao").val());
+                dados.append("CEP", $("#EmpresaCEP").val());
+                dados.append("Logradouro", $("#EmpresaLogradouro").val());
+                dados.append("Numero", $("#EmpresaNumero").val());
+                dados.append("Complemento", $("#EmpresaComplemento").val());
+                dados.append("Bairro", $("#EmpresaBairro").val());
+                dados.append("Estado", $("#EmpresaEstado").val());
+                dados.append("Cidade", $("#EmpresaCidade").val());
+                dados.append("Telefone", $("#EmpresaTelefone").val());
+
+                var options = {};
+                options.url = "/Empresa/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').html('Informações salvas com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#empresa-info-form").validate().resetForm();
+
+                    } else {
+
+                        $('#modalMensagemResposta').text('Erro ao salvar os dados do Cliente, se o problema persistir entre em contado com o suporte!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        function FormatNumber(value, pattern) {
+            var i = 0,
+                phone = value.toString();
+            return pattern.replace(/#/g, _ => phone[i++]);
+        }
+
+        function toDate(dateStr) {
+            var parts = dateStr.split("/")
+            return new Date(parts[2], parts[1] - 1, parts[0])
+        }
+
+        function formatBytes(bytes, decimals, binaryUnits) {
+            if (bytes == 0) {
+                return '0 Bytes';
+            }
+            var unitMultiple = (binaryUnits) ? 1024 : 1000;
+            var unitNames = (unitMultiple === 1024) ? // 1000 bytes in 1 Kilobyte (KB) or 1024 bytes for the binary version (KiB)
+                ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'] :
+                ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+            var unitChanges = Math.floor(Math.log(bytes) / Math.log(unitMultiple));
+            return parseFloat((bytes / Math.pow(unitMultiple, unitChanges)).toFixed(decimals || 0)) + '' + unitNames[unitChanges];
+        }
+
+        function GetTodayDate() {
+
+            var tdate = new Date();
+            var dd = tdate.getDate(); //yields day
+            var MM = tdate.getMonth(); //yields month
+            var yyyy = tdate.getFullYear(); //yields year
+            var currentDate = AddLeadingZeros(dd, 2) + "/" + AddLeadingZeros(MM + 1, 2) + "/" + yyyy;
+
+            return currentDate;
+
+        }
+
+        function AddLeadingZeros(n, length) {
+            var str = (n > 0 ? n : -n) + "";
+            var zeros = "";
+            for (var i = length - str.length; i > 0; i--)
+                zeros += "0";
+            zeros += str;
+            return n >= 0 ? zeros : "-" + zeros;
+        }
+
+        function addDays(myDate, mydays) {
+
+            var formatteddate = myDate.split("/").reverse().join("-");
+
+            var date = new Date(formatteddate),
+                days = parseInt(mydays, 10);
+
+            if (!isNaN(date.getTime())) {
+                date.setDate(date.getDate() + days);
+
+                var dd = date.getDate();
+                var MM = date.getMonth();
+                var yyyy = date.getFullYear();
+
+                var newdate = AddLeadingZeros(dd, 2) + "/" + AddLeadingZeros(MM + 1, 2) + "/" + yyyy;
+
+                return newdate;
+
+            } else {
+
+                console.log('Data inválida.')
+
+            }
+        }
+
+        function numberToReal(numero) {
+
+            var numero = parseFloat(numero).toFixed(2).split('.');
+
+            numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+
+            return numero.join(',');
+
+        }
+
+    </script>
+
+    <script>
+        NProgress.done();
+    </script>
+</body>
+</html>

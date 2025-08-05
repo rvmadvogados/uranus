@@ -1,0 +1,501 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Baixa de Pagamentos Clientes";
+}
+
+@using Uranus.Common;
+@using System.Linq;
+
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idparcela" name="idparcela" value="">
+
+    <div id="modalBaixar" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="baixar-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Baixa de Pagamentos Clientes</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Código </label>
+                                    <input type="text" class="form-control" id="IdCliente" name="IdCliente" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Nome</label>
+                                    <input type="text" class="form-control" id="Nome" name="Nome" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Documento</label>
+                                    <input type="text" class="form-control" id="NumeroDocumento" name="NumeroDocumento" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label class="titlefield">Parcela</label>
+                                    <input type="text" class="form-control" id="Parcela" name="Parcela" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Emissão </label>
+                                    <input id="DataEmissao" name="DataEmissao" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Vencimento </label>
+                                    <input id="Vencimento" name="Vencimento" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield" style="width: 100%; text-align: right !important;">Valor Parcela </label>
+                                    <input id="ValorParcela" name="ValorParcela" class="form-control right" type="text" style="height: 40px !important; cursor: pointer;" value="0,00" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Observação</label>
+                                    <input type="text" class="form-control" id="Observacao" name="Observacao" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Pagamento <span class="required">*</span></label>
+                                    <input id="DataPagamento" name="DataPagamento" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" data-msg-required="Por favor, selecione a data de pagamento" data-rule-required="true" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Pagamento <span class="required">*</span></label>
+                                    <input id="ValorPago" name="ValorPago" class="form-control right" type="text" style="height: 40px !important; cursor: pointer;" data-msg-required="Por favor, insira o valor de pagamento." data-rule-required="true" onkeyup="Calcular()" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Juros</label>
+                                    <input id="Juros" name="Juros" class="form-control right" type="text" style="height: 40px !important; cursor: pointer;" onkeyup="Calcular()" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Valor Desconto</label>
+                                    <input id="Descontos" name="Descontos" class="form-control right" type="text" style="height: 40px !important; cursor: pointer;" onkeyup="Calcular()" />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield" style="width: 100%; text-align: right !important;">Saldo</label><br />
+                                    <input id="Saldo" name="Saldo" class="form-control right" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">IdClienteNota </label>
+                                    <input type="text" class="form-control" id="IdClienteNota" name="IdClienteNota" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>
+                                        Filtrar e Baixar Parcelas
+                                    </h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content" style="padding-bottom: 0px !important;">
+
+                                    @using (Html.BeginForm("Index", "ClientesPagamentosPeriodo", FormMethod.Get, new { id = "baixa-filtro-form" }))
+                                    {
+                                        <div class="row">
+
+                                            <div class="col-md-12">
+
+                                                <div class="row">
+                                                    <div class="col-md-1">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Código</label>
+                                                            <input type="text" class="form-control" name="FiltrarCodigo" id="FiltrarCodigo" data-mask-for-cpf-cnpj maxlength="14" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Cliente </label>
+                                                            <select id="FiltrarCliente" name="FiltrarCliente" class="select2_single form-control" style="width: 100% !important;"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Data Início </label>
+                                                            <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataInicio" readonly />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="form-group">
+                                                            <label class="titlefield">Data Fim </label>
+                                                            <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" value="@ViewBag.FiltrarDataFim" readonly />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                            <button type="submit" class="btn btn-primary" style="margin-top: 27px !important;">Filtrar</button>
+                                                            &nbsp;
+                                                            <button id="LimparFiltro" name="LimparFiltro" type="button" class="btn btn-default" style="margin-top: 29px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                 htmlAttributes: new { id = "MainTable" },
+                                 tableStyle: "webgrid",
+                                 fillEmptyRows: false,
+                                 headerStyle: "webgrid-header",
+                                 alternatingRowStyle: "webgrid-alternating-row",
+                                 rowStyle: "webgrid-row-style",
+                                 selectedRowStyle: "webgrid-selected-row",
+                                 footerStyle: "webgrid-footer",
+                                 mode: WebGridPagerModes.All,
+                                 firstText: "Primeiro",
+                                 previousText: "Anterior",
+                                 nextText: "Próximo",
+                                 lastText: "Último",
+                                 numericLinksCount: 5,
+                                 columns: new[] {
+                                 grid.Column("ID", header: "Código"),
+                                 grid.Column("ClientesNotas.Clientes.Pessoas.Nome", header: "Nome"),
+                                 grid.Column("ClientesNotas.NumeroDocumento", "Número do Documento" ),
+                                 grid.Column("Parcela", "Parcela"),
+                                 grid.Column("ClientesNotas.DataEmissao", "Data de Emissão", format: (source) => (source["ClientesNotas.DataEmissao"] != null ? string.Format("{0:dd/MM/yyyy}", source["ClientesNotas.DataEmissao"]) : string.Empty)),
+                                 grid.Column("Vencimento", "Data de Vencimento", format: (source) => (source["Vencimento"] != null ? string.Format("{0:dd/MM/yyyy}", source["Vencimento"]) : string.Empty)),
+                                 grid.Column("ValorParcela", "Valor Parcela", format: (source) => (source["ValorParcela"] != null ? string.Format("R$ {0:##,##0.00}", source["ValorParcela"]) : "0,00")),
+                                 grid.Column("ID", header: "Ações", canSort:false,
+                                 format:
+                @<text>
+                    @Html.Raw("<a class='btn btn-secondary btn-sm' data-toggle='modal' data-target='#modalBaixar' onclick='Alterar(" + item.ID + ");'>Baixar</a>")
+                </text>)
+});
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <!-- maskMoney -->
+    <script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+
+    <!-- mask -->
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+    <!-- mask -->
+    <script type="text/javascript" src="~/Scripts/jquery.mask.js"></script>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        var select = $('#FiltrarCliente');
+        select.append(
+            $('<option selected></option>').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente))).html(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)))
+        );
+        $('#FiltrarCliente').trigger('change');
+
+        $("#FiltrarDataInicio").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarDataFim").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#DataPagamento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#FiltrarCliente").select2({
+            placeholder: "Selecione um Cliente",
+            allowClear: true,
+            tags: true,
+            minimumInputLength: 3,
+            ajax: {
+                cache: false,
+                dataType: "json",
+                type: "GET",
+                url: '/Clientes/GetClientsList',
+                delay: 250,
+                cache: true,
+                data: function (params) {
+                    params.page = params.page || 1;
+                    return {
+                        search: params.term,
+                        filter: true,
+                        page: params.page
+                    };
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data.clientes,
+                        pagination: {
+                            more: (params.page * 10) < data.total
+                        }
+                    };
+                }
+            }
+        });
+
+        var tr = $('#MainTable').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        $('#ValorPago').maskMoney({ thousands: '.', decimal: ',', symbolStay: true });
+        $('#Juros').maskMoney({ thousands: '.', decimal: ',', symbolStay: true });
+        $('#Descontos').maskMoney({ thousands: '.', decimal: ',', symbolStay: true });
+        $('#DescontosSaldo').maskMoney({ thousands: '.', decimal: ',', symbolStay: true });
+
+        function Calcular() {
+            var saldo = 0;
+            var valorParcela = $('#ValorParcela').val().replace(/[.]/g, '').replace(',', '.');
+            var valorPago = $('#ValorPago').val().replace(/[.]/g, '').replace(',', '.');
+            var descontos = $('#Descontos').val().replace(/[.]/g, '').replace(',', '.');
+            var juros = $('#Juros').val().replace(/[.]/g, '').replace(',', '.');
+
+            if (descontos.length == 0) {
+                descontos = 0
+            }
+
+            if (juros.length == 0) {
+                juros = 0
+            }
+
+            saldo = (parseFloat(valorParcela) - parseFloat(valorPago) - parseFloat(descontos) + parseFloat(juros));
+
+//            $('#Saldo').val()(numberToReal(saldo));
+
+            $('#Saldo').val(saldo);
+        }
+
+        function Alterar(Id) {
+
+            $('#modalLabelTitle').text('Baixar Pagamento');
+            $('#IdCliente').attr('disabled', true);
+            $('#Nome').attr('disabled', true);
+            $('#NumeroDocumento').attr('disabled', true);
+            $('#Parcela').attr('disabled', true);
+            $('#DataEmissao').attr('disabled', true);
+            $('#Vencimento').attr('disabled', true);
+            $('#ValorParcela').attr('disabled', true);
+            $('#Observacao').attr('disabled', false);
+            $('#DataPagamento').attr('disabled', false);
+            $('#ValorPago').attr('disabled', false);
+            $('#Juros').attr('disabled', false);
+            $('#Descontos').attr('disabled', false);
+            $('#Saldo').attr('disabled', false);
+            $('#IdClienteNota').attr('disabled', false);
+
+            $('#buttonSalvar').attr('disabled', false);
+            $("#baixar-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/ClientesPagamentosPeriodo/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $('#idparcela').val(Id);
+                    $('#IdCliente').val(json.parcela[0].ClienteId);
+                    $('#Nome').val(json.parcela[0].ClientesNome);
+                    $('#NumeroDocumento').val(json.parcela[0].NumeroDocumento);
+                    $('#Parcela').val(json.parcela[0].Parcela);
+                    $('#DataEmissao').val(json.parcela[0].DataEmissao);
+                    $('#Vencimento').val(json.parcela[0].Vencimento);
+                    $('#ValorParcela').val(json.parcela[0].ValorParcela);
+                    $('#ValorPago').val(json.parcela[0].ValorPago);
+                    $('#Juros').val(json.parcela[0].Juros);
+                    $('#Descontos').val(json.parcela[0].Descontos);
+                    $('#Observacao').val(json.parcela[0].Observacao);
+                    $('#Saldo').val(json.parcela[0].Saldo);
+                    $('#IdClienteNota').val(json.parcela[0].IdClientesNota);
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#buttonSalvar').click(function (evt) {
+
+            $("#baixar-form").validate();
+
+            if ($('#baixar-form').valid()) {
+
+                var dados = new window.FormData();
+
+                dados.append("Id", $("#idparcela").val());
+                dados.append("IdClientesNota", $("#IdClienteNota").val());
+                dados.append("Parcela", $("#Parcela").val());
+                dados.append("Vencimento", $("#Vencimento").val());
+                dados.append("ValorParcela", $("#ValorParcela").val());
+                dados.append("DataPagamento", $("#DataPagamento").val());
+                dados.append("ValorPago", $("#ValorPago").val());
+                dados.append("Juros", $("#Juros").val());
+                dados.append("Desconto", $("#Descontos").val());
+                dados.append("Saldo", $("#Saldo").val());
+                dados.append("Observacao", $("#Observacao").val());
+                
+                var options = {};
+                options.url = "/ClientesNotas/SalvarParcela"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Baixa salva com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#baixa-form").validate().resetForm();
+                        //Atualizar();
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+
+        function LimparFiltro() {
+
+            $('#FiltrarCodigo').val("");
+            $('#FiltrarCliente').val("");
+            $('#FiltrarDataInicio').val("");
+            $('#FiltrarDataFim').val("");
+            $("#baixa-filtro-form").submit();
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../ClientesPagamentosPeriodo');
+        }
+
+    </script>
+
+</div>

@@ -1,0 +1,2139 @@
+﻿
+@{
+    ViewBag.Title = "Solicitações Colaborador";
+}
+<div class="main_container">
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="idContrato" name="idContrato" value="0">
+    <input type="hidden" id="idAusencia" name="idAusencia" value="0">
+    <input type="hidden" id="idSolicitacaoEspecial" name="idSolicitacaoEspecial" value="0">
+    <input type="hidden" id="idProfissional" name="idProfissional" value="@Model.Profissional.Id">
+    <input type="hidden" id="nome" name="nome" value="@Model.Profissional.Nome">
+    <input type="hidden" id="saldoPeriodo" name="saldoPeriodo" value="@Model.Profissional.SaldoPeriodo">
+    <input type="hidden" id="idPeriodoAquisitivo" name="idPeriodoAquisitivo" value="@Model.Profissional.IdPeriodoAquisitivo">
+
+    <style>
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+
+    <div id="modalNovaSolicitacaoFerias" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="solicitacaoferias-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+
+                        @*<h3 class="modal-title">Incluir Solicitação de Recesso</h3>*@
+                        @{
+                            if (Model.Profissional.Tipo == "Advogado" || Model.Profissional.Tipo == "Advogado Sócio")
+                            {
+                                <h3 class="modal-title">Incluir Solicitação de Recesso</h3>
+                            }
+                            else
+                            {
+                                <h3 class="modal-title">Incluir Solicitação de Férias</h3>
+                            }
+                        }
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Solicitação</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitcaoFeriasDataSolicitacao" name="SolicitcaoFeriasDataSolicitacao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Aprovação</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitcaoFeriasDataAprovacao" name="SolicitcaoFeriasDataAprovacao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Status</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitcaoFeriasStatus" name="SolicitcaoFeriasStatus" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Saldo</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitcaoFeriasSaldo" name="SolicitcaoFeriasSaldo" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Início</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitcaoFeriasDataInicio" name="SolicitcaoFeriasDataInicio" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Dias</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitcaoFeriasDias" name="SolicitcaoFeriasDias" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 hidden" id="Especial">
+                                <label class="titlefield">Solicitação Especial </label>
+                                <br />
+                                <div class="radio-item">
+                                    <input type="radio" id="SolicitcaoFeriasEspecialSim" name="SolicitcaoFeriasEspecial" value="S">
+                                    <label for="SolicitcaoFeriasEspecialSim">Sim</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="SolicitcaoFeriasEspecialNao" name="SolicitcaoFeriasEspecial" value="N">
+                                    <label for="SolicitcaoFeriasEspecialNao">Não</label>
+                                </div>
+                                @*<label id="SolicitcaoFeriasEspecialValidate" name="SolicitcaoFeriasEspecialValidate" for="SolicitcaoFeriasEspecial" class="error hidden"> Dias Solicitados maior que o Saldo - Para concluir esta solicitação tem que selecionar Solicitação Especial</label>*@
+                                <br />
+                                <label id="SolicitcaoFeriasEspecialValidate" class="hidden" style="color:red">
+                                    Dias solicitados maior que o saldo - Selecione "Solicitação Especial"
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Justificativa</label>
+                                    <textarea id="SolicitcaoFeriasJustificativa" name="SolicitcaoFeriasJustificativa" class="form-control placeholder" placeholder="Informe aqui a Justificativa"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Cadastro</label>
+                                    <input type="text" class="form-control" id="SolicitcaoFeriasDataCadastro" name="SolicitcaoFeriasDataCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Cadastro</label>
+                                    <input type="text" class="form-control" id="SolicitcaoFeriasUsuarioCadastro" name="SolicitcaoFeriasUsuarioCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Alteração</label>
+                                    <input type="text" class="form-control" id="SolicitcaoFeriasDataAlteracao" name="SolicitcaoFeriasDataAlteracao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Alteração</label>
+                                    <input type="text" class="form-control" id="SolicitcaoFeriasUsuarioAlteracao" name="SolicitcaoFeriasUsuarioAlteracao" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvarSolicitacoesFerias" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluirSolicitacaoFerias" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Solicitação</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir essa Solicitação?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmadoSolicitacao();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalNovoDocumento" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="documento-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modalDocumento-title">Incluir Documento</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Tipo Documento</label>
+                                    <select id="DocumentosTipoDocumento" name="DocumentosTipoDocumento" class="form-control placeholder">
+                                        <option value="" style="background-color: #eaeaea;">Selecione o Tipo</option>
+                                        <option value="1">Aviso de Férias</option>
+                                        <option value="2">Carteira OAB</option>
+                                        <option value="3">Carteira Profissional</option>
+                                        <option value="4">Certidão Nascimento</option>
+                                        <option value="5">CPF</option>
+                                        <option value="6">Comprovante de Residência</option>
+                                        <option value="7">Informe de Rendimentos</option>
+                                        <option value="8">RG</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Número Documento</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="DocumentosNumeroDocumento" name="DocumentosNumeroDocumento" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Emissão</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="DocumentosDataEmissao" name="DocumentosDataEmissao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Validade</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="DocumentosDataValidade" name="DocumentosDataValidade" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Observação</label>
+                                    <textarea id="DocumentosObservacao" name="DocumentosObservacao" class="form-control placeholder" placeholder="Informe aqui a Justificativa"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Cadastro</label>
+                                    <input type="text" class="form-control" id="DocumentosDataCadastro" name="DocumentosDataCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Cadastro</label>
+                                    <input type="text" class="form-control" id="DocumentosUsuarioCadastro" name="DocumentosUsuarioCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Alteração</label>
+                                    <input type="text" class="form-control" id="DocumentosDataAlteracao" name="DocumentosDataAlteracao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Alteração</label>
+                                    <input type="text" class="form-control" id="DocumentosUsuarioAlteracao" name="DocumentosUsuarioAlteracao" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Adicionar Documento <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 4MB por arquivo)</label></label>
+                                    <div id="upload" class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#DocumentoFileUpload').click();" />
+                                        <input type="file" id="DocumentoFileUpload" name="DocumentoUpload" accept="application/pdf" value="4194304" />
+                                        <span id="DocumentoFileName" name="DocumentoFileName" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="buttonSalvarDocumento" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluirDocumento" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Documento</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir esse Documento?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmadoDocumento();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalNovaAusencia" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="ausencia-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Incluir Ausência</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Inicio</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="AusenciaDataInicio" name="AusenciaDataInicio" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Fim</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="AusenciaDataFim" name="AusenciaDataFim" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3 hidden">
+                                <label class="titlefield">Abonar </label>
+                                <br />
+                                <div class="radio-item">
+                                    <input type="radio" id="AusenciaAbonadoSim" name="AusenciaAbonado" value="S">
+                                    <label for="AusenciaAbonadoSim">Sim</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="AusenciaAbonadoNao" name="AusenciaAbonado" value="N">
+                                    <label for="AusenciaAbonadoNao">Não</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Motivo Ausência</label>
+                                    <textarea id="AusenciaMotivoAusencia" name="AusenciaMotivoAusencia" class="form-control placeholder" placeholder="Informe aqui a Justificativa"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Cadastro</label>
+                                    <input type="text" class="form-control" id="AusenciaDataCadastro" name="AusenciaDataCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Cadastro</label>
+                                    <input type="text" class="form-control" id="AusenciaUsuarioCadastro" name="AusenciaUsuarioCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Alteração</label>
+                                    <input type="text" class="form-control" id="AusenciasDataAlteracao" name="AusenciaDataAlteracao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Alteração</label>
+                                    <input type="text" class="form-control" id="AusenciaUsuarioAlteracao" name="AusenciaUsuarioAlteracao" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Adicionar Comprovante <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 4MB por arquivo)</label></label>
+                                    <div id="atestadoupload" class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#AtestadoFileUpload').click();" />
+                                        <input type="file" id="AtestadoFileUpload" name="AtestadoUpload" accept="application/pdf" value="4194304" />
+                                        <span id="AtestadoFileName" name="AtestadoFileName" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="buttonSalvarAusencia" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluirAusencia" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Ausência</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir essa Ausência?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmadoAusencia();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalNovaSolicitacaoEspecial" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="solicitacaoespecial-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title">Incluir Solicitação de Materiais e Afins</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Data </label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitacaoEspecialData" name="SolicitacaoEspecialData" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="form-group">
+                                    <label class="titlefield">Solicitação</label>
+                                    <textarea id="SolicitacaoEspecialSolicitacao" name="SolicitacaoEspecialSolicitacao" class="form-control placeholder" placeholder="Informe aqui a Solicitação"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="titlefield">Status</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitacaoEspecialStatus" name="SolicitacaoEspecialStatus" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-2 hidden">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Aprovacao</label>
+                                    <input type="text" style="height: 40px !important; cursor: pointer;" class="form-control" id="SolicitacaoEspeciaDataAprovacao" name="SolicitacaoEspeciaDataAprovacao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Justificativa</label>
+                                    <textarea id="SolicitacaoEspecialJustificativa" name="SolicitacaoEspecialJustificativa" class="form-control placeholder" placeholder="Informe aqui a Justificativa"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Cadastro</label>
+                                    <input type="text" class="form-control" id="SolicitacaoEspeciaDataCadastro" name="SolicitacaoEspeciaDataCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Cadastro</label>
+                                    <input type="text" class="form-control" id="SolicitacaoEspeciaUsuarioCadastro" name="SolicitacaoEspeciaUsuarioCadastro" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data Alteração</label>
+                                    <input type="text" class="form-control" id="SolicitacaoEspeciaDataAlteracao" name="SolicitacaoEspeciaDataAlteracao" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Usuário Alteração</label>
+                                    <input type="text" class="form-control" id="SolicitacaoEspeciaUsuarioAlteracao" name="SolicitacaoEspeciaUsuarioAlteracao" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="buttonSalvarSolicitacaoEspecial" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluirSolicitacaoEspecia" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Ausência</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir essa Solicitação?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmadoSolicitacaoEspecia();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalExcluirContracheque" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Contracheque</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir esse Contracheque?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmadoContracheque();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalVisualizarContracheque" class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <!-- Modal content-->
+            <form id="status-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Contracheque</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="VisualizarContracheque"></div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    <div class="x_panel">
+        <div class="x_title">
+            <h1> Área do Colaborador @Model.Profissional.Nome</h1>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            @*<h3>Bem-vindo, @Model.Nome!</h3>  Exibe o nome do colaborador*@
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        @{
+
+                            if (Model.Profissional.Tipo == "Sócio")
+                            {
+                                <a id="tab-contracheques" href="#tab_content_contracheques" role="tab" data-toggle="tab" aria-expanded="true">Pró-Labore</a>
+                            }
+                            else
+                            {
+                                if (Model.Profissional.Tipo == "Advogado")
+                                {
+                                    <a id="tab-contracheques" href="#tab_content_contracheques" role="tab" data-toggle="tab" aria-expanded="true">RPA</a>
+                                }
+                                else
+                                {
+                                    <a id="tab-contracheques" href="#tab_content_contracheques" role="tab" data-toggle="tab" aria-expanded="true">Contracheques</a>
+                                }
+                            }
+                        }
+                    </li>
+
+                    <li role="presentation" class="">
+                        @{
+                            if (Model.Profissional.Tipo == "Advogado")
+                            {
+                                <a id="tab-solicitacaoferias" href="#tab_content_solicitacaoferias" role="tab" data-toggle="tab" aria-expanded="true">Solicitação Recesso</a>
+                            }
+                            else
+                            {
+                                <a id="tab-solicitacaoferias" href="#tab_content_solicitacaoferias" role="tab" data-toggle="tab" aria-expanded="true">Solicitação Férias</a>
+                            }
+
+                        }
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-documentos" href="#tab_content_documentos" role="tab" data-toggle="tab" aria-expanded="false">Documentos</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-ausencias" href="#tab_content_ausencias" role="tab" data-toggle="tab" aria-expanded="false">Ausências</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-solicitacoespeciais" href="#tab_content_solicitacoespeciais" role="tab" data-toggle="tab" aria-expanded="false">Solicitações de Materiais e Afins</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_contracheques" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <table class="webgrid">
+                                <thead>
+                                    <tr class="webgrid-header">
+                                        <th scope="col">
+                                            Mês
+                                        </th>
+                                        <th scope="col">
+                                            Ano
+                                        </th>
+                                        <th scope="col">
+                                            Nome Arquivo
+                                        </th>
+                                        <th scope="col">
+                                            Ação
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ListagemContracheques">
+                                    @{
+                                        int iCC = 1;
+                                        foreach (var item in Model.Contracheques)
+                                        {
+                                            <tr class="@(iCC % 2 == 0 ? "webgrid-alternating-row" : "webgrid-row-style")">
+                                                <td>
+                                                    @item.Mes
+                                                </td>
+                                                <td>
+                                                    @item.Ano
+                                                </td>
+                                                <td>
+                                                    @item.NomeArquivo
+                                                </td>
+                                                <td>
+                                                    @*<a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalExcluirContracheque" onclick="ExcluirContracheque(@item.Id);">Excluir Documento</a>*@
+                                                    <a class="btn btn-primary btn-xs" onclick="DownloadContracheque(@item.Id);">Download</a>
+                                                    <a class="btn btn-default btn-xs" onclick="VisualizarContracheque(@item.Id);">Visualizar</a>
+                                                </td>
+                                            </tr>
+                                            iCC++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade in" id="tab_content_solicitacaoferias" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        @{
+                                            if (Model.Profissional.Tipo == "Advogado")
+                                            {
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovaSolicitacaoFerias" data-backdrop='static' onclick='NovaSolicitacaoFerias();'>Incluir Solicitação Recesso</button>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovaSolicitacaoFerias" data-backdrop='static' onclick='NovaSolicitacaoFerias();'>Incluir Solicitação Férias</button>
+
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="webgrid">
+                                <thead>
+                                    <tr class="webgrid-header">
+                                        <th scope="col">
+                                            Data Solicitação
+                                        </th>
+                                        <th scope="col">
+                                            Dias
+                                        </th>
+                                        <th scope="col">
+                                            Data Aprovação
+                                        </th>
+                                        <th scope="col">
+                                            Status
+                                        </th>
+                                        <th scope="col">
+                                            Ação
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ListagemSolicitacoes">
+                                    @{
+                                        int iS = 1;
+                                        foreach (var item in Model.SolicitacoesFerias)
+                                        {
+                                            <tr class="@(iS % 2 == 0 ? "webgrid-alternating-row" : "webgrid-row-style")">
+                                                <td>
+                                                    @item.DataSolicitacao
+                                                </td>
+                                                <td>
+                                                    @item.Dias
+                                                </td>
+                                                <td>
+                                                    @item.DataAprovacao
+                                                </td>
+                                                <td>
+                                                    @item.Status
+                                                </td>
+                                                <td>
+                                                    @{
+                                                        if (item.Status == "Em Análise")
+                                                        {
+                                                            <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalNovaSolicitacaoFerias" onclick="AlterarSolicitacaoFerias(@item.Id);">Alterar Solicitação</a>
+                                                            <a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalExcluirSolicitacaoFerias" onclick="ExcluirSolicitacaoFerias(@item.Id);">Excluir Solicitação</a>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            iS++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade in" id="tab_content_documentos" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovoDocumento" data-backdrop='static' onclick='NovoDocumento();'>Incluir Documentos</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="webgrid">
+                                <thead>
+                                    <tr class="webgrid-header">
+                                        <th scope="col">
+                                            Tipo Documento
+                                        </th>
+                                        <th scope="col">
+                                            Número Documento
+                                        </th>
+                                        <th scope="col">
+                                            Data Emissão
+                                        </th>
+                                        <th scope="col">
+                                            Data Validade
+                                        </th>
+                                        <th scope="col">
+                                            Ação
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ListagemDocumentos">
+                                    @{
+                                        int iDoc = 1;
+                                        foreach (var item in Model.Documentos)
+                                        {
+                                            <tr class="@(iDoc % 2 == 0 ? "webgrid-alternating-row" : "webgrid-row-style")">
+                                                <td>
+                                                    @item.TipoDocumento
+                                                </td>
+                                                <td>
+                                                    @item.NumeroDocumento
+                                                </td>
+                                                <td>
+                                                    @item.DataEmissao
+                                                </td>
+                                                <td>
+                                                    @item.DataValidade
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalNovoDocumento" data-backdrop="static" onclick="AlterarDocumento(@item.Id);">Alterar Documento</a>
+                                                    <a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalExcluirDocumento" onclick="ExcluirDocumento(@item.Id);">Excluir Documento</a>
+                                                </td>
+                                            </tr>
+                                            iDoc++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade in" id="tab_content_ausencias" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovaAusencia" data-backdrop='static' onclick='NovoAusencia();'>Incluir Ausência</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="webgrid">
+                                <thead>
+                                    <tr class="webgrid-header">
+                                        <th scope="col">
+                                            Data Inicio
+                                        </th>
+                                        <th scope="col">
+                                            Data Fim
+                                        </th>
+                                        <th scope="col">
+                                            Abonado
+                                        </th>
+                                        <th scope="col">
+                                            Ação
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ListagemAusencia">
+                                    @{
+                                        int iAus = 1;
+                                        foreach (var item in Model.Ausencias)
+                                        {
+                                            <tr class="@(iAus % 2 == 0 ? "webgrid-alternating-row" : "webgrid-row-style")">
+                                                <td>
+                                                    @item.DataInicio
+                                                </td>
+                                                <td>
+                                                    @item.DataFim
+                                                </td>
+                                                <td>
+                                                    @item.Abonado
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalNovaAusencia" data-backdrop="static" onclick="AlterarAusencia(@item.Id);">Alterar Ausência</a>
+                                                    <a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalExcluirAusencia" onclick="ExcluirAusencia(@item.Id);">Excluir Ausência</a>
+                                                </td>
+                                            </tr>
+                                            iAus++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane fade in" id="tab_content_solicitacoespeciais" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalNovaSolicitacaoEspecial" data-backdrop='static' onclick='NovoSolicitacaoEspecial();'>Incluir Solicitação de Materiais e Afins</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="webgrid">
+                                <thead>
+                                    <tr class="webgrid-header">
+                                        <th scope="col">
+                                            Data
+                                        </th>
+                                        @*<th scope="col">
+                                            Data Aprovação
+                                        </th>*@
+                                        <th scope="col">
+                                            Status
+                                        </th>
+                                        <th scope="col">
+                                            Ação
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ListagemSolicitacaoEspecial">
+                                    @{
+                                        int iAE = 1;
+                                        foreach (var item in Model.SolicitacosEspeciais)
+                                        {
+                                            <tr class="@(iAE % 2 == 0 ? "webgrid-alternating-row" : "webgrid-row-style")">
+                                                <td>
+                                                    @item.Data
+                                                </td>
+                                                @*<td>
+                                                    @item.DataAprovacao
+                                                </td>*@
+                                                <td>
+                                                    @item.Status
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#modalNovaSolicitacaoEspecial" data-backdrop="static" onclick="AlterarSolicitacaoEspecial(@item.Id);">Alterar Solicitação de Materiais e Afins</a>
+                                                    <a class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalExcluirSolicitacaoEspecial" onclick="ExcluirSolicitacaoEspecial(@item.Id);">Excluir Solicitação de Materiais e Afins</a>
+                                                </td>
+                                            </tr>
+                                            iAE++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+@*<script type="text/javascript" src="~/Content/js/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>*@
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.maskMoney.js"></script>
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        // Restaura a aba ativa do localStorage ao recarregar a página
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $(`a[href="${activeTab}"]`).tab('show'); // Mostra a aba salva
+        } else {
+            // Se não houver aba salva, mantém a aba padrão ativa
+            $('#myTab a:first').tab('show');
+        }
+
+        // Salva a aba ativa no localStorage quando o usuário clica em qualquer aba
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var currentTab = $(e.target).attr('href'); // Pega o href da aba ativa
+            localStorage.setItem('activeTab', currentTab); // Salva no localStorage
+        });
+
+    //    // Evento de clique específico para a aba Solicitação Férias/Recesso
+    //    $('#tab-solicitacaoferias').on('click', function () {
+    //        Atualizar(); // Chama a função Atualizar ao clicar
+    //    });
+    });
+
+
+    $("#SolicitcaoFeriasDataInicio").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#DocumentosDataEmissao").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#DocumentosDataValidade").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#AusenciaDataInicio").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#AusenciaDataFim").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#SolicitacaoEspeciaDataAprovacao").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#SolicitacaoEspeciaData").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $('#DocumentoFileUpload').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    $('#AtestadoFileUpload').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    $('#SolicitcaoFeriasDias').on('keyup', function () {
+        var isEspecial = $('input[name=SolicitcaoFeriasEspecial][value="S"]').is(':checked');
+
+        if (isEspecial == false) {
+
+//            var _Saldo = $('#SolicitcaoFeriasSaldo').val();
+            var _Saldo = parseInt($('#SolicitcaoFeriasSaldo').val(), 10) || 0
+//            var _dias = $(this).val();
+            var _dias = parseInt($(this).val(), 10) || 0;
+            if (_dias > _Saldo) {
+                $('input[name=SolicitcaoFeriasEspecial][value="S"]').attr('disabled', false);
+                $('input[name=SolicitcaoFeriasEspecial][value="N"]').attr('disabled', false);
+                $('input[name=SolicitcaoFeriasEspecial][value="N"]').prop('checked', true).trigger('change');
+                $('#Especial').removeClass("hidden");
+                $('#SolicitcaoFeriasEspecialValidate').removeClass("hidden")
+            }
+            else {
+                $('#Especial').addClass('hidden');
+                $('#SolicitcaoFeriasEspecialValidate').addClass('hidden');
+
+                $('input[name=SolicitcaoFeriasEspecial]').prop('checked', false);
+
+            }
+
+        }
+    });
+
+    function NovaSolicitacaoFerias() {
+
+        $('#modalLabelTitle').text('Nova Solicitação Férias');
+        $('#SolicitcaoFeriasDataSolicitacao').attr('disabled', false);
+        $('#SolicitcaoFeriasDataSolicitacao').val('@DateTime.Now.ToString("dd/MM/yyyy")');
+        $('#SolicitcaoFeriasDataAprovacao').attr('disabled', false);
+        $('#SolicitcaoFeriasDataAprovacao').val('');
+        $('#SolicitcaoFeriasStatus').attr('disabled', false);
+        $('#SolicitcaoFeriasStatus').val('Em Análise');
+        $('#SolicitcaoFeriasSaldo').attr('disabled', false);
+        $('#SolicitcaoFeriasSaldo').val($('#saldoPeriodo').val());
+        $('#SolicitcaoFeriasDataInicio').attr('disabled', false);
+        $('#SolicitcaoFeriasDataInicio').val('');
+        $('#SolicitcaoFeriasDias').attr('disabled', false);
+        $('#SolicitcaoFeriasDias').val('');
+        $('#SolicitcaoFeriasJustificativa').attr('disabled', false);
+        $('#SolicitcaoFeriasJustificativa').val('');
+        $('#SolicitcaoFeriasDataCadastro').val('');
+        $('#SolicitcaoFeriasUsuarioCadastro').val('');
+        $('#SolicitcaoFeriasDataAlteracao').val('');
+        $('#SolicitcaoFeriasUsuarioAlteracao').val('');
+        $('#id').val(0);
+        $('#idContrato').val(0);
+        $("#solicitacaoferias-form").validate().resetForm();
+    }
+
+    function AlterarSolicitacaoFerias(Id) {
+
+        $('#modalLabelTitle').text('Alterar Solicitacao Ferias');
+        $('#SolicitcaoFeriasDataSolicitacao').attr('disabled', false);
+        $('#SolicitcaoFeriasDataSolicitacao').val('');
+        $('#SolicitcaoFeriasDataAprovacao').attr('disabled', false);
+        $('#SolicitcaoFeriasDataAprovacao').val('');
+        $('#SolicitcaoFeriasStatus').attr('disabled', false);
+        $('#SolicitcaoFeriasStatus').val('Em Análise');
+        $('#SolicitcaoFeriasSaldo').attr('disabled', false);
+        $('#SolicitcaoFeriasSaldo').val('');
+        $('#SolicitcaoFeriasDataInicio').attr('disabled', false);
+        $('#SolicitcaoFeriasDataInicio').val('');
+        $('#SolicitcaoFeriasDias').attr('disabled', false);
+        $('#SolicitcaoFeriasDias').val('');
+        $('#SolicitcaoFeriasJustificativa').attr('disabled', false);
+        $('#SolicitcaoFeriasJustificativa').val('');
+        $('#SolicitcaoFeriasDataCadastro').val('');
+        $('#SolicitcaoFeriasUsuarioCadastro').val('');
+        $('#SolicitcaoFeriasDataAlteracao').val('');
+        $('#SolicitcaoFeriasUsuarioAlteracao').val('');
+        $('#buttonSalvar').attr('disabled', false);
+        $("#solicitacaoferias-form").validate().resetForm();
+
+
+
+        var dados = new window.FormData();
+
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/Consultar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#id').val(Id);
+                $('#idContrato').val(json.colaboradorsolicitacao[0].IdContrato);
+                $('#SolicitcaoFeriasDataSolicitacao').val(json.colaboradorsolicitacao[0].DataSolicitacao);
+                $('#SolicitcaoFeriasDataAprovacao').val(json.colaboradorsolicitacao[0].DataAprovacao);
+                $('#SolicitcaoFeriasStatus').val(json.colaboradorsolicitacao[0].Status);
+
+                $('#SolicitcaoFeriasSaldo').val(json.colaboradorsolicitacao[0].SolicitcaoFeriasSaldo);
+                $('#SolicitcaoFeriasDataInicio').val(json.colaboradorsolicitacao[0].DataInicio);
+                $('#SolicitcaoFeriasSaldo').val(json.colaboradorsolicitacao[0].Saldo);
+                $('#SolicitcaoFeriasDias').val(json.colaboradorsolicitacao[0].Dias);
+                $('#SolicitcaoFeriasJustificativa').val(json.colaboradorsolicitacao[0].Justificativa);
+                $('#idPeriodoAquisitivo').val(json.colaboradorsolicitacao[0].IdPeriodoAquisitivo);
+
+                var especial = "N"
+                if (json.colaboradorsolicitacao[0].SolicitacaoEspecial == true) {
+                    especial = "S";
+                }
+
+                if (especial == "S") {
+                    $('#Especial').removeClass("hidden");
+                }
+                else {
+                    $('#Especial').addClass('hidden');
+                }
+                $('input[name=SolicitcaoFeriasEspecial][value="' + especial + '"]').prop('checked', true).trigger('change');
+
+                $('#SolicitcaoFeriasDataCadastro').val(json.colaboradorsolicitacao[0].DataCadastro);
+                $('#SolicitcaoFeriasUsuarioCadastro').val(json.colaboradorsolicitacao[0].UsuarioCadastro);
+                $('#SolicitcaoFeriasDataAlteracao').val(json.colaboradorsolicitacao[0].DataAlteracao);
+                $('#SolicitcaoFeriasUsuarioAlteracao').val(json.colaboradorsolicitacao[0].UsuarioAlteracao);
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonSalvarSolicitacoesFerias').click(function (evt) {
+
+        $("#solicitacaoferias-form").validate();
+
+        if ($('#solicitacaoferias-form').valid()) {
+
+            var dados = new window.FormData();
+
+            dados.append("Id", $("#id").val());
+            dados.append("IdProfissional", $("#idProfissional").val());
+            dados.append("IdContrato", $("#idContrato").val());
+            dados.append("DataSolicitacao", $("#SolicitcaoFeriasDataSolicitacao").val());
+            dados.append("DataAprovacao", $("#SolicitcaoFeriasDataAprovacao").val());
+            dados.append("Status", $("#SolicitcaoFeriasStatus").val());
+            dados.append("DataInicio", $("#SolicitcaoFeriasDataInicio").val());
+            dados.append("Saldo", $("#SolicitcaoFeriasSaldo").val());
+            dados.append("Dias", $("#SolicitcaoFeriasDias").val());
+            dados.append("Justificativa", $("#SolicitcaoFeriasJustificativa").val());
+            dados.append("Especial", $("input[type='radio'][name='SolicitcaoFeriasEspecial']:checked").val());
+            dados.append("IdPeriodoAquisitivo", $("#idPeriodoAquisitivo").val());
+
+            var options = {};
+            options.url = "/ColaboradoresSolicitacoes/SalvarSolicitacaoFerias"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+                else {
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+
+                setTimeout(function () {
+                    $("#orcamento-alert-success").addClass("hidden");
+                    $("#orcamento-alert-error").addClass("hidden");
+                }, 3000);
+
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+
+    });
+
+    function ExcluirSolicitacaoFerias(Id) {
+        $('h4').text('Você deseja realmente excluir essa Solicitação de Férias (' + Id + ')?');
+        $('#id').val(Id);
+    }
+
+    function ExcluirConfirmadoSolicitacao() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirSolicitacaoFerias"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Solicitacao excluída com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#solicitacaoferias-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir a Solicitação (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão da Solicitação (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function NovoDocumento() {
+
+        $('#modalLabelTitle').text('Novo Documento');
+        $('#DocumentosTipoDocumento').attr('disabled', false);
+        $('#DocumentosTipoDocumento').val('@DateTime.Now.ToString("dd/MM/yyyy")');
+        $('#DocumentosNumeroDocumento').attr('disabled', false);
+        $('#DocumentosNumeroDocumento').val('');
+        $('#DocumentosDataEmissao').attr('disabled', false);
+        $('#DocumentosDataEmissao').val('');
+        $('#DocumentosDataValidade').attr('disabled', false);
+        $('#DocumentosDataValidade').val('');
+        $('#DocumentosObservacao').attr('disabled', false);
+        $('#DocumentosObservacao').val($('').val());
+        $('#id').val(0);
+        $('#idContrato').val(0);
+
+        $('#upload').attr('disabled', false);
+        $('#DocumentoFileUpload').html("Nenhum arquivo selecionado");
+
+        $("#documento-form").validate().resetForm();
+    }
+
+    function AlterarDocumento(Id) {
+        $('#modalLabelTitle').text('Alterar Documento');
+
+        $('#DocumentosTipoDocumento').attr('disabled', false);
+        $('#DocumentosTipoDocumento').val('');
+        $('#DocumentosNumeroDocumento').attr('disabled', false);
+        $('#DocumentosNumeroDocumento').val('');
+        $('#DocumentosDataEmissao').attr('disabled', false);
+        $('#DocumentosDataEmissao').val('Em Análise');
+        $('#DocumentosDataValidade').attr('disabled', false);
+        $('#DocumentosDataValidade').val('');
+        $('#DocumentosObservacao').attr('disabled', false);
+        $('#DocumentosObservacao').val('');
+
+        $('#buttonSalvar').attr('disabled', false);
+        $("#documento-form").validate().resetForm();
+
+        var dados = new window.FormData();
+
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ConsultarDocumento"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            console.log('json.codigo: (' + json.codigo + ')');
+            if (json.codigo == '00') {
+                console.log('Id: (' + Id + ')');
+
+                $('#id').val(Id);
+                $('#DocumentosTipoDocumento').val(json.colaboradordocumento[0].TipoDocumento);
+                $('#DocumentosNumeroDocumento').val(json.colaboradordocumento[0].NumeroDocumento);
+                $('#DocumentosDataEmissao').val(json.colaboradordocumento[0].DataEmissao);
+                $('#DocumentosDataValidade').val(json.colaboradordocumento[0].DataValidade);
+                $('#DocumentosObservacao').val(json.colaboradordocumento[0].Observacao);
+
+                $('#DocumentoDataCadastro').val(json.colaboradordocumento[0].DataCadastro);
+                $('#DocumentoUsuarioCadastro').val(json.colaboradordocumento[0].UsuarioCadastro);
+                $('#DocumentoDataAlteracao').val(json.colaboradordocumento[0].DataAlteracao);
+                $('#DocumentoUsuarioAlteracao').val(json.colaboradordocumento[0].UsuarioAlteracao);
+
+
+                $('#DocumentoFileName').html(json.arquivo);
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonSalvarDocumento').click(function (evt) {
+        $("#documento-form").validate();
+
+        if ($('#documento-form').valid()) {
+
+            var dados = new window.FormData();
+
+            dados.append("Id", $("#id").val());
+            dados.append("IdProfissional", $("#idProfissional").val());
+            dados.append("TipoDocumento", $("#DocumentosTipoDocumento").val());
+            dados.append("NumeroDocumento", $("#DocumentosNumeroDocumento").val());
+            dados.append("DataEmissao", $("#DocumentosDataEmissao").val());
+            dados.append("DataValidade", $("#DocumentosDataValidade").val());
+            dados.append("Observacao", $("#DocumentosObservacao").val());
+
+            var arquivo = document.getElementById("DocumentoFileUpload").files[0];
+            dados.append("DocumentoArquivo", arquivo);
+
+            var options = {};
+            options.url = "/ColaboradoresSolicitacoes/SalvarDocumentos"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+                else {
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+    });
+
+    function ExcluirDocumento(Id) {
+        $('h4').text('Você deseja realmente excluir esse Documento (' + Id + ')?');
+        $('#id').val(Id);
+    }
+
+    function ExcluirConfirmadoDocumento() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirDocumento"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Documento excluído com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#documento-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir o Documento (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Documento (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function VisualizarFotoPDF(url) {
+
+        window.open(url, '_blank');
+
+    }
+
+    function ExcluirPDF() {
+
+        $("#ButtonDocumentoPDFExcluir").attr('disabled', true);
+        $("#ButtonDocumentoPDFExcluir").html("Apagando <i class='fa fa-spinner fa-spin'></i>");
+
+        $("#LabelDocumentoFileExcluirConfirmacao").show();
+        $("#acceptFile").show();
+        $("#go_backFile").show();
+
+    }
+
+    function ExcluirPDFSim(nome) {
+
+        $("#LabelDocumentoFileExcluirConfirmacao").hide();
+        $("#acceptFile").hide();
+        $("#go_backFile").hide();
+
+        $("#ButtonDocumentoPDFExcluir").text("Apagar");
+        $("#ButtonDocumentoPDFExcluir").attr('disabled', false);
+
+        var dados = new window.FormData();
+        dados.append("Arquivo", nome);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirPDF";
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = false;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == "success") {
+                $("#DocumentoFileName").html("Nenhum arquivo encontrado");
+            }
+            else {
+                $("#DocumentoFileName").html("Falha ao tentar apagar o arquivo PDF");
+            }
+
+        };
+        $.ajax(options);
+
+    }
+
+    function ExcluirPDFNao() {
+
+        $("#LabelDocumentoFileExcluirConfirmacao").hide();
+        $("#acceptFile").hide();
+        $("#go_backFile").hide();
+
+        $("#ButtonDocumentoPDFExcluir").text("Apagar");
+        $("#ButtonDocumentoPDFExcluir").attr('disabled', false);
+
+    }
+
+    function NovoAusencia() {
+
+        $('#modalLabelTitle').text('Nova Ausência');
+        $('#AusenciaDataInicio').attr('disabled', false);
+        $('#AusenciaDataInicio').val('');
+        $('#AusenciaDataFim').attr('disabled', false);
+        $('#AusenciaDataFim').val('');
+        $('input[name=AusenciaAbonado][value="S"]').attr('disabled', false);
+        $('input[name=AusenciaAbonado][value="N"]').attr('disabled', false);
+        $('input[name=AusenciaAbonado][value="N"]').prop('checked', true).trigger('change');
+
+        $('#AusenciaAbonado').attr('disabled', false);
+        $('#AusenciaMotivoAusencia').attr('disabled', false);
+        $('#AusenciaMotivoAusencia').val($('').val());
+        $('#id').val(0);
+        $('#idAusencia').val(0);
+
+        $('#atestadoupload').attr('disabled', false);
+        $('#AtestadoFileUpload').html("Nenhum arquivo selecionado");
+
+        $("#ausencia-form").validate().resetForm();
+    }
+
+    function AlterarAusencia(Id) {
+        $('#modalLabelTitle').text('Alterar Ausencia');
+
+        $('#AusenciaDataInicio').attr('disabled', false);
+        $('#AusenciaDataInicio').val('Em Análise');
+        $('#AusenciaDataFim').attr('disabled', false);
+        $('#AusenciaDataFim').val('');
+        $('input[name=AusenciaAbonado][value="S"]').attr('disabled', false);
+        $('input[name=AusenciaAbonado][value="N"]').attr('disabled', false);
+        $('#AusenciaAbonado').attr('disabled', false);
+        $('#AusenciaMotivoAusencia').attr('disabled', false);
+        $('#AusenciaMotivoAusencia').val('');
+
+        $('#buttonSalvar').attr('disabled', false);
+        $("#ausencia-form").validate().resetForm();
+
+
+
+        var dados = new window.FormData();
+
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ConsultarAusencia"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#id').val(Id);
+                $('#AusenciaDataInicio').val(json.colaboradorausencia[0].DataInicio);
+                $('#AusenciaDataFim').val(json.colaboradorausencia[0].DataFim);
+                $('#AusenciaMotivoAusencia').val(json.colaboradorausencia[0].MotivoAusencia);
+
+                var abonado = "N"
+                if (json.colaboradorausencia[0].Abonado) {
+                    abonado = "S"
+                }
+
+                $('input[name=AusenciaAbonado][value="' + abonado + '"]').prop('checked', true).trigger('change');
+
+                $('#AusenciaDataCadastro').val(json.colaboradorausencia[0].DataCadastro);
+                $('#AusenciaUsuarioCadastro').val(json.colaboradorausencia[0].UsuarioCadastro);
+                $('#AusenciaDataAlteracao').val(json.colaboradorausencia[0].DataAlteracao);
+                $('#AusenciaUsuarioAlteracao').val(json.colaboradorausencia[0].UsuarioAlteracao);
+
+                $('#AtestadoFileName').html(json.arquivo);
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonSalvarAusencia').click(function (evt) {
+
+        $("#ausencia-form").validate();
+
+        if ($('#ausencia-form').valid()) {
+
+            var dados = new window.FormData();
+
+            dados.append("Id", $("#id").val());
+            dados.append("IdProfissional", $("#idProfissional").val());
+            dados.append("DataInicio", $("#AusenciaDataInicio").val());
+            dados.append("DataFim", $("#AusenciaDataFim").val());
+            dados.append("MotivoAusencia", $("#AusenciaMotivoAusencia").val());
+            dados.append("Abonado", $("input[type='radio'][name='AusenciaAbonado']:checked").val());
+
+            var arquivo = document.getElementById("AtestadoFileUpload").files[0];
+            dados.append("AtestadoArquivo", arquivo);
+
+            var options = {};
+            options.url = "/ColaboradoresSolicitacoes/SalvarAusencia"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+                else {
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+    });
+
+    function ExcluirAusencia(Id) {
+        $('h4').text('Você deseja realmente excluir essa Ausencia(' + Id + ')?');
+        $('#id').val(Id);
+    }
+
+    function ExcluirConfirmadoAusencia() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirAusencia"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Ausência excluída com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#ausencia-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir o Documento (' + $("#id").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Documento (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function ExcluirPDFAtestado() {
+
+        $("#ButtonAtestadoPDFExcluir").attr('disabled', true);
+        $("#ButtonAtestadoPDFExcluir").html("Apagando <i class='fa fa-spinner fa-spin'></i>");
+
+        $("#LabelAtestadoFileExcluirConfirmacao").show();
+        $("#acceptFile").show();
+        $("#go_backFile").show();
+
+    }
+
+    function ExcluirPDFAtestadoSim(nome) {
+
+        $("#LabelAtestadoFileExcluirConfirmacao").hide();
+        $("#acceptFile").hide();
+        $("#go_backFile").hide();
+
+        $("#ButtonAtestadoPDFExcluir").text("Apagar");
+        $("#ButtonAtestadoPDFExcluir").attr('disabled', false);
+
+        var dados = new window.FormData();
+        dados.append("Arquivo", nome);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirPDFAtestado";
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = false;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == "success") {
+                $("#AtestadoFileName").html("Nenhum arquivo encontrado");
+            }
+            else {
+                $("#AtestadoFileName").html("Falha ao tentar apagar o arquivo PDF");
+            }
+
+        };
+        $.ajax(options);
+
+    }
+
+    function ExcluirPDFAtestadoNao() {
+
+        $("#LabeAtestadoFileExcluirConfirmacao").hide();
+        $("#acceptFile").hide();
+        $("#go_backFile").hide();
+
+        $("#ButtonAtestadoPDFExcluir").text("Apagar");
+        $("#ButtonAtestadoPDFExcluir").attr('disabled', false);
+
+    }
+
+    function NovoSolicitacaoEspecial() {
+
+        $('#modalLabelTitle').text('Nova Solicitação Especial');
+        $('#SolicitacaoEspecialData').attr('disabled', false);
+        $('#SolicitacaoEspecialData').val('@DateTime.Now.ToString("dd/MM/yyyy")');
+        $('#SolicitacaoEspecialSolicitacao').attr('disabled', false);
+        $('#SolicitacaoEspecialSolicitacao').val($('').val());
+        $('#SolicitacaoEspecialDataAprovacao').attr('disabled', false);
+        $('#SolicitacaoEspecialDataAprovacao').val('');
+        $('#SolicitacaoEspecialStatus').attr('disabled', false);
+        $('#SolicitacaoEspecialStatus').val('Em Análise');
+        $('#SolicitacaoEspecialJustificativa').attr('disabled', true);
+        $('#SolicitacaoEspecialJustificativa').val('');
+        $('#id').val(0);
+        $('#idSolicitacaoEspecial').val(0);
+
+        $("#solicitacaoespecial-form").validate().resetForm();
+    }
+
+    function AlterarSolicitacaoEspecial(Id) {
+        $('#modalLabelTitle').text('Alterar Solicitaço Especial');
+
+        $('#SolicitacaoEspecialData').attr('disabled', false);
+        $('#SolicitacaoEspecialData').val('');
+        $('#SolicitacaoEspecialSolicitacao').attr('disabled', false);
+        $('#SolicitacaoEspecialSolicitacao').val($('').val());
+        $('#SolicitacaoEspecialDataAprovacao').attr('disabled', false);
+        $('#SolicitacaoEspecialDataAprovacao').val('');
+        $('#SolicitacaoEspecialStatus').attr('disabled', false);
+        $('#SolicitacaoEspecialStatus').val('');
+        $('#SolicitacaoEspecialJustificativa').attr('disabled', false);
+        $('#SolicitacaoEspecialJustificativa').val($('').val());
+
+        $('#buttonSalvar').attr('disabled', false);
+        $("#solicitacaoespecial-form").validate().resetForm();
+
+
+
+        var dados = new window.FormData();
+
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ConsultarSolicitacaoEspecial"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('#id').val(Id);
+                $('#SolicitacaoEspecialData').val(json.colaboradorsolicitacaoespecial[0].Data);
+                $('#SolicitacaoEspecialSolicitacao').val(json.colaboradorsolicitacaoespecial[0].Solicitacao);
+                $('#SolicitacaoEspecialDataAprovacao').val(json.colaboradorsolicitacaoespecial[0].DataAprovacao);
+                $('#SolicitacaoEspecialStatus').val(json.colaboradorsolicitacaoespecial[0].Status);
+                $('#SolicitacaoEspecialJustificativa').val(json.colaboradorsolicitacaoespecial[0].Justificativa);
+
+                $('#SolicitacaoEspecialDataCadastro').val(json.colaboradorsolicitacaoespecial[0].DataCadastro);
+                $('#SolicitacaoEspecialUsuarioCadastro').val(json.colaboradorsolicitacaoespecial[0].UsuarioCadastro);
+                $('#SolicitacaoEspecialDataAlteracao').val(json.colaboradorsolicitacaoespecial[0].DataAlteracao);
+                $('#SolicitacaoEspecialUsuarioAlteracao').val(json.colaboradorsolicitacaoespecial[0].UsuarioAlteracao);
+
+                $('#AtestadoFileName').html(json.arquivo);
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonSalvarSolicitacaoEspecial').click(function (evt) {
+
+        $("#ausencia-form").validate();
+
+        if ($('#ausencia-form').valid()) {
+
+            var dados = new window.FormData();
+
+            dados.append("Id", $("#id").val());
+            dados.append("IdProfissional", $("#idProfissional").val());
+            dados.append("Data", $("#SolicitacaoEspecialData").val());
+            dados.append("Solicitacao", $("#SolicitacaoEspecialSolicitacao").val());
+            dados.append("DataAprovacao", "");
+            dados.append("Status", $("#SolicitacaoEspecialStatus").val());
+            dados.append("Justificativa", $("#SolicitacaoEspecialJustificativa").val());
+
+            var options = {};
+            options.url = "/ColaboradoresSolicitacoes/SalvarSolicitacaoEspecial"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                    Atualizar();
+                }
+                else {
+                    $('h4').text(json.mensagem);
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#solicitacaoferias-form").validate().resetForm();
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+    });
+
+    function ExcluirSolicitacaoEspecial(Id) {
+        $('h4').text('Você deseja realmente excluir essa Solicitação Especial(' + Id + ')?');
+        $('#id').val(Id);
+    }
+
+    function ExcluirConfirmadoSolicitacaoEspecial() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirSolicitacaoEspecial"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Solicitação excluída com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#ausencia-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir a Solicitação (' + $("#id").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão da Solicitação (' + $("#id").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+
+    function ExcluirContracheque(Id) {
+        $('h4').text('Você deseja realmente excluir esse Documento (' + Id + ')?');
+        $('#id').val(Id);
+    }
+
+    function ExcluirConfirmadoContracheque() {
+        var dados = new window.FormData();
+        dados.append("Id", $("#id").val());
+
+        $('#id').val('');
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/ExcluirContracheque"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $('h4').text('Contracheque excluído com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                $("#documento-form").validate().resetForm();
+
+            }
+            else if (json.codigo == '98') {
+
+                $('h4').text('Não foi possível excluir o Contracheque (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+            else if (json.codigo == '99') {
+
+                $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Contracheque (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function DownloadContracheque(Id) {
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/DownloadContracheque"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+
+                const linkSource = `data:application/pdf;base64,${json.documento}`;
+                const link = document.createElement("a");
+                const fileName = json.nomearquivo;
+
+                link.href = linkSource;
+                link.download = fileName;
+                link.click();
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function VisualizarContracheque(Id) {
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/ColaboradoresSolicitacoes/DownloadContracheque"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                $("#VisualizarContracheque").html("<iframe width='100%' height='800px' src='data:application/pdf;base64, " + encodeURI(json.documento) + "'></iframe>");
+                $("#modalVisualizarContracheque").modal("show");
+
+            }
+            else {
+
+                $('#modalMensagemResposta').text('Problema ao abrir a DANFE!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+
+            }
+
+        };
+        $.ajax(options);
+    }
+
+    function Atualizar() {
+        $(location).attr('href', '../ColaboradoresSolicitacoes');
+    }
+
+
+</script>

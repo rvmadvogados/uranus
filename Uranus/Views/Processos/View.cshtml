@@ -1,0 +1,1448 @@
+﻿@using Uranus.Common
+
+<script>
+
+    function VisualizarEventos(Id, NumeroProcesso) {
+
+        $("#ShowEventos").html("Carregando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+        var dados = new window.FormData();
+        dados.append("IdAcao", Id);
+
+        var options = {};
+        options.url = "/Processos/BuscarProcessosEventos"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == 'success') {
+
+                if (json.count > 0) {
+
+                    $('#ShowEventos').html(json.eventos);
+
+                    if ($('#modalVisualizarProcesso').length) {
+
+                        $(".alterar-evento").hide();
+                        $("a[name*=ButtonAlterarEvento]").hide();
+
+                    }
+
+                    $('#IdProcessAction').text(Id);
+
+                    if (json.status == 'Baixado') {
+
+                        $("a[name*=ButtonCriarEvento]").hide();
+
+                    }
+                    else {
+
+                        $("a[name*=ButtonCriarEvento]").show();
+
+                    }
+
+                }
+                else {
+
+                    $('#ShowEventos').html('Nenhum evento encontrado para essa ação <b>' + NumeroProcesso + '</b>.');
+                    $('#IdProcessAction').text(Id);
+
+                }
+
+            }
+            else {
+
+                $('#ShowEventos').html('Nenhum evento encontrado para essa ação <b>' + NumeroProcesso + '</b>.');
+                $('#IdProcessAction').text("");
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function VisualizarEvento(Id) {
+
+        $("#CarregarEventoDetalhe_" + Id).html("Carregando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+        var dados = new window.FormData();
+        dados.append("IdEvento", Id);
+
+        var options = {};
+        options.url = "/Processos/BuscarProcessosEvento"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == 'success') {
+
+                $('#CarregarEventoDetalhe_' + Id).html(json.eventos);
+
+                if ($('#modalVisualizarProcesso').length) {
+
+                    $(".alterar-evento").hide();
+                    $("a[name*=ButtonAlterarEvento]").hide();
+
+                }
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+</script>
+
+<div class='feedback-box-rvm'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <h4><b>Autores do Processo</b></h4>
+        </div>
+    </div>
+
+    @{
+        foreach (var item in Model.Data.ProcessosAutores)
+        {
+            <div class='row'>
+                <div class='col-md-12'>
+                    <table width='100%'>
+                        <thead>
+                            <tr>
+                                <th>Autor</th>
+                                <th>CPF / CNPJ</th>
+                                <th>Meu Inss</th>
+                                <th>Indicação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <label class="titlefield">@item.Clientes.Pessoas.Nome</label>
+                                </td>
+                                <td>
+                                    @{
+                                        string cpfcnpj = string.Empty;
+
+                                        if (item.Clientes.Pessoas.CpfCnpj != null && item.Clientes.Pessoas.CpfCnpj.Length == 11)
+                                        {
+                                            cpfcnpj = @Util.FormatCPF(item.Clientes.Pessoas.CpfCnpj);
+                                        }
+                                        else if (item.Clientes.Pessoas.CpfCnpj != null && item.Clientes.Pessoas.CpfCnpj.Length == 14)
+                                        {
+                                            cpfcnpj = @Util.FormatCNPJ(item.Clientes.Pessoas.CpfCnpj);
+                                        }
+
+                                        @cpfcnpj;
+                                    }
+                                </td>
+                                <td>@(item.Clientes.SenhaMeuInss != null ? item.Clientes.SenhaMeuInss : String.Empty)</td>
+                                <td>
+                                    @{
+                                        string indicacao = string.Empty;
+
+                                        if (item.Clientes.IdIndicacaoTipo == 1 && item.Clientes.IdProfissional > 0) // profissional
+                                        {
+                                            indicacao = item.Clientes.Profissionais.Pessoas.Nome;
+                                        }
+                                        else if (item.Clientes.IdIndicacaoTipo == 2 && item.Clientes.IdParceiro > 0) // parceiro
+                                        {
+                                            indicacao = item.Clientes.Parceiros.Nome;
+                                        }
+                                        else if (item.Clientes.IdIndicacaoTipo == 3) // outro
+                                        {
+                                            indicacao = item.Clientes.Indicacao;
+                                        }
+                                        else if (item.Clientes.IdIndicacaoTipo == 6 && item.Clientes.IdCliente > 0) // cliente
+                                        {
+                                            indicacao = item.Clientes.Clientes2.Pessoas.Nome;
+                                        }
+
+                                        @indicacao;
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <table width='100%'>
+                        <thead>
+                            <tr>
+                                <th>Telefones</th>
+                                <th>E-Mail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    @{
+                                        var fones = (item.Clientes.Pessoas.LegadoFones != null ? item.Clientes.Pessoas.LegadoFones : String.Empty);
+
+                                        foreach (var fone in item.Clientes.Pessoas.Fones)
+                                        {
+                                            if (!string.IsNullOrEmpty(fone.Numero))
+                                            {
+                                                fones += (!string.IsNullOrEmpty(fones.Trim()) ? " / " : string.Empty) + @Util.FormatPhone(fone.Numero);
+                                            }
+                                        }
+                                        @Html.Raw(fones);
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        string email = string.Empty;
+
+                                        foreach (var fone in item.Clientes.Pessoas.Email)
+                                        {
+                                            if (@fone.Ativo && fone.Principal)
+                                            {
+                                                email = @fone.Email1;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                email = @fone.Email1;
+                                            }
+                                        }
+
+                                        @email;
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<div class='feedback-box-rvm'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <h4><b>Réus do Processo</b></h4>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-12'>
+            <table width='100%'>
+                <thead>
+                    <tr>
+                        <th>Réus</th>
+                        <th>Telefone</th>
+                        <th>Telefone Legado</th>
+                        <th>E-mail</th>
+                        <th>CPF / CNPJ</th>
+                        <th>Meu Inss</th>
+                        <th>Indicação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var item in Model.Data.ProcessosPartes)
+                        {
+                            <tr>
+                                <td>@item.NomeParte</td>
+                                <td>
+                                    @{
+                                        string numero = string.Empty;
+
+                                        foreach (var fone in item.Clientes.Pessoas.Fones)
+                                        {
+                                            if (@fone.Status == "Ativo" && fone.Principal)
+                                            {
+                                                numero = @Util.FormatPhone(fone.Numero);
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                numero = @Util.FormatPhone(fone.Numero);
+                                            }
+                                        }
+
+                                        @numero;
+                                    }
+                                </td>
+                                <td>@(item.Clientes.Pessoas.LegadoFones != null ? item.Clientes.Pessoas.LegadoFones : String.Empty)</td>
+                                <td>
+                                    @{
+                                        string email = string.Empty;
+
+                                        foreach (var fone in item.Clientes.Pessoas.Email)
+                                        {
+                                            if (@fone.Ativo && fone.Principal)
+                                            {
+                                                email = @fone.Email1;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                email = @fone.Email1;
+                                            }
+                                        }
+
+                                        @email;
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        string cpfcnpj = string.Empty;
+
+                                        if (item.Clientes.Pessoas.CpfCnpj != null && item.Clientes.Pessoas.CpfCnpj.Length == 11)
+                                        {
+                                            cpfcnpj = @Util.FormatCPF(item.Clientes.Pessoas.CpfCnpj);
+                                        }
+                                        else if (item.Clientes.Pessoas.CpfCnpj != null && item.Clientes.Pessoas.CpfCnpj.Length == 14)
+                                        {
+                                            cpfcnpj = @Util.FormatCNPJ(item.Clientes.Pessoas.CpfCnpj);
+                                        }
+
+                                        @cpfcnpj;
+                                    }
+                                </td>
+                                <td>@(item.Clientes.SenhaMeuInss != null ? item.Clientes.SenhaMeuInss : String.Empty)</td>
+                                <td>
+                                    @{
+                                        string indicacao = string.Empty;
+
+                                        if (item.Clientes.IdIndicacaoTipo == 1 && item.Clientes.IdProfissional > 0) // profissional
+                                        {
+                                            indicacao = item.Clientes.Profissionais.Pessoas.Nome;
+                                        }
+                                        else if (item.Clientes.IdIndicacaoTipo == 2 && item.Clientes.IdParceiro > 0) // parceiro
+                                        {
+                                            indicacao = item.Clientes.Parceiros.Nome;
+                                        }
+                                        else if (item.Clientes.IdIndicacaoTipo == 3) // outro
+                                        {
+                                            indicacao = item.Clientes.Indicacao;
+                                        }
+                                        else if (item.Clientes.IdIndicacaoTipo == 6 && item.Clientes.IdCliente > 0) // cliente
+                                        {
+                                            indicacao = item.Clientes.Clientes2.Pessoas.Nome;
+                                        }
+
+                                        @indicacao;
+                                    }
+                                </td>
+                            </tr>
+                            @*<tr>
+                                    <table width='100%' style="margin: 15px !important;">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome do Advogado</th>
+                                                <th>Número OAB</th>
+                                                <th>Telefone Comercial</th>
+                                                <th>Celular</th>
+                                                <th>E-mail</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                foreach (var itemAux in item.ProcessosPartesAdvogados)
+                                                {
+                                                    <tr>
+                                                        <td>@itemAux.NomeAdvogado</td>
+                                                        <td>@itemAux.NumeroOab</td>
+                                                        <td>@Util.FormatPhone(itemAux.TelefoneComercial)</td>
+                                                        <td>@Util.FormatPhone(itemAux.Celular)</td>
+                                                        <td>@itemAux.Email</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </tr>*@
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class='feedback-box-rvm'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <h4><b>Processo</b></h4>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-12'>
+            <table width='100%'>
+                <thead>
+                    <tr>
+                        <th>Data Hora</th>
+                        <th>Nome da Sede</th>
+                        <th>Profissional Responsável pela Inicial</th>
+                        <th class="hidden">Status do Processo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model.Data.DataInclusao.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @{
+                                bool cliente = false;
+
+                                if (@Model.Data.ProcessosAutores != null && @Model.Data.ProcessosAutores.Count > 0)
+                                {
+                                    foreach (var autor in Model.Data.ProcessosAutores)
+                                    {
+                                        if (autor.Clientes.Pessoas.Cliente != null && autor.Clientes.Pessoas.Cliente && autor.Clientes.Sedes != null)
+                                        {
+                                            @autor.Clientes.Sedes.Nome;
+                                            cliente = true;
+                                        }
+                                        break;
+                                    }
+                                }
+
+                                if (@Model.Data.ProcessosPartes != null && @Model.Data.ProcessosPartes.Count > 0 && !cliente)
+                                {
+                                    foreach (var reu in Model.Data.ProcessosPartes)
+                                    {
+                                        if (reu.Clientes.Pessoas.Cliente != null && reu.Clientes.Pessoas.Cliente && reu.Clientes.Sedes != null)
+                                        {
+                                            @reu.Clientes.Sedes.Nome;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        </td>
+                        <td>@(Model.Data.Profissionais != null ? Model.Data.Profissionais.Pessoas.Nome : "Não identificado")</td>
+                        <td class="hidden">@Model.Data.Status</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table width='100%' style="margin-top: 5px !important;">
+                <thead>
+                    <tr>
+                        <th>Objeto do Processo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Html.Raw(Uri.UnescapeDataString((Model.Data.Objeto != null ? Model.Data.Objeto : String.Empty)))</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table width='100%' style="margin-top: 0px !important;">
+                <thead>
+                    <tr>
+                        <th>Observação do Processo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Html.Raw(Uri.UnescapeDataString((Model.Data.Observacao != null ? Model.Data.Observacao : String.Empty)))</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    th.espacamento,
+    td.espacamento {
+        padding: 5px 5px 5px 5px !important;
+    }
+</style>
+
+<div class='feedback-box-rvm'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <h4><b>Processos Vinculados</b></h4>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-12'>
+            <table width='100%'>
+                <thead>
+                    <tr>
+                        <th class="espacamento">Data Ação</th>
+                        @*<th class="espacamento">Evento Automático</th>*@
+                        <th class="espacamento">Número do Processo</th>
+                        <th class="espacamento">Núm. Antigo Processo</th>
+                        <th class="espacamento" style="width: 150px !important;" ;>Ação</th>
+                        <th class="espacamento" style="width: 200px !important;">Juízo</th>
+                        <th class="espacamento">Área</th>
+                        <th class="espacamento">Status</th>
+                        <th class="espacamento">Eventos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (var item in Model.Data.ProcessosAcoes)
+                        {
+                            <tr>
+                                <td class="espacamento">
+                                    @{
+                                        if (item.DataAcao != null)
+                                        {
+                                            @item.DataAcao.ToString("dd/MM/yyyy")
+                                        }
+                                    }
+                                </td>
+                                @*<td class="espacamento">
+                                    @{
+                                        if (item.EventoAutomatico != null && item.EventoAutomatico)
+                                        {
+                                            @Html.Raw("Ativo")
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("Inativo")
+                                        }
+                                    }
+                                </td>*@
+                                <td class="espacamento">@item.NumeroProcesso</td>
+                                <td class="espacamento">@item.NumeroProcessoAntigo</td>
+                                <td class="espacamento" style="width: 150px !important;">
+                                    @{
+                                        if (item.ProcessosCadastroAcao != null)
+                                        {
+                                            @item.ProcessosCadastroAcao.Acao
+                                        }
+                                    }
+                                </td>
+                                <td class="espacamento" style="width: 200px !important;">
+                                    @{
+                                        if (item.ProcessosVara != null)
+                                        {
+                                            @item.ProcessosVara.Vara
+                                        }
+                                    }
+                                </td>
+                                <td class="espacamento">
+                                    @{
+                                        if (item.ProcessosAreas != null)
+                                        {
+                                            @item.ProcessosAreas.AreaAtuacao
+                                        }
+                                    }
+                                </td>
+                                <td class="espacamento">@item.Status</td>
+                                <td class="espacamento"><a class='btn btn-default btn-xs' onclick='VisualizarEventos(@item.ID,"@item.NumeroProcesso");'>Visualizar</a></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class='feedback-box-rvm'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="left">
+                        <h4><b>Eventos do Processo</b></h4>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="right">
+                        <a id='ButtonCriarEvento' name='ButtonCriarEvento' class='btn btn-primary btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalNovoEvento' onclick="NovoEvento();">Criar Evento</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div id='ShowEventos' class='col-md-12'>
+            @{
+                var response = "Nenhum evento foi selecionado para visualização.";
+
+
+                response = @"<script>
+                                if ($('#IdProcessAction').val() != '0' && $('#IdProcessAction').val() != '')
+                                {
+                                    VisualizarEventos($('#IdProcessAction').val(), $('#NumberProcess').text());
+                                }
+                                else if ($('#IdProcessAction').text() != '0' && $('#IdProcessAction').text() != '')
+                                {
+                                    VisualizarEventos($('#IdProcessAction').text(), $('#NumberProcess').text());
+                                }
+                                else
+                                {
+                                    'Nenhum evento foi selecionado para visualização.'
+                                }
+                             </script>";
+
+                @Html.Raw(response);
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+
+    div.upload {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        display: inline-block;
+        height: 38px;
+        padding: 3px 40px 3px 3px;
+        position: relative;
+        width: 100% !important;
+    }
+
+        div.upload:hover {
+            opacity: 0.95;
+        }
+
+        div.upload input[type="file"] {
+            display: input-block;
+            width: 100%;
+            height: 30px;
+            opacity: 0;
+            cursor: pointer;
+            position: absolute;
+            left: 0;
+        }
+
+    .uploadButton {
+        background-color: #333333;
+        border: none;
+        color: #FFF;
+        cursor: pointer;
+        display: inline-block;
+        height: 30px;
+        margin-right: 15px;
+        width: auto;
+        padding: 0 20px;
+        box-sizing: content-box;
+    }
+
+        .uploadButton:hover {
+            background-color: #3D3D3D;
+        }
+
+    .fileName {
+        font-family: Arial;
+        font-size: 14px;
+    }
+
+    .upload + .uploadButton {
+        height: 40px;
+    }
+</style>
+
+<div id="modalNovoEvento" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        <!-- Modal content-->
+        <form id="evento-form">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Criar Evento</label></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="idAcaoEventoView" name="idAcaoEventoView" value="0">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="titlefield">Número do Processo <span class="required">*</span></label>
+                                <select id="ViewNumeroProcesso" name="ViewNumeroProcesso" class="select2_single form-control" style="width: 100% !important;"></select>
+                                <label id="ViewNumeroProcessoValidate" name="ViewNumeroProcessoValidate" for="ViewNumeroProcesso" class="error hidden">Por favor, selecione um Número do Processo.</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="titlefield">Evento <span class="required">*</span></label>
+                                <select id="ViewEvento" name="ViewEvento" class="select2_single form-control" style="width: 100% !important;"></select>
+                                <label id="ViewEventoValidate" name="ViewEventoValidate" for="ViewEvento" class="error hidden">Por favor, selecione um Evento.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="titlefield">Agendar para o Profissional</label>
+                                <select id="ViewProfissional" name="ViewProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="titlefield">Data 1º Prazo</label>
+                                <div id="ViewDataPrazoEvento1" name="ViewDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
+                                    <input id="ViewPrazoEvento1" name="ViewPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                    <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="titlefield">Data 2º Prazo</label>
+                                <div id="ViewDataPrazoEvento2" name="ViewDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
+                                    <input id="ViewPrazoEvento2" name="ViewPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                    <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                </div>
+                                <label id="ViewDataPrazoEvento2Validate" name="ViewDataPrazoEvento2Validate" for="ViewDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="titlefield">PDF <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 10MB por arquivo)</label></label>
+                                <div class="upload">
+                                    <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload1').click();" />
+                                    <input type="file" id="ViewFileUpload1" name="ViewUpload1" accept="application/pdf" value="10485760" />
+                                    <span id="ViewFileName1" name="ViewFileName1" class="fileName">Nenhum arquivo selecionado</span>
+                                </div>
+                                <label id="ViewFileUpload1Validate" name="ViewFileUpload1Validate" for="ViewFileUpload1" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                <br />
+                                <div class="upload">
+                                    <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload2').click();" />
+                                    <input type="file" id="ViewFileUpload2" name="ViewUpload2" accept="application/pdf" value="10485760" />
+                                    <span id="ViewFileName2" name="ViewFileName2" class="fileName">Nenhum arquivo selecionado</span>
+                                </div>
+                                <label id="ViewFileUpload2Validate" name="ViewFileUpload2Validate" for="ViewFileUpload2" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                <br />
+                                <div class="upload">
+                                    <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload3').click();" />
+                                    <input type="file" id="ViewFileUpload3" name="ViewUpload3" accept="application/pdf" value="10485760" />
+                                    <span id="ViewFileName3" name="ViewFileName3" class="fileName">Nenhum arquivo selecionado</span>
+                                </div>
+                                <label id="ViewFileUpload3Validate" name="ViewFileUpload3Validate" for="ViewFileUpload3" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                <br />
+                                <div class="upload">
+                                    <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload4').click();" />
+                                    <input type="file" id="ViewFileUpload4" name="ViewUpload4" accept="application/pdf" value="10485760" />
+                                    <span id="ViewFileName4" name="ViewFileName4" class="fileName">Nenhum arquivo selecionado</span>
+                                </div>
+                                <label id="ViewFileUpload4Validate" name="ViewFileUpload4Validate" for="ViewFileUpload4" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                <br />
+                                <div class="upload">
+                                    <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#ViewFileUpload5').click();" />
+                                    <input type="file" id="ViewFileUpload5" name="ViewUpload5" accept="application/pdf" value="10485760" />
+                                    <span id="ViewFileName5" name="ViewFileName5" class="fileName">Nenhum arquivo selecionado</span>
+                                </div>
+                                <label id="ViewFileUpload5Validate" name="ViewFileUpload5Validate" for="ViewFileUpload5" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="titlefield">Descrição <label class="titlefieldcomment"> <span class="red">(tamanho máximo do texto de 1MB)</label></label>
+                                <textarea id="ViewDescricao" name="ViewDescricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                <label id="ViewDescricaoValidate" name="ViewDescricaoValidate" for="ViewDescricao" class="error hidden">Por favor, informe uma descrição com até 1MB.</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger hidden" id="processo-evento-alert-error">
+                        <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro do evento.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="buttonSalvarEventos" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                    &nbsp;
+                    <button id="buttonFecharEventos" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharEvento();">Fechar</button>
+                    <br />
+                    <label id='LabelEventoFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptEvento' class='btn btn-default btn-xs' style='display: none;' onclick='FecharEventoSim()'>Sim</a><a id='go_backEvento' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharEventoNao()'>Não</a>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+
+    var id = 0;
+    var idagenda = 0;
+
+    $(document).ready(function () {
+
+        // use this if you are using id to check
+        if ($('#modalVisualizarProcesso').length)
+        {
+            $("#ButtonCriarEvento").hide();
+            $("a[name*=ButtonAlterarEvento]").hide();
+            $(".alterar-evento").hide();
+        }
+
+    });
+
+    $('input[type=file]').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+
+    });
+
+    $("#ViewNumeroProcesso").select2({
+        placeholder: "Selecione um Número de Processo",
+        allowClear: true,
+        tags: true
+    });
+
+    $("#ViewProfissional").select2({
+        placeholder: "&nbsp;",
+        allowClear: true,
+        tags: true
+    });
+
+    $("#ViewDataPrazoEvento1").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        daysOfWeekDisabled: [0, 6],
+        clearBtn: true,
+        datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+    });
+
+    $("#ViewDataPrazoEvento2").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        daysOfWeekDisabled: [0, 6],
+        clearBtn: true,
+        datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+    });
+
+    CKEDITOR.replace('ViewDescricao', {
+        language: 'pt',
+        height: 200
+    });
+
+    $('ViewFileUpload1').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    $('ViewFileUpload2').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    $('ViewFileUpload3').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    $('ViewFileUpload4').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    $('ViewFileUpload5').change(function (e) {
+        $in = $(this);
+        $in.next().html($in.val());
+    });
+
+    CarregarProcessos();
+    CarregarEventos();
+    CarregarProfissionais("");
+
+    function CarregarProcessos() {
+
+        var dados = new window.FormData();
+        dados.append("IdProcesso", @Model.Data.ID);
+
+        var options = {};
+        options.url = "/Processos/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.processos.Data;
+
+                $('#ViewNumeroProcesso').html("");
+                var select = $('#ViewNumeroProcesso');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Número de Processo")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+
+                    if (rows[index].Status != 'Baixado') {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function CarregarEventos() {
+
+        var options = {};
+        options.url = "/Eventos/Listar"
+        options.type = "POST";
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.eventos;
+
+                $('#ViewEvento').html("");
+                var select = $('#ViewEvento');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                );
+
+                for (i = 0; i < rows.length; i++) {
+                    select.append(
+                        $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function CarregarProfissionais(Data) {
+
+        var dados = new window.FormData();
+        dados.append("Data", Data);
+
+        var options = {};
+        options.url = "/Profissionais/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.profissionais;
+                $('#ViewProfissional').html("");
+                var select = $('#ViewProfissional');
+                select.append(
+                    $('<option selected disabled></option>').val("").html(" ")
+                );
+
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    function NovoEvento()
+    {
+        $('#modalLabelTitle').text('Criar Evento');
+
+        LimparEventoView();
+
+        $("#ViewEvento").select2({
+            placeholder: "Selecione um Evento",
+            allowClear: true,
+            tags: true
+        }).on('change', function (e) {
+
+            var value = $("#ViewEvento option:selected").val();
+
+            if ((value != 0 || typeof value === "undefined") && value.length > 0 && value != $("#idAcaoEventoView").val()) {
+
+                $("#idAcaoEventoView").val("0");
+
+                var dados = new window.FormData();
+
+                dados.append("Id", value);
+
+                var options = {};
+                options.url = "/Eventos/Consultar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        if (json.evento[0] != null && json.evento[0].Texto != null) {
+
+                            var texto = json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                            CKEDITOR.instances["ViewDescricao"].setData(unescape(texto));
+
+                        }
+                        else {
+
+                            CKEDITOR.instances["ViewDescricao"].setData("");
+
+                        }
+
+                    }
+                };
+                $.ajax(options);
+
+            }
+        }).trigger('change');
+
+        //CarregarProcessos();
+        $('#ViewNumeroProcesso').val($('#IdProcessAction').text());
+        $('#ViewNumeroProcesso').trigger('change');
+    }
+
+    function AlterarEvento(Id) {
+
+        $('#modalLabelTitle').text('Alterar Evento');
+
+        id = Id;
+
+        var dados = new window.FormData();
+        dados.append("Id", Id);
+
+        var options = {};
+        options.url = "/Processos/ConsultarProcessoEvento"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.evento;
+
+                idagenda = rows[0].IdAgendaProfissional;
+
+                $("#idAcaoEventoView").val(rows[0].IdEvento);
+
+                $('#ViewEvento').val(rows[0].IdEvento);
+                $("#ViewEvento").select2({
+                    placeholder: "Selecione um Evento",
+                    allowClear: true,
+                    tags: true
+                }).on('change', function (e) {
+
+                    var value = $("#ViewEvento option:selected").val();
+
+                    if ((value != 0 || typeof value === "undefined") && value.length > 0 && value != $("#idAcaoEventoView").val()) {
+
+                        $("#idAcaoEventoView").val("0");
+
+                        var dados = new window.FormData();
+
+                        dados.append("Id", value);
+
+                        var options = {};
+                        options.url = "/Eventos/Consultar"
+                        options.type = "POST";
+                        options.data = dados;
+                        options.asyn = true;
+                        options.contentType = false;
+                        options.processData = false;
+                        options.dataType = "application/json; charset=utf-8";
+                        options.complete = function (data) {
+
+                            var json = $.parseJSON(data.responseText);
+
+                            if (json.codigo == '00') {
+
+                                if (json.evento[0] != null && json.evento[0].Texto != null) {
+
+                                    var texto = json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                                    CKEDITOR.instances["ViewDescricao"].setData(unescape(texto));
+
+                                }
+                                else {
+
+                                    CKEDITOR.instances["ViewDescricao"].setData("");
+
+                                }
+
+                            }
+                        };
+                        $.ajax(options);
+
+                    }
+                }).trigger('change');
+
+                $('#ViewNumeroProcesso').val(rows[0].IdProcessoAcao);
+                $('#ViewNumeroProcesso').trigger('change');
+
+                $('#ViewProfissional').val(rows[0].IdProfissional);
+                $('#ViewProfissional').trigger('change');
+
+                $('#ViewPrazoEvento1').val(rows[0].PrazoEvento1);
+                $('#ViewPrazoEvento2').val(rows[0].PrazoEvento2);
+
+                $('#ViewFileName1').html(json.arquivo1);
+                $('#ViewFileName2').html(json.arquivo2);
+                $('#ViewFileName3').html(json.arquivo3);
+                $('#ViewFileName4').html(json.arquivo4);
+                $('#ViewFileName5').html(json.arquivo5);
+
+                var texto = rows[0].Texto.replace(/\n/g, "<br>");
+                CKEDITOR.instances["ViewDescricao"].setData(unescape(texto));
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    $('#buttonSalvarEventos').click(function (evt) {
+
+        $("#evento-form").validate();
+
+        if ($('#evento-form').valid()) {
+
+            var validate = true;
+
+            if ($('#ViewNumeroProcesso').val() == null || !$.isNumeric($('#ViewNumeroProcesso').val())) {
+                $('#ViewNumeroProcessoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ViewNumeroProcessoValidate').addClass('hidden');
+            }
+
+            if ($('#ViewEvento').val() == null || !$.isNumeric($('#ViewEvento').val())) {
+                $('#ViewEventoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ViewEventoValidate').addClass('hidden');
+            }
+
+            if ($('#ViewPrazoEvento1').val() != "" || $('#ViewPrazoEvento2').val() != "") {
+
+                var date1 = toDate($('#ViewPrazoEvento1').val());
+                var date2 = toDate($('#ViewPrazoEvento2').val());
+                var days = (date2 - date1) / (1000 * 60 * 60 * 24);
+
+                if (days < 0) {
+
+                    $('#ViewDataPrazoEvento2Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+
+                }
+
+            } else {
+                $('#ViewDataPrazoEvento2Validate').addClass('hidden');
+            }
+
+            if (typeof document.getElementById("ViewFileUpload1").files[0] !== "undefined") {
+                if (document.getElementById("ViewFileUpload1").files[0].size > 10485760) {
+                    $("#ViewFileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload1").files[0].size, 1) + ".");
+                    $("#ViewFileUpload1Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#ViewFileUpload1Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ViewFileUpload2").files[0] !== "undefined") {
+                if (document.getElementById("ViewFileUpload2").files[0].size > 10485760) {
+                    $("#ViewFileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload2").files[0].size, 1) + ".");
+                    $("#ViewFileUpload2Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#ViewFileUpload2Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ViewFileUpload3").files[0] !== "undefined") {
+                if (document.getElementById("ViewFileUpload3").files[0].size > 10485760) {
+                    $("#ViewFileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload3").files[0].size, 1) + ".");
+                    $("#ViewFileUpload3Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#ViewFileUpload3Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ViewFileUpload4").files[0] !== "undefined") {
+                if (document.getElementById("ViewFileUpload4").files[0].size > 10485760) {
+                    $("#ViewFileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload4").files[0].size, 1) + ".");
+                    $("#ViewFileUpload4Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#ViewFileUpload4Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("ViewFileUpload5").files[0] !== "undefined") {
+                if (document.getElementById("ViewFileUpload5").files[0].size > 10485760) {
+                    $("#ViewFileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload5").files[0].size, 1) + ".");
+                    $("#ViewFileUpload5Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#ViewFileUpload5Validate').addClass('hidden');
+                }
+            }
+
+            //TextEncoder
+            if (escape(CKEDITOR.instances.ViewDescricao.getData()).length > 0) {
+
+                var size = new TextEncoder().encode(escape(CKEDITOR.instances.ViewDescricao.getData())).length;
+
+                if (size > 1048576) {
+                    $("#ViewDescricaoValidate").text("Por favor, informar uma descrição com até 1MB, pois esse possuí " + formatBytes(size, 1) + ".");
+                    $("#ViewDescricaoValidate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#ViewDescricaoValidate').addClass('hidden');
+                }
+
+            }
+
+            //Blob
+            //var size2 = new Blob([escape(CKEDITOR.instances.ViewDescricao.getData())]).size;
+            //console.log(size2);
+
+            if (validate) {
+
+                var descricao = escape(CKEDITOR.instances.ViewDescricao.getData());
+                var profissional = ($("#ViewProfissional").val() != null && $("#ViewProfissional").val() > 0 ? $("#ViewProfissional").val() : 0);
+
+                var dados = new window.FormData();
+                dados.append("Id", id);
+                dados.append("Origem", "");
+                dados.append("Data", $("#ViewData").val());
+                dados.append("IdProcessosAcao", $("#ViewNumeroProcesso").val());
+                dados.append("IdProcessosEvento", $("#ViewEvento").val());
+                dados.append("IdProfissional", profissional);
+                dados.append("Prazo1", $("#ViewPrazoEvento1").val());
+                dados.append("Prazo2", $("#ViewPrazoEvento2").val());
+                dados.append("Descricao", descricao);
+
+                var arquivo1 = document.getElementById("ViewFileUpload1").files[0];
+                dados.append("Arquivo1", arquivo1);
+
+                var arquivo2 = document.getElementById("ViewFileUpload2").files[0];
+                dados.append("Arquivo2", arquivo2);
+
+                var arquivo3 = document.getElementById("ViewFileUpload3").files[0];
+                dados.append("Arquivo3", arquivo3);
+
+                var arquivo4 = document.getElementById("ViewFileUpload4").files[0];
+                dados.append("Arquivo4", arquivo4);
+
+                var arquivo5 = document.getElementById("ViewFileUpload5").files[0];
+                dados.append("Arquivo5", arquivo5);
+
+                dados.append("IdAgendaProfissional", idagenda);
+                dados.append("Excluido", false);
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosEventos"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+
+                        $("#modalNovoEvento").modal('hide');
+                        $('#processo-evento-alert-error').addClass('hidden');
+                        VisualizarEventos($("#ViewNumeroProcesso").val(), "");
+
+                    }
+                    else {
+
+                        $('#processo-evento-alert-error').removeClass('hidden').css("display", "");
+
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+
+                id = 0;
+
+            }
+            else {
+
+                return false;
+
+            }
+
+        }
+        else {
+
+            return false;
+
+        }
+
+    });
+
+    function VisualizarAgendas(Id, NumeroProcesso) {
+
+        var dados = new window.FormData();
+        dados.append("IdAcao", Id);
+
+        var options = {};
+        options.url = "/Processos/BuscarProcessosAgendas"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.response == 'success') {
+
+                if (json.count > 0) {
+
+                    $('#ShowAgendas').html(json.agendas);
+
+                }
+                else {
+
+                    $('#ShowAgendas').html('Nenhuma agenda encontrada para essa ação <b>' + NumeroProcesso + '</b>.');
+
+                }
+
+            }
+            else {
+
+                $('#ShowAgendas').html('Nenhum agenda encontrada para essa ação <b>' + NumeroProcesso + '</b>.');
+
+            }
+        };
+        $.ajax(options);
+
+    }
+
+    function VisualizarPDF(url) {
+
+        window.open(url, '_blank');
+
+    }
+
+    function LimparEventoView() {
+
+        $("#idAcaoEventoView").val("0");
+
+        $("#ViewNumeroProcesso").val("");
+        $("#ViewNumeroProcesso").trigger('change');
+
+        $("#ViewEvento").val("");
+        $("#ViewEvento").trigger('change');
+
+        $("#ViewProfissional").val("");
+        $("#ViewProfissional").trigger('change');
+
+        $("#ViewPrazoEvento1").val("");
+        $("#ViewPrazoEvento2").val("");
+
+        $("#ViewFileUpload1").val("");
+        $("#ViewFileName1").text("Nenhum arquivo selecionado");
+        $("#ViewFileUpload2").val("");
+        $("#ViewFileName2").text("Nenhum arquivo selecionado");
+        $("#ViewFileUpload3").val("");
+        $("#ViewFileName3").text("Nenhum arquivo selecionado");
+        $("#ViewFileUpload4").val("");
+        $("#ViewFileName4").text("Nenhum arquivo selecionado");
+        $("#ViewFileUpload5").val("");
+        $("#ViewFileName5").text("Nenhum arquivo selecionado");
+
+        CKEDITOR.instances["ViewDescricao"].setData("");
+    }
+
+    function FecharEvento() {
+
+        $("#buttonFecharEventos").attr('disabled', true);
+        $("#buttonFecharEventos").html("Fechando <i class='fa fa-spinner fa-spin'></i>");
+
+        $("#LabelEventoFecharConfirmacao").show();
+        $("#acceptEvento").show();
+        $("#go_backEvento").show();
+
+    }
+
+    function FecharEventoSim() {
+
+        $("#LabelEventoFecharConfirmacao").hide();
+        $("#acceptEvento").hide();
+        $("#go_backEvento").hide();
+
+        $("#buttonFecharEventos").text("Fechar");
+        $("#buttonFecharEventos").attr('disabled', false);
+
+        $("#modalNovoEvento").modal("hide");
+
+    }
+
+    function FecharEventoNao() {
+
+        $("#LabelEventoFecharConfirmacao").hide();
+        $("#acceptEvento").hide();
+        $("#go_backEvento").hide();
+
+        $("#buttonFecharEventos").text("Fechar");
+        $("#buttonFecharEventos").attr('disabled', false);
+
+    }
+
+</script>

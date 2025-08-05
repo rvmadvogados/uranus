@@ -1,0 +1,3145 @@
+﻿@{
+    ViewBag.Title = "Colaboradores";
+}
+
+<div class="main_container">
+    <style>
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+    <input type="hidden" id="id" name="id" value="0">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idProcesso" name="idProcesso" value="0">
+    <input type="hidden" id="numeroProcesso" name="numeroProcesso" value="">
+    <input type="hidden" id="idAcao" name="idAcao" value="0">
+    <input type="hidden" id="IdProcessAction" value="0" />
+    <input type="hidden" id="NumberProcess" value="" />
+    <div class="x_panel">
+        <div class="x_title">
+            <h2> Filtrar e Cadastrar Colaboradores </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a id="tab-listar" href="#tab_content_listar" role="tab" data-toggle="tab" aria-expanded="true">Listar</a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-visualizar" href="#tab_content_visualizar" role="tab" data-toggle="tab" aria-expanded="false">
+                            Visualizar
+                        </a>
+                    </li>
+                    <li role="presentation" class="">
+                        <a id="tab-cadastrar" href="#tab_content_cadastrar" role="tab" data-toggle="tab" aria-expanded="false">Cadastrar</a>
+                    </li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content_listar" aria-labelledby="tab-listar" style="margin-left: 0 !important; margin-right: 0 !important;">
+                        <div role="main">
+                            @{ WebGrid grid = new WebGrid(Model); }
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div>
+                                        <form action="#" id="processo-filtro-form" method="get">
+                                            <div class="x_content">
+                                                @using (Html.BeginForm("Index", "Colaboradores", FormMethod.Get, null))
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Nome</label>
+                                                                <input id="FiltrarColaborador" name="FiltrarColaborador" type="FiltrarColaborador" class="form-control" placeholder="Informe o Nome" value="" style="border: 1px solid #CCCCCC !important;" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Cargo </label>
+                                                                <input id="FiltrarCargo" name="FiltrarCargo" type="FiltrarCargo" class="form-control" placeholder="Informe o Cargo" value="" style="border: 1px solid #CCCCCC !important;" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Sede</label>
+                                                                <select id="Sede" name="Sede" class="form-control placeholder">
+                                                                    <option value="">Selecione a Sede</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Tipo de Contrato</label>
+                                                                <select id="TipoContrato" name="TipoContrato" class="form-control placeholder" data-msg-required="Por favor, selecione um tipo de contato." data-rule-required="true">
+                                                                    <option value="" style="background-color: #eaeaea;">Selecione</option>
+                                                                    <option value="" style="background-color: #eaeaea;">CLT</option>
+                                                                    <option value="" style="background-color: #eaeaea;">Advogado</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Status</label>
+                                                                <select id="Status" name="Status" class="form-control placeholder" data-msg-required="Por favor, selecione um status." data-rule-required="true">
+                                                                    <option value="" style="background-color: #eaeaea;">Selecione</option>
+                                                                    <option value="" style="background-color: #eaeaea;">Ativo</option>
+                                                                    <option value="" style="background-color: #eaeaea;">Inativo</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-9">
+                                                            <div class="form-group">
+                                                                <!-- <button type="button" id="btnNovo" class="btn btn-success" style="margin-top: 25px !important;">Novo</button> -->
+                                                                <button type="button" class="btn btn-success btn-novo" id="tab-cadastrar" href="#tab_content_cadastrar" role="tab" data-toggle="tab" aria-expanded="false" style="margin-top: 25px !important;">Novo</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group" style="vertical-align: bottom !important;
+                                                                                                        display: flex;
+                                                                                                        align-items: center;
+                                                                                                        justify-content: end;">
+                                                                <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button> &nbsp; <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarNome').val('');$('#FiltrarCargo').val('');$('#FiltrarUnidadeTrabalho').val('');$('#TipoContrato').val('');$('#Status').val('');">Limpar</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </form>
+                                        <div>
+                                            @{
+                                                @grid.GetHtml(
+                                                        tableStyle: "webgrid",
+                                                        fillEmptyRows: false,
+                                                        headerStyle: "webgrid-header",
+                                                        alternatingRowStyle: "webgrid-alternating-row",
+                                                        rowStyle: "webgrid-row-style",
+                                                        selectedRowStyle: "webgrid-selected-row",
+                                                        footerStyle: "webgrid-footer",
+                                                        mode: WebGridPagerModes.All,
+                                                        firstText: "Primeiro",
+                                                        previousText: "Anterior",
+                                                        nextText: "Próximo",
+                                                        lastText: "Último",
+                                                        numericLinksCount: 5,
+                                                        columns: new[] {
+                                                        grid.Column("Pessoas.Nome", header: "Nome"),
+                                                        grid.Column("Pessoas.CpfCnpj", header: "CPF/CNPJ", format: (item) => new HtmlString(item.Pessoas.CpfCnpj != null ? (item.Pessoas.CpfCnpj.Length == 11 ? Uranus.Common.Util.FormatCPF(item.Pessoas.CpfCnpj) : Uranus.Common.Util.FormatCNPJ(item.Pessoas.CpfCnpj)) : string.Empty)),
+                                                        //grid.Column("Email", header: "Email", format: (item) => item.Principal),
+                                                        //grid.Column("Telefone", header: "Telefone", format: (item) => item.Principal),
+                                                        grid.Column("Id", header: "Ações", canSort:false,
+                                                        format:
+                                    @<text>
+                                        @Html.Raw("<a class='btn btn-default btn-xs' style='background-color: green; color: white; border: green;' onclick='AbrirAPIWhatsapp('0000000000');'>WhatsApp</a>")
+                                        <!-- @Html.Raw("<a class='btn btn-default btn-xs' onclick=''>Chat</a>") -->
+                                        @Html.Raw("<a class='btn btn-default btn-xs' id='tab-visualizar' href='#tab_content_visualizar' role='tab' data-toggle='tab' aria-expanded='false' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
+                                        @Html.Raw("<a class='btn btn-primary btn-xs' id='tab-cadastrar' href='#tab_content_cadastrar' role='tab' data-toggle='tab' aria-expanded='false' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
+                                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.Id + ", " + '"' + item.Pessoas.Nome + '"' + ", " + item.IdPessoa + ");'>Excluir</a>")
+                                    </text>)
+                      });
+
+                                                int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                                                int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                                                var totalRecord = "Nenhuma linha encontrada";
+
+                                                if (grid.TotalRowCount == 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                                                }
+                                                else if (grid.TotalRowCount > 1)
+                                                {
+                                                    totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                                                }
+
+                                                <div class="right">@totalRecord</div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div role="tabpanel" class="tab-pane fade" id="tab_content_cadastrar" aria-labelledby="tab-cadastrar"> -->
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_cadastrar" aria-labelledby="tab-cadastrar">
+                        <!-- Dados pessoais -->
+                        <div id="DadosPessoais" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>
+                                        <b>Dados pessoais</b>
+                                    </h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="colaborador-form">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Nome <span id="nomeRequired" class="required">*</span></label>
+                                            <input type="text" class="form-control" placeholder="Informe o Nome do colaborador" id="Nome" name="Nome" />
+                                            <label id="NomeValidate" name="NomeValidate" for="Nome" class="error hidden"> Por favor, insira o Nome do colaborador.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">CPF <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o CPF" id="CPF" name="CPF" onblur="ValidaCPFCNPJ();" data-mask-for-cpf-cnpj />
+                                            <label id="CPFCNPJValidate" name="CPFCNPJValidate" for="CPFCNPJ" class="error hidden"> Por favor, insira o CPF/CNPJ.</label>
+                                            <label id="CPFCNPJValidate2" name="CPFCNPJValidate2" for="CPFCNPJ" class="error2 hidden"> Por favor, insira o CPF/CNPJ.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">RG</label>
+                                            <input type="text" class="form-control" placeholder="Informe o RG" id="RG" name="RG" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">PIS</label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o PIS" id="PIS" name="PIS" onblur="ValidaPISCNPJ();" />
+                                            <label id="PISCNPJValidate" name="PISCNPJValidate" for="PISCNPJ" class="error hidden"> Por favor, insira o PIS/CNPJ.</label>
+                                            <label id="PISCNPJValidate2" name="PISCNPJValidate2" for="PISCNPJ" class="error2 hidden"> Por favor, insira o PIS/CNPJ.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">OAB</label>
+                                            <input type="text" class="form-control" placeholder="Informe OAB" id="OAB" name="OAB" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="titlefield">Logradouro <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o Logradouro" id="Logradouro" name="Logradouro" />
+                                            <label id="LogradouroValidate" name="LogradouroValidate" for="Logradouro" class="error hidden"> Por favor, insira o nome do logradouro.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Número <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o Número" id="Numero" name="Numero" />
+                                            <label id="NumeroValidate" name="NumeroValidate" for="Numero" class="error hidden"> Por favor, insira o n&uacute;mero.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Complemento</label>
+                                            <input type="text" class="form-control" placeholder="Informe o Complemento" id="Complemento" name="Complemento" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">CEP <span class="required">*</span> </label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o CEP" id="CEP" name="CEP" onkeyup="BuscarCEP()" />
+                                            <label id="CEPValidate" name="CEPValidate" for="CEP" class="error hidden"> Por favor, insira o CEP.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Bairro <span class="required">*</span></label>
+                                            <input type="text" class="form-control requireds" placeholder="Informe o Bairro" id="Bairro" name="Bairro" />
+                                            <label id="BairroValidate" name="BairroValidate" for="Bairro" class="error hidden"> Por favor, insira o nome do bairro.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Estado <span class="required">*</span></label>
+                                            <select id="Estado" name="Estado" class="form-control requireds"></select>
+                                            <label id="EstadoValidate" name="EstadoValidate" for="Estado" class="error hidden"> Por favor, selecione um estado.</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="titlefield">Cidade <span class="required">*</span></label>
+                                            <select id="Cidade" name="Cidade" class="form-control requireds">
+                                                <option value="" style="background-color: #eaeaea;">Selecione a Cidade</option>
+                                            </select>
+                                            <label id="CidadeValidate" name="CidadeValidate" for="Cidade" class="error hidden"> Por favor, selecione uma cidade.</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="titlefield">Foto <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 4MB por arquivo)</label></label>
+                                            <div id="upload" class="upload">
+                                                <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#LGPDFileUpload').click();" />
+                                                <input type="file" id="LGPDFileUpload" name="LGPDUpload" accept="application/pdf" value="4194304" />
+                                                <span id="LGPDFileName" name="LGPDFileName" class="fileName">Nenhum arquivo selecionado</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;">Salvar</button>
+                                    &nbsp;
+                                    <button id="buttonFechar" type="button" class="btn btn-default" style="margin: 0;" onclick="FecharColaborador();">Fechar</button>
+                                    <br />
+                                    <label id='LabelColaboradorFecharConfirmacao' style='display: none; font-weight: normal !important; font-size: 12px !important;'>Você deseja realmente fechar sem salvar as alterações?&nbsp;&nbsp;&nbsp;</label><a id='acceptColaborador' class='btn btn-default btn-xs' style='display: none;' onclick='FecharColaboradorSim()'>Sim</a><a id='go_backColaborador' class='btn btn-primary btn-xs' style='display: none; margin-bottom: 5px' onclick='FecharColaboradorNao()'>Não</a>
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadostelefonicos-alert-validate">
+                                    <strong>AVISO:</strong> É necessário incluir um telefone como principal para contato.
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadosemails-alert-validate">
+                                    <strong>AVISO:</strong> É necessário incluir um e-mail como principal para contato.
+                                </div>
+
+                            </form>
+                        </div>
+
+                        <!-- Dados Telefônicos -->
+                        <div id="DadosTelefonicos" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Lista de Telefones</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="colaborador-dadostelefonicos-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="DadosTelefonicosAccordion" role="tablist" aria-multiselectable="true">
+                                    Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                </div>
+                                <div class="alert alert-success hidden" id="colaborador-dadostelefonicos-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado de dados telefônicos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-success hidden" id="colaborador-dadostelefonicos-alert-removed">
+                                    <strong>SUCESSO:</strong> Exclusão de dados telefônicos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadostelefonicos-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de dados telefônicos.
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadostelefonicos-alert-error2">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de dados telefônicos.
+                                </div>
+                                <div class="alert alert-warning hidden" id="colaborador-dadostelefonicos-alert-warning">
+                                    <strong>ERRO:</strong> Esse telefone já está cadastrado para esse colaborador.
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Documentos -->
+                        <div id="Documentos" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>
+                                        <b>Documentos</b>
+                                    </h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="colaborador-documentos-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="DocumentosAccordion" role="tablist" aria-multiselectable="true">
+                                    Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                </div>
+                                <div class="alert alert-success hidden" id="colaborador-dadosdocumentos-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastro de documentos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-success hidden" id="colaborador-dadosdocumentos-alert-removed">
+                                    <strong>SUCESSO:</strong> Exclusão de documentos realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadosdocumentos-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de documentos.
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadosdocumentos-alert-error2">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de documentos.
+                                </div>
+                                <div class="alert alert-warning hidden" id="colaborador-dadosdocumentos-alert-warning">
+                                    <strong>ERRO:</strong> Esse documento já está cadastrado para esse Colaborador.
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Contratos -->
+                        <div id="Contratos" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>
+                                        <b>Contratos</b>
+                                    </h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="colaborador-contratos-form" class="feedback-form">
+                                <!-- Contratos -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-group mt-25" id="ContratosAccordion" role="tablist" aria-multiselectable="true">
+                                            <input id='HiddenContratos1' name='HiddenContratos[]' type='hidden' value='0' />
+                                            <div class='accordion panel panel-default'>
+                                                <div class='accordion-heading panel-heading' id='Contratos1heading' role='tab'>
+                                                    <h4 class='accordion-title panel-title'>
+                                                        <a href='#Contratos1collapse' style="font-size: 15px;" aria-expanded='true' data-toggle='collapse' aria-controls='Contratos1collapse' data-parent='#ContratosAccordion' role='button'>
+                                                            Lista de Contratos
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class='panel-collapse collapse in' id='Contratos1collapse' role='tabpanel' aria-labelledby='Contratos1heading' aria-expanded='true'>
+                                                    <div class='accordion-body panel-body'>
+                                                        <form id="colaborador-dadoscontratos-form" class="feedback-form">
+                                                            <div class="panel-group mt-25" id="DadoscontratosAccordion" role="tablist" aria-multiselectable="true">
+                                                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadoscontratos-alert-success">
+                                                                <strong>SUCESSO:</strong> Cadastrado de contrato realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadoscontratos-alert-removed">
+                                                                <strong>SUCESSO:</strong> Exclusão de contrato realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadoscontratos-alert-error">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de contrato.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadoscontratos-alert-error2">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de contrato.
+                                                            </div>
+                                                            <div class="alert alert-warning hidden" id="colaborador-dadoscontratos-alert-warning">
+                                                                <strong>ERRO:</strong> Esse contrato já está cadastrado para esse colaborador.
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contracheques -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-group mt-25" id="ContrachequesAccordion" role="tablist" aria-multiselectable="true">
+                                            <input id='HiddenContracheques1' name='HiddenContracheques[]' type='hidden' value='0' />
+                                            <div class='accordion panel panel-default'>
+                                                <div class='accordion-heading panel-heading' id='Contracheques1heading' role='tab'>
+                                                    <h4 class='accordion-title panel-title'>
+                                                        <a href='#Contracheques1collapse' style="font-size: 15px;" aria-expanded='true' data-toggle='collapse' aria-controls='Contracheques1collapse' data-parent='#ContrachequesAccordion' role='button'>
+                                                            Lista de Contracheques
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class='panel-collapse collapse in' id='Contracheques1collapse' role='tabpanel' aria-labelledby='Contracheques1heading' aria-expanded='true'>
+                                                    <div class='accordion-body panel-body'>
+                                                        <form id="colaborador-dadoscontracheques-form" class="feedback-form">
+                                                            <div class="panel-group mt-25" id="DadoscontrachequesAccordion" role="tablist" aria-multiselectable="true">
+                                                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadoscontracheques-alert-success">
+                                                                <strong>SUCESSO:</strong> Cadastrado de contracheque realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadoscontracheques-alert-removed">
+                                                                <strong>SUCESSO:</strong> Exclusão de contracheque realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadoscontracheques-alert-error">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de contracheque.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadoscontracheques-alert-error2">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de contracheque.
+                                                            </div>
+                                                            <div class="alert alert-warning hidden" id="colaborador-dadoscontracheques-alert-warning">
+                                                                <strong>ERRO:</strong> Esse contracheque já está cadastrado para esse colaborador.
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Férias -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-group mt-25" id="FeriasAccordion" role="tablist" aria-multiselectable="true">
+                                            <input id='HiddenFerias1' name='HiddenFerias[]' type='hidden' value='0' />
+                                            <div class='accordion panel panel-default'>
+                                                <div class='accordion-heading panel-heading' id='Ferias1heading' role='tab'>
+                                                    <h4 class='accordion-title panel-title'>
+                                                        <a href='#Ferias1collapse' style="font-size: 15px;" aria-expanded='true' data-toggle='collapse' aria-controls='Ferias1collapse' data-parent='#FeriasAccordion' role='button'>
+                                                            Lista de Férias
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class='panel-collapse collapse in' id='Ferias1collapse' role='tabpanel' aria-labelledby='Ferias1heading' aria-expanded='true'>
+                                                    <div class='accordion-body panel-body'>
+                                                        <form id="colaborador-dadosferias-form" class="feedback-form">
+                                                            <div class="panel-group mt-25" id="DadosferiasAccordion" role="tablist" aria-multiselectable="true">
+                                                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosferias-alert-success">
+                                                                <strong>SUCESSO:</strong> Cadastrado de férias realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosferias-alert-removed">
+                                                                <strong>SUCESSO:</strong> Exclusão de férias realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosferias-alert-error">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de férias.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosferias-alert-error2">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de férias.
+                                                            </div>
+                                                            <div class="alert alert-warning hidden" id="colaborador-dadosferias-alert-warning">
+                                                                <strong>ERRO:</strong> Esse férias já está cadastrado para esse colaborador.
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Recessos -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-group mt-25" id="RecessosAccordion" role="tablist" aria-multiselectable="true">
+                                            <input id='HiddenRecessos1' name='HiddenRecessos[]' type='hidden' value='0' />
+                                            <div class='accordion panel panel-default'>
+                                                <div class='accordion-heading panel-heading' id='Recessos1heading' role='tab'>
+                                                    <h4 class='accordion-title panel-title'>
+                                                        <a href='#Recessos1collapse' style="font-size: 15px;" aria-expanded='true' data-toggle='collapse' aria-controls='Recessos1collapse' data-parent='#RecessosAccordion' role='button'>
+                                                            Lista de Recessos
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class='panel-collapse collapse in' id='Recessos1collapse' role='tabpanel' aria-labelledby='Recessos1heading' aria-expanded='true'>
+                                                    <div class='accordion-body panel-body'>
+                                                        <form id="colaborador-dadosrecessos-form" class="feedback-form">
+                                                            <div class="panel-group mt-25" id="DadosrecessosAccordion" role="tablist" aria-multiselectable="true">
+                                                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosrecessos-alert-success">
+                                                                <strong>SUCESSO:</strong> Cadastrado de recesso realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosrecessos-alert-removed">
+                                                                <strong>SUCESSO:</strong> Exclusão de recesso realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosrecessos-alert-error">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de recesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosrecessos-alert-error2">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de recesso.
+                                                            </div>
+                                                            <div class="alert alert-warning hidden" id="colaborador-dadosrecessos-alert-warning">
+                                                                <strong>ERRO:</strong> Esse recesso já está cadastrado para esse colaborador.
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Ausências -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-group mt-25" id="AusenciasAccordion" role="tablist" aria-multiselectable="true">
+                                            <input id='HiddenAusencias1' name='HiddenAusencias[]' type='hidden' value='0' />
+                                            <div class='accordion panel panel-default'>
+                                                <div class='accordion-heading panel-heading' id='Ausencias1heading' role='tab'>
+                                                    <h4 class='accordion-title panel-title'>
+                                                        <a href='#Ausencias1collapse' style="font-size: 15px;" aria-expanded='true' data-toggle='collapse' aria-controls='Ausencias1collapse' data-parent='#AusenciasAccordion' role='button'>
+                                                            Ausências
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class='panel-collapse collapse in' id='Ausencias1collapse' role='tabpanel' aria-labelledby='Ausencias1heading' aria-expanded='true'>
+                                                    <div class='accordion-body panel-body'>
+                                                        <form id="colaborador-dadosausencias-form" class="feedback-form">
+                                                            <div class="panel-group mt-25" id="DadosausenciasAccordion" role="tablist" aria-multiselectable="true">
+                                                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosausencias-alert-success">
+                                                                <strong>SUCESSO:</strong> Cadastrado de ausências realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosausencias-alert-removed">
+                                                                <strong>SUCESSO:</strong> Exclusão de ausências realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosausencias-alert-error">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de ausências.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosausencias-alert-error2">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de ausências.
+                                                            </div>
+                                                            <div class="alert alert-warning hidden" id="colaborador-dadosausencias-alert-warning">
+                                                                <strong>ERRO:</strong> Esse ausências já está cadastrado para esse colaborador.
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Avaliações -->
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel-group mt-25" id="AvaliacoesAccordion" role="tablist" aria-multiselectable="true">
+                                            <input id='HiddenAvaliacoes1' name='HiddenAvaliacoes[]' type='hidden' value='0' />
+                                            <div class='accordion panel panel-default'>
+                                                <div class='accordion-heading panel-heading' id='Avaliacoes1heading' role='tab'>
+                                                    <h4 class='accordion-title panel-title'>
+                                                        <a href='#Avaliacoes1collapse' style="font-size: 15px;" aria-expanded='true' data-toggle='collapse' aria-controls='Avaliacoes1collapse' data-parent='#AvaliacoesAccordion' role='button'>
+                                                            Avaliações
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div class='panel-collapse collapse in' id='Avaliacoes1collapse' role='tabpanel' aria-labelledby='Avaliacoes1heading' aria-expanded='true'>
+                                                    <div class='accordion-body panel-body'>
+                                                        <form id="colaborador-dadosavaliacoes-form" class="feedback-form">
+                                                            <div class="panel-group mt-25" id="DadosavaliacoesAccordion" role="tablist" aria-multiselectable="true">
+                                                                Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosavaliacoes-alert-success">
+                                                                <strong>SUCESSO:</strong> Cadastrado de avaliações realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-success hidden" id="colaborador-dadosavaliacoes-alert-removed">
+                                                                <strong>SUCESSO:</strong> Exclusão de avaliações realizado com sucesso.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosavaliacoes-alert-error">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de avaliações.
+                                                            </div>
+                                                            <div class="alert alert-danger hidden" id="colaborador-dadosausencias-alert-error2">
+                                                                <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de avaliações.
+                                                            </div>
+                                                            <div class="alert alert-warning hidden" id="colaborador-dadosausencias-alert-warning">
+                                                                <strong>ERRO:</strong> Esse avaliações já está cadastrado para esse colaborador.
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Solicitações especiais -->
+                        <div id="DadosSolicitaçõesEspeciais" class="feedback-box" style="margin-left: 0 !important; margin-right: 0 !important;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4><b>Solicitações Especiais</b></h4>
+                                    <hr />
+                                </div>
+                            </div>
+                            <form id="colaborador-dadossolicitacoes-form" class="feedback-form">
+                                <div class="panel-group mt-25" id="DadossolicitacoesAccordion" role="tablist" aria-multiselectable="true">
+                                    Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>
+                                </div>
+                                <div class="alert alert-success hidden" id="colaborador-dadossolicitacoes-alert-success">
+                                    <strong>SUCESSO:</strong> Cadastrado de Solicitação realizado com sucesso.
+                                </div>
+                                <div class="alert alert-success hidden" id="colaborador-dadossolicitacoes-alert-removed">
+                                    <strong>SUCESSO:</strong> Exclusão de Solicitação realizado com sucesso.
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadossolicitacoes-alert-error">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar o cadastro de Solicitação .
+                                </div>
+                                <div class="alert alert-danger hidden" id="colaborador-dadossolicitacoes-alert-error2">
+                                    <strong>ERRO:</strong> Algo deu errado ao efetuar a exclusão de Solicitação .
+                                </div>
+                                <div class="alert alert-warning hidden" id="colaborador-dadossolicitacoes-alert-warning">
+                                    <strong>ERRO:</strong> Essa solicitação já está cadastrado para esse colaborador.
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content_visualizar" aria-labelledby="tab-visualizar">
+                        <div id="VisualizarColaborador" name="VisualizarColaborador">
+                            <p>Nenhum colaborador foi selecionado para visualização.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modalExcluir" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" style="font-size: 24pt;">&times;</span>
+                        </button>
+                        <h3 class="modal-title" id="modalLabelExcluir">Excluir</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Você deseja realmente excluir?</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button> &nbsp; <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <!-- datepicker -->
+    <script type="text/javascript" src="https://uranus.rvmadvogados.com.br/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="https://uranus.rvmadvogados.com.br/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+    <!-- select2 -->
+    <script src="https://uranus.rvmadvogados.com.br/Scripts/select/select2.full.js"></script>
+
+    <!-- Scripts principais colaborador -->
+    <script>
+        $("#CPF").mask("999.999.999-99");
+        $("#RG").mask("99999999999999");
+        $("#CEP").mask("99999-999");
+
+        $('#FiltrarColaborador').val("");
+        $('#FiltrarCargo').val("");
+        $('#Sede').prop('disabled', true);
+        // Evento para escutar a digitação no campo de filtro
+        $('#FiltrarTipoContrato').on('input', function () {
+            var filterValue = $(this).val().toLowerCase();
+            // Loop através de todas as opções do select
+            $('#TipoContrato option').each(function () {
+                var optionText = $(this).text().toLowerCase();
+
+                // Se o texto da opção não contiver o valor do filtro, esconde a opção
+                if (optionText.indexOf(filterValue) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+        // Evento para escutar a digitação no campo de filtro do Status (semelhante função anterior)
+        $('#FiltrarStatus').on('input', function () {
+            var filterValue = $(this).val().toLowerCase();
+            $('#Status option').each(function () {
+                var optionText = $(this).text().toLowerCase();
+                if (optionText.indexOf(filterValue) === -1) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+        CarregarColaboradores(0, "");
+        CarregarSedes()
+
+        function CarregarColaboradores(index, Data) {
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+            var options = {};
+            options.url = "/Colaboradores/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00') {
+                    var rows = json.colaboradores;
+                    $('#ProcessoEvento' + index + 'Profissional').html("");
+                    var select = $('#ProcessoEvento' + index + 'Profissional');
+                    select.append($(' < option selected disabled >< /option>').val("").html("&nbsp;"));
+                    for (i = 0; i < rows.length; i++) {
+                        select.append($(' < option >< /option>').val(rows[i].Id).html(rows[i].Nome));
+                    }
+                    $('#FiltrarProfissional').html("");
+                    var select = $('#FiltrarProfissional');
+                    select.append($(' < option selected disabled >< /option>').val("").html("&nbsp;"));
+                    for (i = 0; i < rows.length; i++) {
+                        select.append($(' < option >< /option>').val(rows[i].Nome).html(rows[i].Nome));
+                    }
+                    $('#FiltrarProfissional').val(null);
+                    $('#FiltrarProfissional').trigger('change');
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarSedes() {
+            var options = {};
+            options.url = "/Sedes/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.sedes;
+                    $('#Sede').html("");
+                    var select = $('#Sede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione a Sede")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                    $('#FiltrarSede').html("");
+                    var select = $('#FiltrarSede');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione uma Seda")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Nome).html(rows[index].Nome)
+                        );
+                    }
+
+                    // $('#FiltrarSede').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSede)));
+                    $('#FiltrarSede').trigger('change');
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarEventos(index, value) {
+            var options = {};
+            options.url = "/Eventos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00') {
+                    var rows = json.eventos;
+                    $('#ColaboradorEvento' + index + 'Evento').html("");
+                    var select = $('#ColaboradorEvento' + index + 'Evento');
+                    select.append($(' < option selected disabled >< /option>').val("").html("Selecione um Evento"));
+                    for (i = 0; i < rows.length; i++) {
+                        select.append($(' < option >< /option>').val(rows[i].Id).html(rows[i].Nome));
+                    }
+                    $('#ColaboradorEvento' + index + 'Evento').val(value);
+                    $('#ColaboradorEvento' + index + 'Evento').trigger('change');
+                }
+            };
+            $.ajax(options);
+        }
+        $('#buttonSalvar').click(function (evt) {
+            $("#colaborador-form").validate();
+            if ($('#colaborador-form').valid()) {
+                $("#buttonSalvar").attr('disabled', true);
+                $("#buttonSalvar").html("Salvando, aguarde  < i class = 'fa fa-spinner fa-spin' >< /i>");
+                var objeto = escape(CKEDITOR.instances.Objeto.getData());
+                var observacao = escape(CKEDITOR.instances.Observacao.getData());
+                var dados = new window.FormData();
+                dados.append("Id", $("#id").val());
+                dados.append("IdProfissional", $("#Profissional").val());
+                dados.append("Status", $("#Status").val());
+                dados.append("Objeto", objeto);
+                dados.append("Observacao", observacao);
+                var options = {};
+                options.url = "/Colaboradores/Salvar"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+                    var json = $.parseJSON(data.responseText);
+                    if (json.codigo == '00') {
+                        $('#ColaboradoresAcoesAccordion').html('Carregando, aguarde  < i class = "fa fa-spinner fa-spin" >< /i>');
+                        $("#colaborador-alert-success").removeClass("hidden");
+                        $("#colaborador-alert-error").addClass("hidden");
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+                        ShowProcessosAutores();
+                        ShowProcessosPartes();
+                        if ($("#id").val() == 0) {
+                            Alterar(json.id);
+                        } else {
+                            ShowProcessosAcoes();
+                        }
+                    } else {
+                        $("#colaborador-alert-success").addClass("hidden");
+                        $("#colaborador-alert-error").removeClass("hidden");
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+                    }
+                    setTimeout(function () {
+                        $("#colaborador-alert-success").addClass("hidden");
+                        $("#colaborador-alert-error").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+                evt.preventDefault();
+            } else {
+                return false;
+            }
+        });
+        $('#buttonFechar').click(function (evt) {
+            LimparCadastro();
+            $("#tab-listar").click();
+        });
+        $('#tab-listar').click(function (evt) {
+            $('#id').val("0");
+            LimparCadastro();
+        });
+        $('#tab-cadastrar').click(function (evt) {
+            $("#ProcessoAutor1Colaborador").select2({
+                placeholder: "Selecione o Nome do Autor",
+                allowClear: true,
+                tags: true,
+                minimumInputLength: 3,
+                ajax: {
+                    dataType: "json",
+                    type: "GET",
+                    url: '/Colaboradores/GetClientsList',
+                    delay: 250,
+                    cache: true,
+                    data: function (params) {
+                        params.page = params.page || 1;
+                        return {
+                            search: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data.colaboradores,
+                            pagination: {
+                                more: (params.page * 10) < data.total
+                            }
+                        };
+                    }
+                }
+            });
+            $('#ProcessoParteAdvogado1Parte').select2({
+                placeholder: "Selecione o Nome do Réu",
+                allowClear: true,
+                tags: true,
+                minimumInputLength: 3,
+                ajax: {
+                    dataType: "json",
+                    type: "GET",
+                    url: '/Colaboradores/GetClientsList',
+                    delay: 250,
+                    cache: true,
+                    data: function (params) {
+                        params.page = params.page || 1;
+                        return {
+                            search: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        return {
+                            results: data.colaboradores,
+                            pagination: {
+                                more: (params.page * 10) < data.total
+                            }
+                        };
+                    }
+                }
+            });
+            LimparCadastro();
+        });
+
+        function Visualizar(Id) {
+            $('#modalLabelTitle').text('Visualizar Colaborador');
+
+            // Desabilitar todos os campos do formulário
+            $('#Nome').attr('disabled', true);
+            $('#CPF').attr('disabled', true);
+            $('#RG').attr('disabled', true);
+            $('#PIS').attr('disabled', true);
+            $('#OAB').attr('disabled', true);
+            $('#Logradouro').attr('disabled', true);
+            $('#Numero').attr('disabled', true);
+            $('#Complemento').attr('disabled', true);
+            $('#CEP').attr('disabled', true);
+            $('#Bairro').attr('disabled', true);
+            $('#Estado').attr('disabled', true);
+            $('#Cidade').attr('disabled', true);
+            $('#LGPDFileUpload').attr('disabled', true);
+            $('#buttonSalvar').attr('disabled', true);
+
+            // Resetar validações do formulário
+            $("#colaborador-form").validate().resetForm();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/colaboradores/Consultar";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    CarregarEstados(json.colaborador[0].Estado);
+                    CarregarCidades(json.colaborador[0].Estado, json.colaborador[0].Cidade);
+
+                    $('#id').val(Id);
+                    $('#Nome').val(json.colaborador[0].Nome);
+                    $('#CPF').val(json.colaborador[0].CPF);
+                    $('#RG').val(json.colaborador[0].RG);
+                    $('#PIS').val(json.colaborador[0].PIS);
+                    $('#OAB').val(json.colaborador[0].OAB);
+                    $('#CEP').val(json.colaborador[0].CEP);
+                    $('#Logradouro').val(json.colaborador[0].Logradouro);
+                    $('#Numero').val(json.colaborador[0].Numero);
+                    $('#Complemento').val(json.colaborador[0].Complemento);
+                    $('#Bairro').val(json.colaborador[0].Bairro);
+                    $('#Estado').val(json.colaborador[0].Estado);
+                    $('#Cidade').val(json.colaborador[0].Cidade);
+
+                    ShowDadosTelefonicos("Visualizar");
+                    ShowDocumentos("Visualizar")
+                    ShowSolicitacoes("Visualizar")
+                    ShowDadosContratos("Visualizar")
+                    ShowContracheques("Visualizar")
+                    ShowFerias("Visualizar")
+                    ShowRecessos("Visualizar")
+                    ShowDadosAusencias("Visualizar")
+                    ShowDadosAvaliacoes("Visualizar")
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Alterar(Id) {
+            $('#modalLabelTitle').text('Alterar Colaborador');
+            $('#Nome').attr('disabled', false);
+            $('#CPF').attr('disabled', false);
+            $('#RG').attr('disabled', false);
+            $('#PIS').attr('disabled', false);
+            $('#OAB').attr('disabled', false);
+            $('#CEP').attr('disabled', false);
+            $('#Logradouro').attr('disabled', false);
+            $('#Numero').attr('disabled', false);
+            $('#Complemento').attr('disabled', false);
+            $('#Bairro').attr('disabled', false);
+            $('#Estado').attr('disabled', false);
+            $('#Cidade').attr('disabled', false);
+            $('#buttonSalvar').attr('disabled', false);
+            $("#colaborador-form").validate().resetForm();
+
+            $("#DadosTelefonicos").show();
+            $("#DadosEmails").show();
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Colaboradores/Consultar";
+            options.type = "POST";
+            options.data = dados;
+            options.async = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#idPessoa').val(json.colaborador[0].IdPessoa);
+                    $('#Nome').val(json.colaborador[0].Nome);
+                    $('#CPF').val(json.colaborador[0].CPF);
+                    $('#RG').val(json.colaborador[0].RG);
+                    $('#PIS').val(json.colaborador[0].PIS);
+                    $('#OAB').val(json.colaborador[0].OAB);
+                    $('#CEP').val(json.colaborador[0].CEP);
+                    $('#Logradouro').val(json.colaborador[0].Logradouro);
+                    $('#Numero').val(json.colaborador[0].Numero);
+                    $('#Complemento').val(json.colaborador[0].Complemento);
+                    $('#Bairro').val(json.colaborador[0].Bairro);
+
+                    ShowDadosTelefonicos("Alterar");
+                    ShowDadosEmails("Alterar");
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir esse Colaborador (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+            $('#id').val('');
+            var options = {};
+            options.url = "/Colaborador/Excluir"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00') {
+                    $('h4').text('Colaborador excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("colaborador-form").validate().resetForm();
+                    Atualizar();
+                } else if (json.codigo == '98') {
+                    $('h4').text('Não foi possível excluir o Colaborador (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                } else if (json.codigo == '99') {
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Colaborador (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                }
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            var path = '../Colaboradores' + unescape('');
+            $(location).attr('href', path);
+        }
+
+        function LimparFiltro() {
+            var options = {};
+            options.url = "/Colaboradores/LimparFiltroSessao ";
+            options.type = "POST";
+            options.asyn = false;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+                    $('#FiltrarColaborador').val("");
+                    $('#FiltrarColaborador').trigger('change');
+                    $('#FiltrarColaborador').val("");
+                    $('#FiltrarColaborador').trigger('change');
+                    $('#FiltrarArea').val("");
+                    $('#FiltrarArea').trigger('change');
+                    $('#FiltrarVara').val("");
+                    $('#FiltrarVara').trigger('change');
+                    $('#FiltrarStatus').val("");
+                    $('#FiltrarStatus').trigger('change');
+                    $("#colaborador-filtro-form").submit();
+                }
+            };
+            $.ajax(options);
+        }
+
+        function LimparCadastro() {
+            $('#Sede').val("");
+            $('#Profissional').val("");
+            $('#Status').val("");
+            CKEDITOR.instances["Objeto"].setData("");
+            CKEDITOR.instances["Observacao"].setData("");
+            $('#VisualizarColaborador').html(" < p > Nenhum colaborador foi selecionado para visualização. < /p>");
+        }
+
+        function AbrirAPIWhatsapp(numero) {
+            var numeroLimpo = numero.replace(/\D/g, '');
+
+            if (numeroLimpo.length >= 10 && numeroLimpo.length <= 14) {
+                var urlWhatsapp = `https://wa.me/${numeroLimpo}`;
+
+                window.open(urlWhatsapp, '_blank');
+            } else {
+                alert('Número de telefone inválido. Por favor, insira um número de telefone válido.');
+            }
+        }
+
+        function VisualizarPDF(url) {
+            window.open(url, '_blank');
+        }
+
+        function VisualizarAlerta(NumeroColaborador, IdAcao) {
+            var dados = new window.FormData();
+            dados.append("IdAcao", IdAcao);
+            dados.append("NumeroColaborador", NumeroColaborador);
+            dados.append("Tipo", "P");
+            var options = {};
+            options.url = "/Alertas/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.codigo == '00' && json.alertas.length > 0) {
+                    $('#alertas').html(json.alertas);
+                    $('#modalVisualizarAlerta').attr('data-backdrop', 'static');
+                    $('#modalVisualizarAlerta').attr('data-keyboard', 'false');
+                    $('#modalVisualizarAlerta').modal('show');
+                }
+            };
+            $.ajax(options);
+        }
+        $('#buttonInserirAlerta').click(function (evt) {
+            $("#alerta-form").validate();
+            if ($('#alerta-form').valid()) {
+                var dados = new window.FormData();
+                dados.append("IdAcao", $("#idAcao").val());
+                dados.append("NumeroColaborador", $("#numeroColaborador").val());
+                dados.append("Mensagem", $("#Mensagem").val());
+                var options = {};
+                options.url = "/Alertas/Inserir"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+                    var json = $.parseJSON(data.responseText);
+                    if (json.codigo == '00') {
+                        $("#alerta-form").validate().resetForm();
+                    }
+                };
+                $.ajax(options);
+                evt.preventDefault();
+            } else {
+                return false;
+            }
+        });
+
+        function LimparEventoView() {
+            $("#idAcaoEventoView").val("0");
+            $("#ViewNumeroColaborador").val("");
+            $("#ViewNumeroColaborador").trigger('change');
+            $("#ViewEvento").val("");
+            $("#ViewEvento").trigger('change');
+            $("#ViewProfissional").val("");
+            $("#ViewProfissional").trigger('change');
+            $("#ViewPrazoEvento1").val("");
+            $("#ViewPrazoEvento2").val("");
+            $("#ViewFileUpload1").val("");
+            $("#ViewFileName1").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload2").val("");
+            $("#ViewFileName2").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload3").val("");
+            $("#ViewFileName3").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload4").val("");
+            $("#ViewFileName4").text("Nenhum arquivo selecionado");
+            $("#ViewFileUpload5").val("");
+            $("#ViewFileName5").text("Nenhum arquivo selecionado");
+            CKEDITOR.instances["ViewDescricao"].setData("");
+        }
+
+        // AÇÕES BOTÕES
+        // Telefones
+        function ShowDadosTelefonicos(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Profissionais/CarregarDadosTelefonicos";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosTelefonicosAccordion').html(json.telefones);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#ProfissionalDadoTelefonico" + i + "Numero").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "Ramal").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoAparelho").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoLinha").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "Status").attr('disabled', true);
+                            $("#ProfissionalDadoTelefonico" + i + "Observacao").attr('disabled', true);
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").hide();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#ProfissionalDadoTelefonico" + i + "Numero").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "Ramal").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoAparelho").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "TipoLinha").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "Status").attr('disabled', false);
+                            $("#ProfissionalDadoTelefonico" + i + "Observacao").attr('disabled', false);
+
+                            $("#ProfissionalDadoTelefonico" + i + "Numero").mask("(99) 9999-9999?9");
+                            $("#ProfissionalDadoTelefonico" + i + "Ramal").mask("9999999999");
+
+                            $("#ButtonDadoTelefonico" + i + "Incluir").show();
+                            $("#ButtonDadoTelefonico" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoTelefonicoSalvar_Click(index) {
+
+            $("#colaborador-dadostelefonicos-form").validate();
+
+            if ($('#colaborador-dadostelefonicos-form').valid()) {
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoTelefonico" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Numero", $('#ColaboradorDadoTelefonico' + index + 'Numero').val());
+                dados.append("Ramal", $('#ColaboradorDadoTelefonico' + index + 'Ramal').val());
+                dados.append("TipoAparelho", $('#ColaboradorDadoTelefonico' + index + 'TipoAparelho').val());
+                dados.append("TipoLinha", $('#ColaboradorDadoTelefonico' + index + 'TipoLinha').val());
+                dados.append("Status", $('#ColaboradorDadoTelefonico' + index + 'Status').val());
+                dados.append("Principal", $('#ColaboradorDadoTelefonico' + index + 'Principal').val());
+                dados.append("Observacao", $('#ColaboradorDadoTelefonico' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Colaboradores/SalvarDadosTelefonicos";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#colaborador-dadostelefonicos-alert-success").removeClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        ShowDadosTelefonicos("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#colaborador-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#colaborador-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error").removeClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoTelefonico" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadostelefonicos-alert-success").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadostelefonicos-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoTelefonicoExcluir_Click(index) {
+
+            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoTelefonico" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoTelefonico' + index).val());
+
+                    var options = {};
+                    options.url = "/Profissionais/ExcluirDadosTelefonicos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-error2").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-warning").addClass("hidden");
+
+                            ShowDadosTelefonicos("Alterar");
+                        }
+                        else {
+                            $("#colaborador-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadostelefonicos-alert-success").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-error").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-error2").addClass("hidden");
+                            $("#colaborador-dadostelefonicos-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoTelefonico" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoTelefonico" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoTelefonico" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoTelefonico" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        // Documentos
+        function ShowDocumentos(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdColaborador", $("#idColaborador").val());
+
+            var options = {
+                url: "/Colaborador/CarregarDadosDocumentos",
+                type: "POST",
+                data: dados,
+                asyn: true,
+                contentType: false,
+                processData: false,
+                dataType: "application/json; charset=utf-8",
+                complete: function (data) {
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response === "success") {
+                        $('#DocumentosAccordion').html(json.documentos);
+
+                        for (var i = 1; i < (json.count + 2); i++) {
+                            if (Tipo === "Visualizar") {
+                                $("#ColaboradorDocumentos" + i + "TipoDocumento").attr('disabled', true);
+                                $("#ColaboradorDocumentos" + i + "DataInsercao").attr('disabled', true);
+                                $("#ColaboradorDocumentos" + i + "Arquivo").attr('disabled', true);
+                                $("#ColaboradorDocumentos" + i + "ValidadeDocumento").attr('disabled', true);
+                                $("#ColaboradorDocumentos" + i + "Descrição").attr('disabled', true);
+
+                                $("#ButtonDadoTelefonico" + i + "Incluir").hide();
+                                $("#ButtonDadoTelefonico" + i + "Excluir").hide();
+                            } else {
+                                $("#ColaboradorDocumentos" + i + "TipoDocumento").attr('disabled', false);
+                                $("#ColaboradorDocumentos" + i + "DataInsercao").attr('disabled', false);
+                                $("#ColaboradorDocumentos" + i + "Arquivo").attr('disabled', false);
+                                $("#ColaboradorDocumentos" + i + "ValidadeDocumento").attr('disabled', false);
+                                $("#ColaboradorDocumentos" + i + "Descrição").attr('disabled', false);
+
+                                $("#ButtonDadoTelefonico" + i + "Incluir").show();
+                                $("#ButtonDadoTelefonico" + i + "Excluir").show();
+                            }
+                        }
+
+                        // Exibindo alerta de sucesso
+                        $("#colaborador-dadosdocumentos-alert-success").removeClass("hidden");
+                        $("#colaborador-dadosdocumentos-alert-error").addClass("hidden");
+                    } else {
+                        // Exibindo alerta de erro
+                        $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                        $("#colaborador-dadosdocumentos-alert-error").removeClass("hidden");
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                        $("#colaborador-dadosdocumentos-alert-error").addClass("hidden");
+                    }, 3000);
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function ButtonDocumentoSalvar_Click(index) {
+            $("#colaborador-documento-form").validate();
+
+            if ($('#profissional-dadostelefonicos-form').valid()) {
+                $("#ButtonDocumento" + index + "Salvar").attr('disabled', true);
+                $("#ButtonDocumento" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDocumento" + index + "Salvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDocumento' + index).val());
+                dados.append("IdColaborador", $("#idColaborador").val());
+                dados.append("TipoDocumento", $('#Documento' + index + 'TipoDocumento').val());
+                dados.append("DataInsercao", $('#Documento' + index + 'DataInsercao').val());
+                dados.append("Arquivo", $('#Documento' + index + 'Arquivo').val());
+                dados.append("ValidadeDocumento", $('#Documento' + index + 'ValidadeDocumento').val());
+                dados.append("Descricao", $('#Documento' + index + 'Descricao').val());
+
+                var options = {
+                    url: "/Colaborador/SalvarDadosDocumentos",
+                    type: "POST",
+                    data: dados,
+                    asyn: true,
+                    contentType: false,
+                    processData: false,
+                    dataType: "application/json; charset=utf-8",
+                    complete: function (data) {
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response === "success") {
+                            $("#colaborador-dadosdocumentos-alert-success").removeClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").addClass("hidden");
+
+                            ShowDocumentos("Alterar");
+                        } else if (json.response === "warning") {
+                            $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").removeClass("hidden");
+
+                            $("#ButtonDocumento" + index + "Salvar").text("Salvar");
+                            $("#ButtonDocumento" + index + "Salvar").attr('disabled', false);
+                            $("#ButtonDocumento" + index + "Excluir").attr('disabled', false);
+                        } else {
+                            $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").removeClass("hidden");
+
+                            $("#ButtonDocumento" + index + "Salvar").text("Salvar");
+                            $("#ButtonDocumento" + index + "Salvar").attr('disabled', false);
+                            $("#ButtonDocumento" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").addClass("hidden");
+                        }, 3000);
+                    }
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoDocumentoExcluir_Click(index) {
+            $("#ButtonDadoDocumento" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoDocumento" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoDocumento" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoDocumento" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoDocumento" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm === 'true') {
+
+                    $("#ButtonDadoDocumento" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoDocumento' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaborador/ExcluirDadosDocumentos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response === "removed") {
+                            $("#colaborador-dadosdocumentos-alert-success").removeClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-warning").addClass("hidden");
+
+                            ShowDadosDocumentos("Alterar");
+                        } else {
+                            $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").removeClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoDocumento" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoDocumento" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoDocumento" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadosdocumentos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosdocumentos-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm === 'false') {
+
+                    $("#ButtonDadoDocumento" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoDocumento" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoDocumento" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoDocumento" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            });
+        }
+
+        // Solicitações
+        function ShowSolicitacoes(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {
+                url: "/Colaboradores/CarregarDadosSolicitacoes",
+                type: "POST",
+                data: dados,
+                async: true,
+                contentType: false,
+                processData: false,
+                dataType: "application/json; charset=utf-8",
+                complete: function (data) {
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response === "success") {
+                        $('#SolicitacoesAccordion').html(json.solicitacoes);
+
+                        for (var i = 1; i < (json.count + 2); i++) {
+                            if (Tipo === "Visualizar") {
+                                $("#DataSolicitacao" + i).attr('disabled', true);
+                                $("#DataAprovacao" + i).attr('disabled', true);
+                                $("#Status" + i).attr('disabled', true);
+                                $("#Justificativa" + i).attr('disabled', true);
+
+                                $("#ButtonSolicitacao" + i + "Salvar").hide();
+                                $("#ButtonSolicitacao" + i + "Excluir").hide();
+                            } else {
+                                $("#DataSolicitacao" + i).attr('disabled', false);
+                                $("#DataAprovacao" + i).attr('disabled', false);
+                                $("#Status" + i).attr('disabled', false);
+                                $("#Justificativa" + i).attr('disabled', false);
+
+                                $("#ButtonSolicitacao" + i + "Salvar").show();
+                                $("#ButtonSolicitacao" + i + "Excluir").show();
+                            }
+                        }
+
+                        // Exibindo alerta de sucesso
+                        $("#colaborador-dadossolicitacoes-alert-success").removeClass("hidden");
+                        $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+                    } else {
+                        // Exibindo alerta de erro
+                        $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                        $("#colaborador-dadossolicitacoes-alert-error").removeClass("hidden");
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                        $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+                    }, 3000);
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function ButtonDadosSolicitacaoSalvar_Click(index) {
+            $("#colaborador-dadossolicitacoes-form").validate();
+
+            if ($('#colaborador-dadossolicitacoes-form').valid()) {
+                $("#ButtonSolicitacao" + index + "Salvar").attr('disabled', true);
+                $("#ButtonSolicitacao" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonSolicitacao" + index + "Salvar").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenSolicitacao' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("DataSolicitacao", $('#DataSolicitacao' + index).val());
+                dados.append("DataAprovacao", $('#DataAprovacao' + index).val());
+                dados.append("Status", $('#Status' + index).val());
+                dados.append("Justificativa", $('#Justificativa' + index).val());
+
+                var options = {
+                    url: "/Colaboradores/SalvarDadosSolicitacoes",
+                    type: "POST",
+                    data: dados,
+                    async: true,
+                    contentType: false,
+                    processData: false,
+                    dataType: "application/json; charset=utf-8",
+                    complete: function (data) {
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response === "success") {
+                            $("#colaborador-dadossolicitacoes-alert-success").removeClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+
+                            ShowSolicitacoes("Alterar");
+                        } else if (json.response === "warning") {
+                            $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").removeClass("hidden");
+
+                            $("#ButtonSolicitacao" + index + "Salvar").text("Salvar");
+                            $("#ButtonSolicitacao" + index + "Salvar").attr('disabled', false);
+                            $("#ButtonSolicitacao" + index + "Excluir").attr('disabled', false);
+                        } else {
+                            $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").removeClass("hidden");
+
+                            $("#ButtonSolicitacao" + index + "Salvar").text("Salvar");
+                            $("#ButtonSolicitacao" + index + "Salvar").attr('disabled', false);
+                            $("#ButtonSolicitacao" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+                        }, 3000);
+                    }
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonSolicitacaoExcluir_Click(index) {
+            $("#ButtonSolicitacao" + index + "Salvar").attr('disabled', true);
+            $("#ButtonSolicitacao" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonSolicitacao" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonSolicitacao" + index + "ExcluirConfirmacao").show();
+            $("#ButtonSolicitacao" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm === 'true') {
+                    $("#ButtonSolicitacao" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenSolicitacao' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosSolicitacoes";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.async = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response === "removed") {
+                            $("#colaborador-dadossolicitacoes-alert-success").removeClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error2").addClass("hidden");
+
+                            Showcolaborador - dadosSolicitacoes("Alterar");
+                        } else {
+                            $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-removed").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error2").removeClass("hidden");
+
+                            $("#ButtonSolicitacao" + index + "Excluir").text("Apagar");
+                            $("#ButtonSolicitacao" + index + "Salvar").attr('disabled', false);
+                            $("#ButtonSolicitacao" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadossolicitacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-removed").addClass("hidden");
+                            $("#colaborador-dadossolicitacoes-alert-error2").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm === 'false') {
+                    $("#ButtonSolicitacao" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonSolicitacao" + index + "Excluir").text("Apagar");
+                    $("#ButtonSolicitacao" + index + "Salvar").attr('disabled', false);
+                    $("#ButtonSolicitacao" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+                }
+            });
+        }
+
+        // Contrato
+        function ShowDadosContratos(Tipo) {
+
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Colaboradores/CarregarDadosContratos";
+            options.type = "POST";
+            options.data = dados;
+            options.async = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosContratosAccordion').html(json.contratos);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#DataInicio" + i).attr('disabled', true);
+                            $("#DataFim" + i).attr('disabled', true);
+                            $("#TipoContrato" + i).attr('disabled', true);
+                            $("#Sede" + i).attr('disabled', true);
+                            $("#PDFContractFileUpload" + i).attr('disabled', true);
+
+                            $("#ButtonDadoContrato" + i + "Incluir").hide();
+                            $("#ButtonDadoContrato" + i + "Excluir").hide();
+                        } else {
+                            $("#DataInicio" + i).attr('disabled', false);
+                            $("#DataFim" + i).attr('disabled', false);
+                            $("#TipoContrato" + i).attr('disabled', false);
+                            $("#Sede" + i).attr('disabled', false);
+                            $("#PDFContractFileUpload" + i).attr('disabled', false);
+
+                            // $("#DataInicio" + i).mask("99/99/9999");
+                            // $("#DataFim" + i).mask("99/99/9999");
+
+                            $("#ButtonDadoContrato" + i + "Incluir").show();
+                            $("#ButtonDadoContrato" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoContratoSalvar_Click(index) {
+
+            $("#colaborador-dadoscontratos-form").validate();
+
+            if ($('#colaborador-dadoscontratos-form').valid()) {
+
+                $("#ButtonDadoContrato" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoContrato" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoContrato" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoContrato' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("DataInicio", $('#DataInicio' + index).val());
+                dados.append("DataFim", $('#DataFim' + index).val());
+                dados.append("TipoContrato", $('#TipoContrato' + index).val());
+                dados.append("Sede", $('#Sede' + index).val());
+
+                var pdfContractFile = $('#PDFContractFileUpload' + index)[0].files[0];
+                if (pdfContractFile) {
+                    dados.append("PDFContract", pdfContractFile);
+                }
+
+                var options = {};
+                options.url = "/Colaboradores/SalvarDadosContratos";
+                options.type = "POST";
+                options.data = dados;
+                options.async = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#colaborador-dadoscontratos-alert-success").removeClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-warning").addClass("hidden");
+
+                        ShowDadosContratos("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#colaborador-dadoscontratos-alert-success").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoContrato" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoContrato" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoContrato" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#colaborador-dadoscontratos-alert-success").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error").removeClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoContrato" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoContrato" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoContrato" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadoscontratos-alert-success").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-removed").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-error2").addClass("hidden");
+                        $("#colaborador-dadoscontratos-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoContratoExcluir_Click(index) {
+
+            $("#ButtonDadoContrato" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoContrato" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoContrato" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoContrato" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoContrato" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoContrato" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoContrato' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosContratos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.async = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadoscontratos-alert-success").removeClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-warning").addClass("hidden");
+
+                            ShowDadosContratos("Alterar");
+                        }
+                        else {
+                            $("#colaborador-dadoscontratos-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-error").removeClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoContrato" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoContrato" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoContrato" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadoscontratos-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontratos-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoContrato" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoContrato" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoContrato" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoContrato" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        // Contracheques
+        function ShowContracheques(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {
+                url: "/Colaboradores/CarregarDadosContracheques",
+                type: "POST",
+                data: dados,
+                async: true,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                complete: function (data) {
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.html) {
+                        $('#ContrachequesAccordion').html(json.html);
+
+                        for (var i = 1; i <= 10; i++) { // Ajuste o número conforme necessário
+                            if (Tipo === "Visualizar") {
+                                $("#Mes" + i).attr('disabled', true);
+                                $("#Ano" + i).attr('disabled', true);
+                                $("#SalarioBase" + i).attr('disabled', true);
+                                $("#Descontos" + i).attr('disabled', true);
+                                $("#Adicionais" + i).attr('disabled', true);
+                                $("#Beneficios" + i).attr('disabled', true);
+                                $("#ObservacaoContracheque" + i).attr('disabled', true);
+                                $("#DataEmissao" + i).attr('disabled', true);
+
+                                $("#ButtonContracheque" + i + "Salvar").hide();
+                                $("#ButtonContracheque" + i + "Excluir").hide();
+                            } else {
+                                $("#Mes" + i).attr('disabled', false);
+                                $("#Ano" + i).attr('disabled', false);
+                                $("#SalarioBase" + i).attr('disabled', false);
+                                $("#Descontos" + i).attr('disabled', false);
+                                $("#Adicionais" + i).attr('disabled', false);
+                                $("#Beneficios" + i).attr('disabled', false);
+                                $("#ObservacaoContracheque" + i).attr('disabled', false);
+                                $("#DataEmissao" + i).attr('disabled', false);
+
+                                $("#ButtonContracheque" + i + "Salvar").show();
+                                $("#ButtonContracheque" + i + "Excluir").show();
+                            }
+                        }
+
+                        $("#colaborador-dadoscontracheques-alert-success").removeClass("hidden");
+                        $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                    } else {
+                        $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                        $("#colaborador-dadoscontracheques-alert-error").removeClass("hidden");
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                        $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                    }, 3000);
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function ButtonDadosContrachequeSalvar_Click(index) {
+
+            $("#colaborador-dadoscontracheques-form").validate();
+
+            if ($('#colaborador-dadoscontracheques-form').valid()) {
+
+                $("#ButtonDadoContracheque" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoContracheque" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoContracheque" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("IdContracheque", $("#HiddenContracheque" + index).val());
+                dados.append("Mes", $("#Mes" + index).val());
+                dados.append("Ano", $("#Ano" + index).val());
+                dados.append("SalarioBase", $("#SalarioBase" + index).val());
+                dados.append("Descontos", $("#Descontos" + index).val());
+                dados.append("Adicionais", $("#Adicionais" + index).val());
+                dados.append("Beneficios", $("#Beneficios" + index).val());
+                dados.append("Observacao", $("#ObservacaoContracheque" + index).val());
+                dados.append("DataEmissao", $("#DataEmissao" + index).val());
+
+                var fileInput = $("#ContrachequeFileUpload" + index)[0];
+                if (fileInput.files.length > 0) {
+                    dados.append("ContrachequeFileUpload", fileInput.files[0]);
+                }
+
+                var options = {
+                    url: "/Colaboradores/SalvarDadosContracheque",
+                    type: "POST",
+                    data: dados,
+                    async: true,
+                    contentType: false,
+                    processData: false,
+                    dataType: "application/json; charset=utf-8",
+                    complete: function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "success") {
+                            $("#colaborador-dadoscontracheques-alert-success").removeClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").addClass("hidden");
+
+                            ShowDadosContracheques("Alterar");
+                        }
+                        else if (json.response == "warning") {
+                            $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").removeClass("hidden");
+
+                            $("#ButtonDadoContracheque" + index + "Incluir").text("Salvar");
+                            $("#ButtonDadoContracheque" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoContracheque" + index + "Excluir").attr('disabled', false);
+                        }
+                        else {
+                            $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").removeClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoContracheque" + index + "Incluir").text("Salvar");
+                            $("#ButtonDadoContracheque" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoContracheque" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").addClass("hidden");
+                        }, 3000);
+                    }
+                };
+
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoContrachequeExcluir_Click(index) {
+
+            $("#ButtonDadoContracheque" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoContracheque" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoContracheque" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoContracheque" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoContracheque" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoContracheque" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoContracheque' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosContracheques";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.async = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadoscontracheques-alert-success").removeClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").addClass("hidden");
+
+                            ShowDadosContracheques("Alterar");
+                        }
+                        else {
+                            $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").removeClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoContracheque" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoContracheque" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoContracheque" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadoscontracheques-alert-success").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-removed").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-error2").addClass("hidden");
+                            $("#colaborador-dadoscontracheques-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoContracheque" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoContracheque" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoContracheque" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoContracheque" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            })
+
+        }
+
+        // Férias
+        function ShowFerias(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {
+                url: "/Colaboradores/CarregarDadosFerias",
+                type: "POST",
+                data: dados,
+                async: true,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                complete: function (data) {
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.html) {
+                        $('#FeriasAccordion').html(json.html);
+
+                        for (var i = 1; i <= 10; i++) { // Ajuste o número conforme necessário
+                            if (Tipo === "Visualizar") {
+                                $("#InicioFerias" + i).attr('disabled', true);
+                                $("#FimFerias" + i).attr('disabled', true);
+                                $("#DiasFerias" + i).attr('disabled', true);
+                                $("#ValorFerias" + i).attr('disabled', true);
+                                $("#ObservacaoFerias" + i).attr('disabled', true);
+
+                                $("#ButtonFerias" + i + "Salvar").hide();
+                                $("#ButtonFerias" + i + "Excluir").hide();
+                            } else {
+                                $("#InicioFerias" + i).attr('disabled', false);
+                                $("#FimFerias" + i).attr('disabled', false);
+                                $("#DiasFerias" + i).attr('disabled', false);
+                                $("#ValorFerias" + i).attr('disabled', false);
+                                $("#ObservacaoFerias" + i).attr('disabled', false);
+
+                                $("#ButtonFerias" + i + "Salvar").show();
+                                $("#ButtonFerias" + i + "Excluir").show();
+                            }
+                        }
+
+                        $("#colaborador-dadosferias-alert-success").removeClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                    } else {
+                        $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").removeClass("hidden");
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                    }, 3000);
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function ButtonDadosFeriasSalvar_Click(index) {
+
+            $("#colaborador-dadosferias-form").validate();
+
+            if ($('#colaborador-dadosferias-form').valid()) {
+
+                $("#ButtonDadosFerias" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadosFerias" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadosFerias" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("IdFerias", $("#HiddenFerias" + index).val());
+                dados.append("InicioFerias", $("#InicioFerias" + index).val());
+                dados.append("FimFerias", $("#FimFerias" + index).val());
+                dados.append("DiasFerias", $("#DiasFerias" + index).val());
+                dados.append("ValorFerias", $("#ValorFerias" + index).val());
+                dados.append("Observacao", $("#ObservacaoFerias" + index).val());
+
+                var fileInput = $("#FeriasFileUpload" + index)[0];
+                if (fileInput.files.length > 0) {
+                    dados.append("FeriasFileUpload", fileInput.files[0]);
+                }
+
+                var options = {};
+                options.url = "/Colaboradores/SalvarDadosFerias";
+                options.type = "POST";
+                options.data = dados;
+                options.async = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#colaborador-dadosferias-alert-success").removeClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-warning").addClass("hidden");
+
+                        ShowDadosFerias("Alterar");
+                    } else if (json.response == "warning") {
+                        $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadosFerias" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadosFerias" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadosFerias" + index + "Excluir").attr('disabled', false);
+                    } else {
+                        $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").removeClass("hidden");
+                        $("#colaborador-dadosferias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadosFerias" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadosFerias" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadosFerias" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosferias-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoFeriasExcluir_Click(index) {
+
+            $("#ButtonDadoFerias" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoFerias" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoFerias" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoFerias" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoFerias" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoFerias" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoFerias' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosFerias";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadosferias-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-warning").addClass("hidden");
+
+                            ShowDadosFerias("Alterar");
+                        }
+                        else {
+                            $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadosferias-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoFerias" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoFerias" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoFerias" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadosferias-alert-success").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-error").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosferias-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoFerias" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoFerias" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoFerias" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoFerias" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            });
+        }
+
+        // Recessos
+        function ShowRecessos(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {
+                url: "/Colaboradores/CarregarDadosRecessos",
+                type: "POST",
+                data: dados,
+                async: true,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                complete: function (data) {
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.html) {
+                        $('#RecessosAccordion').html(json.html);
+
+                        for (var i = 1; i <= 10; i++) { // Ajuste o número conforme necessário
+                            if (Tipo === "Visualizar") {
+                                $("#DataInicio" + i).attr('disabled', true);
+                                $("#DataFim" + i).attr('disabled', true);
+                                $("#Saldo" + i).attr('disabled', true);
+
+                                $("#ButtonRecessos" + i + "Salvar").hide();
+                                $("#ButtonRecessos" + i + "Excluir").hide();
+                            } else {
+                                $("#DataInicio" + i).attr('disabled', false);
+                                $("#DataFim" + i).attr('disabled', false);
+                                $("#Saldo" + i).attr('disabled', false);
+
+                                $("#ButtonRecessos" + i + "Salvar").show();
+                                $("#ButtonRecessos" + i + "Excluir").show();
+                            }
+                        }
+
+                        $("#colaborador-dadosrecessos-alert-success").removeClass("hidden");
+                        $("#colaborador-dadosrecessos-alert-error").addClass("hidden");
+                    } else {
+                        $("#colaborador-dadosrecessos-alert-success").addClass("hidden");
+                        $("#colaborador-dadosrecessos-alert-error").removeClass("hidden");
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadosrecessos-alert-success").addClass("hidden");
+                        $("#colaborador-dadosrecessos-alert-error").addClass("hidden");
+                    }, 3000);
+                }
+            };
+
+            $.ajax(options);
+        }
+
+        function ButtonDadosRecessosSalvar_Click(index) {
+
+            $("#colaborador-dadosrecessos-form").validate();
+
+            if ($('#colaborador-dadosrecessos-form').valid()) {
+
+                $("#ButtonDadosRecessos" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadosRecessos" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadosRecessos" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("IdRecessos", $("#HiddenRecessos" + index).val());
+                dados.append("DataInicio", $("#DataInicio" + index).val());
+                dados.append("DataFim", $("#DataFim" + index).val());
+                dados.append("Saldo", $("#Saldo" + index).val());
+
+                var fileInput = $("#RecessosFileUpload" + index)[0];
+                if (fileInput.files.length > 0) {
+                    dados.append("RecessosFileUpload", fileInput.files[0]);
+                }
+
+                var options = {
+                    url: "/Colaboradores/SalvarDadosRecessos",
+                    type: "POST",
+                    data: dados,
+                    async: true,
+                    contentType: false,
+                    processData: false,
+                    dataType: "application/json; charset=utf-8",
+                    complete: function (data) {
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "success") {
+                            $("#recessos-alert-success").removeClass("hidden");
+                            $("#recessos-alert-error").addClass("hidden");
+                            $("#recessos-alert-removed").addClass("hidden");
+                            $("#recessos-alert-error2").addClass("hidden");
+                            $("#recessos-alert-warning").addClass("hidden");
+
+                            ShowDadosRecessos("Alterar");
+                        }
+                        else if (json.response == "warning") {
+                            $("#recessos-alert-success").addClass("hidden");
+                            $("#recessos-alert-error").addClass("hidden");
+                            $("#recessos-alert-removed").addClass("hidden");
+                            $("#recessos-alert-error2").addClass("hidden");
+                            $("#recessos-alert-warning").removeClass("hidden");
+
+                            $("#ButtonDadosRecessos" + index + "Incluir").text("Salvar");
+                            $("#ButtonDadosRecessos" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadosRecessos" + index + "Excluir").attr('disabled', false);
+                        }
+                        else {
+                            $("#recessos-alert-success").addClass("hidden");
+                            $("#recessos-alert-error").removeClass("hidden");
+                            $("#recessos-alert-removed").addClass("hidden");
+                            $("#recessos-alert-error2").addClass("hidden");
+                            $("#recessos-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadosRecessos" + index + "Incluir").text("Salvar");
+                            $("#ButtonDadosRecessos" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadosRecessos" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#recessos-alert-success").addClass("hidden");
+                            $("#recessos-alert-error").addClass("hidden");
+                            $("#recessos-alert-removed").addClass("hidden");
+                            $("#recessos-alert-error2").addClass("hidden");
+                            $("#recessos-alert-warning").addClass("hidden");
+                        }, 3000);
+                    }
+                };
+
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoRecessoExcluir_Click(index) {
+
+            $("#ButtonDadoRecesso" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoRecesso" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoRecesso" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoRecesso" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoRecesso" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoRecesso" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("IdPessoa", $("#idPessoa").val());
+                    dados.append("IdRecessos", $("#HiddenRecesso" + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosRecessos";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.async = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadosrecessos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-error").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-removed").removeClass("hidden");
+
+                            ShowRecessos("Visualizar");
+                        } else {
+                            $("#colaborador-dadosrecessos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-error").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-error2").removeClass("hidden");
+
+                            $("#ButtonDadoRecesso" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoRecesso" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoRecesso" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadosrecessos-alert-success").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-error").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosrecessos-alert-error2").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoRecesso" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoRecesso" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoRecesso" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoRecesso" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            });
+        }
+
+        // Ausências
+        function ShowDadosAusencias(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Colaboradores/CarregarDadosAusencias";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosAusenciasAccordion').html(json.ausencias);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#ProfissionalDadoAusencia" + i + "DataInicio").attr('disabled', true);
+                            $("#ProfissionalDadoAusencia" + i + "DataFim").attr('disabled', true);
+                            $("#ProfissionalDadoAusencia" + i + "Motivo").attr('disabled', true);
+                            $("#ProfissionalDadoAusencia" + i + "Observacao").attr('disabled', true);
+
+                            $("#ButtonDadoAusencia" + i + "Incluir").hide();
+                            $("#ButtonDadoAusencia" + i + "Excluir").hide();
+                        } else {
+                            $("#ProfissionalDadoAusencia" + i + "DataInicio").attr('disabled', false);
+                            $("#ProfissionalDadoAusencia" + i + "DataFim").attr('disabled', false);
+                            $("#ProfissionalDadoAusencia" + i + "Motivo").attr('disabled', false);
+                            $("#ProfissionalDadoAusencia" + i + "Observacao").attr('disabled', false);
+
+                            // Máscaras ou validações específicas se necessário
+                            $("#ProfissionalDadoAusencia" + i + "DataInicio").mask("99/99/9999");
+                            $("#ProfissionalDadoAusencia" + i + "DataFim").mask("99/99/9999");
+
+                            $("#ButtonDadoAusencia" + i + "Incluir").show();
+                            $("#ButtonDadoAusencia" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoAusenciaSalvar_Click(index) {
+
+            $("#colaborador-dadosausencias-form").validate();
+
+            if ($('#colaborador-dadosausencias-form').valid()) {
+
+                $("#ButtonDadoAusencia" + index + "Incluir").attr('disabled', true);
+                $("#ButtonDadoAusencia" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonDadoAusencia" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoAusencia' + index).val());
+                dados.append("IdColaborador", $("#idColaborador").val());
+                dados.append("Motivo", $('#ColaboradorDadoAusencia' + index + 'Motivo').val());
+                dados.append("DataInicio", $('#ColaboradorDadoAusencia' + index + 'DataInicio').val());
+                dados.append("DataFim", $('#ColaboradorDadoAusencia' + index + 'DataFim').val());
+                dados.append("Observacao", $('#ColaboradorDadoAusencia' + index + 'Observacao').val());
+
+                var options = {};
+                options.url = "/Colaboradores/SalvarDadosAusencias";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#colaborador-dadosausencias-alert-success").removeClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-warning").addClass("hidden");
+
+                        ShowDadosAusencias("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#colaborador-dadosausencias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-warning").removeClass("hidden");
+
+                        $("#ButtonDadoAusencia" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoAusencia" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoAusencia" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#colaborador-dadosausencias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error").removeClass("hidden");
+                        $("#colaborador-dadosausencias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-warning").addClass("hidden");
+
+                        $("#ButtonDadoAusencia" + index + "Incluir").text("Salvar");
+                        $("#ButtonDadoAusencia" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonDadoAusencia" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadosausencias-alert-success").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosausencias-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoAusenciaExcluir_Click(index) {
+
+            $("#ButtonDadoAusencia" + index + "Incluir").attr('disabled', true);
+            $("#ButtonDadoAusencia" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonDadoAusencia" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonDadoAusencia" + index + "ExcluirConfirmacao").show();
+            $("#ButtonDadoAusencia" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonDadoAusencia" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoAusencia' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosAusencia";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadosausencia-alert-success").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-error").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadosausencia-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-warning").addClass("hidden");
+
+                            ShowDadosAusencia("Alterar");
+                        }
+                        else {
+                            $("#colaborador-dadosausencia-alert-success").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-error").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadosausencia-alert-warning").addClass("hidden");
+
+                            $("#ButtonDadoAusencia" + index + "Excluir").text("Apagar");
+                            $("#ButtonDadoAusencia" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonDadoAusencia" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadosausencia-alert-success").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-error").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosausencia-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonDadoAusencia" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonDadoAusencia" + index + "Excluir").text("Apagar");
+                    $("#ButtonDadoAusencia" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonDadoAusencia" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+                }
+            });
+        }
+
+        // Avaliações
+        function ShowDadosAvaliacoes(Tipo) {
+            var dados = new window.FormData();
+            dados.append("IdPessoa", $("#idPessoa").val());
+
+            var options = {};
+            options.url = "/Colaboradores/CarregarDadosAvaliacao";
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+                var json = $.parseJSON(data.responseText);
+                if (json.response == "success") {
+
+                    $('#DadosAvaliacoesAccordion').html(json.avaliacoes);
+
+                    for (var i = 1; i < (json.count + 2); i++) {
+
+                        if (Tipo == "Visualizar") {
+                            $("#DataAvaliacao" + i).attr('disabled', true);
+                            $("#Avaliador" + i).attr('disabled', true);
+                            $("#DescricaoAvaliacao" + i).attr('disabled', true);
+                            $("#DocFileAvaliacaoUpload" + i).attr('disabled', true);
+
+                            $("#ButtonAvaliacao" + i + "Incluir").hide();
+                            $("#ButtonAvaliacao" + i + "Excluir").hide();
+                        }
+                        else {
+                            $("#DataAvaliacao" + i).attr('disabled', false);
+                            $("#Avaliador" + i).attr('disabled', false);
+                            $("#DescricaoAvaliacao" + i).attr('disabled', false);
+                            $("#DocFileAvaliacaoUpload" + i).attr('disabled', false);
+
+                            $("#ButtonAvaliacao" + i + "Incluir").show();
+                            $("#ButtonAvaliacao" + i + "Excluir").show();
+                        }
+                    }
+                }
+            };
+            $.ajax(options);
+        }
+
+        function ButtonDadoAvaliacaoSalvar_Click(index) {
+
+            $("#colaborador-dadosavaliacoes-form").validate();
+
+            if ($('#colaborador-dadosavaliacoes-form').valid()) {
+
+                $("#ButtonAvaliacao" + index + "Incluir").attr('disabled', true);
+                $("#ButtonAvaliacao" + index + "Excluir").attr('disabled', true);
+
+                $("#ButtonAvaliacao" + index + "Incluir").html("Salvando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+                var dados = new window.FormData();
+                dados.append("Id", $('#HiddenDadoAvaliacao' + index).val());
+                dados.append("IdPessoa", $("#idPessoa").val());
+                dados.append("Data", $('#DataAvaliacao' + index).val());
+                dados.append("Avaliador", $('#Avaliador' + index).val());
+                dados.append("Descricao", $('#DescricaoAvaliacao' + index).val());
+                dados.append("DocFile", $('#DocFileAvaliacaoUpload' + index)[0].files[0]);
+
+                var options = {};
+                options.url = "/Colaboradores/SalvarDadosAvaliacao";
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+                        $("#colaborador-dadosavaliacoes-alert-success").removeClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-warning").addClass("hidden");
+
+                        ShowDadosAvaliacoes("Alterar");
+                    }
+                    else if (json.response == "warning") {
+                        $("#colaborador-dadosavaliacoes-alert-success").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-warning").removeClass("hidden");
+
+                        $("#ButtonAvaliacao" + index + "Incluir").text("Salvar");
+                        $("#ButtonAvaliacao" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonAvaliacao" + index + "Excluir").attr('disabled', false);
+                    }
+                    else {
+                        $("#colaborador-dadosavaliacoes-alert-success").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error").removeClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-warning").addClass("hidden");
+
+                        $("#ButtonAvaliacao" + index + "Incluir").text("Salvar");
+                        $("#ButtonAvaliacao" + index + "Incluir").attr('disabled', false);
+                        $("#ButtonAvaliacao" + index + "Excluir").attr('disabled', false);
+                    }
+
+                    setTimeout(function () {
+                        $("#colaborador-dadosavaliacoes-alert-success").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-removed").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-error2").addClass("hidden");
+                        $("#colaborador-dadosavaliacoes-alert-warning").addClass("hidden");
+                    }, 3000);
+                };
+                $.ajax(options);
+            }
+        }
+
+        function ButtonDadoAvaliacaoExcluir_Click(index) {
+
+            $("#ButtonAvaliacao" + index + "Incluir").attr('disabled', true);
+            $("#ButtonAvaliacao" + index + "Excluir").attr('disabled', true);
+
+            $("#ButtonAvaliacao" + index + "Excluir").html("Apagando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+
+            $("#ButtonAvaliacao" + index + "ExcluirConfirmacao").show();
+            $("#ButtonAvaliacao" + index + "ExcluirConfirmacao button").on('click', function () {
+                var confirm = $(this).attr('value');
+                if (confirm == 'true') {
+
+                    $("#ButtonAvaliacao" + index + "ExcluirConfirmacao").hide();
+
+                    var dados = new window.FormData();
+                    dados.append("Id", $('#HiddenDadoAvaliacao' + index).val());
+
+                    var options = {};
+                    options.url = "/Colaboradores/ExcluirDadosAvaliacao";
+                    options.type = "POST";
+                    options.data = dados;
+                    options.asyn = true;
+                    options.contentType = false;
+                    options.processData = false;
+                    options.dataType = "application/json; charset=utf-8";
+                    options.complete = function (data) {
+
+                        var json = $.parseJSON(data.responseText);
+
+                        if (json.response == "removed") {
+                            $("#colaborador-dadosavaliacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-error").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-removed").removeClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-warning").addClass("hidden");
+
+                            ShowDadosAvaliacoes("Alterar");
+                        }
+                        else {
+                            $("#colaborador-dadosavaliacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-error").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-error2").removeClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-warning").addClass("hidden");
+
+                            $("#ButtonAvaliacao" + index + "Excluir").text("Apagar");
+                            $("#ButtonAvaliacao" + index + "Incluir").attr('disabled', false);
+                            $("#ButtonAvaliacao" + index + "Excluir").attr('disabled', false);
+                        }
+
+                        setTimeout(function () {
+                            $("#colaborador-dadosavaliacoes-alert-success").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-error").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-removed").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-error2").addClass("hidden");
+                            $("#colaborador-dadosavaliacoes-alert-warning").addClass("hidden");
+                        }, 3000);
+                    };
+                    $.ajax(options);
+
+                    return false;
+
+                } else if (confirm == 'false') {
+
+                    $("#ButtonAvaliacao" + index + "ExcluirConfirmacao").hide();
+                    $("#ButtonAvaliacao" + index + "Excluir").text("Apagar");
+                    $("#ButtonAvaliacao" + index + "Incluir").attr('disabled', false);
+                    $("#ButtonAvaliacao" + index + "Excluir").attr('disabled', false);
+
+                    return false;
+
+                }
+            });
+
+        }
+
+    </script>
+    <!-- Scripts principais colaborador -->
+</div>

@@ -1,0 +1,159 @@
+﻿
+@{
+    ViewBag.Title = "Integração App \\ Gerar Token";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main_container">
+
+    <div id="modalGerar" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title">Gerar Novo Token de Acesso</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente gerar um novo token de acesso, isso afetará o acesso dos aplicativos móveis?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="GerarConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="">
+
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Criar e Filtrar Ações</h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Token de Acesso <span class="required">*</span></label>
+                                                    <input id="Token" type="text" class="form-control" placeholder="Token de Acesso" value="@(Model != null ? Model.Token : string.Empty)" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Hora Alteração  <span class="required">*</span></label>
+                                                    <input type="text" class="form-control" placeholder="Data Hora Alteração" value="@(Model != null ? Model.DataHoraAlteracao.ToString("dd/MM/yyyy HH:mm:ss") : string.Empty)" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Usuário Alteração  <span class="required">*</span></label>
+                                                    <input type="text" class="form-control" placeholder="Usuário Alteração" value="@(Model != null ? Model.NomeUsuario : string.Empty)" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer" style="border-top: 0px solid #e5e5e5 !important;">
+                                            <button type="button" class="btn btn-primary" style="margin: 0;" data-toggle='modal' data-target='#modalGerar'>Gerar</button>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default" style="margin: 0;" onclick="CopyToClipboard($('#Token').val());" >Copiar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /page content -->
+
+    <script>
+
+        function GerarConfirmado() {
+
+            var options = {};
+            options.url = "/App/Salvar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Token de Acesso gerado com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                    setTimeout(function () {
+                        Atualizar();
+                    }, 3000);
+
+                }
+                else {
+
+                    $('h4').text('Não foi possível gerar o Token de Acesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        function CopyToClipboard(copyText) {
+
+            navigator.clipboard.writeText(copyText)
+                .then(() => {
+                    if (copyText != '') {
+                        $('h4').text('Token de Acesso copiado com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                    }
+                })
+                .catch((error) => {
+
+                    $('h4').text('Não foi possível copiar o Token de Acesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                })
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../App/GerarToken');
+        }
+
+    </script>
+
+</div>
+

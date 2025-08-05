@@ -1,0 +1,218 @@
+﻿@{
+    ViewBag.Title = "Financeiro \\ Gestão de Boletos";
+}
+
+<div class="main_container">
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+
+    <!-- page content -->
+    <div role="main">
+        <form id="remessa-form">
+            @*<div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="titlefield">Data Geração </label>
+                        <input id="DataGeracao" name="DataGeracao" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label class="titlefield">Sequencial Arquivo </label>
+                        <input type="text" class="form-control" placeholder="Numero do Arquivo" id="NumeroArquivo" name="NumeroArquivo" />
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="titlefield">Mes/Ano </label>
+                        <input type="text" class="form-control" placeholder="" id="MesAno" name="MesAno" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="titlefield">Data Vencimento </label>
+                        <input id="DataVencimento" name="DataVencimento" class="form-control" type="text" style="height: 40px !important; cursor: pointer;" readonly />
+                    </div>
+                </div>
+            </div>*@
+
+            <button id="GerarRemessa" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Gerar Boletos</button>
+            <button id="ProcessarRetorno" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Processar Retorno</button>
+            <button id="EnviarEmail" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Enviar Email</button>
+        </form>
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    <script src="~/Content/vendors/jquery/dist/jquery.js"></script>
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Content/js/datepicker/bootstrap-datepicker.js"></script>
+    <script type="text/javascript" src="~/Content/js/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <script>
+
+        $("#DataGeracao").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+        $("#DataVencimento").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            clearBtn: true
+        });
+
+
+        $('#GerarRemessa').click(function (evt) {
+
+            $("#remessa-form").validate();
+
+            if ($('#remessa-form').valid()) {
+
+                var options = {};
+                options.url = "/FinanceiroGestaoBoletos/GerarRemessa"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Boletos gerados com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#remessa-form").validate().resetForm();
+
+                    }
+                    else {
+                        $('#modalMensagemResposta').text('Problema na geração de Boletos!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#remessa-form").validate().resetForm();
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#EnviarEmail').click(function (evt) {
+
+            var options = {};
+            options.url = "/Service/EnviarBoletoPorEmail"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+
+
+                $('#modalMensagemResposta').text('Emails enviados com sucesso!');
+                $('#modalMensagem').attr('data-backdrop', 'static');
+                $('#modalMensagem').attr('data-keyboard', 'false');
+                $('#modalMensagem').modal('show');
+                //    $("#remessa-form").validate().resetForm();
+
+                //var json = $.parseJSON(data.responseText);
+
+                //if (json.codigo == '00') {
+
+                //    $('#modalMensagemResposta').text('Retorno Assistencial processado com sucesso!');
+                //    $('#modalMensagem').attr('data-backdrop', 'static');
+                //    $('#modalMensagem').attr('data-keyboard', 'false');
+                //    $('#modalMensagem').modal('show');
+                //    $("#remessa-form").validate().resetForm();
+
+                //}
+                //else {
+                //    $('#modalMensagemResposta').text('Problema no processamento do Retorno Assistencial!');
+                //    $('#modalMensagem').attr('data-backdrop', 'static');
+                //    $('#modalMensagem').attr('data-keyboard', 'false');
+                //    $('#modalMensagem').modal('show');
+                //    $("#remessa-form").validate().resetForm();
+                //}
+
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+
+        });
+
+        $('#ProcessarRetorno').click(function (evt) {
+
+            $("#remessa-form").validate();
+
+            if ($('#remessa-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("Id", 0);
+                //dados.append("NumeroArquivo", $("#NumeroArquivo").val());
+                //dados.append("MesAno", $("#MesAno").val());
+                //dados.append("DataVencimento", $("#DataVencimento").val());
+
+                var options = {};
+                options.url = "/GeracaoAssistencial/GerarRetorno"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        $('#modalMensagemResposta').text('Retorno Assistencial processado com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#remessa-form").validate().resetForm();
+
+                    }
+                    else {
+
+                        console.log('Error: (' + json.error + ')');
+
+                        $('#modalMensagemResposta').text('Problema no processamento do Retorno Assistencial!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#remessa-form").validate().resetForm();
+                    }
+
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+    </script>
+
+</div>

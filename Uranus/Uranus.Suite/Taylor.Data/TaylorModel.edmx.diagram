@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="603bd34a952b416ebc4db537ae2161b9" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="TaylorModel.Areas" Width="1.5" PointX="6" PointY="56" />
+        <EntityTypeShape EntityType="TaylorModel.Atributos" Width="1.5" PointX="6" PointY="37.625" />
+        <EntityTypeShape EntityType="TaylorModel.AtributosTipos" Width="1.5" PointX="3.75" PointY="49.75" />
+        <EntityTypeShape EntityType="TaylorModel.Bancos" Width="1.5" PointX="7.75" PointY="5" />
+        <EntityTypeShape EntityType="TaylorModel.BancosLancamentos" Width="1.5" PointX="11" PointY="49.25" />
+        <EntityTypeShape EntityType="TaylorModel.Caixas" Width="1.5" PointX="5.25" PointY="93.625" />
+        <EntityTypeShape EntityType="TaylorModel.Categorias" Width="1.5" PointX="3.75" PointY="42.25" />
+        <EntityTypeShape EntityType="TaylorModel.Classes" Width="1.5" PointX="3.75" PointY="47" />
+        <EntityTypeShape EntityType="TaylorModel.Clientes" Width="1.5" PointX="15.75" PointY="116.625" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesChamados" Width="1.5" PointX="16.5" PointY="86.625" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesChamadosFormaPagamentos" Width="1.5" PointX="24.75" PointY="88.875" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesEmails" Width="1.5" PointX="18" PointY="118.5" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesEnderecos" Width="1.5" PointX="18" PointY="113.375" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesFones" Width="1.5" PointX="18" PointY="122.375" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesHistoricosCadastros" Width="1.5" PointX="5.75" PointY="1.5" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesHistoricosTipos" Width="1.5" PointX="5.75" PointY="5.5" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesNotas" Width="1.5" PointX="5.25" PointY="84" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesOrcamentosParcelas" Width="1.5" PointX="19.5" PointY="87.125" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesTrocaDevolucoes" Width="1.5" PointX="19.5" PointY="72.5" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesTrocas" Width="1.5" PointX="8.25" PointY="84" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesTrocaVendas" Width="1.5" PointX="22.5" PointY="90.75" />
+        <EntityTypeShape EntityType="TaylorModel.CondicoesPagamentos" Width="1.5" PointX="18" PointY="101.625" />
+        <EntityTypeShape EntityType="TaylorModel.ConfiguracõsBanco" Width="1.5" PointX="4.75" PointY="8.75" />
+        <EntityTypeShape EntityType="TaylorModel.Cupom" Width="1.5" PointX="6.75" PointY="8.75" />
+        <EntityTypeShape EntityType="TaylorModel.EmpresasTipo" Width="1.5" PointX="0.75" PointY="85.25" />
+        <EntityTypeShape EntityType="TaylorModel.Fabricantes" Width="1.5" PointX="6" PointY="59.25" />
+        <EntityTypeShape EntityType="TaylorModel.Feriados" Width="1.5" PointX="8.75" PointY="8.75" />
+        <EntityTypeShape EntityType="TaylorModel.FormaPagamentos" Width="1.5" PointX="18" PointY="98.625" />
+        <EntityTypeShape EntityType="TaylorModel.Fornecedores" Width="1.5" PointX="6" PointY="62" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresCotacoes" Width="1.5" PointX="8.25" PointY="76.5" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresCotacoesProdutos" Width="1.5" PointX="10.5" PointY="72.5" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresNotasEntradas" Width="1.5" PointX="11.25" PointY="81.125" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresNotasEntradasParcelas" Width="1.5" PointX="13.5" PointY="103.875" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresNotasEntradasProdutos" Width="1.5" PointX="13.5" PointY="94" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresNotasParcelas" Width="1.5" PointX="13.5" PointY="75.375" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresOrdemCompras" Width="1.5" PointX="5.25" PointY="78.875" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresOrdemComprasProdutos" Width="1.5" PointX="7.5" PointY="71.5" />
+        <EntityTypeShape EntityType="TaylorModel.Funcionarios" Width="1.5" PointX="11.25" PointY="92.25" />
+        <EntityTypeShape EntityType="TaylorModel.FuncionariosFuncoes" Width="1.5" PointX="9" PointY="106" />
+        <EntityTypeShape EntityType="TaylorModel.Historicos" Width="1.5" PointX="3" PointY="93.875" />
+        <EntityTypeShape EntityType="TaylorModel.IBPTaxas" Width="1.5" PointX="9.75" PointY="4.75" />
+        <EntityTypeShape EntityType="TaylorModel.ListaOrcamento" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="TaylorModel.Modalidades" Width="1.5" PointX="14.25" PointY="62.125" />
+        <EntityTypeShape EntityType="TaylorModel.Municipios" Width="1.5" PointX="10.75" PointY="7.75" />
+        <EntityTypeShape EntityType="TaylorModel.Mvas" Width="1.5" PointX="10.75" PointY="10.75" />
+        <EntityTypeShape EntityType="TaylorModel.NaturezaOperacoes" Width="1.5" PointX="26.25" PointY="106.75" />
+        <EntityTypeShape EntityType="TaylorModel.Notas" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="TaylorModel.NotasFiscaisParcelas" Width="1.5" PointX="30.75" PointY="119.125" />
+        <EntityTypeShape EntityType="TaylorModel.NotasFiscaisPedidos" Width="1.5" PointX="30.75" PointY="102.625" />
+        <EntityTypeShape EntityType="TaylorModel.NotasFiscaisProdutos" Width="1.5" PointX="30.75" PointY="105.75" />
+        <EntityTypeShape EntityType="TaylorModel.NotasFiscaisReferenciadas" Width="1.5" PointX="30.75" PointY="114.625" />
+        <EntityTypeShape EntityType="TaylorModel.NotasImportacao" Width="1.5" PointX="5.25" PointY="184.875" />
+        <EntityTypeShape EntityType="TaylorModel.NotasServicos" Width="1.5" PointX="23.25" PointY="101.5" />
+        <EntityTypeShape EntityType="TaylorModel.NotasServicosParcelas" Width="1.5" PointX="25.5" PointY="103.25" />
+        <EntityTypeShape EntityType="TaylorModel.Pessoas" Width="1.5" PointX="0.75" PointY="2.625" />
+        <EntityTypeShape EntityType="TaylorModel.PessoasEmail" Width="1.5" PointX="3" PointY="1.125" />
+        <EntityTypeShape EntityType="TaylorModel.PessoasFones" Width="1.5" PointX="3" PointY="4.125" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosEstoques" Width="1.5" PointX="22.5" PointY="94.125" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosEstoquesLojas" Width="1.5" PointX="8.25" PointY="80.875" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosFamilias" Width="1.5" PointX="3.75" PointY="52.25" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosFinanceiros" Width="1.5" PointX="8.25" PointY="44" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosGrupos" Width="1.5" PointX="3.75" PointY="44.625" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosItens" Width="1.5" PointX="11.25" PointY="39.875" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosItensKits" Width="1.5" PointX="13.5" PointY="46.25" />
+        <EntityTypeShape EntityType="TaylorModel.Profissionais" Width="1.5" PointX="15.75" PointY="107.375" />
+        <EntityTypeShape EntityType="TaylorModel.Servicos" Width="1.5" PointX="20.25" PointY="69.125" />
+        <EntityTypeShape EntityType="TaylorModel.Settings" Width="1.5" PointX="2.75" PointY="11.75" />
+        <EntityTypeShape EntityType="TaylorModel.Status" Width="1.5" PointX="15" PointY="65.25" />
+        <EntityTypeShape EntityType="TaylorModel.Transportadoras" Width="1.5" PointX="15" PointY="69.75" />
+        <EntityTypeShape EntityType="TaylorModel.Veiculos" Width="1.5" PointX="12" PointY="69.25" />
+        <EntityTypeShape EntityType="TaylorModel.Vendedores" Width="1.5" PointX="13.5" PointY="115.5" />
+        <EntityTypeShape EntityType="TaylorModel.SystematicParameterizations" Width="1.5" PointX="11.75" PointY="4.75" />
+        <EntityTypeShape EntityType="TaylorModel.ConsultaProduto" Width="1.5" PointX="4.75" PointY="11.75" />
+        <AssociationConnector Association="TaylorModel.FK_Areas_Areas" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesChamados_Areas" />
+        <AssociationConnector Association="TaylorModel.FK_Atributos_AtributosTipos" />
+        <AssociationConnector Association="TaylorModel.IdBanco_BancosLancamentos_Bancos" />
+        <AssociationConnector Association="TaylorModel.IdHistorico_BancosLancamentos_Historicos" />
+        <AssociationConnector Association="TaylorModel.IdHistorico_Caixa_CaixaHistoricos" />
+        <AssociationConnector Association="TaylorModel.FK_Clientes_Vendedores" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesChamados_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesEmails_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesEnderecos_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesFones_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesNotas_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesTrocas_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicos_Clientes" />
+        <AssociationConnector Association="TaylorModel.IdClientesChamado_ClientesChamadosFormaPagamentos_ClientesChamados" />
+        <AssociationConnector Association="TaylorModel.IdModalidade_ClientesChamados_Modalidades" />
+        <AssociationConnector Association="TaylorModel.IdTecnico_ClientesChamados_Funcionarios" />
+        <AssociationConnector Association="TaylorModel.IdFormaPagamento_ClientesChamadosFormaPagamentos_FormaPagamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesEmails_ClientesEmails" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicos_ClientesEmails" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicos_ClientesEnderecos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesNotas_Vendedores" />
+        <AssociationConnector Association="TaylorModel.FK_TrocaDevolucao_Troca" />
+        <AssociationConnector Association="TaylorModel.FK_Troca_Troca" />
+        <AssociationConnector Association="TaylorModel.FK_TrocaVenda_Troca" />
+        <AssociationConnector Association="TaylorModel.IdFreteFormaPagamento_FornecedoresNotasEntradas_FormaPagamentos" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresCotacoes_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresNotasEntradas_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresOrdemCompra_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.IdFreteFornecedor_FornecedoresNotasEntradas_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.IdFornecedorCotacao_FornecedoresCotacoesProdutos_FornecedoresCotacoes" />
+        <AssociationConnector Association="TaylorModel.FK_FornecedoresNotasEntradasParcelas_FornecedoresNotasEntradas" />
+        <AssociationConnector Association="TaylorModel.FK_FornecedoresNotasEntradasProdutos_FornecedoresNotasEntradas" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosEstoques_FornecedoresNotasEntradas" />
+        <AssociationConnector Association="TaylorModel.IdStatus_FornecedoresNotasEntradas_Status" />
+        <AssociationConnector Association="TaylorModel.IdTransportadora_FornecedoresNotasEntradas_Transportadoras" />
+        <AssociationConnector Association="TaylorModel.IdOrcemCompra_FornecedoresOrdemComprasProdutos_FornecedoresOrdemCompras" />
+        <AssociationConnector Association="TaylorModel.IdFuncao_Funcionarios_FuncionariosFuncoes" />
+        <AssociationConnector Association="TaylorModel.IdFuncionario_Vendedores_Funcionarios" />
+        <AssociationConnector Association="TaylorModel.FK_CaixaHistoricos_CaixaHistoricos" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicos_Status" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicosParcelas_NotasServicos" />
+        <AssociationConnector Association="TaylorModel.IDPessoa_PessoasEmail_Pessoas" />
+        <AssociationConnector Association="TaylorModel.IDPessoa_PessoasFones_Pessoas" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosItensKits_ProdutosItens" />
+        <AssociationConnector Association="TaylorModel.FK_Profissionais_Vendedores" />
+        <AssociationConnector Association="TaylorModel.ProdutosItensAtributos" />
+        <EntityTypeShape EntityType="TaylorModel.CupomFiscal" Width="1.5" PointX="18" PointY="105.125" />
+        <AssociationConnector Association="TaylorModel.FK_CupomFiscal_Clientes" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesReclamacoes" Width="1.5" PointX="18" PointY="128.25" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesReclamacoes_Clientes" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesHistoricos" Width="1.5" PointX="18" PointY="61.25" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesHistoricos_Clientes" />
+        <AssociationConnector Association="TaylorModel.IdClientesHistoricosCadastro_ClientesHistoricos_ClientesHistoricosCadastro" />
+        <AssociationConnector Association="TaylorModel.IdClientesHistoricosTipo_ClientesHistoricos_ClientesHistoricos" />
+        <EntityTypeShape EntityType="TaylorModel.NotasFiscais" Width="1.5" PointX="30.5" PointY="85.25" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_ClientesEmails" />
+        <AssociationConnector Association="TaylorModel.IdClienteEndereco_NotasFiscais_NotasFiscais" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_CondicoesPagamentos" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_NotaFiscal_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_NaturezaOperacoes" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_Status" />
+        <AssociationConnector Association="TaylorModel.IdNotafiscal_NotaFiscalParcelas_NotaFiscal" />
+        <AssociationConnector Association="TaylorModel.IdNotaFiscal_NotaFiscalPedidos_NotaFiscal" />
+        <AssociationConnector Association="TaylorModel.IdNotafiscal_NotaFiscalProdutos_NotaFiscal" />
+        <AssociationConnector Association="TaylorModel.IdNotaFiscal_NotaFiscalRreferenciadas_NotaFiscal" />
+        <AssociationConnector Association="TaylorModel.IdTransportadora_NotaFiscal_NotaFiscal" />
+        <EntityTypeShape EntityType="TaylorModel.Empresas" Width="1.5" PointX="3" PointY="80" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_Caixa_Empresa" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesChamados_Empresas" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesNotas_Empresa" />
+        <AssociationConnector Association="TaylorModel.FK_Troca_Empresas" />
+        <AssociationConnector Association="TaylorModel.FK_CupomFiscal_Empresas" />
+        <AssociationConnector Association="TaylorModel.FK_Empresas_EmpresasTipo" />
+        <AssociationConnector Association="TaylorModel.FK_NotasImportacao_Empresas" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicos_Empresas" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosEstoquesLojas_Empresas" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_FornecedoresCotacoes_FornecedoresCotacoes" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_FornecedoresNotasEntradas_FornecedoresNotasEntradas" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_FornecedoresOrdemCompras_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_FornecedoresOrdemComprasProdutos_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_Funcionarios_Funcionarios" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_NotaFiscal_Empresa" />
+        <EntityTypeShape EntityType="TaylorModel.Usuarios" Width="1.5" PointX="15.625" PointY="8" />
+        <AssociationConnector Association="TaylorModel.IdUsuario_Usuarios_Funcionarios" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosEstoques_Usuarios" />
+        <EntityTypeShape EntityType="TaylorModel.UsuariosTipoNivel" Width="1.5" PointX="13.375" PointY="8.625" />
+        <AssociationConnector Association="TaylorModel.FK_Usuarios_UsuariosTipoNivel" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesOrcamentosOS" Width="1.5" PointX="33.25" PointY="91" />
+        <AssociationConnector Association="TaylorModel.IdCliente_ClientesOrcamentosOS_Clientes" />
+        <AssociationConnector Association="TaylorModel.IdClienteEndereco_ClientesEnderecos_ClientesOrcamentosOS" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosOS_Veiculos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosOS_Vendedores" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_ClientesOrcamentosOS_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdFuncionario_Funcionarios_ClientesOrcamentosOS" />
+        <AssociationConnector Association="TaylorModel.IdStatus_ClientesOrcamentosOS_Status" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesOrcamentosOSProdutos" Width="1.5" PointX="35.5" PointY="71.5" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesOrcamentosOSServicos" Width="1.5" PointX="35.5" PointY="82.5" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosOSServicos_ClientesOrcamentosOS" />
+        <AssociationConnector Association="TaylorModel.IdServico_ClientesOrcamentosOSProdutos_ClientesOrcamentosOS" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosOSServicos_Servicos" />
+        <EntityTypeShape EntityType="TaylorModel.Bandeiras" Width="1.5" PointX="7.375" PointY="11.75" />
+        <EntityTypeShape EntityType="TaylorModel.Credenciadoras" Width="1.5" PointX="13.375" PointY="0.75" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresEmail" Width="1.5" PointX="8.25" PointY="62.375" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresFones" Width="1.5" PointX="8.25" PointY="65.5" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresEmail_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresFones_Fornecedores" />
+        <EntityTypeShape EntityType="TaylorModel.Produtos" Width="1.5" PointX="16.25" PointY="44.625" />
+        <EntityTypeShape EntityType="TaylorModel.ProdutosFornecedores" Width="1.5" PointX="20.5" PointY="57" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosFornecedores_Areas" />
+        <AssociationConnector Association="TaylorModel.IdArea_Produtos_Area" />
+        <AssociationConnector Association="TaylorModel.FK_Produtos_Categorias" />
+        <AssociationConnector Association="TaylorModel.IdClasse_Produtos_Classes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosOSProdutos_ClientesOrcamentosOSProdutos" />
+        <AssociationConnector Association="TaylorModel.FK_TrocaDevolucao_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_TrocaVenda_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_Produtos_Fabricantes" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosFornecedores_Fabricantes" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosFornecedores_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.IdProdutoFornecedor_FornecedoresCotacoesProdutos_ProdutosFornecedores" />
+        <AssociationConnector Association="TaylorModel.IdProdutosFornecedor_FornecedoresOrdemComprasProdutos_ProdutosFornecedores" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscaisProdutos_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosEstoques_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosEstoquesLojas_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosFornecedores_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosItens_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosItensKits_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosItensKits_Produtos1" />
+        <AssociationConnector Association="TaylorModel.IdFamilia_Produtos_ProdutosFamilias" />
+        <AssociationConnector Association="TaylorModel.IdGrupo_Produtos_ProdutosGrupos" />
+        <AssociationConnector Association="TaylorModel.IdProduto_ProdutosFinanceiro_Produtos" />
+        <EntityTypeShape EntityType="TaylorModel.Configuracoes" Width="1.5" PointX="13.375" PointY="11.75" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesPedidosParcelas" Width="1.5" PointX="22.5" PointY="108.375" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesPedidosProdutos" Width="1.5" PointX="22.75" PointY="69.875" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesServicos" Width="1.5" PointX="27.25" PointY="88" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesServicosParcelas" Width="1.5" PointX="29.5" PointY="122.625" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesServicosServicos" Width="1.5" PointX="32.5" PointY="81" />
+        <AssociationConnector Association="TaylorModel.IdCliente_ClientesServicos_Clientes" />
+        <AssociationConnector Association="TaylorModel.IdClienteEndereco_ClientesEnderecos_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidosProdutos_Produtos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidosProdutos_ProdutosFornecedores" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesServicos_Veiculos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesServicos_Vendedores" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesServicosServicos_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.FK_NotasServicos_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.IdClientesServico_ClientesServicosParcelas_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_ClientesServicos_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdFuncionario_Funcionarios_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.IdStatus_ClientesServicos_Status" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesServicosServicos_Servicos" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesContratosParcelas" Width="1.5" PointX="24.25" PointY="85" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresContratos" Width="1.5" PointX="14.25" PointY="79.625" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_FornecedoresContratos_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresContratos_Fornecedores" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesServicosProdutos" Width="1.5" PointX="29.5" PointY="75.75" />
+        <AssociationConnector Association="TaylorModel.IdServico_ClientesServicosProdutos_ClientesServicos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesServicosProdutos_ClientesServicosProdutos" />
+        <EntityTypeShape EntityType="TaylorModel.FinanceiroTipo" Width="1.5" PointX="9" PointY="59.25" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresLancamentos" Width="1.5" PointX="11.25" PointY="64.75" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresLancamentosParcelas" Width="1.5" PointX="13.5" PointY="59.125" />
+        <AssociationConnector Association="TaylorModel.FK_LancamentosFornecedores_FinanceiroTipo" />
+        <AssociationConnector Association="TaylorModel.FK_LancamentosFornecedores_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.FK_LancamentosFornecedoresParcelas_LancamentosFornecedoresParcelas" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesOrcamentos" Width="1.5" PointX="20.25" PointY="90.5" />
+        <AssociationConnector Association="TaylorModel.IdCliente_ClientesOrcamentos_Clientes" />
+        <AssociationConnector Association="TaylorModel.IdOrcamento_ClientesOrdensServicos_ClientesOrcamentos" />
+        <AssociationConnector Association="TaylorModel.IdClientesEndereco_ClientesOrcamentos_ClientesOrcamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentos_ClientesOrcamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentos_Profissionais" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentos_Vendedores" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_ClientesOrcamentos_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdOrcamento_ClientesOrcamentosParcelas_ClientesOrcamentos" />
+        <AssociationConnector Association="TaylorModel.IdStatus_ClientesOrcamentos_Status" />
+        <AssociationConnector Association="TaylorModel.IdTransportadora_ClientesOrcamentos_Transportadoras" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesNotasParcelas" Width="1.5" PointX="7.5" PointY="88.75" />
+        <AssociationConnector Association="TaylorModel.IdClientesNota_ClientesNotasParcelas_ClientesNotas" />
+        <EntityTypeShape EntityType="TaylorModel.FornecedoresNotas" Width="1.5" PointX="16.25" PointY="75.375" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_FornecedoresNotas_FornecedoresNotas" />
+        <AssociationConnector Association="TaylorModel.IdFornecedor_FornecedoresNotas_Fornecedores" />
+        <AssociationConnector Association="TaylorModel.FK_FornecedoresNotasParcelas_FornecedoresNotas" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesPedidos" Width="1.5" PointX="35.5" PointY="88.25" />
+        <AssociationConnector Association="TaylorModel.IdCliente_ClientesPedidos_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidos_ClientesEnderecos" />
+        <AssociationConnector Association="TaylorModel.IdClientesOrcamento_ClientesPedidos_ClientesOrcamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidos_ClientesOrcamentosOS" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidos_CondicoesPagamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidos_FormaPagamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidos_Profissionais" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesPedidos_Vendedores" />
+        <AssociationConnector Association="TaylorModel.FK_NotasFiscais_ClientesPedidos" />
+        <AssociationConnector Association="TaylorModel.FK_ProdutosEstoques_ClientesPedidos" />
+        <AssociationConnector Association="TaylorModel.IdClientesPedido_ClientesPedidosParcelas_ClientesPedidos" />
+        <AssociationConnector Association="TaylorModel.IdClientesPedidos_NotaFiscalPedidos_ClientesPedidos" />
+        <AssociationConnector Association="TaylorModel.IdEmpresa_ClientesPedidos_Empresa" />
+        <AssociationConnector Association="TaylorModel.IdPedido_ClientesPedidosProdutos_ClientesPedidos" />
+        <AssociationConnector Association="TaylorModel.IdStatus_ClientesPedidos_Status" />
+        <AssociationConnector Association="TaylorModel.IdTransportadora_ClientesPedidos_Transportadoras" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesOrcamentosProdutos" Width="1.5" PointX="25.75" PointY="66" />
+        <AssociationConnector Association="TaylorModel.IdOrcamento_ClientesOrcamentosProdutos_ClientesOrcamentos" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosProdutos_ProdutosFornecedores" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesOrcamentosProdutos_ProdutosItens" />
+        <AssociationConnector Association="TaylorModel.FK_FornecedoresNotas_FinanceiroTipo" />
+        <EntityTypeShape EntityType="TaylorModel.ClientesContratos" Width="1.5" PointX="22" PointY="85.375" />
+        <AssociationConnector Association="TaylorModel.IdArea_ClientesContratos_Area" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesContratos_Clientes" />
+        <AssociationConnector Association="TaylorModel.FK_ClientesContratos_Empresas" />
+        <AssociationConnector Association="TaylorModel.IdClienteContrato_ClientesContratosParcelas_ClientesContratos" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

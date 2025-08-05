@@ -1,0 +1,458 @@
+﻿@{
+    ViewBag.Title = "Comercial \\ Notas \\ Gerenciar Notas de Serviços";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Taylor.Common;
+@using System.Linq;
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="nome" name="nome" value="">
+    <input type="hidden" id="idCarta" name="idCarta" value="">
+    <input type="hidden" id="idNfeCancelar" name="idNfeCancelar" value="">
+
+    <div id="modalVisualizarDANFE" class="modal fade bs-example-modal-xl" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+
+            <!-- Modal content-->
+            <form id="status-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Impressão da DANFE</label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div id="VisualizarDANFE"></div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalMensagemNF" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row" style="width: 100% !important;">
+                        <div class="col-md-10">
+                            <h4 class="modal-title"><label>Aviso</label></h4>
+                        </div>
+                        <div class="col-md-2" style="float: right !important;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalMensagemNFResposta"></h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalCancelar" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+
+             Modal content
+            <form id="cancelarnfe-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="row" style="width: 100% !important;">
+                            <div class="col-md-10">
+                                <h4 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Cancelamento de NFe </label></h4>
+                            </div>
+                            <div class="col-md-2" style="float: right !important;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Justificativa <span class="required">*</span></label>
+                                    <textarea id='Justificativa' name="Justificativa" rows=3 class="form-control" placeholder="Informe a justificativa"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonCancelarNotaServicos" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Cancelar NFe</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-secondary" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                    <div class="alert alert-success hidden" id="cancelarnfe-alert-success" style="margin: 0 15px 15px 15px !important;">
+                        <strong>SUCESSO:</strong> Cancelamento da nota fiscal realizado com sucesso.
+                    </div>
+                    <div class="alert alert-danger hidden" id="cancelarnfe-alert-error" style="margin: 0 15px 15px 15px !important;">
+                        <strong>ERRO:</strong> Algo deu errado ao cancelar a nota fiscal.
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- page content -->
+    <div role="main">
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <h2>Filtrar e Gerenciar Notas e Cupons Fiscais</h2>
+                                    <ul class="right panel_toolbox" style="list-style: none;">
+                                        <li>
+                                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                        </li>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content" style="padding-bottom: 0px !important;">
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div>
+                                                @using (Html.BeginForm("Gerenciar", "NotasServicos", FormMethod.Get, new { id = "NotasServicos-filtro-form" }))
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Nº Nota</label>
+                                                                <input type="text" class="form-control" name="FiltrarNumero" id="FiltrarNumero" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">CPF / CNPJ</label>
+                                                                <input type="text" class="form-control" name="FiltrarCPFCNPJ" id="FiltrarCPFCNPJ" data-mask-for-cpf-cnpj maxlength="14" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <label class="titlefield">Nome do Cliente</label>
+                                                                <input type="text" class="form-control" name="FiltrarCliente" id="FiltrarCliente" maxlength="100" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3">
+                                                            <div class="form-group" style="vertical-align: bottom !important; margin-bottom: 0px !important;">
+                                                                <button id="Filtrar" type="submit" class="btn btn-primary" style="margin-top: 29px !important;">Filtrar</button>
+                                                                &nbsp;
+                                                                <button id="Limpar" name="Limpar" type="button" class="btn btn-default" style="margin-top: 29px !important;" onclick="LimparFiltro();">Limpar</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        @{
+                            @grid.GetHtml(
+                                htmlAttributes: new { @id = "WebGrid" },
+                                tableStyle: "Grid",
+                                fillEmptyRows: false,
+                                alternatingRowStyle: "webgrid-alternating-row",
+                                rowStyle: "webgrid-row-style",
+                                selectedRowStyle: "webgrid-selected-row",
+                                footerStyle: "webgrid-footer",
+                                mode: WebGridPagerModes.All,
+                                firstText: "Primeiro",
+                                previousText: "Anterior",
+                                nextText: "Próximo",
+                                lastText: "Último",
+                                numericLinksCount: 5,
+                                columns: grid.Columns(
+                                    grid.Column(null, null, format: @<text><img src='~/Content/images/plus.png' title='Clique para Mostrar/Ocultar' /><div style='display: none;'></div></text>, style: "GridAccordion"),
+grid.Column("CpfCnpj", header: "CPF / CNPJ", format: (item) => new HtmlString(item.CpfCnpj != null ? (item.CpfCnpj.Length == 11 ? Taylor.Common.Util.FormatCPF(item.CpfCnpj) : Taylor.Common.Util.FormatCNPJ(item.CpfCnpj)) : string.Empty)),
+grid.Column("Nome", header: "Nome"),
+grid.Column("ClientesFones.Numero", header: "Telefone", format: (item) => new HtmlString(item.ClientesFones.Count > 0 ? Taylor.Site.Controllers.Utilities.SearchPhoneAddress(item.ID, "Telefone") : string.Empty)),
+grid.Column("Status", header: "Status", format: (item) => new HtmlString(Util.SetUpperCase(Sessao.Setting.Find(x => x.Name == "UpperCase").Value, (item.Status != null ? item.Status : "Inativo")))),
+grid.Column(format: (item) =>
+{
+    WebGrid childGrid = new WebGrid(source: item.NotasServicos, canSort: false, canPage: false);
+    List<WebGridColumn> cols = new List<WebGridColumn>();
+
+    if (item.NotasServicos.Count > 0)
+    {
+        cols.Add(childGrid.Column("NumeroNota", "Número do Nota", format: (source) => (source["NumeroNota"] != null ? Util.AddLeadingZeros(source["NumeroNota"], 10) : string.Empty)));
+        cols.Add(childGrid.Column("Data", "Data de Emissão", format: (source) => (source["Data"] != null ? string.Format("{0:dd/MM/yyyy}", source["Data"]) : string.Empty)));
+        cols.Add(childGrid.Column("ValorServico", "Total R$", format: (source) => (source["ValorServico"] != null ? string.Format("R$ {0:##,##0.00}", source["ValorServico"]) : "0,00")));
+        cols.Add(childGrid.Column("IdOrdemServico", "Número do Serviço", format: (source) => (source["IdOrdemServico"] != null ? Util.AddLeadingZeros(source["IdOrdemServico"], 10) : string.Empty)));
+        cols.Add(childGrid.Column(null, "Ações", format: (source) => (
+        source["IdStatus"] == 14 ?
+        @Html.Raw("Nota Fiscal Cancelada")
+        :
+        @Html.Raw("<a class='btn btn-warning btn-sm' onclick='EnviarNF(" + source["ID"] + ");'>Enviar</a>&nbsp;<a class='btn btn-dark btn-sm' onclick='ImprimirNF(" + source["ID"] + ");'>Imprimir</a>&nbsp;<a class='btn btn-dark btn-sm' data-toggle='modal' data-target='#modalCancelar' onclick='CancelarNotaServicos(" + source["Id"] + ");'>Cancelar </a>")
+        )));
+    }
+
+    return childGrid.GetHtml(htmlAttributes: new { @class = "ChildGrid" }, columns: cols);
+})
+//grid.Column(format: (item) =>
+//{
+//    WebGrid childGrid = new WebGrid(source: item.CupomFiscal, canSort: false, canPage: false);
+//    List<WebGridColumn> cols = new List<WebGridColumn>();
+
+//    if (item.CupomFiscal.Count > 0)
+//    {
+//        cols.Add(childGrid.Column("NumeroCupom", "Número do Cupom", format: (source) => (source["NumeroCupom"] != null ? Util.AddLeadingZeros(source["NumeroCupom"], 10) : string.Empty)));
+//        cols.Add(childGrid.Column("Data", "Data de Emissão", format: (source) => (source["Data"] != null ? string.Format("{0:dd/MM/yyyy}", source["Data"]) : string.Empty)));
+//        cols.Add(childGrid.Column("Valor", "Total R$", format: (source) => (source["Valor"] != null ? string.Format("R$ {0:##,##0.00}", source["Valor"]) : "0,00")));
+//        cols.Add(childGrid.Column("NumeroPedido", "Número do Pedido", format: (source) => (source["NumeroPedido"] != null ? Util.AddLeadingZeros(source["NumeroPedido"], 10) : string.Empty)));
+//        cols.Add(childGrid.Column(null, "Ações", format: (source) => (
+//        source["Impresso"] == false ?
+//        @Html.Raw("<a class='btn btn-warning btn-sm' onclick='EnviarCF(" + source["Id"] + ");'>Enviar</a>&nbsp;<a class='btn btn-dark btn-sm' onclick='ImprimirCF(" + source["Id"] + ");'>Imprimir</a>&nbsp;<a class='btn btn-dark btn-sm' onclick='CancelarCupomFiscal(" + source["Id"] + ");'>Cancelar Cupom</a>")
+//        :
+//        @Html.Raw("<a class='btn btn-warning btn-sm' onclick='EnviarCF(" + source["Id"] + ");'>Enviar</a>&nbsp;<a class='btn btn-dark btn-sm' onclick='ImprimirCF(" + source["Id"] + ");'>Imprimir </a>&nbsp;<a class='btn btn-dark btn-sm' onclick='CancelarCupomFiscal(" + source["Id"] + ");'>Cancelar Cupom</a>&nbsp;<a class='btn btn-dark btn-sm' data-toggle='modal' data-target='#modalReimprimirCupomFiscal' onclick='ReimprimirCF(" + source["Id"] + ", " + '"' + Util.AddLeadingZeros(source["NumeroCupom"], 10) + '"' + ");'>Reimprimir</a>")
+//        )));
+//    }
+
+//    return childGrid.GetHtml(htmlAttributes: new { @class = "ChildGrid" }, columns: cols);
+//})
+
+));
+
+                            int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
+                            int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
+
+                            var totalRecord = "Nenhuma linha encontrada";
+
+                            if (grid.TotalRowCount == 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linha";
+                            }
+                            else if (grid.TotalRowCount > 1)
+                            {
+                                totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + grid.TotalRowCount + " linhas";
+                            }
+
+                            <div class="right">@totalRecord</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- /page content -->
+    <!-- jQuery -->
+    <script src="~/Content/vendors/jquery/dist/jquery.js"></script>
+
+    <script>
+
+        var tr = $('#WebGrid').find('tr');
+        tr.removeClass('webgrid-selected-row');
+        tr.bind('click', function (event) {
+            tr.removeClass('webgrid-selected-row');
+            $(this).addClass('webgrid-selected-row');
+        });
+
+        $(document).on('keydown', '[data-mask-for-cpf-cnpj]', function (e) {
+            var digit = e.key.replace(/\D/g, '');
+            var value = $(this).val().replace(/\D/g, '');
+            var size = value.concat(digit).length;
+            $(this).mask((size <= 11) ? '000.000.000-00' : '00.000.000/0000-00');
+        });
+
+        $(function () {
+            //Loop through all Child Grids.
+            $("#WebGrid .ChildGrid").each(function () {
+                //Copy the Child Grid to DIV.
+                var childGrid = $(this).clone();
+                $(this).closest("TR").find("TD").eq(0).find("DIV").append(childGrid);
+
+                //Remove the Last Column from the Row.
+                $(this).parent().remove();
+            });
+
+            //Remove Last Column from Header Row.
+            $("#WebGrid TH:last-child").eq(0).remove();
+        });
+
+        //Assign Click event to Plus Image.
+        $("body").on("click", "img[src*='plus.png']", function () {
+            $(this).closest("tr").after("<tr><td colspan = '999'>" + $(this).next().html() + "</td></tr>");
+            $(this).attr("src", "/Content/images/minus.png");
+        });
+
+        //Assign Click event to Minus Image.
+        $("body").on("click", "img[src*='minus.png']", function () {
+            $(this).attr("src", "/Content/images/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+
+        $('#FiltrarNumero').val(@Html.Raw(Json.Encode(ViewBag.FiltrarNumero)));
+        $('#FiltrarCPFCNPJ').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCPFCNPJ)));
+        $('#FiltrarCliente').val(@Html.Raw(Json.Encode(ViewBag.FiltrarCliente)));
+
+        function EnviarNF(Id) {
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/NotasServicos/EnviarNFS"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalMensagemResposta').text('DANFE e XML enviados com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else {
+
+                    $('#modalMensagemResposta').text('Problemas ao enviar a DANFE e o XML!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function ImprimirNF(Id) {
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/NotasServicos/ImprimirNFS"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#VisualizarDANFE").html("<iframe width='100%' height='800px' src='data:application/pdf;base64, " + encodeURI(json.arquivo) + "'></iframe>");
+                    $("#modalVisualizarDANFE").modal("show");
+
+                }
+                else {
+
+                    $('#modalMensagemResposta').text('Problema ao abrir a DANFE!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+        function CancelarNotaServicos(IdNota) {
+
+            $('#modalLabelTitle').text('Cancelar Nota Fiscal');
+
+            $("#idNfeCancelar").val(IdNota);
+            $('#Justificativa').attr('disabled', false);
+            $('#TextoCorrecao').val('');
+            $('#buttonSalvar').attr('disabled', false);
+            $("#cancelarnfe-form").validate().resetForm();
+
+        }
+
+        $('#buttonCancelarNotaServicos').click(function (evt) {
+            var dados = new window.FormData();
+            dados.append("IdNota", $("#idNfeCancelar").val());
+            dados.append("Justificativa", $("#Justificativa").val());
+            var options = {};
+            options.url = "/NotasServicos/CancelarNotaServico"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+                    $("#modalMensagemNFResposta").html("<strong>Cancelado:</strong> Cancelamento efetuado com sucesso <br />");
+                    $('#modalMensagemNF').attr('data-backdrop', 'static');
+                    $('#modalMensagemNF').attr('data-keyboard', 'false');
+                    $('#modalMensagemNF').modal('show');
+                }
+                else {
+                    if (json.codigo == '88') {
+
+                        $("#modalMensagemNFResposta").html("<strong>ERRO:</strong> Ocorreu um erro ao cancelar a nota fiscal: <br />" + json.mensagem);
+                        $('#modalMensagemNF').attr('data-backdrop', 'static');
+                        $('#modalMensagemNF').attr('data-keyboard', 'false');
+                        $('#modalMensagemNF').modal('show');
+
+                    }
+                }
+
+                setTimeout(function () {
+                    $("#cancelarnfe-alert-success").addClass("hidden");
+                    $("#cancelarnfe-alert-error").addClass("hidden");
+                }, 5000);
+
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        });
+
+
+        function LimparFiltro() {
+
+            $('#FiltrarNumero').val("");
+            $('#FiltrarCPFCNPJ').val("");
+            $('#FiltrarCliente').val("");
+            $("#NotasServicos-filtro-form").submit();
+
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../NotasServicos/Gerenciar');
+        }
+
+    </script>
+</div>

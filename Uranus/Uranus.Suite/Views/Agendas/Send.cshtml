@@ -1,0 +1,180 @@
+﻿@{
+    ViewBag.Title = "Enviar Agendas por Período";
+}
+
+<!-- page content -->
+<div role="main">
+    <div class="row">
+        <div class="col-md-12">
+            <h4><b>Enviar Agendas por Período e Profissional</b></h4>
+            <hr />
+        </div>
+    </div>
+    <form id="agenda-enviar-form">
+        <div class="row" style="padding-left: 15px !important;">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="titlefield">Data Inicial</label>
+                    <div id="DataInicial" name="DataInicial" class="input-group date" style="margin: 0 !important;">
+                        <input id="DataInicialValor" name="DataInicialValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="titlefield">Data Final</label>
+                    <div id="DataFinal" name="DataFinal" class="input-group date" style="margin: 0 !important;">
+                        <input id="DataFinalValor" name="DataFinalValor" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="titlefield">Nome do Profissional</label><br />
+                    <select id="Profissional" name="Profissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <label class="titlefield">&nbsp;</label><br />
+                <button id="buttonEnviar" type="button" class="btn btn-primary" style="margin: 0;">Enviar</button>
+            </div>
+        </div>
+        <hr />
+        <div class="alert alert-success hidden" id="agenda-enviar-alert-success">
+            <strong>SUCESSO:</strong> Agendas enviadas com sucesso.
+        </div>
+        <div class="alert alert-danger hidden" id="agenda-enviar-alert-error">
+            <strong>ERRO:</strong> Algo deu errado ao enviar as Agendas.
+        </div>
+    </form>
+</div>
+<!-- /page content -->
+
+<!-- datepicker -->
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $("#DataInicial").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#DataFinal").datepicker({
+        language: 'pt-BR',
+        autoclose: true,
+        todayHighlight: true,
+        orientation: "bottom",
+        clearBtn: true
+    });
+
+    $("#Profissional").select2({
+        placeholder: "Selecione um Profissional",
+        allowClear: true,
+        tags: true
+    });
+
+    CarregarProfissionais("");
+
+    function CarregarProfissionais(Data) {
+
+        var dados = new window.FormData();
+        dados.append("Data", Data);
+
+        var options = {};
+        options.url = "/Profissionais/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.profissionais;
+
+                $('#Profissional').html("");
+                var select = $('#Profissional');
+                select.append(
+                    $('<option selected disabled></option>').val("").html("Selecione um Profissional")
+                );
+
+                for (i = 0; i < rows.length; i++) {
+                    select.append(
+                        $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                    );
+                }
+
+            }
+        };
+        $.ajax(options);
+    }
+
+    $('#buttonEnviar').click(function (evt) {
+
+        $("#agenda-enviar-form").validate();
+
+        if ($('#agenda-enviar-form').valid()) {
+
+            var dados = new window.FormData();
+            dados.append("DataInicial", $("#DataInicialValor").val());
+            dados.append("DataFinal", $("#DataFinalValor").val());
+            dados.append("IdProfissional", $("#Profissional").val());
+
+            var options = {};
+            options.url = "/Agendas/EnviarPeriodo"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $("#agenda-enviar-alert-success").removeClass("hidden");
+                    $("#agenda-enviar-alert-error").addClass("hidden");
+
+                }
+                else {
+
+                    $("#agenda-enviar-alert-success").addClass("hidden");
+                    $("#agenda-enviar-alert-error").removeClass("hidden");
+                    $("#agenda-enviar-alert-error").html("<strong>ERRO:</strong> " + json.motivo);
+
+                }
+
+                setTimeout(function () {
+                    $("#agenda-enviar-alert-success").addClass("hidden");
+                    $("#agenda-enviar-alert-error").addClass("hidden");
+                    $("#agenda-enviar-alert-error").html("<strong>ERRO:</strong> Algo deu errado ao enviar as Agendas.");
+                }, 9000);
+
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+        }
+        else {
+            return false;
+        }
+
+    });
+
+</script>

@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using ReportViewerForMvc;
+
+<!-- page content -->
+<div role="main">
+    <div class="">
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div>
+                    @{ WebGrid grid = new WebGrid(Model); }
+
+                    @using (Html.BeginForm("Index", "RelatorioAgendasNaoCompareceu", FormMethod.Get, null))
+                    {
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="x_panel">
+                                    <div class="x_title">
+                                        <h2>Filtrar Relatório de Agendas - Ausentes </h2>
+                                        <ul class="right panel_toolbox" style="list-style: none;">
+                                            <li>
+                                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                            </li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">
+
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Inicio</label>
+                                                    <div id="FiltrarDataInicio1" name="FiltrarDataInicio1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataInicio" name="FiltrarDataInicio" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataInicio" data-msg-required="Por favor, insira a data inicio." data-rule-required="true" readonly />
+                                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Data Fim</label>
+                                                    <div id="FiltrarDataFim1" name="FiltrarDataFim1" class="input-group date" style="margin: 0 !important;">
+                                                        <input id="FiltrarDataFim" name="FiltrarDataFim" class="form-control placeholder" type="text" style="height: 40px !important;" value="@ViewBag.FiltrarDataFim" data-msg-required="Por favor, insira a data fim." data-rule-required="true" readonly />
+                                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group" style="vertical-align: bottom !important;">
+                                                    <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                    &nbsp;
+                                                    <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#FiltrarSedes').val('');">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Sedes</label>
+                                                    <select id="FiltrarSedes" name="FiltrarSedes" class="form-control" multiple="multiple"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            @*@Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer, new { frameborder = "0", width = "500", height = "5000", style = "overflow:hidden;", scrolling = "no" })*@
+                            @Html.ReportViewer(ViewBag.ReportViewer as Microsoft.Reporting.WebForms.ReportViewer)
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<!-- /page content -->
+<!-- datepicker -->
+<script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+<!-- select2 -->
+<script src="~/Scripts/select/select2.full.js"></script>
+
+<script>
+
+    $(window).load(function () {
+
+        $("#FiltrarSedes").select2({
+            placeholder: "Selecione uma ou mais Sedes",
+            allowClear: true,
+            tags: true,
+            maximumSelectionLength: 100
+        });
+
+        $("#FiltrarDataInicio1").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#FiltrarDataFim1").datepicker({
+            format: 'dd/mm/yyyy',
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+    });
+
+    CarregarSedes("");
+
+    function CarregarSedes(Data) {
+
+        var dados = new window.FormData();
+        dados.append("Data", Data);
+
+        var options = {};
+        options.url = "/Sedes/Listar"
+        options.type = "POST";
+        options.data = dados;
+        options.asyn = true;
+        options.contentType = false;
+        options.processData = false;
+        options.dataType = "application/json; charset=utf-8";
+        options.complete = function (data) {
+
+            var json = $.parseJSON(data.responseText);
+
+            if (json.codigo == '00') {
+
+                var rows = json.sedes;
+                $('#FiltrarSedes').html("");
+                var select = $('#FiltrarSedes');
+                for (index = 0; index < rows.length; index++) {
+                    select.append(
+                        $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                    );
+                }
+
+                $('#FiltrarSedes').val(@Html.Raw(Json.Encode(ViewBag.FiltrarSedes)));
+                $('#FiltrarSedes').trigger('change');
+
+            }
+        };
+        $.ajax(options);
+    }
+
+</script>

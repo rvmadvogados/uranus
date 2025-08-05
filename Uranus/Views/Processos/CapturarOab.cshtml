@@ -1,0 +1,992 @@
+﻿@{
+    ViewBag.Title = "Processos \\ Tratamento de Prazos \\ OAB";
+}
+
+<div class="main_container">
+
+    <input type="hidden" id="id" name="id" value="">
+    <input type="hidden" id="idProcessAction" name="idProcessAction" value="">
+    <input type="hidden" id="eventoDescricaoOriginal" name="eventoDescricaoOriginal" value="">
+    <input type="hidden" id="numeroProcesso" name="numeroProcesso" value="">
+
+    <style>
+
+        div.upload {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: inline-block;
+            height: 38px;
+            padding: 3px 40px 3px 3px;
+            position: relative;
+            width: 100% !important;
+        }
+
+            div.upload:hover {
+                opacity: 0.95;
+            }
+
+            div.upload input[type="file"] {
+                display: input-block;
+                width: 100%;
+                height: 30px;
+                opacity: 0;
+                cursor: pointer;
+                position: absolute;
+                left: 0;
+            }
+
+        .uploadButton {
+            background-color: #333333;
+            border: none;
+            color: #FFF;
+            cursor: pointer;
+            display: inline-block;
+            height: 30px;
+            margin-right: 15px;
+            width: auto;
+            padding: 0 20px;
+            box-sizing: content-box;
+        }
+
+            .uploadButton:hover {
+                background-color: #3D3D3D;
+            }
+
+        .fileName {
+            font-family: Arial;
+            font-size: 14px;
+        }
+
+        .upload + .uploadButton {
+            height: 40px;
+        }
+    </style>
+
+    <div id="modalNovoAlerta" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="alerta-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Novo Alerta</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Mensagem de Alerta <span class="red">(Limite de 150 caracteres)</span><span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe uma Mensagem de Alerta" id="Mensagem" name="Mensagem" data-msg-required="Por favor, insira uma Mensagem de Alerta." data-rule-required="true"  maxlength="50"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonInserirAlerta" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalVisualizarAlerta" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="alerta-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button id="buttonClosedAlerta" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Visualizar Alertas</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div id="alertas"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvarAlerta" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalNovoOab" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <form id="oab-form">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                        <h3 class="modal-title"><label id="modalLabelTitle" name="modalLabelTitle">Capturar OAB</label></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="titlefield">Número do Processo <span class="required">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Informe o Número do Processo" id="OabNumeroProcesso" name="OabNumeroProcesso" style="height: 40px !important;" data-msg-required="Por favor, insira o Número do Processo." data-rule-required="true" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="titlefield">Evento <span class="required">*</span></label>
+                                    <select id="OabEvento" name="OabEvento" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="OabEventoValidate" name="OabEventoValidate" for="OabEvento" class="error hidden"> Por favor, selecione um Evento.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Profissional</label>
+                                    <select id="OabProfissional" name="OabProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                    <label id="OabProfissionalValidate" name="OabProfissionalValidate" for="OabProfissional" class="error hidden"> Por favor, selecione um Profissional.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data 1º Prazo</label>
+                                    <div id="OabDataPrazoEvento1" name="OabDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
+                                        <input id="OabPrazoEvento1" name="OabPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                    <label id="OabDataPrazoEvento1Validate" name="OabDataPrazoEvento1Validate" for="OabDataPrazoEvento1" class="error hidden">Por favor, informe o primeiro prazo.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="titlefield">Data 2º Prazo</label>
+                                    <div id="OabDataPrazoEvento2" name="OabDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
+                                        <input id="OabPrazoEvento2" name="OabPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
+                                        <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                    <label id="OabDataPrazoEvento2Validate" name="OabDataPrazoEvento2Validate" for="OabDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">PDF <label class="titlefieldcomment"> <span class="red">(tamanho máximo de 10MB por arquivo)</label></label>
+                                    <div class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#OabFileUpload1').click();" />
+                                        <input type="file" id="OabFileUpload1" name="EProcUpload1" accept="application/pdf" value="10485760" />
+                                        <span id="OabUploadName1" name="OabUploadName1" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                    <label id="OabFileUpload1Validate" name="OabFileUpload1Validate" for="OabFileUpload1" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                    <br />
+                                    <div class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#OabFileUpload2').click();" />
+                                        <input type="file" id="OabFileUpload2" name="EProcUpload2" accept="application/pdf" value="10485760" />
+                                        <span id="OabUploadName2" name="OabUploadName2" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                    <label id="OabFileUpload2Validate" name="OabFileUpload2Validate" for="OabFileUpload2" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                    <br />
+                                    <div class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#OabFileUpload3').click();" />
+                                        <input type="file" id="OabFileUpload3" name="EProcUpload3" accept="application/pdf" value="10485760" />
+                                        <span id="OabUploadName3" name="OabUploadName3" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                    <label id="OabFileUpload3Validate" name="OabFileUpload3Validate" for="OabFileUpload3" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                    <br />
+                                    <div class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#OabFileUpload4').click();" />
+                                        <input type="file" id="OabFileUpload4" name="EProcUpload4" accept="application/pdf" value="10485760" />
+                                        <span id="OabUploadName4" name="OabUploadName4" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                    <label id="OabFileUpload4Validate" name="OabFileUpload4Validate" for="OabFileUpload4" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                    <br />
+                                    <div class="upload">
+                                        <input type="button" class="uploadButton" value="Selecione o arquivo" onclick="$('#OabFileUpload5').click();" />
+                                        <input type="file" id="OabFileUpload5" name="EProcUpload5" accept="application/pdf" value="10485760" />
+                                        <span id="OabUploadName5" name="OabUploadName5" class="fileName">Nenhum arquivo selecionado</span>
+                                    </div>
+                                    <label id="OabFileUpload5Validate" name="OabFileUpload5Validate" for="OabFileUpload5" class="error hidden">Por favor, informe um arquivo com até 10MB.</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="titlefield">Descrição <label class="titlefieldcomment"> <span class="red">(tamanho máximo do texto de 1MB)</label></label>
+                                    <textarea id="OabDescricao" name="OabDescricao" class="form-control placeholder" placeholder="Informe aqui a Descrição"></textarea>
+                                    <label id="OabDescricaoValidate" name="OabDescricaoValidate" for="OabDescricao" class="error hidden">Por favor, informe uma descrição com até 1MB.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="buttonSalvarOab" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
+                        &nbsp;
+                        <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div id="modalExcluir" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Prazo</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir esse Praqzo?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalExcluirTodos" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Todos os Tratamentos de Prazos</h3>
+                </div>
+                <div class="modal-body">
+                    <h4>Você deseja realmente excluir todos os Tratamentos de Prazos?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirTodosConfirmado();">Sim</button>
+                    &nbsp;
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div>
+                @{ WebGrid gridOab = new WebGrid(Model); }
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>Filtrar Eventos do Processo</h2>
+                                <ul class="right panel_toolbox" style="list-style: none;">
+                                    <li>
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <div class="form-group">
+                                            @{
+                                                if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                {
+                                                    <label class="titlefield">&nbsp;</label><br />
+                                                    <a class="btn btn-danger" data-toggle="modal" data-target="#modalExcluirTodos">Excluir Todos</a>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    @using (Html.BeginForm("CapturarOab", "Processos", FormMethod.Get, new { id = "capturar-filtro-form" }))
+                                    {
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label class="titlefield">Procura na Coluna Número do Processo</label>
+                                                <input id="search" name="search" type="search" class="form-control" placeholder="Informe o Número do Processo" value="@ViewBag.search" style="border: 1px solid #CCCCCC !important;" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group" style="vertical-align: bottom !important;">
+                                                <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
+                                                &nbsp;
+                                                <button type="submit" class="btn btn-default" style="margin-top: 25px !important;" onclick="$('#search').val('');">Limpar</button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    @{
+                        @gridOab.GetHtml(
+                        tableStyle: "webgrid",
+                        fillEmptyRows: false,
+                        headerStyle: "webgrid-header",
+                        alternatingRowStyle: "webgrid-alternating-row",
+                        rowStyle: "webgrid-row-style",
+                        selectedRowStyle: "webgrid-selected-row",
+                        footerStyle: "webgrid-footer",
+                        mode: WebGridPagerModes.All,
+                        firstText: "Primeiro",
+                        previousText: "Anterior",
+                        nextText: "Próximo",
+                        lastText: "Último",
+                        numericLinksCount: 5,
+                        columns: new[] {
+                        gridOab.Column("PublicationDate", header: "Data"),
+                        gridOab.Column("ProcessNumber", header: "Número Processo"),
+                        gridOab.Column("Client", header: "Cliente"),
+                        gridOab.Column("County", header: "Comarca"),
+                        gridOab.Column("Stick", header: "Juízo"),
+                        gridOab.Column("Id", header: "Ações", canSort:false,
+                        format:
+            @<text>
+                @{
+                                                    if (item.HasProcess)
+                                                    {
+                    @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalNovoOab' onclick='CarregarOab(" + item.Id + ", " + item.IdProcessAction + ");'>Capturar</a>")
+                    @*@Html.Raw("<a class='btn btn-info btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalNovoAlerta' onclick='NovoAlerta(" + item.Id + ");'>Alertar</a>")*@
+                    @Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.Id + ", " + '"' + item.ProcessNumber + '"' + ");'>Excluir</a>")
+                                                    }
+                                                    else
+                                                    {
+                    @Html.Raw("Processo não cadastrado&nbsp;&nbsp;&nbsp;&nbsp;");
+                    @*@Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.Id + ", " + '"' + item.ProcessNumber + '"' + ");'>Excluir</a>")*@
+                                                    }
+                }
+            </text>)
+});
+
+                        int firstRecord = (gridOab.PageIndex * gridOab.RowsPerPage) + 1;
+                        int lastRecord = (gridOab.PageIndex * gridOab.RowsPerPage) + gridOab.Rows.Count();
+
+                        var totalRecord = "Nenhuma linha encontrada";
+
+                        if (gridOab.TotalRowCount == 1)
+                        {
+                            totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + gridOab.TotalRowCount + " linha";
+                        }
+                        else if (gridOab.TotalRowCount > 1)
+                        {
+                            totalRecord = "Mostrando " + firstRecord + " a " + lastRecord + " de " + gridOab.TotalRowCount + " linhas";
+                        }
+
+                        <div class="right">@totalRecord</div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
+
+    <!-- select2 -->
+    <script src="~/Scripts/select/select2.full.js"></script>
+
+    <script>
+
+        $('input[type=file]').change(function (e) {
+            $in = $(this);
+            $in.next().html($in.val());
+
+        });
+
+        $("#OabEvento").select2({
+            placeholder: "Selecione um Evento",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#OabProfissional").select2({
+            placeholder: "&nbsp;",
+            allowClear: true,
+            tags: true
+        });
+
+        $("#OabDataPrazoEvento1").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        $("#OabDataPrazoEvento2").datepicker({
+            language: 'pt-BR',
+            autoclose: true,
+            todayHighlight: true,
+            orientation: "bottom",
+            daysOfWeekDisabled: [0, 6],
+            clearBtn: true,
+            datesDisabled: [@Html.Raw(Uranus.Suite.Controllers.FeriadosController.Desabilitar())]
+        });
+
+        CKEDITOR.replace('OabDescricao', {
+            language: 'pt',
+            height: 200
+        });
+
+        $(document.body).on("change", "#OabEvento", function () {
+
+            var dados = new window.FormData();
+            dados.append("Id", this.value);
+
+            var options = {};
+            options.url = "/Eventos/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    if (json.evento[0]?.Texto != null) {
+
+                        var texto = $('#eventoDescricaoOriginal').val() + "<br><br>" + json.evento[0].Texto.replace(/\n/g, "<br>");
+
+                        CKEDITOR.instances["OabDescricao"].setData(unescape(texto));
+
+                    }
+                    else {
+
+                        CKEDITOR.instances["OabDescricao"].setData(unescape($('#eventoDescricaoOriginal').val()));
+
+                    }
+
+                }
+            };
+            $.ajax(options);
+
+        });
+
+        CarregarEventosOab();
+        CarregarProfissionaisOab("");
+
+        function CarregarEventosOab() {
+            var options = {};
+            options.url = "/Eventos/Listar"
+            options.type = "POST";
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.eventos;
+
+                    $('#OabEvento').html("");
+                    var select = $('#OabEvento');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("Selecione um Evento")
+                    );
+
+                    for (i = 0; i < rows.length; i++) {
+                        select.append(
+                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarProfissionaisOab(Data) {
+
+            var dados = new window.FormData();
+            dados.append("Data", Data);
+
+            var options = {};
+            options.url = "/Profissionais/Listar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    var rows = json.profissionais;
+                    $('#OabProfissional').html("");
+                    var select = $('#OabProfissional');
+                    select.append(
+                        $('<option selected disabled></option>').val("").html("&nbsp;")
+                    );
+
+                    for (index = 0; index < rows.length; index++) {
+                        select.append(
+                            $('<option></option>').val(rows[index].Id).html(rows[index].Nome)
+                        );
+                    }
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        function CarregarOab(Id, IdProcessAction) {
+
+            $("#oab-form").validate().resetForm();
+
+            $('#OabEvento').val('');
+            $('#OabEvento').trigger('change');
+
+            $('#OabProfissional').val('');
+            $('#OabProfissional').trigger('change');
+
+            $('.fileName').text('Nenhum arquivo selecionado');
+            $('#OabNumeroProcesso').val('');
+            $('#OabPrazoEvento1').val('');
+            $('#OabPrazoEvento2').val('');
+
+            $("#OabFileUpload1").val("");
+            $("#OabUploadName1").text("Nenhum arquivo selecionado");
+            $("#OabFileUpload2").val("");
+            $("#OabUploadName2").text("Nenhum arquivo selecionado");
+            $("#OabFileUpload3").val("");
+            $("#OabUploadName3").text("Nenhum arquivo selecionado");
+            $("#OabFileUpload4").val("");
+            $("#OabUploadName4").text("Nenhum arquivo selecionado");
+            $("#OabFileUpload5").val("");
+            $("#OabUploadName5").text("Nenhum arquivo selecionado");
+
+            CKEDITOR.instances["OabDescricao"].setData("");
+
+            var dados = new window.FormData();
+            dados.append("Id", Id);
+
+            var options = {};
+            options.url = "/Processos/ConsultarOab"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#id').val(Id);
+                    $('#idProcessAction').val(IdProcessAction);
+
+                    $('#OabNumeroProcesso').val(json.processo[0].numeroProcesso);
+
+
+                    CKEDITOR.instances["OabDescricao"].setData(unescape(json.processo[0].Descricao));
+                    $('#eventoDescricaoOriginal').val(json.processo[0].Descricao);
+
+                }
+            };
+            $.ajax(options);
+        }
+
+        $('#buttonSalvarOab').click(function (evt) {
+
+            var validate = true;
+
+            if ($('#OabEvento').val() == null || !$.isNumeric($('#OabEvento').val())) {
+                $('#OabEventoValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#OabEventoValidate').addClass('hidden');
+            }
+
+            if ($('#OabPrazoEvento1').val() != "" || $('#OabPrazoEvento2').val() != "") {
+
+                var date1 = toDate($('#OabPrazoEvento1').val());
+                var date2 = toDate($('#OabPrazoEvento2').val());
+                var days = (date2 - date1) / (1000 * 60 * 60 * 24);
+
+                if (days < 0) {
+
+                    $('#OabDataPrazoEvento2Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+
+                }
+
+            } else {
+                $('#OabDataPrazoEvento2Validate').addClass('hidden');
+            }
+
+            if (typeof document.getElementById("OabFileUpload1").files[0] !== "undefined") {
+                if (document.getElementById("OabFileUpload1").files[0].size > 10485760) {
+                    $("#OabFileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("OabFileUpload1").files[0].size, 1) + ".");
+                    $("#OabFileUpload1Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#OabFileUpload1Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("OabFileUpload2").files[0] !== "undefined") {
+                if (document.getElementById("OabFileUpload2").files[0].size > 10485760) {
+                    $("#OabFileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("OabFileUpload2").files[0].size, 1) + ".");
+                    $("#OabFileUpload2Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#OabFileUpload2Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("OabFileUpload3").files[0] !== "undefined") {
+                if (document.getElementById("OabFileUpload3").files[0].size > 10485760) {
+                    $("#OabFileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("OabFileUpload3").files[0].size, 1) + ".");
+                    $("#OabFileUpload3Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#OabFileUpload3Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("OabFileUpload4").files[0] !== "undefined") {
+                if (document.getElementById("OabFileUpload4").files[0].size > 10485760) {
+                    $("#OabFileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("OabFileUpload4").files[0].size, 1) + ".");
+                    $("#OabFileUpload4Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#OabFileUpload4Validate').addClass('hidden');
+                }
+            }
+
+            if (typeof document.getElementById("OabFileUpload5").files[0] !== "undefined") {
+                if (document.getElementById("OabFileUpload5").files[0].size > 10485760) {
+                    $("#OabFileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("OabFileUpload5").files[0].size, 1) + ".");
+                    $("#OabFileUpload5Validate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#OabFileUpload5Validate').addClass('hidden');
+                }
+            }
+
+            //TextEncoder
+            if (escape(CKEDITOR.instances.OabDescricao.getData()).length > 0) {
+
+                var size = new TextEncoder().encode(escape(CKEDITOR.instances.OabDescricao.getData())).length;
+
+                if (size > 1048576) {
+                    $("OabDescricaoValidate").text("Por favor, informar uma descrição com até 1MB, pois esse possuí " + formatBytes(size, 1) + ".");
+                    $("#OabDescricaoValidate").removeClass("hidden").css("display", "");
+                    validate = false;
+                }
+                else {
+                    $('#OabDescricaoValidate').addClass('hidden');
+                }
+
+            }
+            if (validate) {
+
+                var descricao = escape(CKEDITOR.instances.OabDescricao.getData());
+                var profissional = ($("#OabProfissional").val() != null && $("#OabProfissional").val() > 0 ? $("#OabProfissional").val() : 0);
+
+                var dados = new window.FormData();
+                dados.append("Id", 0);
+                dados.append("IdProcessosEventoPendente", $("#id").val());
+                dados.append("Origem", "OAB");
+                dados.append("IdProcessosAcao", $("#idProcessAction").val());
+                dados.append("IdProcessosEvento", $("#OabEvento").val());
+                dados.append("IdProfissional", profissional);
+                dados.append("Prazo1", $("#OabPrazoEvento1").val());
+                dados.append("Prazo2", $("#OabPrazoEvento2").val());
+                dados.append("Descricao", descricao);
+
+                var arquivo1 = document.getElementById("OabFileUpload1").files[0];
+                dados.append("Arquivo1", arquivo1);
+
+                var arquivo2 = document.getElementById("OabFileUpload2").files[0];
+                dados.append("Arquivo2", arquivo2);
+
+                var arquivo3 = document.getElementById("OabFileUpload3").files[0];
+                dados.append("Arquivo3", arquivo3);
+
+                var arquivo4 = document.getElementById("OabFileUpload4").files[0];
+                dados.append("Arquivo4", arquivo4);
+
+                var arquivo5 = document.getElementById("OabFileUpload5").files[0];
+                dados.append("Arquivo5", arquivo5);
+
+                dados.append("IdAgendaProfissional", 0);
+                dados.append("Excluido", false);
+
+                var options = {};
+                options.url = "/Processos/SalvarProcessosEventos"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.response == "success") {
+
+                        $('h4').text('Captura de evento realizada com sucesso!');
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                        $("#oab-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+
+            }
+            else {
+
+                return false;
+
+            }
+
+        });
+
+        function Excluir(Id, Nome) {
+            $('h4').text('Você deseja realmente excluir esse Prazo para esse Número de Processo (' + Nome + ')?');
+            $('#id').val(Id);
+            $('#nome').val(Nome);
+        }
+
+        function ExcluirConfirmado() {
+            var dados = new window.FormData();
+            dados.append("Id", $("#id").val());
+
+            $('#id').val('');
+
+            var options = {};
+            options.url = "/Processos/ExcluirOab"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('h4').text('Prazo excluído com sucesso!');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+                    $("#capturar-filtro-form").validate().resetForm();
+
+                }
+                else if (json.codigo == '98') {
+
+                    $('h4').text('Não foi possível excluir o Prazo (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+                else if (json.codigo == '99') {
+
+                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Prazo (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
+                    $('#modalMensagem').attr('data-backdrop', 'static');
+                    $('#modalMensagem').attr('data-keyboard', 'false');
+                    $('#modalMensagem').modal('show');
+
+                }
+
+            };
+            $.ajax(options);
+        }
+
+        function Atualizar() {
+            $(location).attr('href', '../Processos/CapturarOab');
+        }
+
+        function NovoAlerta(NumeroProcesso) {
+            $("#alerta-form").validate().resetForm();
+            $('#numeroProcesso').val(NumeroProcesso);
+            $("#Mensaqgem").val("");
+        }
+
+        function VisualizarAlerta(NumeroProcesso) {
+
+            var dados = new window.FormData();
+            dados.append("NumeroProcesso", NumeroProcesso);
+            dados.append("IdAcao", 0);
+
+            var options = {};
+            options.url = "/Alertas/Consultar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00' && json.alertas.length > 0) {
+
+                    $('#modalNovoWebJur').modal('hide');
+
+                    $('#alertas').html(json.alertas);
+
+                    $('#modalVisualizarAlerta').attr('data-backdrop', 'static');
+                    $('#modalVisualizarAlerta').attr('data-keyboard', 'false');
+                    $('#modalVisualizarAlerta').modal('show');
+
+                }
+            };
+            $.ajax(options);
+
+        }
+
+        $('#buttonInserirAlerta').click(function (evt) {
+
+            $("#alerta-form").validate();
+
+            if ($('#alerta-form').valid()) {
+
+                var dados = new window.FormData();
+                dados.append("NumeroProcesso", $("#numeroProcesso").val());
+                dados.append("IdAcao", 0);
+                dados.append("Mensagem", $("#Mensagem").val());
+
+                var options = {};
+                options.url = "/Alertas/Inserir"
+                options.type = "POST";
+                options.data = dados;
+                options.asyn = true;
+                options.contentType = false;
+                options.processData = false;
+                options.dataType = "application/json; charset=utf-8";
+                options.complete = function (data) {
+
+                    var json = $.parseJSON(data.responseText);
+
+                    if (json.codigo == '00') {
+
+                        //$('h4').text('Alerta salvo com sucesso!');
+                        //$('#modalMensagem').attr('data-backdrop', 'static');
+                        //$('#modalMensagem').attr('data-keyboard', 'false');
+                        //$('#modalMensagem').modal('show');
+                        $("#alerta-form").validate().resetForm();
+
+                    }
+                };
+                $.ajax(options);
+
+                evt.preventDefault();
+            }
+            else {
+                return false;
+            }
+
+        });
+
+        $('#buttonSalvarAlerta').click(function (evt) {
+
+            var searchIDs = $('input:checked').map(function () {
+                return $(this).val();
+            });
+
+            var dados = new window.FormData();
+            dados.append("IdAlertas", searchIDs.get());
+
+            var options = {};
+            options.url = "/Alertas/Salvar"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    $('#modalNovoWebJur').modal('show');
+
+                }
+            };
+            $.ajax(options);
+
+            evt.preventDefault();
+
+        });
+
+        $('#buttonClosedAlerta').click(function (evt) {
+
+            $('#modalNovoWebJur').modal('show');
+
+        });
+
+        function ExcluirTodosConfirmado() {
+
+            var dados = new window.FormData();
+            dados.append("Origem", "OAB");
+
+            var options = {};
+            options.url = "/Processos/ExcluirTodos"
+            options.type = "POST";
+            options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+            options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+
+                var json = $.parseJSON(data.responseText);
+
+                if (json.codigo == '00') {
+
+                    Atualizar();
+
+                }
+
+            };
+            $.ajax(options);
+
+        }
+
+    </script>
+</div>
