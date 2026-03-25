@@ -10,10 +10,11 @@ using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
 using System.Configuration;
-
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("GerarIniciais")]
     public class IniciaisController : Controller
     {
         public ActionResult Index(string FiltrarDataValor = "", string FiltrarCliente = "")

@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+   // [RequireMenu("AgendaDeCompromissos")]
     public class AgendasController : Controller
     {
         // GET: Agenda
@@ -24,6 +26,7 @@ namespace Uranus.Suite.Controllers
             }
         }
 
+        [RequireSubmenu("AgendasOperacoes:EnviarAgendasPorPeriodo")]
         public ActionResult Send()
         {
             if (Sessao.Usuario == null)
@@ -36,6 +39,7 @@ namespace Uranus.Suite.Controllers
             }
         }
 
+        [RequireSubmenu("AgendasOperacoes:AgendasPorPeriodo")]
         public ActionResult Period()
         {
             if (Sessao.Usuario == null)
@@ -319,8 +323,10 @@ namespace Uranus.Suite.Controllers
         public JsonResult Excluir(Int32 Id)
         {
             Agendas agenda = AgendasBo.Consultar(Id);
-
-            if (Sessao.Usuario.Nivel == 5 || agenda.NomeUsuarioCadastro == null || agenda.NomeUsuarioCadastro == Sessao.Usuario.Nome)
+            var claim = Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "AgendaPodeExcluirOutros");
+            
+            //if (Sessao.Usuario.Nivel == 5 || agenda.NomeUsuarioCadastro == null || agenda.NomeUsuarioCadastro == Sessao.Usuario.Nome)
+            if (claim != null || agenda.NomeUsuarioCadastro == null || agenda.NomeUsuarioCadastro == Sessao.Usuario.Nome)
             {
 
                 #region Auditoria
@@ -415,98 +421,9 @@ namespace Uranus.Suite.Controllers
 
             return $"[{sb}]";
         }
-        //[HttpPost]
-        //public string Eventos(Int32? IdSede, Int32? IdProfissional, Int32? IdCliente, Int32? IdTipo, DateTime? DataInicial, DateTime? DataFinal)
-        //{
-        //    string result = string.Empty;
-
-        //    var model = AgendasBo.Listar(DataInicial, DataFinal);
-
-        //    //if (Sessao.Usuario.Nivel == 1 || Sessao.Usuario.Nivel == 0)
-        //    //{
-        //    //    model = model.Where(d => d.IdUsuario == Sessao.Usuario.ID || d.Profissionais.IdUsuario == Sessao.Usuario.ID).ToList();
-        //    //}
-        //    //else if (Sessao.Usuario.Nivel > 1)
-        //    //{
-        //    if (IdSede != null && IdSede > 0)
-        //    {
-        //        model = model.Where(d => d.IdSede == IdSede).ToList();
-        //    }
-
-        //    if (IdProfissional != null && IdProfissional > 0)
-        //    {
-        //        model = model.Where(d => d.IdProfissional == IdProfissional).ToList();
-        //    }
-
-        //    if (IdCliente != null && IdCliente > 0)
-        //    {
-        //        model = model.Where(d => d.IdCliente == IdCliente).ToList();
-        //    }
-
-        //    if (IdTipo != null && IdTipo > 0)
-        //    {
-        //        model = model.Where(d => d.IdTipo == IdTipo).ToList();
-        //    }
-        //    //}
-
-        //    Int32 index = 0;
-
-        //    foreach (var item in model)
-        //    {
-        //        if (!string.IsNullOrEmpty(result))
-        //        {
-        //            result = result + ", ";
-        //        }
-        //        index++;
-        //        if (index == 2015)
-        //        {
-        //            var xxx = string.Empty;
-        //        }
-        //        if (item.Id == 32392)
-        //        {
-        //            var xxx = string.Empty;
-        //        }
-
-        //        result = result + "{ \"id\": " + item.Id + ", \"title\": \"" + string.Format("{0}{1} - {2} - {3}{4}", item.Profissionais.Pessoas.Nome, (item.Clientes != null ? string.Format(" - {0}", item.Clientes.Pessoas.Nome) : string.Empty), item.AgendasTipos.Nome, item.Sedes.Nome, (item.Salas != null ? string.Format(" - {0}", item.Salas.Nome) : string.Empty)) + "\"";
-
-        //        if (string.IsNullOrEmpty(item.Hora))
-        //        {
-        //            result = result + ", \"start\": \"" + item.Data.ToString("yyyy-MM-dd") + "\"";
-        //        }
-        //        else
-        //        {
-        //            var started = DateTime.Parse(string.Format("{0} {1}", item.Data.ToString("yyyy-MM-dd"), item.Hora));
-        //            var ended = started.AddHours(1);
-        //            if (item.Encaixe == "S")
-        //            {
-        //                ended = started.AddMinutes(15);
-        //            }
-
-        //            result = result + ", \"start\": \"" + started.ToString("yyyy-MM-ddTHH:mm:00") + "\", \"end\": \"" + ended.ToString("yyyy-MM-ddTHH:mm:00") + "\"";
-        //        }
-
-        //        if (Sessao.Usuario.ID == item.IdUsuario && item.IdCliente != null && item.IdCliente > 0)
-        //        {
-        //            result = result + ", \"color\": \"#F2D7D5\" }";
-        //        }
-        //        else if (Sessao.Usuario.ID == item.IdUsuario && item.IdCliente == null)
-        //        {
-        //            result = result + ", \"color\": \"#D5F5E3\" }";
-        //        }
-        //        else if (Sessao.Usuario.ID != item.IdUsuario && item.IdCliente == null)
-        //        {
-        //            result = result + ", \"color\": \"#D6EAF8\" }";
-        //        }
-        //        else
-        //        {
-        //            result = result + ", \"color\": \"#E1DCE6\" }";
-        //        }
-        //    }
-
-        //    return string.Format("[{0}]", result);
-        //}
 
         [HttpPost]
+        [RequireSubmenu("AgendasOperacoes:EnviarAgendasPorPeriodo")]
         public JsonResult EnviarSemanal()
         {
             var codigo = "00";
@@ -556,6 +473,7 @@ namespace Uranus.Suite.Controllers
         }
 
         [HttpPost]
+        [RequireSubmenu("AgendasOperacoes:EnviarAgendasPorPeriodo")]
         public JsonResult EnviarPeriodo(String DataInicial, String DataFinal, Int32? IdProfissional)
         {
             var codigo = "00";
@@ -797,6 +715,7 @@ namespace Uranus.Suite.Controllers
         }
 
         [HttpPost]
+        [RequireSubmenu("AgendasOperacoes:AgendasPorPeriodo")]
         public JsonResult VisualizarPeriodo(String DataInicial, String DataFinal, Int32? IdProfissional, Int32? IdCliente, Int32? IdSede)
         {
             if (IdSede != null)
@@ -865,6 +784,7 @@ namespace Uranus.Suite.Controllers
         }
 
         [HttpPost]
+        [RequireSubmenu("AgendasOperacoes:AgendasEmMassa")]
         public JsonResult BuscarAgendaProfissionais(DateTime Data, String HoraInicial, String HoraFinal, String Profissionais)
         {
             String agendasLiberadas = "1";
@@ -895,6 +815,7 @@ namespace Uranus.Suite.Controllers
         }
 
         [HttpPost]
+       // [RequireSubmenu("AgendasOperacoes:AgendasEmMassa")]
         public JsonResult SalvarAgendaProfissionais(DateTime Data, String Hora, Int32 Assunto, Int32 Sede, Int32? Sala, String Profissionais, String Descricao)
         {
             try
@@ -906,29 +827,27 @@ namespace Uranus.Suite.Controllers
                     agenda.Hora = Hora;
                     agenda.IdTipo = Assunto;
                     agenda.IdSede = Sede;
-
-                    if (Sala != null)
-                    {
-                        agenda.IdSala = Sala;
-                    }
-
-                    agenda.IdProfissional = Int32.Parse(item);
+                    agenda.IdSala = Sala;
+                    agenda.IdProfissional = int.Parse(item);
                     agenda.MotivoConsulta = Descricao;
-                    agenda.Encaixe = "N";
                     agenda.IdUsuario = Sessao.Usuario.ID;
-                    agenda.DataCadastro = DateTime.Now;
+                    agenda.Encaixe = "N";
+                    agenda.Compareceu = false;
                     agenda.Cancelou = false;
+                    agenda.DataCadastro = DateTime.Now;
+                    agenda.NomeUsuarioCadastro = Sessao.Usuario.Nome;
+                    agenda.DataAlteracao = DateTime.Now;
+                    agenda.NomeUsuarioAlteracao = Sessao.Usuario.Nome;
 
                     AgendasBo.Inserir(agenda);
                 }
 
-                var result = new { codigo = "00" };
+                var result = new { codigo = "00", motivo = "Agendas criadas com sucesso para todos os profissionais selecionados." };
                 return Json(result);
-
             }
             catch (Exception ex)
             {
-                var result = new { codigo = "99" };
+                var result = new { codigo = "99", motivo = "Erro ao criar agendas: " + ex.Message };
                 return Json(result);
             }
         }

@@ -11,7 +11,8 @@ namespace Uranus.Domain
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Security.Claims;
+
     public partial class Usuarios
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

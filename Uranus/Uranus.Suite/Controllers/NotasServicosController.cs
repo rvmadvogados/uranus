@@ -15,9 +15,11 @@ using System.Web.UI.WebControls;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Suite;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Site.Controllers
 {
+    [RequireSubmenu("Financeiro:NotasServicos")]
     public class NotasServicosController : Controller
     {
         #region Nota de Servico

@@ -214,7 +214,7 @@ namespace Uranus.WindowsService
                                         break;
                                     }
 
-                                    item = new object[9];
+                                    item = new object[10];
 
                                     for (int column = 0; column < reader.FieldCount; column++)
                                     {
@@ -223,24 +223,24 @@ namespace Uranus.WindowsService
 
                                     if (item.Length > 0)
                                     {
-                                        var DataEnvioRequisicao = item[3].ToString();
-                                        var DataPrazoInicio = item[4].ToString();
-                                        var DataPrazoFinal = item[5].ToString();
+                                        var DataEnvioRequisicao = item[7].ToString();
+                                        var DataPrazoInicio = item[8].ToString();
+                                        var DataPrazoFinal = item[9].ToString();
 
 #if (!DEBUG)
                                         if (Util.IsDate(DataEnvioRequisicao))
                                         {
-                                            DataEnvioRequisicao = DateTime.Parse(item[3].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                                            DataEnvioRequisicao = DateTime.Parse(item[7].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
                                         }
 
                                         if (Util.IsDate(DataPrazoInicio))
                                         {
-                                            DataPrazoInicio = DateTime.Parse(item[4].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                                            DataPrazoInicio = DateTime.Parse(item[8].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
                                         }
 
                                         if (Util.IsDate(DataPrazoFinal))
                                         {
-                                            DataPrazoFinal = DateTime.Parse(item[5].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                                            DataPrazoFinal = DateTime.Parse(item[9].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
                                         }
 #endif
 
@@ -249,11 +249,11 @@ namespace Uranus.WindowsService
                                         pendente.Origem = "E-PROC";
                                         pendente.Integrado = false;
                                         pendente.Processo = item[0].ToString();
-                                        //pendente.Orgao = item[1].ToString();
-                                        pendente.Partes = item[1].ToString().Replace("\n\r", " ");
-                                        //pendente.Classe = item[3].ToString();
-                                        //pendente.Assunto = item[4].ToString();
-                                        pendente.EventoPrazo = item[2].ToString();
+    //                                    pendente.Orgao = item[1].ToString();  //esse
+                                        pendente.Partes = item[2].ToString().Replace("\n\r", " ");
+  //                                      pendente.Classe = item[4].ToString(); //esse 
+//                                        pendente.Assunto = item[5].ToString(); //esse
+                                        pendente.EventoPrazo = item[6].ToString(); // 5 pra 6
                                         pendente.DataEnvioRequisicao = DataEnvioRequisicao;
                                         pendente.DataPrazoInicio = DataPrazoInicio;
                                         pendente.DataPrazoFinal = DataPrazoFinal;

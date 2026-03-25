@@ -1,0 +1,2 @@
+C:\ProjetosSigman\Sigman.Solucoes\Sigman.WindowsService\obj\Debug\Sigman.WindowsService.csproj.AssemblyReference.cache
+C:\ProjetosSigman\Sigman.Solucoes\Sigman.WindowsService\obj\Debug\Sigman.WindowsService.csproj.CoreCompileInputs.cache

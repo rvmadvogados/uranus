@@ -6,13 +6,15 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
-
+    
     public class ColaboradoresContrachequesController : Controller
     {
         // GET: ColaboradoresContracheques
+        [RequireSubmenu("Administrativo:GestaoContracheques")]
         public ActionResult Index(string search = "", Int32 mes = 0, Int32 ano = 0)
         {
             if (Sessao.Usuario == null)
@@ -110,10 +112,10 @@ namespace Uranus.Suite.Controllers
         //            {
         //                var nomeArquivo = Path.GetFileName(file);
         //                var nome = "";
-                        
-                        
+
+
         //                var IdProfissional = ProfissionaisBo.ConsultarNome(nome).ID;
-                        
+
         //                byte[] fileBytes = System.IO.File.ReadAllBytes(file);
 
         //                using (var memoryStream = new MemoryStream(fileBytes))
@@ -174,6 +176,7 @@ namespace Uranus.Suite.Controllers
         //    public override Stream InputStream => _stream;
         //}
 
+        [RequireSubmenu("Administrativo:UploadContracheques")]
         public ActionResult Enviar()
         {
             if (Sessao.Usuario == null)

@@ -61,6 +61,14 @@
         .upload + .uploadButton {
             height: 40px;
         }
+
+        #modalVisualizarAlerta {
+            z-index: 1160 !important;
+        }
+
+        #modalVisualizarAlerta .modal-backdrop {
+            z-index: 1155 !important;
+        }
     </style>
 
     <div id="modalNovoAlerta" class="modal fade" role="dialog">
@@ -299,7 +307,8 @@
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             @{
-                                                if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                //if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "EPROCExcluir") != null)
                                                 {
                                                     <label class="titlefield">&nbsp;</label><br />
                                                     <a class="btn btn-danger" data-toggle="modal" data-target="#modalExcluirTodos">Excluir Todos</a>
@@ -398,18 +407,31 @@
     <!-- select2 -->
     <script src="~/Scripts/select/select2.full.js"></script>
 
+    <!-- Choices includes -->
+    <link rel="stylesheet" href="~/Content/Choices-main/public/assets/styles/choices.min.css" />
+    <script src="~/Content/Choices-main/public/assets/scripts/choices.js"></script>
+    <!-- End Choices includes -->
+
     <script>
+
+        var eprocEventoChoices = new Choices('#EProcEvento', {
+            allowHTML: true,
+            removeItemButton: true,
+            searchPlaceholderValue: "Selecione um Evento",
+            searchResultLimit: 50,
+            searchFields: ['label', 'value'],
+            searchFloor: 1,
+            fuseOptions: {
+                includeScore: true,
+                threshold: 0.3,
+                ignoreLocation: true,
+            },
+        });
 
         $('input[type=file]').change(function (e) {
             $in = $(this);
             $in.next().html($in.val());
 
-        });
-
-        $("#EProcEvento").select2({
-            placeholder: "Selecione um Evento",
-            allowClear: true,
-            tags: true
         });
 
         $("#EProcProfissional").select2({
@@ -501,17 +523,23 @@
 
                     var rows = json.eventos;
 
-                    $('#EProcEvento').html("");
-                    var select = $('#EProcEvento');
-                    select.append(
-                        $('<option selected disabled></option>').val("").html("Selecione um Evento")
-                    );
+                    // Limpar as opções do Choices
+                    eprocEventoChoices.clearStore();
+                    
+                    // Adicionar opção padrão
+                    var choices = [
+                        { value: '', label: 'Selecione um Evento', disabled: true, selected: true }
+                    ];
 
+                    // Adicionar eventos
                     for (i = 0; i < rows.length; i++) {
-                        select.append(
-                            $('<option></option>').val(rows[i].Id).html(rows[i].Nome)
-                        );
+                        choices.push({
+                            value: rows[i].Id.toString(),
+                            label: rows[i].Nome
+                        });
                     }
+                    
+                    eprocEventoChoices.setChoices(choices, 'value', 'label', true);
 
                 }
             };
@@ -559,8 +587,7 @@
 
             $("#eproc-form").validate().resetForm();
 
-            $('#EProcEvento').val('');
-            $('#EProcEvento').trigger('change');
+            eprocEventoChoices.setChoiceByValue('');
 
             $('#EProcProfissional').val('');
             $('#EProcProfissional').trigger('change');

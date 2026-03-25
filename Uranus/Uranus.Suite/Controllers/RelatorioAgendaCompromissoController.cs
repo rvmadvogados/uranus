@@ -7,9 +7,11 @@ using System.Web.UI.WebControls;
 using Uranus.Data.R9;
 using Uranus.Domain;
 using Uranus.Business;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Relatorios:AgendaCompromissos")]
     public class RelatorioAgendaCompromissoController : Controller
     {
         // GET: RelatorioAgendaCompromisso

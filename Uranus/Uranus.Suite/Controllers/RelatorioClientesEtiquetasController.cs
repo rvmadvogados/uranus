@@ -5,9 +5,11 @@ using System.Configuration;
 using Uranus.Data.R9;
 using Microsoft.Reporting.WebForms;
 using System.Web.UI.WebControls;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Relatorios:EmissaoEtiquetas")]
     public class RelatorioClientesEtiquetasController : Controller
     {
         //GET: RelatorioEventos

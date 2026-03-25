@@ -60,19 +60,27 @@
          * @return int
          */
         function calculateScore(password, username) {
-            var score = 0;
+            // Identity rules
+            var minLength = 8;
+            var hasUpper = /[A-Z]/.test(password);
+            var hasLower = /[a-z]/.test(password);
+            var hasDigit = /[0-9]/.test(password);
+            var hasSpecial = /[!@\$%\^&*(),.?":{}|<>\[\]\\\/;'`~\-_=+]/.test(password);
+            var hasSpace = /\s/.test(password);
 
-            // password < options.minimumLength
-            if (password.length < options.minimumLength) {
-                return -1;
+            if (password.length < minLength) {
+                return -1; // Muito curta
             }
-
+            if (hasSpace) {
+                return -1; // Não pode conter espaços
+            }
+            if (!(hasUpper && hasLower && hasDigit && hasSpecial)) {
+                return 0; // Não atende aos requisitos mínimos
+            }
             if (options.username) {
-                // password === username
                 if (password.toLowerCase() === username.toLowerCase()) {
                     return -2;
                 }
-                // password contains username (and usernamePartialMatch is set to true)
                 if (options.usernamePartialMatch && username.length) {
                     var user = new RegExp(username.toLowerCase());
                     if (password.toLowerCase().match(user)) {
@@ -80,60 +88,21 @@
                     }
                 }
             }
+            // Se chegou aqui, atende todos os requisitos do Identity
+            return 100;
+        }
 
-            // password length
-            score += password.length * 4;
-            score += checkRepetition(1, password).length - password.length;
-            score += checkRepetition(2, password).length - password.length;
-            score += checkRepetition(3, password).length - password.length;
-            score += checkRepetition(4, password).length - password.length;
-
-            // password has 3 numbers
-            if (password.match(/(.*[0-9].*[0-9].*[0-9])/)) {
-                score += 5;
+        function scoreText(score) {
+            if (score === -1) {
+                return 'A senha deve ter no mínimo 8 caracteres, conter maiúscula, minúscula, número e caractere especial, e não pode conter espaços.';
             }
-
-            // password has at least 2 sybols
-            var symbols = '.*[!,@,#,$,%,^,&,*,?,_,~]';
-            symbols = new RegExp('(' + symbols + symbols + ')');
-            if (password.match(symbols)) {
-                score += 5;
+            if (score === -2) {
+                return options.containsUsername;
             }
-
-            // password has Upper and Lower chars
-            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
-                score += 10;
+            if (score < 100) {
+                return 'A senha não atende aos requisitos mínimos do sistema.';
             }
-
-            // password has number and chars
-            if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) {
-                score += 15;
-            }
-
-            // password has number and symbol
-            if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/) && password.match(/([0-9])/)) {
-                score += 15;
-            }
-
-            // password has char and symbol
-            if (password.match(/([!,@,#,$,%,^,&,*,?,_,~])/) && password.match(/([a-zA-Z])/)) {
-                score += 15;
-            }
-
-            // password is just numbers or chars
-            if (password.match(/^\w+$/) || password.match(/^\d+$/)) {
-                score -= 10;
-            }
-
-            if (score > 100) {
-                score = 100;
-            }
-
-            if (score < 0) {
-                score = 0;
-            }
-
-            return score;
+            return 'Senha válida!';
         }
 
         /**

@@ -2,9 +2,11 @@
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("CadastrosBasicosFinanceiro:FinanceiroTipo")]
     public class FinanceiroTipoController : Controller
     {
         public ActionResult Index(string search = "")

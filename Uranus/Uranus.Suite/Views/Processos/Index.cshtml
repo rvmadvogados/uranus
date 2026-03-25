@@ -175,14 +175,14 @@
                                                  columns: new[] {
                                                     //grid.Column(columnName: null, header: "Número Processo", format: @<text>@item.ID</text>, style: "hidden"),
                                                     grid.Column("", header: "",format: @<input type="hidden" id="ID" name="ID" value="@item.ID" />),
-grid.Column("NumeroProcesso", header: "Número Processo"),
-grid.Column("Autor", header: "Autor"),
-grid.Column("Reu", header: "Réu"),
-grid.Column("Area", header: "Área"),
-grid.Column("Vara", header: "Juízo"),
-grid.Column("Status", header: "Status"),
-grid.Column("ID", header: "Ações", canSort:false,
-format:
+                                                    grid.Column("NumeroProcesso", header: "Número Processo"),
+                                                    grid.Column("Autor", header: "Autor"),
+                                                    grid.Column("Reu", header: "Réu"),
+                                                    grid.Column("Area", header: "Área"),
+                                                    grid.Column("Vara", header: "Juízo"),
+                                                    grid.Column("Status", header: "Status"),
+                                                    grid.Column("ID", header: "Ações", canSort:false,
+                                                    format:
                                     @<text>
                                         @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ", " + item.IdAcao + ");'>Visualizar</a>")
                                         @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ", " + item.IdAcao + ");'>Alterar</a>")
@@ -193,10 +193,10 @@ format:
                                                                                                   }
                                         }
 
-                                        @{if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
-                                                                                                  {
+                                        @{if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ProcessosBotaoExcluir") != null)
+                                         {
                                             @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.NumeroProcesso + '"' + ");'>Excluir</a>")
-                                                                                                  }
+                                         }
                                             @Html.Raw("<a class='btn btn-info btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalVisualizarFinanceiro' onclick='VisualizarFinanceiro(" + item.ID + ");'>Financeiro</a>")
                                         }
                                     </text>)
@@ -563,27 +563,30 @@ format:
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="titlefield">Agendar para o Profissional</label>
+                                            <label class="titlefield" id="labelViewProfissional">Agendar para o Profissional</label>
                                             <select id="ViewProfissional" name="ViewProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                            <label id="ViewProfissionalValidate" name="ViewProfissionalValidate" for="ViewProfissional" class="error hidden">Por favor, selecione um Profissional.</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label class="titlefield">Data 1º Prazo</label>
+                                            <label class="titlefield" id="labelViewPrazoEvento1">Data 1º Prazo</label>
                                             <div id="ViewDataPrazoEvento1" name="ViewDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
                                                 <input id="ViewPrazoEvento1" name="ViewPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
                                                 <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
                                             </div>
+                                            <label id="ViewPrazoEvento1Validate" name="ViewPrazoEvento1Validate" for="ViewPrazoEvento1" class="error hidden">Por favor, selecione uma Data.</label>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            <label class="titlefield">Data 2º Prazo</label>
+                                            <label class="titlefield" id="labelViewPrazoEvento2">Data 2º Prazo</label>
                                             <div id="ViewDataPrazoEvento2" name="ViewDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
                                                 <input id="ViewPrazoEvento2" name="ViewPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
                                                 <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
                                             </div>
                                             <label id="ViewDataPrazoEvento2Validate" name="ViewDataPrazoEvento2Validate" for="ViewDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                                            <label id="ViewPrazoEvento2Validate" name="ViewPrazoEvento2Validate" for="ViewPrazoEvento2" class="error hidden">Por favor, selecione uma Data.</label>
                                         </div>
                                     </div>
                                 </div>
@@ -701,28 +704,34 @@ format:
 
         <script>
 
+            var selectedRowId = null;
 
             var singleXhrRemove = new Choices('#ViewEvento', {
                 allowHTML: true,
                 removeItemButton: true,
                 searchPlaceholderValue: "Selecione um Evento",
-                searchResultLimit: 50, 
+                searchResultLimit: 50,
                 searchFields: ['label', 'value'],
-                searchFloor: 1, 
+                searchFloor: 1,
                 fuseOptions: {
                     includeScore: true,
                     threshold: 0.3,
-                    ignoreLocation: true, 
+                    ignoreLocation: true,
                 },
             });
 
-            var tr = $('#MainTable').find('tr');
-            tr.removeClass('webgrid-selected-row');
-            tr.bind('click', function (event) {
-                tr.removeClass('webgrid-selected-row');
-                $(this).addClass('webgrid-selected-row');
-            });
+            //var tr = $('#MainTable').find('tr');
+            //tr.removeClass('webgrid-selected-row');
+            //tr.bind('click', function (event) {
+            //    tr.removeClass('webgrid-selected-row');
+            //    $(this).addClass('webgrid-selected-row');
+            //});
 
+            $('#MainTable').on('click', 'tr', function () {
+                $('#MainTable tr').removeClass('webgrid-selected-row');
+                $(this).addClass('webgrid-selected-row');
+                selectedRowId = $(this).find('input[type="hidden"][name="ID"]').val();
+            });
 
         select = $('#FiltrarProcesso');
         select.append(
@@ -1512,6 +1521,14 @@ format:
             $('#id').val("0");
             LimparCadastro();
 
+            if (selectedRowId) {
+                $('#MainTable tr').each(function () {
+                    if ($(this).find('input[type="hidden"][name="ID"]').val() == selectedRowId) {
+                        $(this).addClass('webgrid-selected-row');
+                    }
+                });
+            }
+
         });
 
         $('#tab-cadastrar').click(function (evt) {
@@ -1579,7 +1596,7 @@ format:
         });
 
         function Visualizar(Id, NumeroProcesso, IdAcao) {
-
+            selectedRowId = Id;
 
             $('#VisualizarProcesso').html('Carregando, aguarde <i class="fa fa-spinner fa-spin"></i>');
 
@@ -2565,7 +2582,7 @@ format:
                 var dados = new window.FormData();
                 dados.append("Id", index);
                 dados.append("Origem", "");
-                //aqui
+
                 dados.append("IdProcessosAcao", $("#ProcessoEvento" + index + "NumeroProcesso").val());
                 dados.append("IdProcessosEvento", $("#ProcessoEvento" + index + "Evento").val());
                 dados.append("IdProfissional", profissional);
@@ -3424,7 +3441,43 @@ format:
                 }
             };
             $.ajax(options);
-        }
+            }
+
+            function atualizarAsteriscosEvento() {
+                var profissional = $('#ViewProfissional').val();
+                var prazo1 = $('#ViewPrazoEvento1').val();
+                var prazo2 = $('#ViewPrazoEvento2').val();
+
+                $('#labelViewProfissional .required').remove();
+                $('#labelViewPrazoEvento1 .required').remove();
+                $('#labelViewPrazoEvento2 .required').remove();
+
+                if (profissional !== "" && profissional != null) {
+                    $('#labelViewPrazoEvento1').append('<span class="required">*</span>');
+                    return;
+                }
+
+                if (prazo1 && prazo1 !== "") {
+                    $('#labelViewProfissional').append('<span class="required">*</span>');
+                    return;
+                }
+
+                if (prazo2 && prazo2 !== "") {
+                    $('#labelViewProfissional').append('<span class="required">*</span>');
+                    $('#labelViewPrazoEvento1').append('<span class="required">*</span>');
+                }
+            }
+
+            $('#modalNovoEvento').on('shown.bs.modal', function () {
+                atualizarAsteriscosEvento();
+            });
+
+            $('#ViewPrazoEvento1').on('changeDate clearDate', atualizarAsteriscosEvento); //aqui
+            $('#ViewPrazoEvento2').on('changeDate clearDate', atualizarAsteriscosEvento);
+            $('#ViewProfissional, #ViewPrazoEvento1, #ViewPrazoEvento2').on('change keyup', function () {
+                atualizarAsteriscosEvento();
+            });
+
 
             $('#buttonSalvarEventos').click(function (evt) {
 
@@ -3433,8 +3486,39 @@ format:
             if ($('#evento-form').valid()) {
 
                 var validate = true;
+                var profissional = $('#ViewProfissional').val();
+                var prazo1 = $('#ViewPrazoEvento1').val();
+                var prazo2 = $('#ViewPrazoEvento2').val();
 
-                //if ($('#ViewNumeroProcesso').val() == null || !$.isNumeric($('#ViewNumeroProcesso').val())) {
+                // Caso Profissional seja selecionado, prazo1 é obrigatório
+                if (profissional && profissional !== "" && (!prazo1 || prazo1 === "")) {
+                    $('#ViewPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#ViewPrazoEvento1Validate').addClass('hidden');
+                }
+
+                // Caso prazo 1 tenha valor, profissional é obrigatório
+                if (prazo1 && prazo1 !== "" && (!profissional || profissional === "")) {
+                    $('#ViewProfissionalValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                } else {
+                    $('#ViewProfissionalValidate').addClass('hidden');
+                }
+
+                // Caso evento2 tenha valor, ambos são obrigatórios
+                if (prazo2 && prazo2 !== "") {
+                    if (!profissional || profissional === "") {
+                        $('#ViewProfissionalValidate').removeClass('hidden').css("display", "");
+                        validate = false;
+                    }
+
+                    if (!prazo1 || prazo1 === "") {
+                        $('#ViewPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                        validate = false;
+                    }
+                }
+
                 if ($('#ViewNumeroProcesso').val() == null) {
                     $('#ViewNumeroProcessoValidate').removeClass('hidden').css("display", "");
                     validate = false;

@@ -6,9 +6,11 @@ using System.Net.Mail;
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Suite;
+using Uranus.Suite.Filters;
 
 namespace Uranus.WebManager.Controllers
 {
+    [RequireSubmenu("Financeiro:FinanceiroGestaoBoletos")]
     public class FinanceiroGestaoBoletosController : Controller
     {
         public ActionResult Index(string AnoInicio = "", string AnoFim = "", string Cidade = "", DateTime? vencimento = null)

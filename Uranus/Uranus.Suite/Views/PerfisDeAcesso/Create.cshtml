@@ -1,0 +1,558 @@
+﻿@model Uranus.Suite.ViewModels.PerfilDeAcessoViewModel
+
+@{
+    ViewBag.Title = "Novo Perfil de Acesso";
+    var availableClaims = ViewBag.AvailableClaims as List<dynamic> ?? new List<dynamic>();
+    var apiUrl = System.Configuration.ConfigurationManager.AppSettings["AuthApiUrl"];
+}
+
+<style>
+    /* Estilo original restaurado */
+    .claims-panel {
+        border: 1px solid #e5e5e5;
+        border-radius: 4px;
+        padding: 15px 10px 10px 10px;
+        background: #fafbfc;
+        margin-bottom: 20px;
+    }
+
+        .claims-panel label {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .claims-panel select {
+            min-height: 260px;
+            font-size: 13px;
+        }
+
+        .claims-panel .btn {
+            margin: 8px 0;
+            width: 40px;
+        }
+
+    .form-group label {
+        font-weight: 600;
+    }
+
+    .x_title h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+
+    .btn-primary {
+        min-width: 100px;
+    }
+
+    .btn-default {
+        min-width: 100px;
+    }
+
+    .claims-panel .btn-group-vertical {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        gap: 24px;
+    }
+        /* Refinamento dos botões verticais */
+        .claims-panel .btn-group-vertical .btn {
+            width: 56px;
+            height: 56px;
+            font-size: 2rem;
+            border-radius: 50%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s;
+        }
+
+    /* Estilo moderno aplicado apenas ao painel de permissões */
+    .claims-panel-modern {
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 20px 15px 15px 15px;
+        background: #f5f7fa;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+        .claims-panel-modern label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .claims-panel-modern select {
+            min-height: 260px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            padding: 8px;
+        }
+
+        .claims-panel-modern .btn-group-vertical {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            gap: 16px;
+        }
+
+        .claims-panel-modern .btn {
+            margin: 0;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .claims-panel-modern .btn-outline-primary {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #1976d2;
+        }
+
+            .claims-panel-modern .btn-outline-primary:hover {
+                background: #1976d2;
+                color: #fff;
+            }
+
+        .claims-panel-modern .btn-outline-danger {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 2px solid #d32f2f;
+        }
+
+            .claims-panel-modern .btn-outline-danger:hover {
+                background: #d32f2f;
+                color: #fff;
+            }
+
+        .claims-panel-modern .badge {
+            font-size: 1.1rem;
+            padding: 6px 14px;
+            border-radius: 16px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        .claims-panel-modern .badge-info {
+            background: #1976d2;
+            color: #fff;
+        }
+
+        .claims-panel-modern .badge-success {
+            background: #388e3c;
+            color: #fff;
+        }
+
+    /* Estilos para loading */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-overlay.active {
+        display: flex;
+    }
+
+    .loading-spinner {
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .loading-spinner i {
+        font-size: 48px;
+        color: #1976d2;
+        margin-bottom: 20px;
+    }
+
+    .loading-spinner p {
+        font-size: 16px;
+        color: #333;
+        margin: 0;
+        font-weight: 500;
+    }
+</style>
+
+<div class="main_container">
+    <div role="main">
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="x_panel" style="min-height:600px;">
+                    <div class="x_content" style="padding: 32px 32px 24px 32px;">
+                        <form>
+                            <div class="form-group">
+                                <label for="Role">Nome do Perfil</label>
+                                <input id="Role" name="Role" class="form-control" required="required" placeholder="Ex: Administrador" />
+                            </div>
+                            <div class="form-group claims-panel claims-panel-modern">
+                                <label>Permissões</label>
+                                <div class="row">
+                                    <div class="col-md-5 d-flex flex-column" style="height: 100%;">
+                                        <label for="claims-available" style="display:flex;align-items:center;justify-content:space-between;">
+                                            <span>Disponíveis</span>
+                                            <span class="badge badge-info" id="count-available">0</span>
+                                        </label>
+                                        <select id="claims-available" multiple class="form-control flex-fill" size="18" style="height: 100%; min-height: 400px;"></select>
+                                    </div>
+                                    <div class="col-md-2 btn-group-vertical" style="height: 100%; min-height: 400px;">
+                                        <button type="button" id="add-all-claims" class="btn btn-outline-primary" title="Adicionar todos">
+                                            <i class="fa fa-angle-double-right"></i>
+                                        </button>
+                                        <button type="button" id="add-claim" class="btn btn-outline-primary" title="Adicionar">
+                                            <i class="fa fa-arrow-right"></i>
+                                        </button>
+                                        <button type="button" id="remove-claim" class="btn btn-outline-danger" title="Remover">
+                                            <i class="fa fa-arrow-left"></i>
+                                        </button>
+                                        <button type="button" id="remove-all-claims" class="btn btn-outline-danger" title="Remover todos">
+                                            <i class="fa fa-angle-double-left"></i>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-5 d-flex flex-column" style="height: 100%;">
+                                        <label for="claims-selected" style="display:flex;align-items:center;justify-content:space-between;">
+                                            <span>Selecionadas</span>
+                                            <span class="badge badge-success" id="count-selected">0</span>
+                                        </label>
+                                        <select id="claims-selected" multiple class="form-control flex-fill" size="18" style="height: 100%; min-height: 400px;"></select>
+                                    </div>
+                                </div>
+                                <small class="form-text text-muted">Menus selecionam todos os submenus. Você pode remover submenus individualmente.</small>
+                            </div>
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary" id="submitBtn"><i class="fa fa-save"></i> Salvar</button>
+                                <a href="@Url.Action("Index", "PerfisDeAcesso")" class="btn btn-default"><i class="fa fa-times"></i> Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<@*div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <i class="fa fa-spinner fa-spin"></i>
+        <p>Salvando perfil...</p>
+    </div>
+</div>*@
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        // pra nao dar erro
+        if (typeof $.fn.starrr === 'undefined') {
+       $.fn.starrr = function() { return this; };
+        }
+
+ var apiUrl = '@apiUrl';
+ var allClaims = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(availableClaims));
+        var selectedClaims = [];
+
+function claimKey(claim) {
+       return String(claim.Id || claim.id);
+        }
+
+        function updateCounts() {
+  $('#count-available').text($('#claims-available option').length);
+   $('#count-selected').text($('#claims-selected option').length);
+        }
+
+        function renderClaims() {
+   $('#claims-available').empty();
+            $('#claims-selected').empty();
+
+            var menus = allClaims.filter(function (c) {
+              var type = (c.Type || c.type || '').toString();
+     return type && type.toLowerCase() === "menu";
+            });
+
+            menus.forEach(function (menu) {
+   var menuId = menu.Id || menu.id;
+       var menuKey = String(menuId);
+  var menuDesc = menu.Description || menu.description || menu.Value || menu.value;
+     var menuText = "\uD83D\uDCC2 " + menuDesc; // 📂
+      var menuOption = $('<option>').val(menuKey).text(menuText);
+
+          if (selectedClaims.indexOf(menuKey) === -1) {
+          $('#claims-available').append(menuOption);
+    } else {
+       $('#claims-selected').append(menuOption);
+        }
+
+                var submenus = allClaims.filter(function (c) {
+        var type = (c.Type || c.type || '').toString();
+  var parent = c.ParentClaimId || c.parentClaimId;
+    return type && type.toLowerCase() === "submenu" && parent != null && String(parent) === menuKey;
+     });
+
+         submenus.forEach(function (submenu) {
+         var submenuId = submenu.Id || submenu.id;
+               var submenuKey = String(submenuId);
+       var submenuDesc = submenu.Description || submenu.description || submenu.Value || submenu.value;
+        var submenuText = "\u00A0\u00A0\u00A0\u21B3 " + submenuDesc; // ↳
+          var submenuOption = $('<option>').val(submenuKey).text(submenuText);
+
+        if (selectedClaims.indexOf(submenuKey) === -1) {
+          $('#claims-available').append(submenuOption);
+              } else {
+        $('#claims-selected').append(submenuOption);
+               }
+                });
+          });
+
+ var sistemas = allClaims.filter(function (c) {
+ var type = (c.Type || c.type || '').toString();
+       return type && type.toLowerCase() === "sistema";
+            });
+
+       sistemas.forEach(function (sistema) {
+             var sysId = sistema.Id || sistema.id;
+ var sysKey = String(sysId);
+     var sysDesc = sistema.Description || sistema.description || sistema.Value || sistema.value;
+       var sysText = "\uD83D\uDD12 " + sysDesc; // 🔒
+       var sysOption = $('<option>').val(sysKey).text(sysText);
+
+                if (selectedClaims.indexOf(sysKey) === -1) {
+         $('#claims-available').append(sysOption);
+         } else {
+     $('#claims-selected').append(sysOption);
+        }
+            });
+
+            updateCounts();
+        }
+
+        function addClaims() {
+            $('#claims-available option:selected').each(function () {
+         var key = $(this).val();
+           if (selectedClaims.indexOf(key) === -1) {
+             selectedClaims.push(key);
+                }
+                var claim = allClaims.find(function (c) { return claimKey(c) === key; });
+    var id = claim && (claim.Id || claim.id);
+         var type = claim && (claim.Type || claim.type);
+      
+  // Se é submenu, adiciona o menu pai também
+    if (claim && type && type.toLowerCase() === "submenu") {
+             var parentId = claim.ParentClaimId || claim.parentClaimId;
+         if (parentId != null) {
+        var parentKey = String(parentId);
+       if (selectedClaims.indexOf(parentKey) === -1) {
+selectedClaims.push(parentKey);
+                 }
+    }
+       }
+    
+      // Se é menu, adiciona todos os submenus
+    if (claim && type && type.toLowerCase() === "menu") {
+         allClaims.forEach(function (submenu) {
+        var submenuType = submenu.Type || submenu.type;
+              var submenuParent = submenu.ParentClaimId || submenu.parentClaimId;
+        var submenuId = submenu.Id || submenu.id;
+     if (
+         submenuType &&
+          submenuType.toLowerCase() === "submenu" &&
+             submenuParent != null &&
+  String(submenuParent) === String(id)
+            ) {
+                  var submenuKey = String(submenuId);
+     if (selectedClaims.indexOf(submenuKey) === -1) {
+       selectedClaims.push(submenuKey);
+ }
+    }
+       });
+  }
+       });
+    renderClaims();
+ }
+
+     function removeClaims() {
+  $('#claims-selected option:selected').each(function () {
+         var key = $(this).val();
+       selectedClaims = selectedClaims.filter(function (c) { return c !== key; });
+         var claim = allClaims.find(function (c) { return claimKey(c) === key; });
+   var id = claim && (claim.Id || claim.id);
+         var type = claim && (claim.Type || claim.type);
+                
+                // Se é submenu, verifica se o menu pai ainda tem submenus selecionados
+     if (claim && type && type.toLowerCase() === "submenu") {
+       var parentId = claim.ParentClaimId || claim.parentClaimId;
+              if (parentId != null) {
+      var parentKey = String(parentId);
+               var hasOtherSubmenus = allClaims.some(function (submenu) {
+         var submenuType = submenu.Type || submenu.type;
+       var submenuParent = submenu.ParentClaimId || submenu.parentClaimId;
+        var submenuId = submenu.Id || submenu.id;
+            var submenuKey = String(submenuId);
+                 return (
+      submenuType &&
+ submenuType.toLowerCase() === "submenu" &&
+     submenuParent != null &&
+             String(submenuParent) === parentKey &&
+     selectedClaims.indexOf(submenuKey) !== -1
+             );
+            });
+ 
+             // Se não tem mais submenus selecionados, remove o menu pai
+         if (!hasOtherSubmenus) {
+            selectedClaims = selectedClaims.filter(function (c) { return c !== parentKey; });
+           }
+     }
+          }
+        
+    // Se é menu, remove todos os submenus
+    if (claim && type && type.toLowerCase() === "menu") {
+ selectedClaims = selectedClaims.filter(function (c) {
+     var submenu = allClaims.find(function (s) { return claimKey(s) === c; });
+  var submenuType = submenu && (submenu.Type || submenu.type);
+   var submenuParent = submenu && (submenu.ParentClaimId || submenu.parentClaimId);
+         return !(
+       submenu &&
+            submenuType &&
+             submenuType.toLowerCase() === "submenu" &&
+            submenuParent != null &&
+  String(submenuParent) === String(id)
+      );
+                 });
+            }
+       });
+     renderClaims();
+        }
+
+        function addAllClaims() {
+            $('#claims-available option').each(function () {
+       var key = $(this).val();
+         if (selectedClaims.indexOf(key) === -1) {
+             selectedClaims.push(key);
+                }
+                var claim = allClaims.find(function (c) { return claimKey(c) === key; });
+         var id = claim && (claim.Id || claim.id);
+     var type = claim && (claim.Type || claim.type);
+         
+       // Se é submenu, adiciona o menu pai também
+           if (claim && type && type.toLowerCase() === "submenu") {
+        var parentId = claim.ParentClaimId || claim.parentClaimId;
+     if (parentId != null) {
+ var parentKey = String(parentId);
+         if (selectedClaims.indexOf(parentKey) === -1) {
+  selectedClaims.push(parentKey);
+           }
+   }
+     }
+   
+              // Se é menu, adiciona todos os submenus
+      if (claim && type && type.toLowerCase() === "menu") {
+     allClaims.forEach(function (submenu) {
+   var submenuType = submenu.Type || submenu.type;
+           var submenuParent = submenu.ParentClaimId || submenu.parentClaimId;
+            var submenuId = submenu.Id || submenu.id;
+                     if (
+submenuType &&
+          submenuType.toLowerCase() === "submenu" &&
+ submenuParent != null &&
+    String(submenuParent) === String(id)
+      ) {
+   var submenuKey = String(submenuId);
+     if (selectedClaims.indexOf(submenuKey) === -1) {
+       selectedClaims.push(submenuKey);
+          }
+     }
+   });
+     }
+        });
+        renderClaims();
+ }
+
+        function removeAllClaims() {
+            selectedClaims = [];
+     renderClaims();
+ }
+
+        $(function () {
+     renderClaims();
+
+            $('#add-all-claims').click(addAllClaims);
+      $('#add-claim').click(addClaims);
+            $('#remove-claim').click(removeClaims);
+       $('#remove-all-claims').click(removeAllClaims);
+
+            $('form').submit(function (e) {
+    e.preventDefault();
+
+       var role = $('#Role').val();
+             if (!role) {
+   alert('Informe o nome do perfil.');
+         return false;
+}
+
+      var claims = selectedClaims.slice();
+
+       $('#loadingOverlay').addClass('active');
+        $('#submitBtn').prop('disabled', true);
+
+            $.ajax({
+        url: '@Url.Action("Create", "PerfisDeAcesso")',
+      type: 'POST',
+   data: {
+            Role: role,
+   'Claims': claims
+             },
+      success: function (data) {
+         $('#loadingOverlay').removeClass('active');
+      alert('Perfil criado com sucesso!');
+  window.location.href = '@Url.Action("Index", "PerfisDeAcesso")';
+       },
+   error: function (xhr) {
+             $('#loadingOverlay').removeClass('active');
+    $('#submitBtn').prop('disabled', false);
+
+     var msg = 'Erro ao criar perfil.';
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+     msg = xhr.responseJSON.message;
+    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+       msg += '\n' + JSON.stringify(xhr.responseJSON.errors);
+           } else if (xhr.responseText) {
+           try {
+           var response = JSON.parse(xhr.responseText);
+    if (response && response.Message) {
+         msg = response.Message;
+      }
+            } catch (e) {
+     msg += '\n' + xhr.responseText.substring(0, 500);
+                  }
+             }
+  alert(msg);
+             }
+          });
+ });
+        });
+    </script>
+}

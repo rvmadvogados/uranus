@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics; 
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,8 @@ using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
 using Uranus.Domain.Entities;
+using Uranus.Suite.Filters;
+
 
 namespace Uranus.Suite.Controllers
 {
@@ -31,7 +34,7 @@ namespace Uranus.Suite.Controllers
 
             return Json(new { acoes = acoes, total = total }, JsonRequestBehavior.AllowGet);
         }
-
+        [RequireMenu("Processos")]
         public ActionResult Index(string FiltrarProcesso = "", string FiltrarCliente = "", string FiltrarArea = "", string FiltrarStatus = "", string FiltrarVara = "")
         {
             if (Sessao.Usuario == null)
@@ -121,7 +124,7 @@ namespace Uranus.Suite.Controllers
 
             return PartialView(result);
         }
-
+        [RequireSubmenu("TratamentoPrazos:ProcessosEPROC")]
         public ActionResult CapturarEProc(string search = "")
         {
             if (Sessao.Usuario == null)
@@ -136,7 +139,7 @@ namespace Uranus.Suite.Controllers
                 return View(model);
             }
         }
-
+        [RequireSubmenu("TratamentoPrazos:ProcessosWEBJUR")]
         public ActionResult CapturarWebJur(string search = "")
         {
             if (Sessao.Usuario == null)
@@ -151,7 +154,7 @@ namespace Uranus.Suite.Controllers
                 return View(model);
             }
         }
-
+        [RequireSubmenu("TratamentoPrazos:ProcessosOAB")]
         public ActionResult CapturarOab(string search = "")
         {
             if (Sessao.Usuario == null)
@@ -168,6 +171,7 @@ namespace Uranus.Suite.Controllers
         }
 
         #region Processos
+        [RequireMenu("AgendaDePrazos")]
         public ActionResult Agendar(string FiltrarCliente = "", string FiltrarProcesso = "", string FiltrarPrazoEvento1 = "", string FiltrarPrazoEvento2 = "", string FiltrarEvento = "", string FiltrarProfissional = "", string FiltrarCadastro = "", string FiltrarVara = "")
         {
             if (Sessao.Usuario == null)
@@ -177,7 +181,9 @@ namespace Uranus.Suite.Controllers
             else
             {
                 var idProfissional = 0;
-                if ((Sessao.Usuario.Nivel != 5 && Sessao.Usuario.Nivel != 4) || Sessao.Usuario.Nivel == 0)
+
+                //if ((Sessao.Usuario.Nivel != 5 && Sessao.Usuario.Nivel != 4) || Sessao.Usuario.Nivel == 0)
+                if(Sessao.Claims.FirstOrDefault(a=>a.Tipo =="sistema" && a.Valor== "VisualizarProcessosOutrosProfissionais") == null)
                 {
                     FiltrarProfissional = Sessao.Usuario.Profissionais.FirstOrDefault()?.Pessoas.Nome ?? String.Empty;
                     idProfissional = ProfissionaisBo.Buscar(Sessao.Usuario.ID).ID;
@@ -211,6 +217,7 @@ namespace Uranus.Suite.Controllers
             }
         }
 
+        [RequireMenu("EnviarPlanilhasEProc")]
         public ActionResult Enviar()
         {
             if (Sessao.Usuario == null)
@@ -222,7 +229,7 @@ namespace Uranus.Suite.Controllers
                 return View();
             }
         }
-
+        [RequireMenu("ProcessarPlanilhasEProc")]
         public ActionResult Processar()
         {
             if (Sessao.Usuario == null)
@@ -665,7 +672,12 @@ namespace Uranus.Suite.Controllers
                     auditoria.Modulo = "Processo";
                     auditoria.Tipo = "Autor";
                     auditoria.Acao = "Excluído";
-                    auditoria.Log = String.Format("<b>Sede</b>: {0};<b>Profissional</b>: {1};<b>Status</b>: {2};<b>Cliente</b>: {3};", autor.Clientes.Sedes.Nome, autor.Processos.Profissionais.Pessoas.Nome, autor.Processos.Status, autor.Clientes.Pessoas.Nome);
+                    //auditoria.Log = String.Format("<b>Sede</b>: {0};<b>Profissional</b>: {1};<b>Status</b>: {2};<b>Cliente</b>: {3};", autor.Clientes.Sedes.Nome, autor.Processos.Profissionais.Pessoas.Nome, autor.Processos.Status, autor.Clientes.Pessoas.Nome);
+                    auditoria.Log =
+                                    $"<b>Sede</b>: {autor?.Clientes?.Sedes?.Nome ?? ""};" +
+                                    $"<b>Profissional</b>: {autor?.Processos?.Profissionais?.Pessoas?.Nome ?? ""};" +
+                                    $"<b>Status</b>: {autor?.Processos?.Status ?? ""};" +
+                                    $"<b>Cliente</b>: {autor?.Clientes?.Pessoas?.Nome ?? ""};";
                     auditoria.Usuario = Sessao.Usuario.Nome;
 
                     AuditoriaBo.Inserir(auditoria);
@@ -1955,9 +1967,11 @@ namespace Uranus.Suite.Controllers
                 eventos += "      </tr>";
                 eventos += "   </tbody>";
                 eventos += "</table>";
-
-                if (Sessao.Usuario.ID == evento.IdUsuario || Sessao.Usuario.ID == evento.IdUsuarioAlteracao || Sessao.Usuario.Nivel == 5)
-                {
+                
+                //if (Sessao.Usuario.ID == evento.IdUsuario || Sessao.Usuario.ID == evento.IdUsuarioAlteracao || Sessao.Usuario.Nivel == 5)
+                if (Sessao.Usuario.ID == evento.IdUsuario || Sessao.Usuario.ID == evento.IdUsuarioAlteracao || 
+                    (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ProcessosPodeAlterarOutrosEventos") != null))
+                    {
                     eventos += "<a id='ButtonAlterarEvento_" + evento.ID + "' name='ButtonAlterarEvento' class='btn btn-primary alterar-evento' data-backdrop='static' data-toggle='modal' data-target='#modalNovoEvento' onclick='AlterarEvento(" + evento.ID + ");'>Alterar</a>";
                 }
 
@@ -2092,8 +2106,8 @@ namespace Uranus.Suite.Controllers
                 #endregion
 
                 #region Agenda Profissional
-                //if (((IdAgendaProfissional == 0 && auditoria.Acao == "Alterado") || auditoria.Acao == "Capturado" || auditoria.Acao == "Inserido") && IdProfissional > 0 && !String.IsNullOrEmpty(Prazo1) && !Excluido)
-                if (((IdAgendaProfissional == 0 && auditoria.Acao == "Alterado") || auditoria.Acao == "Capturado" || auditoria.Acao == "Inserido") && !Excluido)
+                if (((IdAgendaProfissional == 0 && auditoria.Acao == "Alterado") || auditoria.Acao == "Capturado" || auditoria.Acao == "Inserido") && IdProfissional > 0 && !String.IsNullOrEmpty(Prazo1) && !Excluido)
+                //if (((IdAgendaProfissional == 0 && auditoria.Acao == "Alterado") || auditoria.Acao == "Capturado" || auditoria.Acao == "Inserido") && !Excluido)
                 {
                     ProcessosAgendaProfissional agenda = new ProcessosAgendaProfissional();
                     agenda.ID = 0;
@@ -2112,8 +2126,8 @@ namespace Uranus.Suite.Controllers
 
                     IdAgendaProfissional = ProcessosAgendasProfissionaisBo.Inserir(agenda);
                 }
-                //else if (IdAgendaProfissional != 0 && auditoria.Acao == "Alterado"  && !String.IsNullOrEmpty(Prazo1) && !Excluido)
-                else if (IdAgendaProfissional != 0 && auditoria.Acao == "Alterado"  && !Excluido)
+                else if (IdAgendaProfissional != 0 && auditoria.Acao == "Alterado"  && !String.IsNullOrEmpty(Prazo1) && !Excluido)
+              //  else if (IdAgendaProfissional != 0 && auditoria.Acao == "Alterado"  && !Excluido)
                 {
                     ProcessosAgendaProfissional agenda = new ProcessosAgendaProfissional();
                     agenda.ID = IdAgendaProfissional;
@@ -2242,8 +2256,9 @@ namespace Uranus.Suite.Controllers
             {
                 // tratar retorno da mensagem
                 ProcessosAcoesEventos evento = ProcessosAcoesEventosBo.Consultar(Id);
-
-                if (Sessao.Usuario.Nivel >= 5)
+                
+                //if (Sessao.Usuario.Nivel >= 5)
+                if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ProcessosPodeExcluirOutrosEventos") != null)
                 {
                     return ExcluirEvento(Id, evento);
                 }

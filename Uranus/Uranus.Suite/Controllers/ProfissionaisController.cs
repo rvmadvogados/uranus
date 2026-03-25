@@ -4,9 +4,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+   // [RequireSubmenu("Controladoria:Profissionais")]
     public class ProfissionaisController : Controller
     {
         public ActionResult GetProfissionaisList(string search, bool filter = false, int page = 1)
@@ -123,7 +125,10 @@ namespace Uranus.Suite.Controllers
         [HttpPost]
         public JsonResult Listar(String Data, bool Todos = true)
         {
-            var profissionais = ProfissionaisBo.ListarArray(Data, (Sessao.Usuario.Nivel.Value != 5 && Sessao.Usuario.Nivel.Value != 4 && !Todos ? Sessao.Usuario.ID : 0));
+            var claim = Sessao.Claims.FirstOrDefault(a => a.Valor == "ListarTodosProfissionais");
+          //  var profissionais = ProfissionaisBo.ListarArray(Data, (Sessao.Usuario.Nivel.Value != 5 && Sessao.Usuario.Nivel.Value != 4 && !Todos ? Sessao.Usuario.ID : 0));
+            var profissionais = ProfissionaisBo.ListarArray(Data, (claim !=null ? 0: Sessao.Usuario.ID ));
+
 
             var result = new { codigo = "00", profissionais = profissionais };
             return Json(result);

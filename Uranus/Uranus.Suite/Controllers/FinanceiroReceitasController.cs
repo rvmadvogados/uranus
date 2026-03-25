@@ -2,9 +2,11 @@
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Receitas:FinanceiroReceitas")]
     public class FinanceiroReceitasController : Controller
     {
         public ActionResult Index(string FiltrarDataInicio = "", string FiltrarDataFim = "", string FiltrarCliente = "", Int32? FiltrarSede = null)

@@ -323,7 +323,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                @*@{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)*@
+                                @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteVisualizarInformacoesCadastro") != null)
                                     {
                                         <div class="row">
                                             <div class="col-md-3">
@@ -484,7 +485,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                @*@{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)*@
+                                @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteIndicacaoVisualizarInformacoesCadastro") != null)
                                     {
                                         <div class="row">
                                             <div class="col-md-3">
@@ -717,7 +719,7 @@
                         @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' data-backdrop='static' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
                         @Html.Raw("<a class='btn btn-info btn-xs' data-toggle='modal' data-backdrop='static' data-target='#modalNovoAlerta' onclick='NovoAlerta(" + item.IDPessoa + ");'>Alertar</a>")
                         @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalIndicacao' data-backdrop='static' onclick='AlterarIndicacao(" + item.Id + ");'>Indicação</a>")
-                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                        @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteExcluir") != null)
                                                 {
                             @Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ", " + item.IDPessoa + ");'>Excluir</a>")
                                                 }
@@ -1157,7 +1159,7 @@
                     @{
                         var alterar = 0;
 
-                        if (Sessao.Usuario.Nivel == 5)
+                        if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteIndicacao") != null)
                         {
                             alterar = 1;
                         }
@@ -1268,6 +1270,10 @@
         function Novo() {
             $('#vAlterar').val('1');
             $('#modalLabelTitle').text('Novo Cliente');
+            
+            // Mostrar o cadastro e esconder alertas
+            $('#Cadastro').removeClass('hidden');
+            $('#Alerta').addClass('hidden');
             $('#Nome').attr('disabled', false);
             $('#Nome').val('');
             $('#CPFCNPJ').attr('disabled', false);
@@ -1363,7 +1369,13 @@
         }
 
         function Visualizar(Id) {
+            $('#vAlterar').val('0');
             $('#modalLabelTitle').text('Visualizar Cliente');
+            
+            // Mostrar o cadastro e esconder alertas
+            $('#Cadastro').removeClass('hidden');
+            $('#Alerta').addClass('hidden');
+            
             $('#Nome').attr('disabled', true);
             $('#CPFCNPJ').attr('disabled', true);
             $('#RG').attr('disabled', true);
@@ -1557,6 +1569,11 @@
 
         function Alterar(Id) {
             $('#modalLabelTitle').text('Alterar Cliente');
+            
+            // Mostrar o cadastro e esconder alertas
+            $('#Cadastro').removeClass('hidden');
+            $('#Alerta').addClass('hidden');
+            
             $('#Nome').attr('disabled', false);
             $('#CPFCNPJ').attr('disabled', false);
             $('#RG').attr('disabled', false);
@@ -1724,7 +1741,7 @@
                     @{
                         alterar = 0;
 
-                        if (Sessao.Usuario.Nivel == 5)
+                        if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteIndicacao") != null)
                         {
                             alterar = 1;
                         }
@@ -1818,7 +1835,7 @@
 
                     @{
                         var alterarindicacao = 0;
-                        if (Sessao.Usuario.Nivel == 5)
+                        if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteIndicacao") != null)
                         {
                             alterarindicacao = 1;
                         }

@@ -5,9 +5,11 @@ using System.Configuration;
 using Microsoft.Reporting.WebForms;
 using System.Web.UI.WebControls;
 using Uranus.Data.R9;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Relatorios:AgendaDoProfissional")]
     public class RelatorioAgendaProfissionaisController : Controller
     {
         // GET: RelatorioAgendaProfissionais

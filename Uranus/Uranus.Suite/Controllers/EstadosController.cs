@@ -1,9 +1,11 @@
 ﻿using System.IO;
 using System.Web.Mvc;
 using Uranus.Business;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("Cadastros")]
     public class EstadosController : Controller
     {
         [HttpPost]

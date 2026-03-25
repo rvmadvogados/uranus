@@ -4,9 +4,11 @@ using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
 using Uranus.Suite;
+using Uranus.Suite.Filters;
 
 namespace Taylor.Site.Controllers
 {
+    [RequireMenu("Processos")]
     public class StatusController : Controller
     {
         // GET: Status

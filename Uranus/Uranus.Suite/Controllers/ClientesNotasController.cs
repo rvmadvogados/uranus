@@ -5,9 +5,11 @@ using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
 using Uranus.Suite;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Site.Controllers
 {
+    [RequireSubmenu("Receitas:ClientesNotas")]
     public class ClientesNotasController : Controller
     {
         // GET: ClientesNotas

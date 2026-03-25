@@ -94,7 +94,7 @@
                                     @<text>
                                         @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.IdTemplate + ");'>Visualizar</a>")
 
-                                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                        @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "IniciaisBotoesDeControle") != null)
                                                        {
                                             @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.IdTemplate + ");'>Alterar</a>")
                                             @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.IdTemplate + ", " + '"' + item.ClienteNome + '"' + ");'>Excluir</a>")
@@ -265,7 +265,7 @@
                                     </div>
                                 </div>
 
-                                @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "IniciaisVisualizarInformacoesCadastro") != null)
                                     {
                                         <div class="row">
                                             <div class="col-md-3">

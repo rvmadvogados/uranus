@@ -10,9 +10,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("GerarDocumentos")]
     public class DocumentosController : Controller
     {
         public ActionResult Index(string FiltrarDataValor = "", string FiltrarModelo = "", string FiltrarCliente = "")

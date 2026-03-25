@@ -7,9 +7,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Data;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("ContratosClientes")]
     public class ClientesContratosController : Controller
     {
         // GET: ClientesContratos

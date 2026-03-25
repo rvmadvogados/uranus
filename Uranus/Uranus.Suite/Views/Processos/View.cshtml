@@ -691,27 +691,30 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="titlefield">Agendar para o Profissional</label>
+                                <label class="titlefield" id="labelViewProfissional">Agendar para o Profissional</label>
                                 <select id="ViewProfissional" name="ViewProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                <label id="ViewProfissionalValidate" name="ViewProfissionalValidate" for="ViewProfissional" class="error hidden">Por favor, selecione um Profissional.</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="titlefield">Data 1º Prazo</label>
+                                <label class="titlefield" id="labelViewPrazoEvento1">Data 1º Prazo</label>
                                 <div id="ViewDataPrazoEvento1" name="ViewDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
                                     <input id="ViewPrazoEvento1" name="ViewPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
                                     <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
                                 </div>
+                                <label id="ViewPrazoEvento1Validate" name="ViewPrazoEvento1Validate" for="ViewPrazoEvento1" class="error hidden">Por favor, selecione uma Data.</label>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="titlefield">Data 2º Prazo</label>
+                                <label class="titlefield" id="labelViewPrazoEvento2">Data 2º Prazo</label>
                                 <div id="ViewDataPrazoEvento2" name="ViewDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
                                     <input id="ViewPrazoEvento2" name="ViewPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
                                     <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
                                 </div>
                                 <label id="ViewDataPrazoEvento2Validate" name="ViewDataPrazoEvento2Validate" for="ViewDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                                <label id="ViewPrazoEvento2Validate" name="ViewPrazoEvento2Validate" for="ViewPrazoEvento1" class="error hidden">Por favor, selecione uma Data.</label>
                             </div>
                         </div>
                     </div>
@@ -1150,18 +1153,93 @@
 
     }
 
+    function atualizarAsteriscosViewEvento() {
+        console.log("aaaaaaaa")
+        var profissional = $('#ViewProfissional').val();
+        var prazo1 = $('#ViewPrazoEvento1').val();
+        var prazo2 = $('#ViewPrazoEvento2').val();
+
+        $('#labelViewProfissional .required').remove();
+        $('#labelViewPrazoEvento1 .required').remove();
+        $('#labelViewPrazoEvento2 .required').remove();
+
+        var obrigatorioProfissional = false;
+        var obrigatorioPrazo1 = false;
+        var obrigatorioPrazoEvento2 = false;
+
+        if (profissional && profissional !== "") {
+            obrigatorioPrazo1 = true;
+        }
+
+        if (prazo1 && prazo1 !== "") {
+            obrigatorioProfissional = true;
+        }
+
+        if (prazo2 && prazo2 !== "") {
+            obrigatorioProfissional = true;
+            obrigatorioPrazo1 = true;
+            obrigatorioPrazoEvento2 = true;
+        }
+
+        if (obrigatorioProfissional) {
+            $('#labelViewProfissional').append('<span class="required">*</span>');
+        }
+        if (obrigatorioPrazo1) {
+            $('#labelViewPrazoEvento1').append('<span class="required">*</span>');
+        }
+        //if (obrigatorioPrazoEvento2) {
+        //    $('#labelViewPrazoEvento2').append('<span class="required">*</span>');
+        //}
+    }
+
+    $('#modalNovoEvento').on('shown.bs.modal', function () {
+        atualizarAsteriscosViewEvento();
+    });
+
+    $('#ViewProfissional, #ViewPrazoEvento1, #ViewPrazoEvento2').on('change keyup', function () {
+        atualizarAsteriscosViewEvento();
+    });
+    $('#ViewPrazoEvento1').on('changeDate clearDate', atualizarAsteriscosViewEvento);
+    $('#ViewPrazoEvento2').on('changeDate clearDate', atualizarAsteriscosViewEvento);
+
     $('#buttonSalvarEventos').click(function (evt) {
-        console.log("salvar eventos")
         $("#evento-form").validate();
 
         if ($('#evento-form').valid()) {
 
             var validate = true;
+            var profissional = $('#ViewProfissional').val();
+            var prazo1 = $('#ViewPrazoEvento1').val();
+            var prazo2 = $('#ViewPrazoEvento2').val();
+
+            if (profissional && profissional !== "" && (!prazo1 || prazo1 === "")) {
+                $('#ViewPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ViewPrazoEvento1Validate').addClass('hidden');
+            }
+
+            if (prazo1 && prazo1 !== "" && (!profissional || profissional === "")) {
+                $('#ViewProfissionalValidate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#ViewProfissionalValidate').addClass('hidden');
+            }
+
+            if (prazo2 && prazo2 !== "") {
+                if (!profissional || profissional === "") {
+                    $('#ViewProfissionalValidate').removeClass('hidden').css("display", "");
+                    validate = false;
+                }
+                if (!prazo1 || prazo1 === "") {
+                    $('#ViewPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+                }
+            }
 
             if ($('#ViewNumeroProcesso').val() == null) {
                 $('#ViewNumeroProcessoValidate').removeClass('hidden').css("display", "");
                 validate = false;
-                console.log("1")
             } else {
                 $('#ViewNumeroProcessoValidate').addClass('hidden');
             }
@@ -1169,7 +1247,6 @@
             if ($('#ViewEvento').val() == null || !$.isNumeric($('#ViewEvento').val())) {
                 $('#ViewEventoValidate').removeClass('hidden').css("display", "");
                 validate = false;
-                console.log("11")
             } else {
                 $('#ViewEventoValidate').addClass('hidden');
             }
@@ -1181,10 +1258,8 @@
                 var days = (date2 - date1) / (1000 * 60 * 60 * 24);
 
                 if (days < 0) {
-
                     $('#ViewDataPrazoEvento2Validate').removeClass('hidden').css("display", "");
                     validate = false;
-                    console.log("123")
                 }
 
             } else {
@@ -1196,7 +1271,6 @@
                     $("#ViewFileUpload1Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload1").files[0].size, 1) + ".");
                     $("#ViewFileUpload1Validate").removeClass("hidden").css("display", "");
                     validate = false;
-                    console.log("13")
                 }
                 else {
                     $('#ViewFileUpload1Validate').addClass('hidden');
@@ -1208,7 +1282,6 @@
                     $("#ViewFileUpload2Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload2").files[0].size, 1) + ".");
                     $("#ViewFileUpload2Validate").removeClass("hidden").css("display", "");
                     validate = false;
-                    console.log("15")
                 }
                 else {
                     $('#ViewFileUpload2Validate').addClass('hidden');
@@ -1220,7 +1293,6 @@
                     $("#ViewFileUpload3Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload3").files[0].size, 1) + ".");
                     $("#ViewFileUpload3Validate").removeClass("hidden").css("display", "");
                     validate = false;
-                    console.log("16")
                 }
                 else {
                     $('#ViewFileUpload3Validate').addClass('hidden');
@@ -1232,7 +1304,6 @@
                     $("#ViewFileUpload4Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload4").files[0].size, 1) + ".");
                     $("#ViewFileUpload4Validate").removeClass("hidden").css("display", "");
                     validate = false;
-                    console.log("166")
                 }
                 else {
                     $('#ViewFileUpload4Validate').addClass('hidden');
@@ -1244,7 +1315,6 @@
                     $("#ViewFileUpload5Validate").text("Por favor, incluir um arquivo com até 10MB, pois esse possuí " + formatBytes(document.getElementById("ViewFileUpload5").files[0].size, 1) + ".");
                     $("#ViewFileUpload5Validate").removeClass("hidden").css("display", "");
                     validate = false;
-                    console.log("163")
                 }
                 else {
                     $('#ViewFileUpload5Validate').addClass('hidden');
@@ -1533,4 +1603,7 @@
             $('body').addClass('modal-open');
         }
     });
+
+
+   
 </script>

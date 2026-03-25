@@ -1,0 +1,160 @@
+﻿@model IEnumerable<Uranus.Suite.ViewModels.PerfilDeAcessoViewModel>
+
+<style>
+    .filter-row .form-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0;
+    }
+
+    .filter-row label {
+        margin-bottom: 0;
+        margin-right: 5px;
+        white-space: nowrap;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Criar e Filtrar Perfis de Acesso</h2>
+                <ul class="right panel_toolbox" style="list-style: none;">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            
+            <div class="x_content">
+                <div class="row">
+                    <div class="col-md-7">
+                        <a href="@Url.Action("Create", "PerfisDeAcesso")" class="btn btn-success btn-sm" style="margin-top: 25px !important;">Novo</a>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="titlefield" for="search">Nome do Perfil</label>
+                            <input id="search" name="search" type="search" class="form-control input-sm" placeholder="Informe o Nome" style="border: 1px solid #CCCCCC !important; width: 100%;" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="btnFiltrar" class="btn btn-primary btn-sm" style="margin-top: 25px !important;">Filtrar</button>
+                        <button type="button" id="btnLimpar" class="btn btn-default btn-sm" style="margin-top: 25px !important;">Limpar</button>
+                    </div>
+                </div>
+                <!-- Campo status oculto para manter compatibilidade com o filtro -->
+                <input type="hidden" id="status" value="T" />
+            </div>
+        </div>
+        </div>
+</div>
+
+<div id="grid-container">
+    @Html.Partial("_PerfisDeAcessoGrid", Model)
+</div>
+
+<!-- Modal de Mensagem -->
+<div id="modalMensagem" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                <h3 class="modal-title"><i class="fa fa-info-circle"></i> Mensagem</h3>
+            </div>
+            <div class="modal-body">
+                <h4 id="modalMensagemResposta">Operação realizada com sucesso!</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Evento do botão Filtrar
+    $('#btnFiltrar').click(function () {
+        console.log('Clicou em Filtrar');
+        var search = $('#search').val();
+        var status = $('#status').val();
+        console.log('Search:', search, 'Status:', status);
+        
+        $.ajax({
+            url: '@Url.Action("Filtrar", "PerfisDeAcesso")',
+            type: 'GET',
+            data: { search: search, status: status },
+            success: function (data) {
+                console.log('Grid recarregado com sucesso');
+                $('#grid-container').html(data);
+                // Reinicializar tooltips após recarregar o grid
+                $('[data-toggle="tooltip"]').tooltip({
+                    html: true,
+                    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width: 300px; text-align: left; white-space: pre-line;"></div></div>'
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Erro ao recarregar grid:', error);
+                console.error('Resposta do servidor:', xhr.responseText);
+                alert('Erro ao recarregar o grid: ' + error);
+            }
+        });
+    });
+
+    // Evento do botão Limpar
+    $('#btnLimpar').click(function () {
+        $('#search').val('');
+        $('#status').val('T');
+        $('#btnFiltrar').click();
+    });
+});
+
+function AtivarInativar(id, ativar, nomePerfil) {
+    var acao = ativar ? 'ativar' : 'inativar';
+    var mensagemConfirmacao = 'Deseja realmente ' + acao + ' o perfil "' + nomePerfil + '"?';
+    
+    if (!ativar) {
+        mensagemConfirmacao += '\n\nAtenção: Se houver usuários associados, a operação será cancelada.';
+    }
+    
+    if (!confirm(mensagemConfirmacao)) {
+        return;
+    }
+    
+    console.log('Enviando requisição para', acao, 'perfil:', nomePerfil);
+    
+    $.ajax({
+        url: '@Url.Action("AtivarInativar", "PerfisDeAcesso")',
+        type: 'POST',
+        data: JSON.stringify({ id: id, ativar: ativar }),
+        contentType: 'application/json',
+        success: function(result) {
+            console.log('Resposta do servidor:', result);
+            
+            if (result.codigo === "00") {
+                $('#modalMensagemResposta').text(result.mensagem);
+                $('#modalMensagem').modal('show');
+                
+                // Recarregar o grid após a modal ser fechada
+                $('#modalMensagem').one('hidden.bs.modal', function () {
+                    console.log('Modal fechada, recarregando grid...');
+                    // Deixar com todos os filtros para ver a mudança
+                    $('#search').val('');
+                    $('#status').val('T');
+                    $('#btnFiltrar').click();
+                });
+            } else {
+                $('#modalMensagemResposta').text(result.mensagem || 'Erro ao realizar a operação');
+                $('#modalMensagem').modal('show');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Erro na requisição:', error);
+            console.error('Status HTTP:', xhr.status);
+            console.error('Resposta:', xhr.responseText);
+            $('#modalMensagemResposta').text('Erro ao realizar a operação: ' + error);
+            $('#modalMensagem').modal('show');
+        }
+    });
+}
+</script>

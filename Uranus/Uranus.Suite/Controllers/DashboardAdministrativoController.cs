@@ -8,9 +8,11 @@ using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
 using Uranus.Domain.Entities;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Administrativo:DashboardAdministrativo")]
     public class DashboardAdministrativoController : Controller
     {
         Performance performance = new Performance();

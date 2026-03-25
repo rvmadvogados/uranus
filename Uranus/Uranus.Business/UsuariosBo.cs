@@ -53,24 +53,49 @@ namespace Uranus.Business
                 using (var context = new UranusEntities())
                 {
                     var usuario = context.Usuarios.Find(id);
-                    context.Usuarios.Attach(usuario);
-                    context.Usuarios.Remove(usuario);
+                    if (usuario == null)
+                        return "99";
+                    usuario.Bloqueio = true;
+                    context.Entry(usuario).Property(x => x.Bloqueio).IsModified = true;
                     context.SaveChanges();
                 }
-
                 return "00";
             }
             catch (Exception ex)
             {
                 String error = "99";
-                String message = ex.InnerException.ToString();
-
+                String message = ex.InnerException?.ToString() ?? ex.Message;
                 if (message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
                     error = "98";
-
                 return error;
             }
         }
+
+        //public static string Excluir(Int32 id)
+        //{
+        //    try
+        //    {
+        //        using (var context = new UranusEntities())
+        //        {
+        //            var usuario = context.Usuarios.Find(id);
+        //            context.Usuarios.Attach(usuario);
+        //            context.Usuarios.Remove(usuario);
+        //            context.SaveChanges();
+        //        }
+
+        //        return "00";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        String error = "99";
+        //        String message = ex.InnerException.ToString();
+
+        //        if (message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+        //            error = "98";
+
+        //        return error;
+        //    }
+        //}
 
         public static List<Usuarios> Listar(string search) 
         {
@@ -79,6 +104,7 @@ namespace Uranus.Business
                 using (var context = new UranusEntities())
                 {
                     var query = from d in context.Usuarios
+                                where d.Senha != null
                                 orderby d.Nome ascending
                                 select d;
 
@@ -91,11 +117,24 @@ namespace Uranus.Business
                 {
                     var query = from d in context.Usuarios
                                 where d.Nome.Contains(search)
+                                where d.Senha != null
                                 orderby d.Nome ascending
                                 select d;
 
                     return query.ToList();
                 }
+            }
+        }
+
+        public static List<Usuarios> ListarTodos()
+        {
+            using (var context = new UranusEntities())
+            {
+                var query = from d in context.Usuarios
+                            orderby d.Nome ascending
+                            select d;
+
+                return query.ToList();
             }
         }
 
@@ -175,6 +214,26 @@ namespace Uranus.Business
             }
         }
 
+        public static Usuarios BuscarUsuarioPorLogin(String Login)
+        {
+            using (var context = new UranusEntities())
+            {
+                var query = from d in context.Usuarios.Include("Profissionais")
+                                                      .Include("Profissionais.Pessoas")
+                            where d.Login == Login
+                            where d.Bloqueio == false
+                            select d;
+
+                return query.FirstOrDefault();
+            }
+        }
+
+        // Manter o método com nome antigo para compatibilidade
+        public static Usuarios BuscarUusarioPorLogin(String Login)
+        {
+            return BuscarUsuarioPorLogin(Login);
+        }
+
         public static String Buscar(Int64 Id)
         {
             try
@@ -200,5 +259,18 @@ namespace Uranus.Business
             }
         }
 
+        public static void Ativar(Int32 id)
+        {
+            using (var context = new UranusEntities())
+            {
+                var usuario = context.Usuarios.Find(id);
+                if (usuario != null)
+                {
+                    usuario.Bloqueio = false;
+                    context.Entry(usuario).Property(x => x.Bloqueio).IsModified = true;
+                    context.SaveChanges();
+                }
+            }
+        }
     }
 }

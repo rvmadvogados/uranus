@@ -225,7 +225,8 @@
                                     @<text>
                                         @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
 
-                                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10)
+                                        @*@{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10)*@
+                                        @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ModelosBotoesDeControle") != null)
                                                                                                                                                     {
                                             @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
                                             @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")

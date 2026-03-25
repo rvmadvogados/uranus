@@ -11,9 +11,11 @@ using R9.DataBase;
 
 using System.Web.Mvc;
 using Uranus.Business;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("Documentos")]
     public static class TemplateInicialController
     {
         public static void Instalar(string conexão)

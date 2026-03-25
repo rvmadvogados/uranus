@@ -4,9 +4,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Data;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    //[RequireSubmenu("Financeiro:BancosLancamentos")]
     public class BancosLancamentosController : Controller
     {
         // GET: BancosLancamentos

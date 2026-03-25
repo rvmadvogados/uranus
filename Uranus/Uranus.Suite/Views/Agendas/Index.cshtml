@@ -385,11 +385,11 @@
                                 <div class="form-group">
                                     <label class="titlefield">Tipo de Indicação</label>
                                     <input id="TipoIndicacao" name="TipoIndicacao" class="form-control placeholder" placeholder="Selecione o cliente" readonly />
-                                        @*<option value="" style="background-color: #eaeaea;">Selecione o Tipo de Indicação</option>*@
-                                    
+                                    @*<option value="" style="background-color: #eaeaea;">Selecione o Tipo de Indicação</option>*@
+
                                     @*<select id="TipoIndicacao" name="TipoIndicacao" class="form-control placeholder">
-                                        <option value="" style="background-color: #eaeaea;">Selecione o Tipo de Indicação</option>
-                                    </select>*@
+                                            <option value="" style="background-color: #eaeaea;">Selecione o Tipo de Indicação</option>
+                                        </select>*@
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -446,7 +446,8 @@
                                 </div>
                             </div>
                         </div>
-                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                        @*@{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)*@
+                        @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "AgendaVisualizarInformacoesCadastro") != null)
                             {
                                 <div class="row">
                                     <div class="col-md-3">
@@ -478,7 +479,7 @@
                         }
                     </div>
                     <div class="alert alert-warning" id="agenda-profissional-alert-error" hidden="hidden">
-                        <strong>Aviso:</strong> O Profissional seleciondo já tem agenda nesta data e hora.
+                        <strong>Aviso:</strong> O Profissional selecionado já tem agenda nesta data e hora.
                     </div>
                     <div class="alert alert-warning" id="agenda-sede-alert-error" hidden="hidden">
                         <strong>Aviso:</strong> A Sala selecionada nesta Sede já esta agendada nesta data e hora.
@@ -493,11 +494,18 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="left">
-                                    <button id="ButtonRemoveEvent" type="button" class="btn btn-danger mb-2" style="margin: 0;" data-dismiss="modal" onclick="Excluir($('#id').val(), $('#idEvent').val());">Remover</button>
+                                    @{
+                                      if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "AgendaCompromissosBotaoRemover") != null)
+                                      {
+                                          <button id="ButtonRemoveEvent" type="button" class="btn btn-danger mb-2" style="margin: 0;" data-dismiss="modal" onclick="Excluir($('#id').val(), $('#idEvent').val());">Remover</button>
+                                      }
+                                    }
                                 </div>
                             </div>
                             @{
-                                if (Sessao.Usuario.Nivel > 1)
+                                //if (Sessao.Usuario.Nivel > 1)
+                                //{
+                                if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "AgendaHabilitarBotaoLiberar") != null)
                                 {
                                     <div class="col-md-4">
                                         <div class="center">
@@ -701,7 +709,7 @@
                     $('#NomeIndicacao').val(json.cliente[0].Indicacao);
                     ShowIndicacao(json.cliente[0].Tipo);
 
-                    
+
                     if (json.cliente[0].Telefone != null) {
                         if (json.cliente[0].Telefone.length == 10) {
                             $('#Telefone').val(FormatNumber(json.cliente[0].Telefone, '(##) ####-####'));
@@ -805,7 +813,7 @@
         //  //  $("#Profissionais").removeClass("hidden");
 
         //}
-       
+
     }
 
     var my_hour_format = function (input) {
@@ -1305,7 +1313,12 @@
                         $('#Sede').val(json.agenda[0].IdSede);
 
                         if (json.agenda[0].Valor != null) {
-                            $('#Valor').val(('R$ ' + mascaraValor(json.agenda[0].Valor.toFixed(2))));
+                            console.log(json.agenda[0].Valor);
+                            if (json.agenda[0].Valor == 0) {
+                                $('#Valor').val(('R$ 0,00'));
+                            } else {
+                                $('#Valor').val(('R$ ' + mascaraValor(json.agenda[0].Valor.toFixed(2))));
+                            }
                         }
 
                         $('#Profissional').val(json.agenda[0].IdProfissional);
@@ -1317,7 +1330,8 @@
                         //    $('#Cliente').val("");
                         //}
                         //$('#Cliente').trigger('change');
-
+                        console.log('agenda')
+                        console.log(json.agenda[0].IdCliente)
                         if (json.agenda[0].IdCliente != null && $.isNumeric(json.agenda[0].IdCliente)) {
                             choicesCliente.removeActiveItems();
 
@@ -1406,7 +1420,7 @@
                     }
                 };
                 $.ajax(options);
-                //aqui
+
                 //$('#fc_edit').click();
 
                 $('#CalenderModal').modal('show');
@@ -2082,7 +2096,7 @@
     //}
 
     function CarregarProfissionais(Data, callback) {
-        
+
         var dados = new window.FormData();
         dados.append("Data", Data);
 
@@ -2283,7 +2297,8 @@
         //if ($.isNumeric($('#FiltrarCliente option:selected').val())) {
         //    dados.append("IdCliente", $('#FiltrarCliente option:selected').val());
         //}
-
+        console.log("1111")
+        console.log($('#FiltrarCliente').val())
         if (
             $('#FiltrarCliente').val() &&
             $.isNumeric($('#FiltrarCliente').val())
@@ -2327,11 +2342,11 @@
         $('#FiltrarDataFinalValor').val('');
         if (choicesFiltrarCliente) {
             choicesFiltrarCliente.removeActiveItems();
-            //choicesFiltrarCliente.setChoiceByValue(''); 
+            //choicesFiltrarCliente.setChoiceByValue('');
         }
         if (choicesCliente) {
             choicesCliente.removeActiveItems();
-            //choicesFiltrarCliente.setChoiceByValue(''); 
+            //choicesFiltrarCliente.setChoiceByValue('');
         }
 
         FiltrarAgenda();
@@ -2367,7 +2382,7 @@
 
         if ($('#ReuniaoHoraInicial').val().length > 0) {
             var horaAtual = $('#ReuniaoHoraInicial').val().split(":");
-            var horaNova = pad(parseInt(horaAtual[0]) + 1, 2) + ":" + horaAtual[1];
+            var horaNova = (parseInt(horaAtual[0]) + 1, 2) + ":" + horaAtual[1];
             $('#ReuniaoHoraFinal').val(horaNova);
         }
 
@@ -2557,13 +2572,13 @@
     }
 
     $(document).ready(function () {
-        
+
         choicesFiltrarCliente = new Choices('#FiltrarCliente', {
             searchEnabled: true,
             searchResultLimit: 20,
             shouldSort: false,
             placeholder: true,
-     //       placeholderValue: 'Selecione um Cliente',
+            //       placeholderValue: 'Selecione um Cliente',
             noResultsText: 'Nenhum cliente encontrado',
             itemSelectText: 'Selecionar',
             removeItemButton: true
@@ -2593,7 +2608,7 @@
 </script>
 
 <script>
-    
+
 
     function carregarClientesChoicesCliente(search, callback) {
         $.ajax({
@@ -2655,7 +2670,7 @@
 
                     // bug de nao selecionar o cliente ao digitar rápido
                     carregarClientesChoicesCliente(search, function (options) {
-                        
+
                         const selectedValue = choicesCliente.getValue(true);
                         let selectedLabel = '';
 
@@ -2690,6 +2705,7 @@
     .choices__list--dropdown .choices__item[data-value=""] {
         display: none !important;
     }
+
     .choices__list--dropdown, .choices__list[aria-expanded] {
         z-index: 1050 !important;
     }

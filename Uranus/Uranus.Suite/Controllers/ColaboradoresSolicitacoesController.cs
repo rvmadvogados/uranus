@@ -7,10 +7,10 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
-
     public class ListarColModel
     {
         public ProfissionalModel Profissional { get; set; }
@@ -19,7 +19,6 @@ namespace Uranus.Suite.Controllers
         public List<ProfissionaisAusencias> Ausencias { get; set; }
         public List<ProfissionaisSolicitacoesEspeciais> SolicitacosEspeciais { get; set; }
         public List<ProfissionaisContracheques> Contracheques { get; set; }
-
     }
 
     public class ProfissionalModel
@@ -31,6 +30,7 @@ namespace Uranus.Suite.Controllers
         public string Tipo { get; set; }
     }
 
+    [RequireMenu("AreaDoColaborador")]
     public class ColaboradoresSolicitacoesController : Controller
     {
         // GET: Colaboradoressolicitacoesferias
@@ -49,11 +49,6 @@ namespace Uranus.Suite.Controllers
                 var ausencias = ProfissionaisAusenciasBo.ListarAusencias(profissional.ID);
                 var solicitacosespeciais = ProfissionaisSolicitacoesEspeciaisBo.ListarSolicitacoesEspeciais(profissional.ID);
                 var contracheques = ProfissionaisContrachequesBo.ListarContracheques(profissional.ID);
-
-                //ListarColModel model = new ListarColModel();
-                //model.Profissional = new ProfissionalModel();
-                //model.Profissional.Id = profissional.ID;
-                //model.Profissional.Nome = profissional.Pessoas.Nome;
 
                 ListarColModel model = new ListarColModel()
                 {
@@ -188,7 +183,6 @@ namespace Uranus.Suite.Controllers
             }
             var result = new { codigo = "00", colaboradordocumento = colaboradordocumento, arquivo = arquivo };
 
-            //            var result = new { codigo = "00", colaboradordocumento = colaboradordocumento };
             return Json(result);
         }
 

@@ -7,9 +7,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("Cadastros")]
     public class ClientesController : Controller
     {
         public ActionResult GetClientsList(string search, bool filter = false, int page = 1)

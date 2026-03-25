@@ -7,9 +7,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Administrativo:GestaoColaboradores")]
     public class ColaboradoresController : Controller
     {
         public ActionResult GetProfissionaisList(string search, bool filter = false, int page = 1)

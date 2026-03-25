@@ -41,6 +41,112 @@
     <script>
         NProgress.start();
     </script>
+    
+    <style>
+        #Codigo2FA {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+      text-align: center;
+    letter-spacing: 3px;
+        }
+        
+        #Codigo2FA:focus {
+   border-color: #4CAF50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+        
+.alert-info-2fa {
+ border-left: 4px solid #5bc0de;
+      background-color: #d9edf7;
+        border-color: #bce8f1;
+            color: #31708f;
+    }
+
+        #linkCancelar2FA {
+     color: #666;
+  text-decoration: none;
+       font-size: 14px;
+        }
+        
+      #linkCancelar2FA:hover {
+          color: #333;
+ text-decoration: underline;
+        }
+   
+        .method-selector {
+  display: flex;
+ justify-content: center;
+     gap: 10px;
+            margin-bottom: 20px;
+         flex-wrap: wrap;
+      }
+      
+        .method-btn {
+     flex: 1;
+            min-width: 120px;
+    padding: 10px;
+    border: 2px solid #ddd;
+     background: #f9f9f9;
+         cursor: pointer;
+            border-radius: 5px;
+      transition: all 0.3s;
+       text-align: center;
+        }
+     
+        .method-btn:hover {
+    border-color: #5bc0de;
+       background: #f0f8ff;
+        }
+        
+        .method-btn.active {
+       border-color: #5bc0de;
+      background: #d9edf7;
+            font-weight: bold;
+        }
+        
+.method-btn i {
+    font-size: 24px;
+   display: block;
+     margin-bottom: 5px;
+        }
+        
+      #div2FA {
+     opacity: 0;
+       transition: all 0.4s ease-in-out;
+         max-height: 0;
+          overflow: hidden;
+            margin-top: 0;
+        }
+        
+        #div2FA.show {
+    opacity: 1;
+     max-height: 700px;
+    margin-top: 15px;
+        }
+        
+        #div2FA .form-group {
+            margin-bottom: 20px;
+     }
+   
+        #codigo-hint {
+margin-top: 8px;
+        display: block;
+  font-size: 13px;
+  color: #666;
+ }
+        
+        #codigo2faContainer {
+            opacity: 0;
+   transition: opacity 0.4s ease-in-out;
+            max-height: 0;
+        overflow: hidden;
+        }
+        
+        #codigo2faContainer.show {
+            opacity: 1;
+        max-height: 300px;
+        }
+    </style>
 </head>
 <body>
 
@@ -91,9 +197,58 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Campo para código 2FA (inicialmente oculto) -->
+                <div id="div2FA" class="row" style="display: none; margin-top: 15px;">
+                  <div class="col-md-12">
+                      <div class="alert alert-info-2fa" style="margin-bottom: 15px;">
+                          <strong><i class="fa fa-shield"></i> Autenticação de Dois Fatores</strong>
+                          <p style="margin-bottom: 0;" id="mensagem2FA">Escolha como deseja receber o código de autenticação</p>
+                      </div>
+                  
+                      <!-- Seletor de método -->
+                      <div class="method-selector" id="methodSelector">
+                          <div class="method-btn active" id="method-app" data-method="app">
+                              <i class="fa fa-mobile"></i>
+                              <div>App Autenticador</div>
+                          </div>
+                          <div class="method-btn" id="method-email" data-method="email">
+                              <i class="fa fa-envelope"></i>
+                              <div>Email</div>
+                              <small id="email-hint" style="display:none;"></small>
+                          </div>
+                      </div>
+                      
+                      <!-- Input de código 2FA (oculto até selecionar método) -->
+  <div id="codigo2faContainer" style="display: none;">
+               <div class="form-group">
+ <label>Código de Autenticação</label>
+              <input type="text" 
+           class="form-control" 
+       placeholder="123456" 
+             id="Codigo2FA" 
+     name="Codigo2FA" 
+ maxlength="8"
+          autocomplete="off" />
+     <small class="text-muted" id="codigo-hint" style="margin-top: 5px; display: block;">
+                 <i class="fa fa-info-circle"></i> 
+ <span id="hint-text">Digite o código do Google Authenticator</span>
+      </small>
+        <label id="Codigo2FAValidate" name="Codigo2FAValidate" for="Codigo2FA" class="error hidden">Por favor, insira o código de autenticação.</label>
+          </div>
+       
+      <div class="text-center" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+          <a href="#" id="linkCancelar2FA">
+    <i class="fa fa-arrow-left"></i> Voltar ao login
+                   </a>
+           </div>
+         </div>
+     </div>
+    </div>
+                
                 <div id="login-alert-error" class="form-group hidden" style="margin-bottom: 0px !important; padding: 0px 25px 0px 25px !important;">
                     <div class="alert alert-danger">
-                        <b>Aviso:</b> Acesso não autorizado devido a credenciais inválidas.
+                        <b>Aviso:</b> <span id="login-error-message">Acesso não autorizado devido a credenciais inválidas.</span>
                     </div>
                 </div>
                 <div class="row">
@@ -118,7 +273,25 @@
     <script>
         NProgress.start();
 
-        $(document).ready(function () {
+     // Variáveis globais para controlar o fluxo de 2FA
+        var requer2FA = false;
+        var usuarioAtual = "";
+        var senhaAtual = "";
+        var metodo2FAAtual = "app"; // app ou email
+ var hasAuthenticator = false;
+ var hasEmail = false;
+        var maskedEmail = "";
+        
+        // Controle local de tentativas de login
+        var MAX_ATTEMPTS = 5;
+        var LOCKOUT_MINUTES = 5;
+
+         // ===== REMOVIDO: Lógica de localStorage =====
+     // Anteriormente tínhamos: getLoginAttempts(), incrementarTentativas(), resetarTentativas()
+ // Estas funções foram removidas porque agora confiamos APENAS na API
+     // A API retorna isLocked: true/false e attemptsRemaining na resposta
+
+     $(document).ready(function () {
 
             $("#Usuario").keydown(function (e) {
                 if (e.key === "Enter" || e.keyCode === 13) {
@@ -128,6 +301,13 @@
             });
 
             $("#Senha").keydown(function (e) {
+                if (e.key === "Enter" || e.keyCode === 13) {
+                    e.preventDefault();
+                    $("#buttonEntrar").click();
+                }
+            });
+            
+            $("#Codigo2FA").keydown(function (e) {
                 if (e.key === "Enter" || e.keyCode === 13) {
                     e.preventDefault();
                     $("#buttonEntrar").click();
@@ -146,6 +326,52 @@
                     $('#show_hide_password i').addClass("fa-eye");
                 }
             });
+            
+            // Link para cancelar 2FA e voltar
+            $("#linkCancelar2FA").click(function(e) {
+                e.preventDefault();
+                ocultarCampo2FA();
+            });
+            
+            // Seletor de método
+     $(".method-btn").click(function() {
+       var method = $(this).data("method");
+         
+        // Verificar se o método está disponível
+      if (method === "app" && !hasAuthenticator) {
+   alert("Você ainda não configurou o autenticador. Por favor, use o email.");
+        return;
+              }
+ 
+   if (method === "email" && !hasEmail) {
+     alert("Não há email cadastrado para este usuário.");
+  return;
+}
+                
+  $(".method-btn").removeClass("active");
+        $(this).addClass("active");
+    metodo2FAAtual = method;
+     
+      // Mostrar o input de código
+     $("#codigo2faContainer").addClass("show");
+       
+                // Atualizar hints
+       if (method === "email") {
+         $("#hint-text").text("Digite o código enviado para seu email");
+       $("#mensagem2FA").text("Digite o código enviado para: " + maskedEmail);
+           
+        // Solicitar envio do código
+     solicitarCodigoEmail();
+       } else {
+       $("#hint-text").text("Digite o código do Google Authenticator");
+          $("#mensagem2FA").text("Digite o código do seu aplicativo autenticador");
+            }
+ 
+      // Focar no input após um pequeno delay
+      setTimeout(function() {
+                $("#Codigo2FA").focus();
+ }, 100);
+     });
         });
 
         $("#Usuario").keypress(function () {
@@ -159,89 +385,252 @@
                 $('#SenhaValidate').addClass('hidden');
             }
         });
+        
+        $("#Codigo2FA").keypress(function () {
+            if (($(this).val().length + 1) > 0) {
+                $('#Codigo2FAValidate').addClass('hidden');
+            }
+        });
 
         $('#buttonEntrar').click(function (evt) {
 
-            var validated = true;
+      var validated = true;
 
-            if ($('#Usuario').val().length == 0) {
-                $('#UsuarioValidate').removeClass('hidden');
-                validated = false;
+        if ($('#Usuario').val().length == 0) {
+            $('#UsuarioValidate').removeClass('hidden');
+          validated = false;
             }
-            else {
-                $('#UsuarioValidate').addClass('hidden');
-            }
+      else {
+    $('#UsuarioValidate').addClass('hidden');
+    }
 
-            if ($('#Senha').val().length == 0) {
-                $('#SenhaValidate').removeClass('hidden');
-                validated = false;
-            }
+ if ($('#Senha').val().length == 0) {
+   $('#SenhaValidate').removeClass('hidden');
+    validated = false;
+      }
             else {
-                $('#SenhaValidate').addClass('hidden');
+         $('#SenhaValidate').addClass('hidden');
+  }
+     
+            // Validar código 2FA se necessário
+            if (requer2FA && $('#Codigo2FA').val().length < 6) {
+             $('#Codigo2FAValidate').removeClass('hidden');
+       validated = false;
+        }
+    else {
+            $('#Codigo2FAValidate').addClass('hidden');
             }
 
             if (validated) {
+   
+     var usuario = $("#Usuario").val();
+       
+    // ===== CONFIAMOS APENAS NA API =====
+   // Não verificamos localStorage aqui, deixamos a API decidir se está bloqueado
+   
+     $("#buttonEntrar").attr('disabled', true);
+      $("#buttonEntrar").html("Enviando, aguarde <i class='fa fa-spinner fa-spin'></i>");
 
-                $("#buttonEntrar").attr('disabled', true);
-                $("#buttonEntrar").html("Enviando, aguarde <i class='fa fa-spinner fa-spin'></i>");
+           var dados = new window.FormData();
+    dados.append("Usuario", usuario);
+    dados.append("Senha", $("#Senha").val());
+   
+   // Adicionar código 2FA se necessário
+   if (requer2FA) {
+        dados.append("Codigo2FA", $("#Codigo2FA").val());
+         }
 
-                var dados = new window.FormData();
-                dados.append("Usuario", $("#Usuario").val());
-                dados.append("Senha", $("#Senha").val());
-
-                var options = {};
-                options.url = "/Login/Validar";
-                options.type = "POST";
-                options.data = dados;
-                options.asyn = true;
-                options.contentType = false;
+   var options = {};
+             options.url = requer2FA ? "/Login/ValidarCom2FA" : "/Login/Validar";
+           options.type = "POST";
+              options.data = dados;
+     options.asyn = true;
+     options.contentType = false;
                 options.processData = false;
-                options.dataType = "application/json; charset=utf-8";
+       options.dataType = "application/json; charset=utf-8";
                 options.complete = function (data) {
 
-                    var json = $.parseJSON(data.responseText);
+  var json = $.parseJSON(data.responseText);
+     
+   // DEBUG - Mostrar toda a resposta no console
+console.log("=== RESPOSTA COMPLETA ===");
+       console.log("Response:", json);
+              console.log("attemptsRemaining:", json.attemptsRemaining);
+ console.log("response type:", json.response);
+            console.log("locked:", json.locked);
+     console.log("========================");
+          
+         if (json.response == "requiresSetup") {
+         window.location.href = "/Configurar2FA";
+  }
+   else if (json.response == "requires2fa") {
+  usuarioAtual = $("#Usuario").val();
+               senhaAtual = $("#Senha").val();
+      hasAuthenticator = json.hasAuthenticator;
+        hasEmail = json.hasEmail;
+               maskedEmail = json.maskedEmail || "";
+             metodo2FAAtual = json.preferredMethod || "app";
+      
+  mostrarCampo2FA();
+             
+        $("#buttonEntrar").attr('disabled', false);
+         $("#buttonEntrar").text("Confirmar Código");
+             $("#login-error-message").text(json.message || "Por favor, forneça o código de autenticação");
+     $("#login-alert-error").removeClass("hidden");
+       setTimeout(function () {
+ $("#login-alert-error").addClass("hidden");
+           }, 5000);
+     }
+        else if (json.response == "success") {
+          $("#login-alert-error").addClass("hidden");
 
-                    if (json.response == "success") {
+          if (json.aplicativo == "Agenda") {
+window.location.href = "/Agendas";
+  }
+     else if (json.aplicativo == "Processos") {
+             window.location.href = "/Processos";
+ }
+    else if (json.aplicativo == "Suite") {
+                 window.location.href = "/Processos";
+      }
+         else {
+       window.location.href = "/Dashboard";
+       }
+     }
+   else {
+    // Login falhou - ou bloqueio, ou credenciais inválidas
+    
+    // ✅ Se a resposta da API indica bloqueio, confiar nela e limpar localStorage
+      if (json.isLocked === true) {
+         // Bloqueio é controlado pela API
+          
+     $("#login-error-message").text(json.message || "⏱️ Sua conta está temporariamente bloqueada.");
+     $("#login-alert-error").removeClass("hidden");
+      $("#buttonEntrar").attr('disabled', false);
+          return;
+     }
+       
+  // Login falhou - trataremos apenas com base na resposta da API
+       // Não incrementamos tentativas locais, a API já faz isso
+    
+  $("#login-error-message").text(json.message || "Acesso não autorizado devido a credenciais inválidas.");
+       $("#login-alert-error").removeClass("hidden");
+   $("#buttonEntrar").attr('disabled', false);
+        
+    // Limpar aviso anterior de tentativas
+  $("#login-alert-error").find(".attempts-warning").remove();
+    
+       // ===== REMOVIDO: Lógica de avisos de tentativas locais =====
+  // A mensagem já vem da API com toda informação necessária
+ // A API retorna: message, attemptsRemaining, isLocked
+     // O frontend simplesmente mostra a mensagem da API
 
-                        $("#login-alert-error").addClass("hidden");
-
-
-                        if (json.nivel == 9) {
-                            $(location).attr('href', $(location).attr('href') + 'DashboardAdministrativo');
-                        }
-                        else if (json.aplicativo == "Agenda") {
-                            $(location).attr('href', $(location).attr('href') + 'Agendas');
-                        }
-                        else if (json.aplicativo == "Processos") {
-                            $(location).attr('href', $(location).attr('href') + 'Processos');
-                        }
-                        else if (json.aplicativo == "Suite") {
-                            $(location).attr('href', $(location).attr('href') + 'Processos');
-                        }
-                        else {
-                            $(location).attr('href', $(location).attr('href') + 'Dashboard');
-                        }
-
-                    }
-                    else {
-
-                        $("#login-alert-error").removeClass("hidden");
-                        $("#buttonEntrar").attr('disabled', false);
-                        $("#buttonEntrar").text("Entrar");
-
-                    }
-                    DashboardAdministrativo
-                    setTimeout(function () {
-                        $("#login-alert-error").addClass("hidden");
-                    }, 3000);
-
-                };
-                $.ajax(options);
-
-            }
-
+          if (requer2FA) {
+     $("#buttonEntrar").text("Confirmar Código");
+$("#Codigo2FA").focus();
+         } else {
+               $("#buttonEntrar").text("Entrar");
+  $("#Senha").val("");
+    $("#Senha").focus();
+        }
+       }
+  };
+$.ajax(options);
+     }
         });
+        
+        function mostrarCampo2FA() {
+    requer2FA = true;
+  
+ // Configurar seletor de métodos
+ if (!hasAuthenticator) {
+    $("#method-app").hide();
+       metodo2FAAtual = "email";
+      }
+  
+        if (!hasEmail) {
+  $("#method-email").hide();
+        metodo2FAAtual = "app";
+ }
+   
+ if (hasEmail) {
+       $("#email-hint").text(maskedEmail).show();
+   }
+ 
+        // Ativar método correto
+     $(".method-btn").removeClass("active");
+       $("#method-" + metodo2FAAtual).addClass("active");
 
+   // Atualizar hint
+ if (metodo2FAAtual === "email") {
+      $("#hint-text").text("Digite o código enviado para seu email");
+   $("#mensagem2FA").text("Digite o código enviado para: " + maskedEmail);
+         } else {
+    $("#hint-text").text("Digite o código do Google Authenticator");
+    $("#mensagem2FA").text("Digite o código do seu aplicativo autenticador");
+      }
+         
+       // Mostrar com transição suave
+      $("#div2FA").addClass("show");
+     
+       $("#Usuario").prop("disabled", true);
+   $("#Senha").prop("disabled", true);
+ }
+
+function ocultarCampo2FA() {
+   requer2FA = false;
+ $("#div2FA").removeClass("show");
+      
+  // Aguardar a transição terminar antes de limpar
+ setTimeout(function() {
+  $("#Codigo2FA").val("");
+    $("#codigo2faContainer").removeClass("show");
+  $("#buttonEntrar").text("Entrar");
+    $("#Senha").val("");
+$("#Senha").focus();
+  }, 300);
+        
+     $("#Usuario").prop("disabled", false);
+$("#Senha").prop("disabled", false);
+    usuarioAtual = "";
+          senhaAtual = "";
+  }
+        
+        function solicitarCodigoEmail() {
+     var dados = new window.FormData();
+            dados.append("Usuario", $("#Usuario").val());
+      
+            var options = {};
+            options.url = "/Login/SolicitarCodigoEmail";
+    options.type = "POST";
+         options.data = dados;
+            options.asyn = true;
+            options.contentType = false;
+          options.processData = false;
+            options.dataType = "application/json; charset=utf-8";
+            options.complete = function (data) {
+          var json = $.parseJSON(data.responseText);
+   
+          if (json.response == "success") {
+              $("#login-error-message").text("Código enviado para " + (json.email || "seu email"));
+   $("#login-alert-error").removeClass("alert-danger").addClass("alert-success");
+        $("#login-alert-error").removeClass("hidden");
+  
+           setTimeout(function () {
+           $("#login-alert-error").addClass("hidden");
+       $("#login-alert-error").removeClass("alert-success").addClass("alert-danger");
+             }, 5000);
+             } else {
+              $("#login-error-message").text(json.message || "Erro ao enviar código por email");
+        $("#login-alert-error").removeClass("hidden");
+   
+           setTimeout(function () {
+    $("#login-alert-error").addClass("hidden");
+     }, 5000);
+      }
+            };
+     $.ajax(options);
+        }
     </script>
 </body>
 </html>

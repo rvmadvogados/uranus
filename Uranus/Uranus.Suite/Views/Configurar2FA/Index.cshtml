@@ -1,0 +1,653 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Configurar Autenticação 2FA - RVM Advogados</title>
+    
+    <link href="~/Content/CSS/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/fonts/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/CSS/custom.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background: #F7F7F7;
+            min-height: 100vh;
+            padding: 20px 0;
+            font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+        }
+        .setup-container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .setup-header {
+            background: #ECBD4F;
+            color: #333333;
+            padding: 25px 30px;
+            border-radius: 4px 4px 0 0;
+        }
+        .setup-header h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333333;
+        }
+        .setup-header p {
+            margin: 0;
+            font-size: 14px;
+            color: #555555;
+        }
+        .setup-body {
+            padding: 30px 40px;
+        }
+        .step {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #E7E7E7;
+        }
+        .step:last-child {
+            border-bottom: none;
+        }
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .step-number {
+            width: 35px;
+            height: 35px;
+            background: #ECBD4F;
+            color: #333333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333333;
+            margin: 0;
+        }
+        .step p {
+            color: #73879C;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .qr-code-container {
+            text-align: center;
+            padding: 25px;
+            background: #FEFEF8;
+            border: 1px solid #ECBD4F;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .qr-code-container img {
+            max-width: 280px;
+            border: 2px solid #ECBD4F;
+            border-radius: 4px;
+            padding: 10px;
+            background: white;
+        }
+        .manual-key {
+            background: #FEFEF8;
+            border: 1px solid #ECBD4F;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .manual-key strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .manual-key-code {
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+            letter-spacing: 3px;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border: 1px solid #E7E7E7;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .code-input {
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 28px;
+            text-align: center;
+            letter-spacing: 10px;
+            padding: 15px;
+            border: 2px solid #D9DEE4;
+            border-radius: 4px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .code-input:focus {
+            border-color: #ECBD4F;
+            box-shadow: 0 0 8px rgba(236, 189, 79, 0.3);
+            outline: none;
+        }
+        .recovery-codes {
+            background: #FEFEF8;
+            border: 2px solid #ECBD4F;
+            border-radius: 4px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        .recovery-codes h3 {
+            color: #856404;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .recovery-codes p {
+            color: #73879C;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .recovery-codes-list {
+            columns: 2;
+            -webkit-columns: 2;
+            -moz-columns: 2;
+            list-style: none;
+            padding: 15px;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid #E7E7E7;
+            border-radius: 4px;
+        }
+        .recovery-codes-list li {
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 8px 5px;
+            color: #333333;
+            break-inside: avoid;
+        }
+        .btn-custom {
+            padding: 12px 25px;
+            font-size: 14px;
+            border-radius: 3px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary-custom {
+            background: #ECBD4F;
+            border: 1px solid #ECBD4F;
+            color: #333333;
+        }
+        .btn-primary-custom:hover {
+            background: #D4A63D;
+            border-color: #D4A63D;
+            color: #333333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(236, 189, 79, 0.3);
+        }
+        .btn-info {
+            background: #34495E;
+            border: 1px solid #34495E;
+            color: white;
+        }
+        .btn-info:hover {
+            background: #2C3E50;
+            border-color: #2C3E50;
+            color: white;
+        }
+        .btn-success {
+            background: #26B99A;
+            border: 1px solid #26B99A;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #1f9a7f;
+            border-color: #1f9a7f;
+            color: white;
+        }
+        .app-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .app-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid #ECBD4F;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333333;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .app-link:hover {
+            background: #ECBD4F;
+            border-color: #ECBD4F;
+            color: #333333;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(236, 189, 79, 0.3);
+        }
+        .app-link i {
+            font-size: 22px;
+            margin-right: 10px;
+        }
+        .alert-info-custom {
+            background: #D9EDF7;
+            border-left: 4px solid #3498DB;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: #31708F;
+        }
+        .alert-info-custom strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .alert-info-custom p {
+            margin: 5px 0 0 0;
+            color: #31708F;
+        }
+        hr {
+            border-color: #E7E7E7;
+            margin: 30px 0;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        .btn-skip {
+            background: #95A5A6;
+            border: 1px solid #95A5A6;
+            color: white;
+            margin-top: 20px;
+        }
+        .btn-skip:hover {
+            background: #7F8C8D;
+            border-color: #7F8C8D;
+            color: white;
+        }
+        .skip-info {
+            background: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: #856404;
+        }
+        .skip-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .skip-info p {
+            margin: 5px 0 0 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <div class="setup-header">
+            <h2><i class="fa fa-shield"></i> Configurar Autenticação de Dois Fatores</h2>
+            <p>Seu administrador configurou que você precisa usar 2FA para acessar o sistema</p>
+        </div>
+        
+        <div class="setup-body">
+            <!-- Passo 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Baixe o Google Authenticator</h3>
+                </div>
+                <p>Primeiro, você precisa instalar o aplicativo Google Authenticator no seu celular:</p>
+                <div class="app-links">
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" 
+                       target="_blank" 
+                       class="app-link">
+                        <i class="fa fa-android"></i>
+                        <span>Baixar para Android</span>
+                    </a>
+                    <a href="https://apps.apple.com/app/google-authenticator/id388497605" 
+                       target="_blank" 
+                       class="app-link">
+                        <i class="fa fa-apple"></i>
+                        <span>Baixar para iOS</span>
+                    </a>
+                </div>
+                
+                <div class="skip-info">
+                    <strong><i class="fa fa-info-circle"></i> Prefere usar 2FA via Email?</strong>
+                    <p>Se você não deseja configurar o aplicativo no celular, pode optar por usar apenas o 2FA via Email. Clique no botão abaixo para continuar sem configurar o aplicativo.</p>
+                </div>
+                
+                <button id="btnPularConfiguracao" class="btn btn-custom btn-skip btn-block">
+                    <i class="fa fa-envelope"></i> Não quero utilizar 2FA via telefone - Usar apenas Email
+                </button>
+            </div>
+            
+            <!-- Passo 2 -->
+            <div class="step" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Gere o QR Code</h3>
+                </div>
+                <p>Clique no botão abaixo para gerar seu QR Code personalizado:</p>
+                <button id="btnGerarQRCode" class="btn btn-custom btn-primary-custom">
+                    <i class="fa fa-qrcode"></i> Gerar QR Code
+                </button>
+                
+                <div id="qrCodeSection" style="display: none;">
+                    <div class="alert-info-custom">
+                        <strong><i class="fa fa-info-circle"></i> Como usar:</strong>
+                        <p>Abra o Google Authenticator no seu celular e escaneie o QR Code abaixo</p>
+                    </div>
+                    
+                    <div class="qr-code-container">
+                        <img id="qrCodeImage" alt="QR Code para Google Authenticator" />
+                    </div>
+                    
+                    <div class="manual-key">
+                        <strong><i class="fa fa-keyboard-o"></i> Ou digite a chave manualmente no app:</strong>
+                        <div class="manual-key-code" id="manualKey"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Passo 3 -->
+            <div class="step" id="step3" style="display: none;">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Digite o Código do Aplicativo</h3>
+                </div>
+                <p>Após escanear o QR Code, o Google Authenticator gerará um código de 6 dígitos. Digite-o abaixo:</p>
+                <div class="form-group">
+                    <input type="text" 
+                           id="codigo2FA" 
+                           class="form-control code-input" 
+                           maxlength="6"
+                           placeholder="000000"
+                           autocomplete="off" />
+                </div>
+                <button id="btnVerificar" class="btn btn-custom btn-primary-custom btn-block">
+                    <i class="fa fa-check-circle"></i> Confirmar e Ativar 2FA
+                </button>
+            </div>
+            
+            <!-- Códigos de Recuperação -->
+            <div id="recoveryCodesSection" style="display: none;">
+                <div class="recovery-codes">
+                    <h3>
+                        <i class="fa fa-exclamation-triangle"></i> 
+                        IMPORTANTE: Códigos de Recuperação
+                    </h3>
+                    <p>
+                        <strong>Salve estes códigos em um local seguro!</strong> 
+                        Você pode usá-los caso perca acesso ao Google Authenticator. 
+                        Cada código só pode ser usado uma vez.
+                    </p>
+                    <ul class="recovery-codes-list" id="recoveryCodesList"></ul>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button id="btnBaixarCodigos" class="btn btn-info btn-custom">
+                            <i class="fa fa-download"></i> Baixar Códigos
+                        </button>
+                        &nbsp;
+                        <button id="btnContinuar" class="btn btn-success btn-custom">
+                            <i class="fa fa-arrow-right"></i> Continuar para o Sistema
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-2.2.3.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <script>
+        var usuario = '@ViewBag.Usuario';
+        var savedRecoveryCodes = [];
+
+        $(document).ready(function() {
+            // Enter no código
+            $("#codigo2FA").keydown(function(e) {
+                if (e.key === "Enter" || e.keyCode === 13) {
+                    e.preventDefault();
+                    $("#btnVerificar").click();
+                }
+            });
+
+            // Auto-submit quando completar 6 dígitos
+            $("#codigo2FA").on('input', function() {
+                var val = $(this).val().replace(/\D/g, '');
+                $(this).val(val);
+                
+                if (val.length === 6) {
+                    setTimeout(function() {
+                        $("#btnVerificar").click();
+                    }, 300);
+                }
+            });
+        });
+
+        $("#btnGerarQRCode").click(function() {
+            var btn = $(this);
+            btn.prop("disabled", true);
+            btn.html('<i class="fa fa-spinner fa-spin"></i> Gerando...');
+            
+            $.ajax({
+                url: '/Configurar2FA/GerarQRCode',
+                type: 'POST',
+                data: { usuario: usuario },
+                success: function(result) {
+                    if (result.response === "success") {
+                        $("#qrCodeImage").attr("src", result.qrCodeUri);
+                        $("#manualKey").text(result.manualEntryKey);
+                        $("#qrCodeSection").fadeIn();
+                        $("#step3").fadeIn();
+                        btn.fadeOut();
+                        
+                        // Scroll suave até o código
+                        $('html, body').animate({
+                            scrollTop: $("#step3").offset().top - 100
+                        }, 500);
+                        
+                        // Focar no input após animação
+                        setTimeout(function() {
+                            $("#codigo2FA").focus();
+                        }, 600);
+                    } else {
+                        alert("Erro ao gerar QR Code: " + (result.message || "Tente novamente"));
+                        btn.prop("disabled", false);
+                        btn.html('<i class="fa fa-qrcode"></i> Gerar QR Code');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro na requisição:", status, error);
+                    alert("Erro ao gerar QR Code. Por favor, tente novamente.");
+                    btn.prop("disabled", false);
+                    btn.html('<i class="fa fa-qrcode"></i> Gerar QR Code');
+                }
+            });
+        });
+
+        $("#btnVerificar").click(function() {
+            var codigo = $("#codigo2FA").val();
+            
+            if (codigo.length !== 6) {
+                alert("Digite um código válido de 6 dígitos");
+                $("#codigo2FA").focus();
+                return;
+            }
+            
+            var btn = $(this);
+            btn.prop("disabled", true);
+            btn.html('<i class="fa fa-spinner fa-spin"></i> Verificando...');
+            
+            $.ajax({
+                url: '/Configurar2FA/VerificarCodigo',
+                type: 'POST',
+                data: { usuario: usuario, codigo: codigo },
+                success: function(result) {
+                    if (result.response === "success") {
+                        // IMPORTANTE: Salvar códigos ANTES de qualquer outra coisa
+                        if (result.recoveryCodes && Array.isArray(result.recoveryCodes)) {
+                            savedRecoveryCodes = result.recoveryCodes;
+                            console.log("Códigos salvos:", savedRecoveryCodes.length);
+                            
+                            // Mostrar códigos de recuperação
+                            var lista = $("#recoveryCodesList");
+                            lista.empty();
+                            
+                            result.recoveryCodes.forEach(function(code) {
+                                if (code && code.trim() !== "") {
+                                    lista.append("<li>" + code + "</li>");
+                                }
+                            });
+                            
+                            $("#step2").fadeOut();
+                            $("#step3").fadeOut();
+                            $("#recoveryCodesSection").fadeIn();
+                            
+                            // Scroll para códigos
+                            $('html, body').animate({
+                                scrollTop: $("#recoveryCodesSection").offset().top - 100
+                            }, 500);
+                        } else {
+                            console.error("Códigos de recuperação não retornados ou inválidos");
+                            alert("Erro: Códigos de recuperação não foram gerados. Por favor, contate o administrador.");
+                        }
+                    } else {
+                        alert(result.message || "Código inválido. Tente novamente.");
+                        $("#codigo2FA").val("");
+                        $("#codigo2FA").focus();
+                        btn.prop("disabled", false);
+                        btn.html('<i class="fa fa-check-circle"></i> Confirmar e Ativar 2FA');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro na requisição:", status, error);
+                    var errorMessage = "Erro ao verificar código. ";
+                    
+                    if (xhr.status === 401) {
+                        errorMessage += "Sessão expirada. Por favor, faça login novamente.";
+                    } else {
+                        errorMessage += "Tente novamente.";
+                    }
+                    
+                    alert(errorMessage);
+                    btn.prop("disabled", false);
+                    btn.html('<i class="fa fa-check-circle"></i> Confirmar e Ativar 2FA');
+                }
+            });
+        });
+
+        $("#btnBaixarCodigos").click(function() {
+            // Verificar se os códigos foram salvos
+            if (!savedRecoveryCodes || savedRecoveryCodes.length === 0) {
+                alert("Erro: Nenhum código de recuperação disponível para download. Por favor, tente configurar o 2FA novamente.");
+                console.error("savedRecoveryCodes está vazio:", savedRecoveryCodes);
+                return;
+            }
+            
+            console.log("Baixando códigos:", savedRecoveryCodes);
+            
+            // Criar arquivo TXT com BOM UTF-8 para garantir acentuação correta
+            var content = "\uFEFF"; // BOM UTF-8
+            content += "═══════════════════════════════════════════════════════\n";
+            content += "CÓDIGOS DE RECUPERAÇÃO - URANUS SUITE\n";
+            content += "RVM Advogados\n";
+            content += "═══════════════════════════════════════════════════════\n\n";
+            content += "Usuário: " + usuario + "\n";
+            content += "Gerado em: " + new Date().toLocaleString('pt-BR') + "\n\n";
+            content += "⚠️  IMPORTANTE: GUARDE EM LOCAL SEGURO!\n\n";
+            content += "Estes códigos podem ser usados caso você perca acesso\n";
+            content += "ao Google Authenticator. Cada código pode ser usado\n";
+            content += "apenas UMA vez.\n\n";
+            content += "CÓDIGOS:\n";
+            content += "═══════════════════════════════════════════════════════\n\n";
+            
+            savedRecoveryCodes.forEach(function(code, index) {
+                content += (index + 1) + ". " + code + "\n";
+            });
+            
+            content += "\n═══════════════════════════════════════════════════════\n";
+            content += "NÃO COMPARTILHE ESTES CÓDIGOS COM NINGUÉM!\n";
+            content += "═══════════════════════════════════════════════════════\n";
+            
+            // Criar blob com charset UTF-8
+            var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "codigos-recuperacao-2fa-" + usuario + ".txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            console.log("Download iniciado");
+        });
+
+        $("#btnContinuar").click(function() {
+            if (!savedRecoveryCodes || savedRecoveryCodes.length === 0) {
+                if (!confirm("ATENÇÃO: Você não baixou os códigos de recuperação! Tem certeza que deseja continuar? Você não poderá recuperar estes códigos depois.")) {
+                    return;
+                }
+            }
+            window.location.href = "/Dashboard";
+        });
+
+        $("#btnPularConfiguracao").click(function() {
+            if (confirm("⚠️ ATENÇÃO!\n\nVocê está optando por NÃO configurar o aplicativo Google Authenticator no celular.\n\nIsso significa que você usará apenas o 2FA via Email para autenticação.\n\n✅ Vantagens:\n• Mais simples - não precisa de aplicativo\n• Recebe códigos por email\n\n⚠️ Desvantagens:\n• Depende do acesso ao email\n• Códigos demoram mais para chegar\n\nDeseja prosseguir sem configurar o aplicativo?")) {
+                
+                var btn = $(this);
+                btn.prop("disabled", true);
+                btn.html('<i class="fa fa-spinner fa-spin"></i> Processando...');
+                
+                $.ajax({
+                    url: '/Configurar2FA/PularConfiguracao',
+                    type: 'POST',
+                    data: { usuario: usuario },
+                    success: function(result) {
+                        if (result.response === "success") {
+                            alert("✅ Tudo pronto!\n\nVocê usará 2FA via Email para autenticação.\n\nPor favor, faça login novamente.");
+                            window.location.href = "/Login";
+                        } else {
+                            alert("Erro ao processar: " + (result.message || "Tente novamente"));
+                            btn.prop("disabled", false);
+                            btn.html('<i class="fa fa-envelope"></i> Não quero utilizar 2FA via telefone - Usar apenas Email');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Erro na requisição:", status, error);
+                        alert("Erro ao processar. Por favor, tente novamente.");
+                        btn.prop("disabled", false);
+                        btn.html('<i class="fa fa-envelope"></i> Não quero utilizar 2FA via telefone - Usar apenas Email');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

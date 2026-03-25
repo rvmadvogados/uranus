@@ -3,9 +3,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Domain;
 using System.Linq;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    //[RequireSubmenu("CadastrosBasicos:ProcessoAcao")]
     public class AcaoController : Controller
     {
 

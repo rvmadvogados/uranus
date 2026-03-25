@@ -3,9 +3,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Common;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Administrativo:ConfiguracaoEmpresa")]
     public class EmpresaController : Controller
     {
         [HttpPost]

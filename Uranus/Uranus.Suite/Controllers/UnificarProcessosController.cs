@@ -3,9 +3,11 @@ using System.Data.SqlClient;
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Data;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Controladoria:UnificarProcessos")]
     public class UnificarProcessosController : Controller
     {
         // GET: UnificarProcessos

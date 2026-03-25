@@ -2,20 +2,32 @@
 using System.Web;
 using Uranus.Domain;
 using Uranus.Domain.Entities;
+using Uranus.Suite.ViewModels;
 
 namespace Uranus.Suite
 {
     public static class Sessao
     {
+        public static bool IsSessionValid
+        {
+            get
+            {
+                return HttpContext.Current?.Session != null
+                    && HttpContext.Current.Session["Usuario"] != null;
+            }
+        }
+
         public static Usuarios Usuario
         {
             get
             {
-                return (Usuarios)HttpContext.Current.Session["Usuario"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["Usuario"] as Usuarios;
             }
             set
             {
-                HttpContext.Current.Session["Usuario"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Usuario"] = value;
             }
         }
 
@@ -23,11 +35,14 @@ namespace Uranus.Suite
         {
             get
             {
-                return HttpContext.Current.Session["Aplicativo"].ToString();
+                if (HttpContext.Current?.Session == null) return "Suite";
+                var aplicativo = HttpContext.Current.Session["Aplicativo"];
+                return aplicativo != null ? aplicativo.ToString() : "Suite";
             }
             set
             {
-                HttpContext.Current.Session["Aplicativo"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Aplicativo"] = value;
             }
         }
 
@@ -35,11 +50,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (Connected)HttpContext.Current.Session["Conectados"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["Conectados"] as Connected;
             }
             set
             {
-                HttpContext.Current.Session["Conectados"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Conectados"] = value;
             }
         }
 
@@ -47,11 +64,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (List<Settings>)HttpContext.Current.Session["Setting"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["Setting"] as List<Settings>;
             }
             set
             {
-                HttpContext.Current.Session["Setting"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Setting"] = value;
             }
         }
 
@@ -59,11 +78,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["ProcessRowIndex"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["ProcessRowIndex"] as string;
             }
             set
             {
-                HttpContext.Current.Session["ProcessRowIndex"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["ProcessRowIndex"] = value;
             }
         }
 
@@ -71,11 +92,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["ProcessNumber"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["ProcessNumber"] as string;
             }
             set
             {
-                HttpContext.Current.Session["ProcessNumber"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["ProcessNumber"] = value;
             }
         }
 
@@ -83,11 +106,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["ClientName"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["ClientName"] as string;
             }
             set
             {
-                HttpContext.Current.Session["ClientName"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["ClientName"] = value;
             }
         }
 
@@ -95,11 +120,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["AreaType"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["AreaType"] as string;
             }
             set
             {
-                HttpContext.Current.Session["AreaType"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["AreaType"] = value;
             }
         }
 
@@ -107,11 +134,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["ProcessStatus"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["ProcessStatus"] as string;
             }
             set
             {
-                HttpContext.Current.Session["ProcessStatus"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["ProcessStatus"] = value;
             }
         }
 
@@ -119,11 +148,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["Judgment"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["Judgment"] as string;
             }
             set
             {
-                HttpContext.Current.Session["Judgment"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Judgment"] = value;
             }
         }
 
@@ -131,11 +162,13 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["URLParameters"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["URLParameters"] as string;
             }
             set
             {
-                HttpContext.Current.Session["URLParameters"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["URLParameters"] = value;
             }
         }
 
@@ -143,13 +176,42 @@ namespace Uranus.Suite
         {
             get
             {
-                return (string)HttpContext.Current.Session["FeriadosRecesso"];
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["FeriadosRecesso"] as string;
             }
             set
             {
-                HttpContext.Current.Session["FeriadosRecesso"] = value;
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["FeriadosRecesso"] = value;
             }
         }
 
+        public static string Token
+        {
+            get
+            {
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["Token"] as string;
+            }
+            set
+            {
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Token"] = value;
+            }
+        }
+
+        public static List<UsuarioClaimDTO> Claims
+        {
+            get
+            {
+                if (HttpContext.Current?.Session == null) return null;
+                return HttpContext.Current.Session["Claims"] as List<UsuarioClaimDTO>;
+            }
+            set
+            {
+                if (HttpContext.Current?.Session != null)
+                    HttpContext.Current.Session["Claims"] = value;
+            }
+        }
     }
 }

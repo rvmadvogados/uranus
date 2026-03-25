@@ -2,9 +2,11 @@
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+  //  [RequireSubmenu("CadastrosBasicos:ProcessoEvento")]
     public class EventosController : Controller
     {
         //public ActionResult GetEventosList(string search, bool filter = false, int page = 1)

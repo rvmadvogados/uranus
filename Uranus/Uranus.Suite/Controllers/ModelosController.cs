@@ -5,9 +5,11 @@ using System.Web;
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("CadastrosBasicos:ModelosDeDocumentos")]
     public class ModelosController : Controller
     {
         public ActionResult Index(string FiltrarNome = "")

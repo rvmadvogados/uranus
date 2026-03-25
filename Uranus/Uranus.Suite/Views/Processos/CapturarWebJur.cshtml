@@ -299,7 +299,7 @@
                                     <div class="col-md-7">
                                         <div class="form-group">
                                             @{
-                                                if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                                if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "WebJurExcluir") != null)
                                                 {
                                                     <label class="titlefield">&nbsp;</label><br />
                                                     <a class="btn btn-danger" data-toggle="modal" data-target="#modalExcluirTodos">Excluir Todos</a>

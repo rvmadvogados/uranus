@@ -7,11 +7,14 @@ using Uranus.Business;
 using Uranus.Common;
 using Uranus.Data;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    
     public class RHCargosSalariosController : Controller
     {
+        [RequireSubmenu("CargosSalarios:RHCargosSalarios")]
         public ActionResult Index(string search = "")
         {
             if (Sessao.Usuario == null)
@@ -413,6 +416,7 @@ namespace Uranus.Suite.Controllers
             }
         }
 
+        [RequireSubmenu("CargosSalarios:RHCargosSalariosReajustar")]
         public ActionResult Reajustar(String TipoContrato = "", Int32 Cargo = 0, String PercentualReajuste = "", String Salario = "")
         {
             if (Sessao.Usuario == null)

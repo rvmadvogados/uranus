@@ -5,9 +5,11 @@ using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Data;
 using Uranus.Suite;
+using Uranus.Suite.Filters;
 
 namespace Uranus.WebManager.Controllers
 {
+    [RequireSubmenu("Administrativo:ColaboradoresFerias")]
     public class ColaboradoresFeriasController : Controller
     {
         public ActionResult Index(string AnoInicio = "", string AnoFim = "", string Cidade = "", DateTime? vencimento = null)

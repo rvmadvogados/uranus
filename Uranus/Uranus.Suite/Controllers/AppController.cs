@@ -3,11 +3,14 @@ using System.util;
 using System.Web.Mvc;
 using Uranus.Business;
 using Uranus.Domain;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    
     public class AppController : Controller
     {
+        [RequireSubmenu("IntegracaoApp:PreCadastro")]
         public ActionResult PreCadastro()
         {
             var model = AppPreCadastroBo.Listar();
@@ -15,6 +18,7 @@ namespace Uranus.Suite.Controllers
             return View(model);
         }
 
+        [RequireSubmenu("IntegracaoApp:PreAgendamento")]
         public ActionResult PreAgendamento()
         {
             var model = AppPreAgendamentoBo.Listar();
@@ -22,7 +26,7 @@ namespace Uranus.Suite.Controllers
             return View(model);
         }
 
-
+        [RequireSubmenu("IntegracaoApp:GerarToken")]
         public ActionResult GerarToken()
         {
             var model = AppGerarTokenBo.Consultar();

@@ -1,6 +1,38 @@
 ﻿@{
-    ViewBag.Title = "Cadastros Sistêmicos \\ Usuários";
+    ViewBag.Title = "Cadastros Sistêmicos \\\\ Usuários";
 }
+
+<script>
+    window.AuthApiUrl = '@ViewBag.AuthApiUrl';
+    window.AuthToken = '@ViewBag.Token';
+
+    function randomPassword() {
+        var requiredLength = 10;
+        var lower = "abcdefghijklmnopqrstuvwxyz";
+        var upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        var digits = "0123456789";
+        var symbols = "!@@#$%^&*()-+<>";
+        var all = lower + upper + digits + symbols;
+
+        var pw = [];
+
+        pw.push(lower.charAt(Math.floor(Math.random() * lower.length)));
+        pw.push(upper.charAt(Math.floor(Math.random() * upper.length)));
+        pw.push(digits.charAt(Math.floor(Math.random() * digits.length)));
+        pw.push(symbols.charAt(Math.floor(Math.random() * symbols.length)));
+
+        for (var i = pw.length; i < requiredLength; i++) {
+            pw.push(all.charAt(Math.floor(Math.random() * all.length)));
+        }
+
+        for (var i = pw.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = pw[i]; pw[i] = pw[j]; pw[j] = tmp;
+        }
+
+        return pw.join('');
+    }
+</script>
 
 <div class="main_container">
 
@@ -35,31 +67,20 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="titlefield">Nível <span class="required">*</span></label>
-                                    <select id="Nivel" class="form-control placeholder" data-msg-required="Por favor, selecione um Nível de Permissão do Usuário." data-rule-required="true">
-                                        <option value="">Selecione o Nível</option>
-                                        <option value="0">Usuário Externo</option>
-                                        <option value="1">Usuário</option>
-                                        <option value="3">Operador</option>
-                                        <option value="4">Controladoria</option>
-                                        <option value="5">Administrador</option>
-                                        <option value="6">Auxiliar Financeiro</option>
-                                        <option value="7">Financeiro</option>
-                                        <option value="8">Auxiliar RH</option>
-                                        <option value="9">RH</option>
-                                    </select>
+                                    <label class="titlefield">E-mail</label>
+                                    <input type="email" class="form-control" placeholder="Informe o E-mail" id="Email" name="Email" />
+                                    <small class="text-muted">
+                                        <i class="fa fa-info-circle"></i>
+                                        E-mail usado para autenticação 2FA do sistema, caso ativada.
+                                    </small>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="titlefield">Status <span class="required">*</span></label>
-                                <br />
-                                <div class="radio-item">
-                                    <input type="radio" id="AtivoSim" name="Ativo" value="S">
-                                    <label for="AtivoSim">Ativo</label>
-                                </div>
-                                <div class="radio-item">
-                                    <input type="radio" id="AtivoNao" name="Ativo" value="N">
-                                    <label for="AtivoNao">Inativo</label>
+                                <div class="form-group">
+                                    <label class="titlefield">Perfil de Acesso <span class="required">*</span></label>
+                                    <select id="PerfilDeAcesso" name="PerfilDeAcesso" class="form-control placeholder" data-msg-required="Por favor, selecione um Perfil de Acesso." data-rule-required="true">
+                                        <option value="">Selecione o Perfil</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -78,6 +99,67 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="titlefield">Status <span class="required">*</span></label>
+                                    <br />
+                                    <div class="radio-item">
+                                        <input type="radio" id="AtivoSim" name="Ativo" value="S">
+                                        <label for="AtivoSim">Ativo</label>
+                                    </div>
+                                    <div class="radio-item">
+                                        <input type="radio" id="AtivoNao" name="Ativo" value="N">
+                                        <label for="AtivoNao">Inativo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="secao2FA" style="display: none; margin-top: 20px; border-top: 2px solid #E7E7E7; padding-top: 20px;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4 style="color: #1D809F; margin-top: 0;">
+                                        <i class="fa fa-shield"></i> Autenticação de Dois Fatores (2FA)
+                                    </h4>
+                                    <p style="color: #73879C; font-size: 13px;">
+                                        Gerencie a autenticação de dois fatores deste usuário.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- <div class="col-md-4">
+                                    <button type="button" class="btn btn-info" style="width: 100%;" onclick="VerStatus2FA();">
+                                        <i class="fa fa-info-circle"></i> Ver Status do 2FA
+                                    </button>
+                                </div> -->
+                                <div class="col-md-6">
+                                    <button id="btnAtivar2FA" type="button" class="btn btn-success" style="width: 100%; display: none;" onclick="Ativar2FA($('#Usuario').val());">
+                                        <i class="fa fa-unlock"></i> Ativar 2FA
+                                    </button>
+                                    <button id="btnDesativar2FA" type="button" class="btn btn-warning" style="width: 100%; display: none;" onclick="Desativar2FA($('#Usuario').val());">
+                                        <i class="fa fa-lock"></i> Desativar 2FA
+                                    </button>
+                                    <div id="loading2FA" style="width: 100%; text-align: center; display: none;">
+                                        <i class="fa fa-spinner fa-spin"></i> <span style="color: #666; font-size: 13px;">Verificando...</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-danger" style="width: 100%;" onclick="Resetar2FA();">
+                                        <i class="fa fa-refresh"></i> Resetar Configuração APP
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- <div class="row" style="margin-top: 10px;">
+                                <div class="col-md-12">
+                                    <div id="status2FA-badge" style="padding: 10px, background: #F9F9F9; border: 1px solid #E7E7E7; border-radius: 4px; text-align: center;">
+                                        <span style="color: #999;">
+                                            <i class="fa fa-info-circle"></i> Clique em "Ver Status do 2FA" para verificar
+                                        </span>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button id="buttonSalvar" type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal">Salvar</button>
@@ -86,39 +168,124 @@
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 
-    <div id="modalExcluir" class="modal fade" role="dialog">
+    <div id="modalStatus2FA" class="modal fade" role="dialog">
         <div class="modal-dialog">
-
-            <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
-                    <h3 class="modal-title" id="modalLabelExcluir">Excluir Usuário</h3>
+                <div class="modal-header" style="background: #ECBD4F; border-bottom: 2px solid #D4A63D;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt; color: #333;">&times;</span></button>
+                    <h3 class="modal-title" style="color: #333;"><i class="fa fa-shield"></i> Status da Autenticação 2FA</h3>
                 </div>
-                <div class="modal-body">
-                    <h4>Você deseja realmente excluir esse Usuário?</h4>
+                <div class="modal-body" style="padding: 25px;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 style="margin-top: 0; color: #333;"><strong>Usuário:</strong> <span id="status2FA-usuario" style="color: #1D809F;"></span></h4>
+                        </div>
+                    </div>
+                    <hr style="border-color: #E7E7E7;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="panel" style="background: #F9F9F9; border: 1px solid #E7E7E7; padding: 15px; border-radius: 4px;">
+                                <h5 style="margin-top: 0; font-weight: 600; color: #555;">
+                                    <i class="fa fa-info-circle"></i> Status do 2FA
+                                </h5>
+                                <p id="status2FA-enabled" style="font-size: 16px, margin-bottom: 0;">
+                                    <i class="fa fa-spinner fa-spin"></i> Carregando...
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="panel" style="background: #F9F9F9; border: 1px solid #E7E7E7; padding: 15px; border-radius: 4px;">
+                                <h5 style="margin-top: 0; font-weight: 600; color: #555;">
+                                    <i class="fa fa-mobile"></i> Dispositivo Configurado
+                                </h5>
+                                <p id="status2FA-authenticator" style="font-size: 16px; margin-bottom: 0;">
+                                    <i class="fa fa-spinner fa-spin"></i> Carregando...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col-md-12">
+                            <div class="panel" style="background: #F9F9F9; border: 1px solid #E7E7E7; padding: 15px; border-radius: 4px;">
+                                <h5 style="margin-top: 0; font-weight: 600; color: #555;">
+                                    <i class="fa fa-key"></i> Códigos de Recuperação Restantes
+                                </h5>
+                                <p id="status2FA-recovery" style="font-size: 16px; margin-bottom: 0;">
+                                    <i class="fa fa-spinner fa-spin"></i> Carregando...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="ExcluirConfirmado();">Sim</button>
-                    &nbsp;
-                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+                    <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- page content -->
+
+    <div id="modalResetar2FA" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #E74C3C; border-bottom: 2px solid #C0392B;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="font-size: 24pt; color: #FFF;">&times;</span></button>
+                    <h3 class="modal-title" style="color: #FFF;"><i class="fa fa-exclamation-triangle"></i> Resetar Configuração APP 2FA</h3>
+                </div>
+                <div class="modal-body" style="padding: 25px;">
+                    <!-- ✅ NOVO: Indicador de processamento -->
+      <div id="loading-indicator" style="display: none; text-align: center; padding: 20px; background: #F9F9F9; border-radius: 4px; margin-bottom: 20px;">
+<i class="fa fa-spinner fa-spin" style="font-size: 24px; color: #E74C3C;"></i>
+     <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;">Processando reset de 2FA...</p>
+      </div>
+
+          <div class="alert" style="background: #FCF8E3; border-left: 4px solid #F39C12; padding: 15px; margin-bottom: 20px;">
+    <h4 style="margin-top: 0; color: #856404;">
+     <i class="fa fa-warning"></i> Atenção!
+    </h4>
+   <p style="margin-bottom: 0; color: #856404;">
+     <!-- Esta ação irá <strong>desabilitar completamente o 2FA</strong> e <strong>desassociar o dispositivo</strong> do usuário.<br><br> -->
+   <strong>O que acontece:</strong>
+        </p>
+             <ul style="color: #856404; margin-top: 10px; margin-bottom: 0;">
+            <li>Chave do Google Authenticator será removida</li>
+            <li>Códigos de recuperação serão invalidados</li>
+            <li>Usuário receberá novo e-mail com instruções</li>
+              </ul>
+    </div>
+             <h4 style="color: #333;">
+             <strong>Usuário:</strong> <span id="reset2FA-usuario" style="color: #E74C3C;"></span>
+ </h4>
+       
+   <div style="margin-top: 20px; padding: 15px; background: #F9F9F9; border: 1px solid #E7E7E7; border-radius: 4px;">
+               <h5 style="margin-top: 0; font-weight: 600; color: #555;">
+            <i class="fa fa-check-square-o"></i> Checklist de Segurança:
+     </h5>
+        <ul style="margin-bottom: 0; color: #666;">
+   <li>Identidade do usuário foi verificada</li>
+       <li>Usuário realmente perdeu acesso ao dispositivo</li>
+     <li>Usuário está ciente que precisará reconfigurar</li>
+              </ul>
+           </div>
+            </div>
+          <div class="modal-footer">
+    <button id="buttonConfirmarReset2FA" type="button" class="btn btn-danger" style="margin: 0;" onclick="ResetarConfirmado2FA();">
+   <i class="fa fa-trash-o"></i> Confirmar Reset
+       </button>
+             &nbsp;
+          <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Cancelar</button>
+      </div>
+         </div>
+        </div>
+    </div>
+
+
     <div role="main">
         <div class="">
-
             <div class="row">
-
-
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     <div>
                         @{ WebGrid grid = new WebGrid(Model); }
@@ -135,7 +302,6 @@
                                         <div class="clearfix"></div>
                                     </div>
                                     <div class="x_content">
-
                                         <div class="row">
                                             <div class="col-md-7">
                                                 <div class="form-group">
@@ -167,32 +333,72 @@
                         <div>
                             @{
                                 @grid.GetHtml(
-                                tableStyle: "webgrid",
-                                fillEmptyRows: false,
-                                headerStyle: "webgrid-header",
-                                alternatingRowStyle: "webgrid-alternating-row",
-                                rowStyle: "webgrid-row-style",
-                                selectedRowStyle: "webgrid-selected-row",
-                                footerStyle: "webgrid-footer",
-                                mode: WebGridPagerModes.All,
-                                firstText: "Primeiro",
-                                previousText: "Anterior",
-                                nextText: "Próximo",
-                                lastText: "Último",
-                                numericLinksCount: 5,
-                                columns: new[] {
-                                grid.Column("Nome", header: "Nome"),
-                                grid.Column("Login", header: "Usuário"),
-                                grid.Column("Nivel", header: "Nível", format: (item) => new HtmlString((item["Nivel"] == 0 ? "Usuário Externo" : item["Nivel"] == 3 ? "Operador" : item["Nivel"] == 4 ? "Controladoria" : item["Nivel"] == 5 ? "Administrador" : item["Nivel"] == 6 ? "Auxiliar Financeiro" : item["Nivel"] == 7 ? "Financeiro" : item["Nivel"] == 8 ? "Auxiliar RH" : item["Nivel"] == 9 ? "RH" : "Usuário"))),
-                                grid.Column("Bloqueio", header: "Status", format: (item) => new HtmlString((!item["Bloqueio"] ? "Ativo" : "Inativo"))),
-                                grid.Column("ID", header: "Ações", canSort:false,
-                                format: 
-                                    @<text>
-                                        @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");'>Visualizar</a>")
-                                        @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");'>Alterar</a>")
-                                        @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.ID + ", " + '"' + item.Nome + '"' + ");'>Excluir</a>")
-                                    </text>)
-                                });
+                                          tableStyle: "webgrid",
+                                          fillEmptyRows: false,
+                                          headerStyle: "webgrid-header",
+                                          alternatingRowStyle: "webgrid-alternating-row",
+                                          rowStyle: "webgrid-row-style",
+                                          selectedRowStyle: "webgrid-selected-row",
+                                          footerStyle: "webgrid-footer",
+                                          mode: WebGridPagerModes.All,
+                                          firstText: "Primeiro",
+                                          previousText: "Anterior",
+                                          nextText: "Próximo",
+                                          lastText: "Último",
+                                          numericLinksCount: 5,
+                                          columns: new[] {
+                                grid.Column("Nome", header: "Nome", style: "width:140px"),
+                                grid.Column("Login", header: "Usuário", style: "width:90px"),
+                                grid.Column("Email", header: "E-mail 2FA", format: (item) => new HtmlString(
+                                    item["Email"] != null && !string.IsNullOrEmpty(item["Email"].ToString())
+                                    ? "<span style='color: #2E7D32; text-muted-small'>" + item["Email"] + "</span>"
+                                    : "<span class='text-muted-small'>Não informado</span>"
+                                ), style: "width:160px"),
+                                grid.Column("PerfilDeAcesso", header: "Perfil", style: "width:90px"),
+                                grid.Column("LastLoginDate", header: "Último Login", format: (item) => new HtmlString(
+                                    item["LastLoginDate"] != null
+                                    ? string.Format("<div style='color: #2E7D32; text-muted-small; line-height: 1.3;'><div style='font-weight: 500;'>{0:dd/MM/yyyy HH:mm:ss}</div></div>", item["LastLoginDate"])
+                                    : "<span class='text-muted-small'>Nunca logou</span>"
+                                ), style: "width:80px; text-align:center"),
+                                grid.Column("Bloqueio", header: "Status", format: (item) => new HtmlString(
+                                    !(bool)item["Bloqueio"]
+                                    ? "<span class='status-active'><i class='fa fa-check-circle'></i> Ativo</span>"
+                                    : "<span class='status-inactive'><i class='fa fa-ban'></i> Inativo</span>"
+                                ), style: "width:70px; text-align:center"),
+                                grid.Column("TwoFactorEnabled", header: "2FA", format: (item) => new HtmlString(
+                                    (bool)item["TwoFactorEnabled"]
+                                    ? "<span style='color: #28a745; text-muted-small;'><i class='fa fa-shield'></i> Sim</span>"
+                                    : "<span class='text-muted-small'><i class='fa fa-shield'></i> Não</span>"
+                                ), style: "width:50px; text-align:center"),
+                                grid.Column("AccessFailedCount", header: "Falhas", format: (item) => new HtmlString(
+                                    item["AccessFailedCount"] != null && (int)item["AccessFailedCount"] > 0
+                                    ? "<span style='color: #dc3545; text-muted-small; font-weight: 600;'><i class='fa fa-exclamation-triangle'></i> " + item["AccessFailedCount"] + "</span>"
+                                    : "<span style='color: #28a745; text-muted-small;'>0</span>"
+                                ), style: "width:50px; text-align:center"),
+
+                                // ✅ NOVA COLUNA: Data Fim Bloqueio
+                                grid.Column("DataFimBloqueio", header: "Bloqueado Até", format: (item) => new HtmlString(
+                                        item["EstaBloqueado"] != null && (bool)item["EstaBloqueado"]
+                                ? "<span style='color: #dc3545; font-weight: 600; text-muted-small;'>" +
+                                        (item["DataFimBloqueio"] != null ? string.Format("{0:dd/MM/yyyy HH:mm:ss}", item["DataFimBloqueio"]) : "N/A") +
+                        "</span>"
+                                : "<span style='color: #28a745; text-muted-small;'>-</span>"
+                                  ), style: "width:120px; text-align:center"),
+
+grid.Column("", header: "Bloqueio", canSort:false, format: (item) => new HtmlString(
+        (int)item["AccessFailedCount"] > 0 && (bool)item["EstaBloqueado"]
+   ? "<div class='action-buttons'><button class='btn btn-danger btn-xs' onclick='DesbloquearDaGrid(" + item.ID + ", \"" + item.Login + "\");'><i class='fa fa-unlock'></i> Desbloquear</button></div>"
+      : "<span style='color: #28a745; text-muted-small;'><i class='fa fa-check-circle'></i> OK</span>"
+        ), style: "width:100px; text-align:center"),
+                                grid.Column("ID", header: "Ações", canSort:false, style: "width:140px; text-align:center",
+                                format:
+                    @<text>
+                        <div class="action-buttons">
+                            @Html.Raw("<a class='btn btn-default btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Visualizar(" + item.ID + ");' title='Visualizar usuário'>Visualizar</a>")
+                            @Html.Raw("<a class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modalNovo' onclick='Alterar(" + item.ID + ");' title='Alterar usuário'>Alterar</a>")
+                        </div>
+                    </text>)
+                               });
 
                                 int firstRecord = (grid.PageIndex * grid.RowsPerPage) + 1;
                                 int lastRecord = (grid.PageIndex * grid.RowsPerPage) + grid.Rows.Count();
@@ -213,14 +419,66 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
     <!-- /page content -->
+    <div id="modalMensagem" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="Atualizar();"><span aria-hidden="true" style="font-size: 24pt;">&times;</span></button>
+                    <h3 class="modal-title"><i class="fa fa-info-circle"></i> Mensagem</h3>
+                </div>
+                <div class="modal-body">
+                    <h4 id="modalMensagemResposta">Operação realizada com sucesso!</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="margin: 0;" data-dismiss="modal" onclick="Atualizar();">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        // Variável de controle para saber se houve salvamento
+        var dadosForamSalvos = false;
+
+        $(document).ready(function () {
+            // Carregar perfis de acesso via controller ao invés da API diretamente
+            $.ajax({
+                url: '/Usuarios/ListarPerfisAtivos',
+                type: 'GET',
+                success: function (data) {
+                    var select = $('#PerfilDeAcesso');
+                    select.empty();
+                    select.append('<option value="">Selecione o Perfil</option>');
+
+                    if (data.codigo === "00" && data.perfis && Array.isArray(data.perfis)) {
+                        // A API retorna um array de strings com os nomes dos perfis
+                        $.each(data.perfis, function (i, perfilNome) {
+                            if (perfilNome && perfilNome.trim() !== '') {
+                                select.append('<option value="' + perfilNome + '">' + perfilNome + '</option>');
+                            }
+                        });
+                    } else {
+                        console.error('Formato de resposta inválido:', data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Erro ao carregar perfis de acesso. Por favor, recarregue a página ou contate o administrador.');
+                }
+            });
+
+            // Quando o modal de usuário for fechado, verificar se precisa recarregar
+            $('#modalNovo').on('hidden.bs.modal', function () {
+                if (dadosForamSalvos) {
+                    // Recarregar a página apenas se dados foram salvos
+                    Atualizar();
+                    dadosForamSalvos = false; // Resetar flag
+                }
+            });
+        });
 
         function Novo() {
             $('#modalLabelTitle').text('Novo Usuário');
@@ -228,30 +486,37 @@
             $('#Nome').val('');
             $('#Usuario').attr('disabled', false);
             $('#Usuario').val('');
-            $('#Nivel').attr('disabled', false);
-            $('#Nivel').val('');
+            $('#Email').attr('disabled', false);
+            $('#Email').val('');
             $('#Senha').attr('disabled', false);
             $('#Senha').val(randomPassword());
             $('#buttonReciclarSenha').attr('disabled', false);
             $('input[name=Ativo][value="S"]').attr('disabled', false);
             $('input[name=Ativo][value="N"]').attr('disabled', false);
             $('input[name=Ativo][value="S"]').prop('checked', true).trigger('change');
+            $('#PerfilDeAcesso').attr('disabled', false);
+            $('#PerfilDeAcesso').val('');
             $('#ResetaSenha').show();
             $('#buttonSalvar').attr('disabled', false);
             $('#id').val(0);
             $("#usuario-form").validate().resetForm();
+
+            // Esconder seção de 2FA e bloqueio
+            $('#secao2FA').hide();
+            $('#secaoBloqueio').hide();
         }
 
         function Visualizar(Id) {
             $('#modalLabelTitle').text('Visualizar Usuário');
             $('#Nome').attr('disabled', true);
             $('#Usuario').attr('disabled', true);
-            $('#Nivel').attr('disabled', true);
+            $('#Email').attr('disabled', true);
             $('#Senha').attr('disabled', true);
             $('#Senha').val('');
             $('#buttonReciclarSenha').attr('disabled', true);
             $('input[name=Ativo][value="S"]').attr('disabled', true);
             $('input[name=Ativo][value="N"]').attr('disabled', true);
+            $('#PerfilDeAcesso').attr('disabled', true);
             $('#ResetaSenha').hide();
             $('#buttonSalvar').attr('disabled', true);
             $("#usuario-form").validate().resetForm();
@@ -268,21 +533,63 @@
             options.processData = false;
             options.dataType = "application/json; charset=utf-8";
             options.complete = function (data) {
-
                 var json = $.parseJSON(data.responseText);
 
                 if (json.codigo == '00') {
-
                     $('#Nome').val(json.usuario[0].Nome);
                     $('#Usuario').val(json.usuario[0].Login);
-                    $('#Nivel').val(json.usuario[0].Nivel);
+
+                    // Carregar e-mail do Identity
+                    CarregarEmailUsuario(json.usuario[0].Login);
 
                     var ativo = "N"
                     if (!json.usuario[0].Bloqueio) {
                         ativo = "S"
                     }
-
                     $('input[name=Ativo][value="' + ativo + '"]').prop('checked', true).trigger('change');
+
+                    // A API retorna apenas o nome do role como string
+                    //     var perfilDeAcesso = json.perfilDeAcesso || json.usuario[0].PerfilDeAcesso || '';// A API retorna apenas o nome do role como string
+                    var perfilDeAcesso = json.perfilDeAcesso || json.usuario[0].PerfilDeAcesso || '';
+
+                    if (perfilDeAcesso) {
+                        // Remove aspas duplas se existirem
+                        if (typeof perfilDeAcesso === 'string') {
+                            perfilDeAcesso = perfilDeAcesso.replace(/"/g, '');
+                        }
+
+                        // A API retorna o nome do role, mas o select usa o ID
+                        var roleId = null;
+                        $('#PerfilDeAcesso option').each(function () {
+                            if ($(this).text() === perfilDeAcesso) {
+                                roleId = $(this).val();
+                                return false;
+                            }
+                        });
+
+                        if (roleId) {
+                            $('#PerfilDeAcesso').val(roleId).trigger('change');
+                        } else {
+                            // Se não encontrou por nome, tenta usar o valor direto
+                            $('#PerfilDeAcesso').val(perfilDeAcesso).trigger('change');
+                        }
+                    }
+
+                    // Atualizar seção de bloqueio
+                    if (json.usuario[0].AccessFailedCount > 0 || json.usuario[0].Bloqueio) {
+                        $('#secaoBloqueio').show();
+                        $('#statusBloqueio-status').html('<i class="fa fa-times-circle" style="color: #E74C3C;"></i> <strong style="color: #E74C3C;">Bloqueado</strong>');
+                        $('#statusBloqueio-attempts').text(json.usuario[0].AccessFailedCount);
+
+                        if (json.usuario[0].Bloqueio) {
+                            $('#bloqueio-info').show();
+                            AtualizarTempoRestanteBloqueio(json.usuario[0].DataHoraUltimoBloqueio);
+                        } else {
+                            $('#bloqueio-info').hide();
+                        }
+                    } else {
+                        $('#secaoBloqueio').hide();
+                    }
                 }
             };
             $.ajax(options);
@@ -293,11 +600,13 @@
             $('#Nome').attr('disabled', false);
             $('#Usuario').attr('disabled', false);
             $('#Nivel').attr('disabled', false);
+            $('#Email').attr('disabled', false);
             $('#Senha').attr('disabled', false);
             $('#Senha').val('');
             $('#buttonReciclarSenha').attr('disabled', false);
             $('input[name=Ativo][value="S"]').attr('disabled', false);
             $('input[name=Ativo][value="N"]').attr('disabled', false);
+            $('#PerfilDeAcesso').attr('disabled', false);
             $('#ResetaSenha').show();
             $('#buttonSalvar').attr('disabled', false);
             $("#usuario-form").validate().resetForm();
@@ -324,6 +633,9 @@
                     $('#Usuario').val(json.usuario[0].Login);
                     $('#Nivel').val(json.usuario[0].Nivel);
 
+                    // Carregar e-mail do Identity
+                    CarregarEmailUsuario(json.usuario[0].Login);
+
                     var ativo = "N"
                     if (!json.usuario[0].Bloqueio) {
                         ativo = "S"
@@ -331,30 +643,270 @@
 
                     $('input[name=Ativo][value="' + ativo + '"]').prop('checked', true).trigger('change');
 
+                    // A API retorna apenas o nome do role como string
+                    var perfilDeAcesso = json.perfilDeAcesso || json.usuario[0].PerfilDeAcesso || '';
+
+                    if (perfilDeAcesso) {
+                        // Remove aspas duplas se existirem
+                        if (typeof perfilDeAcesso === 'string') {
+                            perfilDeAcesso = perfilDeAcesso.replace(/"/g, '');
+                        }
+
+                        // A API retorna o nome do role, mas o select usa o ID
+                        var roleId = null;
+                        $('#PerfilDeAcesso option').each(function () {
+                            if ($(this).text() === perfilDeAcesso) {
+                                roleId = $(this).val();
+                                return false;
+                            }
+                        });
+
+                        if (roleId) {
+                            $('#PerfilDeAcesso').val(roleId).trigger('change');
+                        } else {
+                            // Se não encontrou por nome, tenta usar o valor direto
+                            $('#PerfilDeAcesso').val(perfilDeAcesso).trigger('change');
+                        }
+                    }
+
+                    // Atualizar seção de bloqueio
+                    $('#secaoBloqueio').show();
+                    CarregarStatusBloqueio(json.usuario[0].Login);
+
+                    // Mostrar seção 2FA se aplicável
+                    $('#secao2FA').show();
+
+                    // Atualizar botões 2FA baseado no status - CHAMAR COM LOGIN DO USUÁRIO
+                    AtualizarBotoes2FA(json.usuario[0].Login);
                 }
             };
             $.ajax(options);
         }
 
         function Excluir(Id, Nome) {
-            $('h4').text('Você deseja realmente excluir esse Usuário (' + Nome + ')?');
-            $('#id').val(Id);
-            $('#nome').val(Nome);
+            // NOTA: Esta função foi substituída por DesativarUsuario()
+            // Mantida para compatibilidade com código legado se necessário
+            DesativarUsuario(Id, Nome);
+        }
+
+        // ============================================================================
+        // FUNÇÕES 2FA
+        // ============================================================================
+
+        // Função para carregar e-mail do Identity
+        function CarregarEmailUsuario(login) {
+            if (!login) {
+                $('#Email').val('');
+                return;
+            }
+
+            $.ajax({
+                url: '/Usuarios/ConsultarEmail',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        $('#Email').val(result.email || '');
+
+                        // Atualizar indicador de confirmação se necessário
+                        if (result.emailConfirmed) {
+                            $('#Email').css('border-color', '#26B99A');
+                        } else if (result.email) {
+                            $('#Email').css('border-color', '#F39C12');
+                        } else {
+                            $('#Email').css('border-color', '');
+                        }
+                    } else {
+                        console.error('Erro ao carregar e-mail:', result.mensagem);
+                        $('#Email').val('');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Erro ao carregar e-mail:', error);
+                    $('#Email').val('');
+                }
+            });
+        }
+
+        // Wrapper para manter compatibilidade com o botão da grid
+        function ConsultarStatus2FA(login) {
+
+            $.ajax({
+                url: '/Usuarios/Listar',
+                type: 'POST',
+                success: function (result) {
+                    if (result.codigo === "00" && result.usuarios) {
+                        var usuario = result.usuarios.find(function (u) {
+                            return u.Login === login;
+                        });
+
+                        if (usuario) {
+                            Visualizar(usuario.ID);
+                            setTimeout(function () {
+                                VerStatus2FA();
+                            }, 500);
+                        } else {
+                            alert('Usuário não encontrado');
+                        }
+                    }
+                },
+                error: function () {
+                    // Fallback: mostrar modal direto
+                    usuario2FAAtual = login;
+                    $('#status2FA-usuario').text(login);
+                    $('#status2FA-enabled').html('<i class="fa fa-spinner fa-spin"></i> Carregando...');
+                    $('#status2FA-authenticator').html('<i class="fa fa-spinner fa-spin"></i> Carregando...');
+                    $('#status2FA-recovery').html('<i class="fa fa-spinner fa-spin"></i> Carregando...');
+                    $('#modalStatus2FA').modal('show');
+
+                    $.ajax({
+                        url: '/Usuarios/ConsultarStatus2FA',
+                        type: 'POST',
+                        data: JSON.stringify({ login: login }),
+                        contentType: 'application/json',
+                        success: function (result) {
+                            if (result.codigo === "00") {
+                                if (result.twoFactorEnabled) {
+                                    $('#status2FA-enabled').html('<i class="fa fa-check-circle" style="color: #26B99A;"></i> <strong style="color: #26B99A;">Habilitado</strong>');
+                                } else {
+                                    $('#status2FA-enabled').html('<i class="fa fa-times-circle" style="color: #E74C3C;"></i> <strong style="color: #E74C3C;">Desativado</strong>');
+                                }
+
+                                if (result.hasAuthenticator) {
+                                    $('#status2FA-authenticator').html('<i class="fa fa-check-circle" style="color: #26B99A;"></i> <strong style="color: #26B99A;">Sim</strong>');
+                                } else {
+                                    $('#status2FA-authenticator').html('<i class="fa fa-times-circle" style="color: #E74C3C;"></i> <strong style="color: #E74C3C;">Não</strong>');
+                                }
+
+                                var recoveryCount = result.recoveryCodesRemaining || 0;
+                                var recoveryColor = recoveryCount > 5 ? '#26B99A' : (recoveryCount > 0 ? '#F39C12' : '#E74C3C');
+                                var recoveryIcon = recoveryCount > 5 ? 'check-circle' : (recoveryCount > 0 ? 'exclamation-triangle' : 'times-circle');
+
+                                $('#status2FA-recovery').html(
+                                    '<i class="fa fa-' + recoveryIcon + '" style="color: ' + recoveryColor + ';"></i> ' +
+                                    '<strong style="color: ' + recoveryColor + ';">' + recoveryCount + ' código(s)</strong>'
+                                );
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function Ativar2FA(login) {
+            if (!confirm('Deseja ativar o 2FA para o usuário ' + login + '?\n\n' +
+                'Se o usuário já tinha configuração anterior, ela será reativada.\n' +
+                'Se não tinha, será obrigado a configurar no próximo login.')) {
+                return;
+            }
+
+            $.ajax({
+                url: '/Usuarios/Ativar2FA',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        alert('✅ ' + result.mensagem);
+
+                        if (result.detalhes && result.detalhes.requiresSetup) {
+                            alert('⚠️ Usuário precisará configurar o Google Authenticator no próximo login ou por e-mail.');
+                        } else if (result.detalhes && result.detalhes.hasAuthenticator) {
+                            alert('ℹ️ Configuração anterior reativada. Usuário pode usar o mesmo Google Authenticator.');
+                        }
+                        setTimeout(function () {
+                            AtualizarBotoes2FA(login);
+                        }, 500); // Aguarda meio segundo antes de atualizar os botões
+                    } else if (result.codigo === "97") {
+                        // Erro detalhado da API
+                        var errorMsg = '❌ Erro ao ativar 2FA\n\n';
+                        errorMsg += 'Mensagem: ' + (result.mensagem || 'Erro desconhecido') + '\n';
+                        if (result.statusCode) {
+                            errorMsg += 'Status HTTP: ' + result.statusCode + '\n';
+                        }
+                        if (result.detalhes) {
+                            errorMsg += '\nDetalhes:\n' + result.detalhes;
+                        }
+                        alert(errorMsg);
+                        console.error('Erro ao ativar 2FA:', result);
+                    } else {
+                        alert('❌ ' + (result.mensagem || 'Erro ao ativar 2FA'));
+                        console.error('Erro ao ativar 2FA:', result);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    var errorMsg = '❌ Erro na requisição para ativar 2FA\n\n';
+                    errorMsg += 'Status: ' + xhr.status + '\n';
+                    errorMsg += 'Erro: ' + error + '\n';
+                    if (xhr.responseText) {
+                        errorMsg += '\nResposta:\n' + xhr.responseText;
+                    }
+                    alert(errorMsg);
+                    console.error('Erro na requisição:', xhr);
+                }
+            });
+        }
+
+        function Desativar2FA(login) {
+            if (!confirm('Deseja desativar o 2FA para o usuário ' + login + '?\n\n' +
+                'A configuração será preservada e pode ser reativada depois sem precisa reconfigurar.')) {
+                return;
+            }
+
+            $.ajax({
+                url: '/Usuarios/Desativar2FA',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        alert('✅ ' + result.mensagem);
+
+                        if (result.detalhes && result.detalhes.canReactivate) {
+                            alert('ℹ️ Você pode reativar o 2FA depois sem precisar reconfigurar.');
+                        }
+                        setTimeout(function () {
+                            AtualizarBotoes2FA(login);
+                        }, 500); // Aguarda meio segundo antes de atualizar os botões
+                    } else {
+                        alert('❌ ' + (result.mensagem || 'Erro ao desativar 2FA'));
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('❌ Erro ao desativar 2FA: ' + error);
+                }
+            });
         }
 
         $('#buttonSalvar').click(function (evt) {
-
             $("#usuario-form").validate();
 
             if ($('#usuario-form').valid()) {
-
                 var dados = new window.FormData();
                 dados.append("Id", $("#id").val());
                 dados.append("Nome", $("#Nome").val());
                 dados.append("Usuario", $("#Usuario").val());
-                dados.append("Nivel", $("#Nivel").val());
-                dados.append("Senha", $("#Senha").val());
+
+                // Só enviar senha se ela foi preenchida (não está vazia e não é "undefined")
+                var senhaValue = $("#Senha").val();
+                if (senhaValue && senhaValue !== "undefined" && senhaValue.trim() !== "") {
+                    dados.append("Senha", senhaValue);
+                } else {
+                    dados.append("Senha", ""); // Enviar string vazia ao invés de undefined
+                }
+
                 dados.append("Ativo", $("input[type='radio'][name='Ativo']:checked").val());
+                dados.append("PerfilDeAcesso", $("#PerfilDeAcesso").val());
+
+                // Adicionar e-mail - SEMPRE enviar, mesmo que vazio (para permitir apagar)
+                var email = $("#Email").val();
+                if (email && email !== "undefined") {
+                    dados.append("Email", email.trim());
+                } else {
+                    // Enviar string vazia para indicar que o e-mail deve ser removido
+                    dados.append("Email", "");
+                }
 
                 var options = {};
                 options.url = "/Usuarios/Salvar"
@@ -365,17 +917,29 @@
                 options.processData = false;
                 options.dataType = "application/json; charset=utf-8";
                 options.complete = function (data) {
-
                     var json = $.parseJSON(data.responseText);
-
                     if (json.codigo == '00') {
+                        dadosForamSalvos = true;
 
-                        $('h4').text('Usuário salvo com sucesso!');
-                        $('#modalMensagem').attr('data-backdrop', 'static');
-                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagemResposta').text(json.mensagem || 'Usuário salvo com sucesso!');
                         $('#modalMensagem').modal('show');
                         $("#usuario-form").validate().resetForm();
+                    } else if (json.codigo == '96') {
 
+                        dadosForamSalvos = true;
+
+                        $('#modalMensagemResposta').text(json.mensagem);
+                        $('#modalMensagem').modal('show');
+                        $("#usuario-form").validate().resetForm();
+                    } else if (json.codigo == '95') {
+
+                        dadosForamSalvos = false;
+
+                        $('#modalMensagemResposta').text('⚠️ ' + json.mensagem);
+                        $('#modalMensagem').modal('show');
+                    } else {
+                        $('#modalMensagemResposta').text('Erro ao salvar: ' + (json.mensagem || 'Erro desconhecido'));
+                        $('#modalMensagem').modal('show');
                     }
                 };
                 $.ajax(options);
@@ -385,61 +949,364 @@
             else {
                 return false;
             }
-
         });
 
-        function ExcluirConfirmado() {
-            var dados = new window.FormData();
-            dados.append("Id", $("#id").val());
-
-            $('#id').val('');
-
-            var options = {};
-            options.url = "/Usuarios/Excluir"
-            options.type = "POST";
-            options.data = dados;
-            options.asyn = true;
-            options.contentType = false;
-            options.processData = false;
-            options.dataType = "application/json; charset=utf-8";
-            options.complete = function (data) {
-
-                var json = $.parseJSON(data.responseText);
-
-                if (json.codigo == '00') {
-
-                    $('h4').text('Usuário excluído com sucesso!');
-                    $('#modalMensagem').attr('data-backdrop', 'static');
-                    $('#modalMensagem').attr('data-keyboard', 'false');
-                    $('#modalMensagem').modal('show');
-                    $("#usuario-form").validate().resetForm();
-
-                }
-                else if (json.codigo == '98') {
-
-                    $('h4').text('Não foi possível excluir o Usuário (' + $("#nome").val() + ') por que está sendo usado em outras tabelas! Você pode inativar ele para não ser usado novamente.');
-                    $('#modalMensagem').attr('data-backdrop', 'static');
-                    $('#modalMensagem').attr('data-keyboard', 'false');
-                    $('#modalMensagem').modal('show');
-
-                }
-                else if (json.codigo == '99') {
-
-                    $('h4').text('Ocorreu um erro que impossibilitou a exclusão do Usuário (' + $("#nome").val() + '), tente mais tarde! Se o problema persistir, entre em contato com o suporte.');
-                    $('#modalMensagem').attr('data-backdrop', 'static');
-                    $('#modalMensagem').attr('data-keyboard', 'false');
-                    $('#modalMensagem').modal('show');
-
-                }
-
-            };
-            $.ajax(options);
-        }
+        //// Função para salvar e-mail do usuário via Identity (MANTIDA PARA COMPATIBILIDADE, MAS NÃO É MAIS USADA)
+        //function SalvarEmailUsuario(login, email) {
+        //    $.ajax({
+        //        url: '/Usuarios/AtualizarEmail',
+        //        type: 'POST',
+        //        data: JSON.stringify({ login: login, email: email }),
+        //        contentType: 'application/json',
+        //        success: function (result) {
+        //            if (result.codigo === "00") {
+        //                $('h4').text('Registro salvo com sucesso!');
+        //            } else {
+        //                $('h4').text('Usuário salvo, mas erro ao salvar email: ' + result.mensagem);
+        //            }
+        //            $('#modalMensagem').attr('data-backdrop', 'static');
+        //            $('#modalMensagem').attr('data-keyboard', 'false');
+        //            $('#modalMensagem').modal('show');
+        //            $("#usuario-form").validate().resetForm();
+        //        },
+        //        error: function (xhr, status, error) {
+        //            $('h4').text('Usuário salvo, mas erro ao salvar e-mail: ' + error);
+        //            $('#modalMensagem').attr('data-backdrop', 'static');
+        //            $('#modalMensagem').attr('data-keyboard', 'false');
+        //            $('#modalMensagem').modal('show');
+        //            $("#usuario-form").validate().resetForm();
+        //        }
+        //    });
+        //}
 
         function Atualizar() {
             $(location).attr('href', '../Usuarios');
         }
 
-    </script>
+        // ===== Funções para Gerenciamento de Bloqueio (Lockout) =====
 
+        function DesbloquearDaGrid(Id, login) {
+            if (!login || login.trim() === "") {
+                alert('❌ Login do usuário não foi encontrado');
+                return;
+            }
+
+            if (!confirm('Deseja desbloquear o usuário ' + login + '?\n\nEle poderá fazer login normalmente após o desbloqueio.')) {
+                return;
+            }
+
+            // Desabilitar o botão durante a requisição
+            var btn = event.target;
+            if (btn) $(btn).prop('disabled', true);
+
+            $.ajax({
+                url: '/Usuarios/DesbloqueaUsuario',
+                type: 'POST',
+                data: JSON.stringify({ login: login.trim() }),
+                contentType: 'application/json',
+                dataType: 'json',
+                timeout: 30000,
+                success: function (result) {
+                    if (result && result.codigo === "00") {
+                        alert('✅ ' + (result.mensagem || 'Usuário desbloqueado com sucesso!'));
+                        setTimeout(function () {
+                            Atualizar();
+                        }, 1000);
+                    } else if (result && result.codigo === "97") {
+                        var errorDetail = result.erro || 'Erro desconhecido ao desbloquear';
+                        var statusInfo = result.statusCode ? ` (Status: ${result.statusCode})` : '';
+                        alert('❌ Erro ao desbloquear:\n\n' + errorDetail + statusInfo);
+                    } else {
+                        alert('❌ ' + (result ? result.mensagem : 'Erro desconhecido ao desbloquear'));
+                    }
+                },
+                error: function (xhr, status, error) {
+
+                    var mensagemErro = 'Erro ao desbloquear usuário';
+                    if (status === 'timeout') {
+                        mensagemErro = 'Timeout: A requisição demorou muito tempo';
+                    } else if (xhr.status === 404) {
+                        mensagemErro = 'Erro 404: Endpoint não encontrado';
+                    } else if (xhr.status === 500) {
+                        mensagemErro = 'Erro 500: Erro no servidor';
+                    } else if (xhr.status === 401) {
+                        mensagemErro = 'Erro 401: Não autorizado - Verifique seu token/permissões';
+                    } else if (xhr.status === 0) {
+                        mensagemErro = 'Erro de conexão: Verifique se a API está disponível';
+                    }
+
+                    alert('❌ ' + mensagemErro + '\n\nDetalhes: ' + error);
+                },
+                complete: function () {
+                    // Reabilitar o botão
+                    if (btn) $(btn).prop('disabled', false);
+                }
+            });
+        }
+
+        function CarregarStatusBloqueio(login) {
+            if (!login) {
+                $('#secaoBloqueio').hide();
+                return;
+            }
+
+            $.ajax({
+                url: '/Usuarios/ConsultarBloqueio',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        if (result.estaBloqueado) {
+                            // Usuário está bloqueado
+                            $('#statusBloqueio-status').html('<i class="fa fa-lock" style="color: #E74C3C;"></i> <strong style="color: #E74C3C;">BLOQUEADO</strong>');
+                            $('#statusBloqueio-attempts').html('<strong style="color: #E74C3C;">' + (result.tentativasRestantes || 0) + '</strong>');
+                            $('#bloqueio-info').show();
+                            $('#btnDesbloquearUsuario').prop('disabled', false);
+
+                            // Calcular tempo restante
+                            var bloqueioAte = new Date(result.bloqueioAte);
+                            var agora = new Date();
+                            var diferenca = bloqueioAte - agora;
+
+                            if (diferenca > 0) {
+                                var minutos = Math.floor(diferenca / 60000);
+                                var segundos = Math.floor((diferenca % 60000) / 1000);
+                                $('#tempo-restante').text(minutos + 'm ' + segundos + 's');
+                            }
+                        } else {
+                            // Usuário não está bloqueado
+                            $('#statusBloqueio-status').html('<i class="fa fa-check-circle" style="color: #26B99A;"></i> <strong style="color: #26B99A;">Desbloqueado</strong>');
+                            $('#statusBloqueio-attempts').html('<strong style="color: #26B99A;">0</strong>');
+                            $('#bloqueio-info').hide();
+                            $('#btnDesbloquearUsuario').prop('disabled', true);
+                        }
+                    } else {
+                        $('#secaoBloqueio').hide();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#secaoBloqueio').hide();
+                }
+            });
+        }
+
+        $('#btnDesbloquearUsuario').click(function () {
+            var login = $('#Usuario').val();
+
+            if (!login) {
+                alert('Usuário não identificado');
+                return;
+            }
+
+            if (!confirm('Deseja desbloquear o usuário ' + login + '?\n\nEle poderá fazer login normalmente após o desbloqueio.')) {
+                return;
+            }
+
+            $.ajax({
+                url: '/Usuarios/DesbloqueaUsuario',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        alert('✅ ' + result.mensagem);
+                        CarregarStatusBloqueio(login);
+                    } else {
+                        alert('❌ ' + (result.mensagem || 'Erro ao desbloquear usuário'));
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('❌ Erro ao desbloquear usuário: ' + error);
+                }
+            });
+        });
+
+        // ===== Funções auxiliares para 2FA =====
+
+        function VerStatus2FA() {
+            var login = $('#Usuario').val();
+
+            if (!login) {
+                alert('Usuário não identificado');
+                return;
+            }
+
+            $('#status2FA-usuario').text(login);
+            $('#status2FA-enabled').html('<i class="fa fa-spinner fa-spin"></i> Carregando...');
+            $('#status2FA-authenticator').html('<i class="fa fa-spinner fa-spin"></i> Carregando...');
+            $('#status2FA-recovery').html('<i class="fa fa-spinner fa-spin"></i> Carregando...');
+            $('#modalStatus2FA').modal('show');
+
+            $.ajax({
+                url: '/Usuarios/ConsultarStatus2FA',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        if (result.twoFactorEnabled) {
+                            $('#status2FA-enabled').html('<i class="fa fa-check-circle" style="color: #26B99A;"></i> <strong style="color: #26B99A;">Habilitado</strong>');
+                        } else {
+                            $('#status2FA-enabled').html('<i class="fa fa-times-circle" style="color: #E74C3C;"></i> <strong style="color: #E74C3C;">Desativado</strong>');
+                        }
+
+                        if (result.hasAuthenticator) {
+                            $('#status2FA-authenticator').html('<i class="fa fa-check-circle" style="color: #26B99A;"></i> <strong style="color: #26B99A;">Sim</strong>');
+                        } else {
+                            $('#status2FA-authenticator').html('<i class="fa fa-times-circle" style="color: #E74C3C;"></i> <strong style="color: #E74C3C;">Não</strong>');
+                        }
+
+                        var recoveryCount = result.recoveryCodesRemaining || 0;
+                        var recoveryColor = recoveryCount > 5 ? '#26B99A' : (recoveryCount > 0 ? '#F39C12' : '#E74C3C');
+                        var recoveryIcon = recoveryCount > 5 ? 'check-circle' : (recoveryCount > 0 ? 'exclamation-triangle' : 'times-circle');
+
+                        $('#status2FA-recovery').html(
+                            '<i class="fa fa-' + recoveryIcon + '" style="color: ' + recoveryColor + ';"></i> ' +
+                            '<strong style="color: ' + recoveryColor + ';">' + recoveryCount + ' código(s)</strong>'
+                        );
+
+                        AtualizarBotoes2FA(login);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Erro ao consultar status 2FA: ' + error);
+                    $('#modalStatus2FA').modal('hide');
+                }
+            });
+        }
+
+        function AtualizarBotoes2FA(login) {
+            // Mostrar loading e esconder ambos os botões
+            $('#btnAtivar2FA').hide();
+            $('#btnDesativar2FA').hide();
+            $('#loading2FA').show();
+
+            $.ajax({
+                url: '/Usuarios/ConsultarStatus2FA',
+                type: 'POST',
+                data: JSON.stringify({ login: login }),
+                contentType: 'application/json',
+                success: function (result) {
+                    if (result.codigo === "00") {
+                        if (result.twoFactorEnabled) {
+                            // 2FA está habilitado - mostrar botão desativar
+                            $('#btnAtivar2FA').hide();
+                            $('#btnDesativar2FA').show();
+                            $('#loading2FA').hide();
+                        } else {
+                            // 2FA está desabilitado - mostrar botão ativar
+                            $('#btnAtivar2FA').show();
+                            $('#btnDesativar2FA').hide();
+                            $('#loading2FA').hide();
+                        }
+                    }
+                },
+                error: function () {
+                    $('#loading2FA').hide();
+                    $('#btnAtivar2FA').show(); // Mostrar ativar por padrão em caso de erro
+                    $('#btnDesativar2FA').hide();
+                }
+            });
+        }
+
+        function Resetar2FA() {
+            var login = $('#Usuario').val();
+
+   if (!login) {
+          alert('Usuário não identificado');
+      return;
+        }
+
+   $('#reset2FA-usuario').text(login);
+   $('#modalResetar2FA').modal('show');
+        }
+
+        function ResetarConfirmado2FA() {
+            var login = $('#Usuario').val();
+
+            if (!login) {
+     alert('Usuário não identificado');
+                return;
+   }
+
+            // ✅ NOVO: Desabilitar botão e mostrar loading
+       var $btn = $('#buttonConfirmarReset2FA');
+       var $btnCancelar = $('#modalResetar2FA').find('button[data-dismiss="modal"]');
+          var $loadingIndicator = $('#loading-indicator');
+         var textoOriginal = $btn.html();
+    
+      $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Processando...');
+            $btnCancelar.prop('disabled', true);
+$loadingIndicator.show();
+
+    $.ajax({
+                url: '/Usuarios/Resetar2FA',
+          type: 'POST',
+           data: JSON.stringify({ login: login }),
+    contentType: 'application/json',
+       success: function (result) {
+     if (result.codigo === "00") {
+              // ✅ NOVO: Mostrar sucesso com animação
+         $loadingIndicator.html(
+        '<i class="fa fa-check-circle" style="font-size: 24px; color: #26B99A;"></i>' +
+         '<p style="margin: 10px 0 0 0; color: #26B99A; font-size: 14px; font-weight: 600;">Reset realizado com sucesso!</p>'
+          ).css('background', '#F1F8F5').css('border', '1px solid #26B99A');
+        
+    setTimeout(function () {
+     alert('✅ ' + result.mensagem);
+   $('#modalResetar2FA').modal('hide');
+          AtualizarBotoes2FA(login);
+                   }, 1500);
+ } else {
+     alert('❌ ' + (result.mensagem || 'Erro ao resetar 2FA'));
+           }
+       },
+              error: function (xhr, status, error) {
+         // ✅ NOVO: Mostrar erro com animação
+ $loadingIndicator.html(
+    '<i class="fa fa-times-circle" style="font-size: 24px; color: #E74C3C;"></i>' +
+                 '<p style="margin: 10px 0 0 0; color: #E74C3C; font-size: 14px; font-weight: 600;">Erro ao processar solicitação</p>'
+       ).css('background', '#FCF1F0').css('border', '1px solid #E74C3C');
+    
+        alert('❌ Erro ao resetar 2FA: ' + error);
+      },
+    complete: function () {
+          // ✅ NOVO: Restaurar estado original do botão após 2 segundos
+     setTimeout(function () {
+             $btn.prop('disabled', false).html(textoOriginal);
+         $btnCancelar.prop('disabled', false);
+         $loadingIndicator.hide().attr('style', '');
+      $loadingIndicator.html(
+      '<i class="fa fa-spinner fa-spin" style="font-size: 24px; color: #E74C3C;"></i>' +
+    '<p style="margin: 10px 0 0 0; color: #666; font-size: 14px;">Processando reset de 2FA...</p>'
+);
+        }, 2000);
+             }
+            });
+        }
+
+        function AtualizarTempoRestanteBloqueio(dataHoraUltimoBloqueio) {
+            if (!dataHoraUltimoBloqueio) return;
+
+            var bloqueioAte = new Date(dataHoraUltimoBloqueio);
+            var duracao = 15 * 60 * 1000; // 15 minutos em milissegundos
+            bloqueioAte = new Date(bloqueioAte.getTime() + duracao);
+
+            var interval = setInterval(function () {
+                var agora = new Date();
+                var diferenca = bloqueioAte - agora;
+
+                if (diferenca > 0) {
+                    var minutos = Math.floor(diferenca / 60000);
+                    var segundos = Math.floor((diferenca % 60000) / 1000);
+                    $('#tempo-restante').text(minutos + 'm ' + segundos + 's');
+                } else {
+                    $('#tempo-restante').text('0m 0s');
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+    </script>
 </div>

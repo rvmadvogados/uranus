@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Web.Mvc;
 using Uranus.Business;
-
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireMenu("Processos")]
     public class PartesController : Controller
     {
         [HttpPost]

@@ -35,6 +35,7 @@
                                         <option value="2">Parceiro</option>
                                         <option value="3">Profissional</option>
                                         <option value="4">Mídias Sociais</option>
+                                        <option value="6">Não identificada</option>
                                     </select>
                                 </div>
                             </div>
@@ -143,7 +144,8 @@
                                      numericLinksCount: 5,
                                      columns: new[] {
                                      grid.Column("Nome", header: "Nome"),
-                                     grid.Column("Tipo", header: "Tipo", format: (item) => new HtmlString((item["Tipo"] == 1 ? "Outros" : (item["Tipo"] == 2 ? "Parceiro" : (item["Tipo"] == 3 ? "Profissional" : (item["Tipo"] == 5 ? "Cliente" : "Mídias Sociais")))))),
+                                     grid.Column("Tipo", header: "Tipo", format: (item) => new HtmlString((item["Tipo"] == 1 ? "Outros" : (item["Tipo"] == 2 ? "Parceiro" 
+                                     : (item["Tipo"] == 3 ? "Profissional" : (item["Tipo"] == 5 ? "Cliente" : (item["Tipo"] == 6 ? "Não Identificada" : "Mídias Sociais"))))))),
                                      grid.Column("ID", header: "Ações", canSort:false,
                                      format:
                     @<text>

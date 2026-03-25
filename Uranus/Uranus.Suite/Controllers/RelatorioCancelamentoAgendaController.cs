@@ -6,10 +6,11 @@ using Uranus.Data.R9;
 using Microsoft.Reporting.WebForms;
 using System.Web.UI.WebControls;
 using Uranus.Business;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
-
+    [RequireSubmenu("Relatorios:RelatorioCancelamentoAgenda")]
     public class RelatorioCancelamentoAgendaController : Controller
     {
         //GET: RelatorioEventos

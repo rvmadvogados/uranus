@@ -2,26 +2,37 @@
 
 @using Uranus.Suite.App_Code;
 
+@using System.Security.Claims
+@{
+    // Se a sessão foi perdida
+    if (!Sessao.IsSessionValid)
+    {
+        Response.Redirect("~/Login", true);
+        return;
+    }
+    var user = User as ClaimsPrincipal ?? new ClaimsPrincipal();
+}
+
 <html>
 <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     @{
         if (Sessao.Aplicativo == "Agenda")
         {
-            <title>Agenda RVM Advogados</title>
+            <title>Agenda Von Mühlen Advogados</title>
         }
         else if (Sessao.Aplicativo == "Processos")
         {
-            <title>Processos RVM Advogados</title>
+            <title>Processos Von Mühlen Advogados</title>
         }
         else
         {
-            <title>RVM Advogados</title>
+            <title>Von Mühlen Advogados</title>
         }
     }
 
     <!-- Meta, title, CSS, favicons, etc. -->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -105,13 +116,31 @@
             border-bottom-right-radius: 4px;
             border-bottom-left-radius: 4px;
         }
+
+        /* Custom tooltip style for password requirements */
+        .tooltip-inner {
+            max-width: 260px;
+            background: #fff !important;
+            color: #222 !important;
+            border: 1px solid #337ab7;
+            box-shadow: 0 2px 8px rgba(51,123,183,0.15);
+            font-size: 13px;
+            text-align: left;
+            padding: 10px 12px;
+        }
+        .tooltip.in {
+            opacity: 1;
+        }
+        .tooltip ul {
+            margin-bottom: 0;
+        }
     </style>
 
 </head>
 
 <body class="nav-md">
 
-    <input id="listaFeriadosRecesso" type="hidden" value="@Sessao.FeriadosRecesso" />
+    <input id="listaFeriadosRecesso" type="hidden" value="@(Sessao.FeriadosRecesso ?? "")" />
 
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -126,19 +155,25 @@
                     <h4>Você deseja realmente sair do Sistema?</h4>
                 </div>
                 <div class="modal-footer">
-                    @{
-                        try
-                        {
-                            @Html.ActionLink("buttonOut", "DestroySession", "Login", "Sim", "margin: 0;", "btn btn-primary")
-                        }
-                        catch (Exception ex)
-                        {
-                            // Response.Redirect("http://agenda.rvmadvogados.com.br/", true);
-                        }
-                    }
+                    <a href="@Url.Action("DestroySession", "Login")" class="btn btn-primary" style="margin: 0;">Sim</a>
                     &nbsp;
                     <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
                 </div>
+                @*<div class="modal-footer">
+            <a href="@Url.Action("DestroySession", "Login")" class="btn btn-primary" style="margin: 0;">Sim</a>
+            @{
+                try
+                {
+                    @Html.ActionLink("buttonOut", "DestroySession", "Login", "Sim", "margin: 0;", "btn btn-primary")
+                }
+                catch (Exception ex)
+                {
+                    Response.Redirect("http://agenda.rvmadvogados.com.br/", true);
+                }
+            }
+            &nbsp;
+            <button type="button" class="btn btn-default" style="margin: 0;" data-dismiss="modal">Não</button>
+        </div>*@
             </div>
 
         </div>
@@ -200,9 +235,16 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="titlefield">Senha <span class="required">*</span></label>
+                                    <label class="titlefield">
+                                        Senha <span class="required">*</span>
+                                        <i class="fa fa-question-circle" id="senhaRequisitosAjuda" style="color:#337ab7; cursor:pointer; margin-left:5px;"
+                                           data-toggle="tooltip" data-placement="right"
+                                           data-html="true"
+                                           title="<b>Requisitos da senha:</b><ul style='padding-left:18px; margin:8px 0 0 0;'><li>Mínimo 6 caracteres</li><li>Pelo menos uma letra maiúscula</li><li>Pelo menos uma letra minúscula</li><li>Pelo menos um número</li><li>Pelo menos um caractere especial</li><li>Sem espaços</li></ul>"></i>
+                                    </label>
                                     <div class="input-group" id="show_hide_password1">
-                                        <input type="password" class="form-control" placeholder="Informe uma Senha" id="SenhaAux" name="SenhaAux" data-msg-required="Por favor, insira uma Senha." data-rule-required="true" />
+                                        <input type="password" class="form-control" placeholder="Informe uma Senha" id="SenhaAux" name="SenhaAux"
+                                               data-msg-required="Por favor, insira uma Senha." data-rule-required="true" maxlength="25" />
                                         <div class="input-group-addon">
                                             <a href="" style="color: #000 !important;"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                                         </div>
@@ -213,7 +255,8 @@
                                 <div class="form-group">
                                     <label class="titlefield">Confirmar Senha <span class="required">*</span></label>
                                     <div class="input-group" id="show_hide_password2">
-                                        <input type="password" class="form-control" placeholder="Informe a mesma Senha" id="ConfirmaSenhaAux" name="ConfirmaSenhaAux" data-msg-required="Por favor, insira a Senha de Confirmação." data-rule-required="true" />
+                                        <input type="password" class="form-control" placeholder="Informe a mesma Senha" id="ConfirmaSenhaAux" name="ConfirmaSenhaAux"
+                                               data-msg-required="Por favor, insira a Senha de Confirmação." data-rule-required="true" maxlength="25" />
                                         <div class="input-group-addon">
                                             <a href="" style="color: #000 !important;"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
                                         </div>
@@ -359,7 +402,7 @@
                     <div class="profile_info">
                         <span>Bem vindo,</span>
                         <h2>
-                            @Uranus.Suite.Sessao.Usuario.Nome
+                            @(Uranus.Suite.Sessao.Usuario != null ? Uranus.Suite.Sessao.Usuario.Nome : "")
                         </h2>
                     </div>
                     <div class="clearfix"></div>
@@ -369,385 +412,451 @@
                         <div class="menu_section">
                             <h3>&nbsp;</h3>
                             <ul class="nav side-menu">
-                                @{
+                                @if (user.HasClaim("menu", "AgendaDePrazos") || user.IsInRole("Admin"))
+                                {
                                     <li>
-                                        <a href="~/Processos/Agendar" onclick="NProgress.start();"><i class="fa fa-tags" style="vertical-align: top !important; text-align: center !important;"></i> Agenda de Prazos</a>
+                                        <a href="~/Processos/Agendar" onclick="NProgress.start();"><i class="fa fa-tags"></i> Agenda de Prazos</a>
                                     </li>
-
-                                    @(Uranus.Suite.Sessao.Aplicativo == "Processos" ? Html.Raw("<li class='active'>") : Html.Raw("<li>"))
-                                    <a href="~/Processos" onclick="NProgress.start(); LimparSessao();"><i class="fa fa-legal" style="vertical-align: top !important; text-align: center !important;"></i> Processos</a>
-                                    Html.Raw("</li>");
-
-                                    @(Uranus.Suite.Sessao.Aplicativo == "Agenda" ? Html.Raw("<li class='active'>") : Html.Raw("<li>"))
-                                    <a href="~/Agendas" onclick="NProgress.start();"><i class="fa fa-calendar-o" style="vertical-align: top !important; text-align: center !important;"></i> Agenda de Compromissos</a>
-                                    Html.Raw("</li>");
+                                }
+                                @if (user.HasClaim("menu", "Processos") || user.IsInRole("Admin"))
+                                {
                                     <li>
-                                        <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Agendas Operações <span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu" style="display: none">
-
-                                            @if (Uranus.Suite.Sessao.Usuario.Nivel > 2)
+                                        <a href="~/Processos" onclick="NProgress.start(); LimparSessao();"><i class="fa fa-legal"></i> Processos</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "AgendaDeCompromissos") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Agendas" onclick="NProgress.start();"><i class="fa fa-calendar-o"></i> Agenda de Compromissos</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "AgendasOperacoes") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Agendas Operações <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "AgendasOperacoes:AgendasEmMassa") || user.IsInRole("Admin"))
                                             {
                                                 <li>
-                                                    <a href="~/AgendasEmMassa" onclick="NProgress.start();"><i class="fa fa-calendar" style="vertical-align: top !important; text-align: center !important;"></i> Agendas em Massa</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Agendas/Send" onclick="NProgress.start();" style="cursor: pointer;"><i class="fa fa-envelope-o" style="vertical-align: top !important; text-align: center !important;"></i> Enviar Agendas por Período</a>
+                                                    <a href="~/AgendasEmMassa" onclick="NProgress.start();"><i class="fa fa-calendar"></i> Agendas em Massa</a>
                                                 </li>
                                             }
-
-                                            <li>
-                                                <a href="~/Agendas/Period" onclick="NProgress.start();"><i class="fa fa-filter" style="vertical-align: top !important; text-align: center !important;"></i> Agendas por Período</a>
-                                            </li>
-                                        </ul>
-
-                                    </li>
-
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                    {
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Cadastros Básicos <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/Feriados" onclick="NProgress.start();">Feriados</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Modelos" onclick="NProgress.start();">Modelos de Documentos</a>
-                                                </li>
-
-                                                <li>
-                                                    <a href="~/Parceiros" onclick="NProgress.start();">Parceiros</a>
-                                                </li>
-
-                                                <li>
-                                                    <a href="~/Acao" onclick="NProgress.start();">Processo Ação</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Areas" onclick="NProgress.start();">Processo Área</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Eventos" onclick="NProgress.start();">Processo Evento</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Varas" onclick="NProgress.start();">Processo Juízo</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Salas" onclick="NProgress.start();">Salas</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Sedes" onclick="NProgress.start();">Sedes</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/TiposAgendas" onclick="NProgress.start();">Tipos de Agendas</a>
-                                                </li>
-
-                                                <li>
-                                                    <a href="~/TiposIndicacoes" onclick="NProgress.start();">Tipos de Indicações</a>
-                                                </li>
-
-                                                <li>
-                                                    <a href="~/TiposProfissionais" onclick="NProgress.start();">Tipos de Profissionais</a>
-                                                </li>
-
-                                            </ul>
-                                        </li>
-                                    }
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel > 0)
-                                    {
-                                        <li>
-                                            <a href="~/Clientes" onclick="NProgress.start();"><i class="fa fa-male" style="vertical-align: top !important; text-align: center !important;"></i> Cadastros</a>
-                                        </li>
-                                        <li>
-                                            <a href="~/ClientesContratos" onclick="NProgress.start();"><i class="fa fa-tags" style="vertical-align: top !important; text-align: center !important;"></i> Contratos Clientes</a>
-                                        </li>
-                                    }
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10 || Uranus.Suite.Sessao.Usuario.Nivel == 9 || Uranus.Suite.Sessao.Usuario.Login == "liandra.fracalossi")
-                                    {
-                                        <li>
-                                            <a><i class="fa fa-gears" style="vertical-align: top !important; text-align: center !important;"></i> Controladoria <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/Auditoria" onclick="NProgress.start();">Auditoria</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Profissionais" onclick="NProgress.start();">Profissionais</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Usuarios" onclick="NProgress.start();">Usuários</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/UnificarProcessos" onclick="NProgress.start();">Unificar Processos</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioClientesEtiquetas" onclick="NProgress.start();">Emissão  Etiquetas</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioClientes" onclick="NProgress.start();">Relatório Clientes Etiquetas</a>
-                                                </li>
-                                                @*<li>
-                            <a href="~/RelatorioAgendasNaoCompareceu" onclick="NProgress.start();">Relatório Agendas - Não Compareceu</a>
-                        </li>*@
-                                                <li>
-                                                    <a href="~/RelatorioCadastroClientes" onclick="NProgress.start();">Relatório de Cadastros</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioCancelamentoAgenda" onclick="NProgress.start();">Relatório de Ausentes e Cancelados</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioEventos" onclick="NProgress.start();">Relatório Eventos</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioClientesIndicacao" onclick="NProgress.start();">Relatório de Indicação</a>
-                                                </li>
-                                                @*<li>
-                            <a href="~/RelatorioClientesIndicfinanceiroorigem" onclick="NProgress.start();">Relatório de Indicação</a>
-                        </li>*@
-                                                <li>
-                                                    <a href="~/RelatorioPorSede" onclick="NProgress.start();">Relatório de Processos</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-
-                                    }
-
-
-                                    <li>
-                                        <a href="~/Documentos" onclick="NProgress.start();"><i class="fa fa-file-pdf-o" style="vertical-align: top !important; text-align: center !important;"></i> Gerar Documentos</a>
-                                    </li>
-
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                    {
-                                        <li>
-                                            <a href="~/Iniciais" onclick="NProgress.start();"><i class="fa fa-file-pdf-o" style="vertical-align: top !important; text-align: center !important;"></i> Gerar Iniciais</a>
-                                        </li>
-
-                                        <li class="active">
-                                            <a href="~/Dashboard" onclick="NProgress.start();"><i class="fa fa-dashboard" style="vertical-align: top !important; text-align: center !important;"></i> Dashboard</a>
-                                        </li>
-                                    }
-
-                                    @*if (Uranus.Suite.Sessao.Usuario.Nivel > 2)
-            {
-                <li>
-                    <a href="~/Agendas/Send" onclick="NProgress.start();" style="cursor: pointer;"><i class="fa fa-envelope-o" style="vertical-align: top !important; text-align: center !important;"></i> Enviar Agendas por Período</a>
-                </li>
-            }*@
-
-                                    if ((Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6) || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                    {
-                                        <li>
-                                            <a href="~/Processos/Enviar" onclick="NProgress.start();"><i class="fa fa-cloud-upload" style="vertical-align: top !important; text-align: center !important;"></i> Enviar Planilhas E-PROC</a>
-                                        </li>
-                                    }
-
-                                    <li>
-                                        <a href="~/EventoAutomatico" onclick="NProgress.start();"><i class="fa fa-check-square-o" style="vertical-align: top !important; text-align: center !important;"></i> Eventos Automáticos</a>
-                                    </li>
-
-                                    if ((Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6) || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                    {
-                                        <li>
-                                            <a href="~/Processos/Processar" onclick="NProgress.start();"><i class="fa fa-history" style="vertical-align: top !important; text-align: center !important;"></i> Processar Planilhas E-PROC</a>
-                                        </li>
-                                    }
-
-
-                                    <li>
-                                        <a><i class="fa fa-gears" style="vertical-align: top !important; text-align: center !important;"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu" style="display: none">
-                                            @if ((Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6) || Uranus.Suite.Sessao.Usuario.Nivel == 10)
+                                            @if (user.HasClaim("submenu", "AgendasOperacoes:EnviarAgendasPorPeriodo") || user.IsInRole("Admin"))
                                             {
                                                 <li>
-                                                    <a href="~/RelatorioAgendaCompromisso" onclick="NProgress.start();">Agenda de Compromissos</a>
+                                                    <a href="~/Agendas/Send" onclick="NProgress.start();"><i class="fa fa-envelope-o"></i> Enviar Agendas por Período</a>
                                                 </li>
                                             }
-                                            <li>
-                                                <a href="~/RelatorioAgendaProfissionaisPrazos" onclick="NProgress.start();">Agenda do Profissional</a>
-                                            </li>
-                                            @if ((Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6) || Uranus.Suite.Sessao.Usuario.Nivel == 10)
+                                            @if (user.HasClaim("submenu", "AgendasOperacoes:AgendasPorPeriodo") || user.IsInRole("Admin"))
                                             {
                                                 <li>
-                                                    <a href="~/RelatorioAgendaProfissionais" onclick="NProgress.start();">Prazos Registrados</a>
+                                                    <a href="~/Agendas/Period" onclick="NProgress.start();"><i class="fa fa-filter"></i> Agendas por Período</a>
                                                 </li>
                                             }
                                         </ul>
                                     </li>
-
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel > 0)
-                                    {
-                                        if ((Uranus.Suite.Sessao.Usuario.Nivel > 3 && Uranus.Suite.Sessao.Usuario.Nivel < 6) || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                        {
-                                            <li>
-                                                <a><i class="fa fa-download" style="vertical-align: top !important; text-align: center !important;"></i>Tratamento de Prazos <span class="fa fa-chevron-down"></span></a>
-                                                <ul class="nav child_menu" style="display: none">
-
-                                                    <li>
-                                                        <a href="~/Processos/CapturarEProc" onclick="NProgress.start();">Processos EPROC</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="~/Processos/CapturarOab" onclick="NProgress.start();">Processos OAB</a>
-                                                        @*<a href="~/Processos/CapturarOab" onclick="NProgress.start();">Processos OAB <span class="label label-success pull-right dark">Em Breve</span></a>*@
-                                                    </li>
-                                                    <li>
-                                                        <a href="~/Processos/CapturarWebJur" onclick="NProgress.start();">Processos WEBJUR</a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        }
-                                    }
-
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 5 || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                    {
-                                        <li>
-                                            <a><i class="fa fa-mobile" style="vertical-align: top !important; text-align: center !important;"></i>Integração App <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-
-                                                <li>
-                                                    <a href="~/App/PreCadastro" onclick="NProgress.start();">Pré-Cadastro</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/App/PreAgendamento" onclick="NProgress.start();">Pré-Agendamento</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/App/GerarToken" onclick="NProgress.start();">Gerar Token</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    }
-
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel >= 5 && Uranus.Suite.Sessao.Usuario.Nivel != 8 && Uranus.Suite.Sessao.Usuario.Nivel != 9)
-                                    {
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/BancosLancamentos" onclick="NProgress.start();">Lançamentos de Bancos</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/NotasServicos" onclick="NProgress.start();">Emitir Nota de Serviço</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FinanceiroGestaoBoletos" onclick="NProgress.start();">Gestão de Boletos</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Cadastros Básicos<span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/Bancos" onclick="NProgress.start();">Bancos</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Fornecedores" onclick="NProgress.start();">Fornecedores</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/Historicos" onclick="NProgress.start();">Históricos</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FinanceiroImpostosNF" onclick="NProgress.start();">Impostos NFE</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/ClientesFinanceiroIndicacoes" onclick="NProgress.start();">Indicação Clientes</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FinanceiroOrigem" onclick="NProgress.start();">Origem</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FinanceiroTipo" onclick="NProgress.start();">Tipos de Receita e Despesas</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Receitas <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/ClientesPagamentosPeriodo">Baixa de Pagamentos Clientes</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/ClientesNotas" onclick="NProgress.start();">Clientes Lançamentos a Receber</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FinanceiroReceitas" onclick="NProgress.start();">Lançamento de Receitas</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Despesas <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/FornecedoresPagamentosPeriodo">Baixa de Pagamentos Fornecedores</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FornecedoresNotas" onclick="NProgress.start();">Fornecedores Lançamentos a Pagar</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/FinanceiroDespesas" onclick="NProgress.start();">Lançamento de Despesas</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/FornecedoresRelatorios">Relatório de Fornecedores à Pagar</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/ClientesRelatorios">Relatório de Clientes à Receber</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioFinanceiroDespesas">Relatório de Despesas por Centro de Custo</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioFinanceiroReceitas">Relatório de Receitas por Centro de Custo</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioFinanceiroDespesasAnual">Relatório de Despesas Anual por Centro de Custo</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RelatorioFinanceiroReceitasAnual">Relatório de Receitas Anual por Centro de Custo</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    }
+                                }
+                                @if (user.HasClaim("menu", "CadastrosBasicos") || user.IsInRole("Admin"))
+                                {
                                     <li>
-                                        <a href="~/ColaboradoresSolicitacoes" onclick="NProgress.start();"> <i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i>Área do Colaborador</a>
+                                        <a><i class="fa fa-sitemap"></i> Cadastros Básicos <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:Feriados") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Feriados" onclick="NProgress.start();">Feriados</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:ModelosDeDocumentos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Modelos" onclick="NProgress.start();">Modelos de Documentos</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:Parceiros") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Parceiros" onclick="NProgress.start();">Parceiros</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:ProcessoAcao") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Acao" onclick="NProgress.start();">Processo Ação</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:ProcessoArea") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Areas" onclick="NProgress.start();">Processo Área</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:ProcessoEvento") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Eventos" onclick="NProgress.start();">Processo Evento</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:ProcessoJuizo") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Varas" onclick="NProgress.start();">Processo Juízo</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:Salas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Salas" onclick="NProgress.start();">Salas</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:Sedes") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Sedes" onclick="NProgress.start();">Sedes</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:TiposAgendas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/TiposAgendas" onclick="NProgress.start();">Tipos de Agendas</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:TiposIndicacoes") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/TiposIndicacoes" onclick="NProgress.start();">Tipos de Indicações</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicos:TiposProfissionais") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/TiposProfissionais" onclick="NProgress.start();">Tipos de Profissionais</a></li>
+                                            }
+                                        </ul>
                                     </li>
-                                    if (Uranus.Suite.Sessao.Usuario.Nivel == 9 || Uranus.Suite.Sessao.Usuario.Nivel == 8 || Uranus.Suite.Sessao.Usuario.Nivel == 10)
-                                    {
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Administrativo <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/Colaboradores" onclick="NProgress.start();">Gestão de Colaboradores</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/ColaboradoresContracheques/Enviar" onclick="NProgress.start();"> Upload Contracheques</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/ColaboradoresContracheques" onclick="NProgress.start();">Gestão de Contracheques</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/DashboardAdministrativo" onclick="NProgress.start();">Dashboard Administrativo</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/ColaboradoresFerias" onclick="NProgress.start();">Gerar Recessos/Férias</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a><i class="fa fa-sitemap" style="vertical-align: top !important; text-align: center !important;"></i> Cargos e Salários <span class="fa fa-chevron-down"></span></a>
-                                            <ul class="nav child_menu" style="display: none">
-                                                <li>
-                                                    <a href="~/RHAreas" onclick="NProgress.start();">Áreas RH</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RHCargosSalarios" onclick="NProgress.start();">Cargos e Salários</a>
-                                                </li>
-                                                <li>
-                                                    <a href="~/RHCargosSalarios/Reajustar" onclick="NProgress.start();">Reajuste de Salários</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    }
+                                }
+                                @if (user.HasClaim("menu", "Cadastros") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Clientes" onclick="NProgress.start();"><i class="fa fa-male"></i> Cadastros</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "ContratosClientes") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/ClientesContratos" onclick="NProgress.start();"><i class="fa fa-tags"></i> Contratos Clientes</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Controladoria") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-gears"></i> Controladoria <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "Controladoria:Auditoria") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Auditoria" onclick="NProgress.start();">Auditoria</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Controladoria:Profissionais") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Profissionais" onclick="NProgress.start();">Profissionais</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Controladoria:Usuarios") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Usuarios" onclick="NProgress.start();">Usuários</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Controladoria:Perfis") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/PerfisDeAcesso" onclick="NProgress.start();">Perfis de Acesso</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Controladoria:UnificarProcessos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/UnificarProcessos" onclick="NProgress.start();">Unificar Processos</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "GerarDocumentos") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Documentos" onclick="NProgress.start();"><i class="fa fa-file-pdf-o"></i> Gerar Documentos</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "GerarIniciais") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Iniciais" onclick="NProgress.start();"><i class="fa fa-file-pdf-o"></i> Gerar Iniciais</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Dashboard") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Dashboard" onclick="NProgress.start();"><i class="fa fa-dashboard"></i> Dashboard</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "EnviarPlanilhasEProc") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Processos/Enviar" onclick="NProgress.start();"><i class="fa fa-cloud-upload"></i> Enviar Planilhas E-PROC</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "EventosAutomaticos") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/EventoAutomatico" onclick="NProgress.start();"><i class="fa fa-check-square-o"></i> Eventos Automáticos</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "ProcessarPlanilhasEProc") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/Processos/Processar" onclick="NProgress.start();"><i class="fa fa-history"></i> Processar Planilhas E-PROC</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Relatorios") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-gears"></i> Relatórios <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "Relatorios:AgendaCompromissos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioAgendaCompromisso" onclick="NProgress.start();">Agenda de Compromissos</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:AgendaDoProfissional") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioAgendaProfissionaisPrazos" onclick="NProgress.start();">Agenda do Profissional</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:PrazosRegistrados") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioAgendaProfissionais" onclick="NProgress.start();">Prazos Registrados</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:EmissaoEtiquetas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioClientesEtiquetas" onclick="NProgress.start();">Emissão  Etiquetas</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:RelatorioClientesEtiquetas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioClientes" onclick="NProgress.start();">Relatório Clientes Etiquetas</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:RelatorioCadastroClientes") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioCadastroClientes" onclick="NProgress.start();">Relatório de Cadastros</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:RelatorioCancelamentoAgenda") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioCancelamentoAgenda" onclick="NProgress.start();">Relatório de Ausentes e Cancelados</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:RelatorioEventos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioEventos" onclick="NProgress.start();">Relatório Eventos</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:RelatorioClientesIndicacao") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioClientesIndicacao" onclick="NProgress.start();">Relatório de Indicação</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Relatorios:RelatorioPorSede") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioPorSede" onclick="NProgress.start();">Relatório de Processos</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "TratamentoPrazos") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-download"></i>Tratamento de Prazos <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "TratamentoPrazos:ProcessosEPROC") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Processos/CapturarEProc" onclick="NProgress.start();">Processos EPROC</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "TratamentoPrazos:ProcessosOAB") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Processos/CapturarOab" onclick="NProgress.start();">Processos OAB</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "TratamentoPrazos:ProcessosWEBJUR") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Processos/CapturarWebJur" onclick="NProgress.start();">Processos WEBJUR</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "IntegracaoApp") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-mobile"></i>Integração App <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "IntegracaoApp:PreCadastro") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/App/PreCadastro" onclick="NProgress.start();">Pré-Cadastro</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "IntegracaoApp:PreAgendamento") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/App/PreAgendamento" onclick="NProgress.start();">Pré-Agendamento</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "IntegracaoApp:GerarToken") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/App/GerarToken" onclick="NProgress.start();">Gerar Token</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Financeiro") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "Financeiro:BancosLancamentos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/BancosLancamentos" onclick="NProgress.start();">Lançamentos de Bancos</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Financeiro:NotasServicos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/NotasServicos" onclick="NProgress.start();">Emitir Nota de Serviço</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Financeiro:FinanceiroGestaoBoletos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FinanceiroGestaoBoletos" onclick="NProgress.start();">Gestão de Boletos</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "CadastrosBasicosFinanceiro") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Cadastros - Financeiro<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:Bancos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Bancos" onclick="NProgress.start();">Bancos</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:Fornecedores") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Fornecedores" onclick="NProgress.start();">Fornecedores</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:Historicos") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Historicos" onclick="NProgress.start();">Históricos</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:FinanceiroImpostosNF") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FinanceiroImpostosNF" onclick="NProgress.start();">Impostos NFE</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:ClientesFinanceiroIndicacoes") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ClientesFinanceiroIndicacoes" onclick="NProgress.start();">Indicação Clientes</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:FinanceiroOrigem") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FinanceiroOrigem" onclick="NProgress.start();">Origem</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CadastrosBasicosFinanceiro:FinanceiroTipo") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FinanceiroTipo" onclick="NProgress.start();">Tipos de Receita e Despesas</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Receitas") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Receitas <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "Receitas:ClientesPagamentosPeriodo") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ClientesPagamentosPeriodo">Baixa de Pagamentos Clientes</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Receitas:ClientesNotas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ClientesNotas" onclick="NProgress.start();">Clientes Lançamentos a Receber</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Receitas:FinanceiroReceitas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FinanceiroReceitas" onclick="NProgress.start();">Lançamento de Receitas</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Despesas") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Despesas <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "Despesas:FornecedoresPagamentosPeriodo") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FornecedoresPagamentosPeriodo">Baixa de Pagamentos Fornecedores</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Despesas:FornecedoresNotas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FornecedoresNotas" onclick="NProgress.start();">Fornecedores Lançamentos a Pagar</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Despesas:FinanceiroDespesas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FinanceiroDespesas" onclick="NProgress.start();">Lançamento de Despesas</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "RelatoriosFinanceiro") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Relatórios - Financeiro<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "RelatoriosFinanceiro:FornecedoresRelatorios") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/FornecedoresRelatorios">Relatório de Fornecedores à Pagar</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "RelatoriosFinanceiro:ClientesRelatorios") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ClientesRelatorios">Relatório de Clientes à Receber</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "RelatoriosFinanceiro:RelatorioFinanceiroDespesas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioFinanceiroDespesas">Relatório de Despesas por Centro de Custo</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "RelatoriosFinanceiro:RelatorioFinanceiroReceitas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioFinanceiroReceitas">Relatório de Receitas por Centro de Custo</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "RelatoriosFinanceiro:RelatorioFinanceiroDespesasAnual") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioFinanceiroDespesasAnual">Relatório de Despesas Anual por Centro de Custo</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "RelatoriosFinanceiro:RelatorioFinanceiroReceitasAnual") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RelatorioFinanceiroReceitasAnual">Relatório de Receitas Anual por Centro de Custo</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "AreaDoColaborador") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="~/ColaboradoresSolicitacoes" onclick="NProgress.start();"><i class="fa fa-sitemap"></i>Área do Colaborador</a>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "Administrativo") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Administrativo <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "Administrativo:GestaoColaboradores") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/Colaboradores" onclick="NProgress.start();">Gestão de Colaboradores</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Administrativo:UploadContracheques") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ColaboradoresContracheques/Enviar" onclick="NProgress.start();"> Upload Contracheques</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Administrativo:GestaoContracheques") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ColaboradoresContracheques" onclick="NProgress.start();">Gestão de Contracheques</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Administrativo:DashboardAdministrativo") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/DashboardAdministrativo" onclick="NProgress.start();">Dashboard Administrativo</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "Administrativo:ColaboradoresFerias") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/ColaboradoresFerias" onclick="NProgress.start();">Gerar Recessos/Férias</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                                @if (user.HasClaim("menu", "CargosSalarios") || user.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a><i class="fa fa-sitemap"></i> Cargos e Salários <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @if (user.HasClaim("submenu", "CargosSalarios:RHAreas") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RHAreas" onclick="NProgress.start();">Áreas RH</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CargosSalarios:RHCargosSalarios") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RHCargosSalarios" onclick="NProgress.start();">Cargos e Salários</a></li>
+                                            }
+                                            @if (user.HasClaim("submenu", "CargosSalarios:RHCargosSalariosReajustar") || user.IsInRole("Admin"))
+                                            {
+                                                <li><a href="~/RHCargosSalarios/Reajustar" onclick="NProgress.start();">Reajuste de Salários</a></li>
+                                            }
+                                        </ul>
+                                    </li>
                                 }
                             </ul>
                         </div>
@@ -758,7 +867,7 @@
                         @{
                             var style = "cursor: pointer;";
 
-                            if (Uranus.Suite.Sessao.Usuario.Nivel != 5)
+                            if (!user.HasClaim("menu", "Controladoria"))
                             {
                                 style = "cursor: pointer; width: 33.3%;";
                             }
@@ -766,7 +875,7 @@
                                 <span class="glyphicon glyphicon-user" aria-hidden="true" data-toggle="modal" data-target="#myModalPass" data-backdrop="static" data-keyboard="false"></span>
                             </a>
 
-                            if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                            if (user.HasClaim("menu", "Controladoria"))
                             {
                                 <a data-toggle="tooltip" data-placement="top" title="Alterar Informações da Empresa" style="@style" onclick="EmpresaAlterar();">
                                     <span class="glyphicon glyphicon-inbox" aria-hidden="true" data-toggle="modal" data-target="#myModalInfo" data-backdrop="static" data-keyboard="false"></span>
@@ -1088,8 +1197,8 @@
                 showPercent: true
             });
 
-            // Custom events (enables button on certain score)
-            // Check the readme for a detailed list of events
+            $('#show_hide_password1 .pass-wrapper').insertAfter('#show_hide_password1');
+
             $('#submit').attr('disabled', true);
             $('#events').password().on('password.score', function (e, score) {
                 if (score > 75) {
@@ -1142,9 +1251,10 @@
             if ($('#senha-form').valid()) {
 
                 var dados = new window.FormData();
-                dados.append("Id", @Uranus.Suite.Sessao.Usuario.ID);
                 dados.append("SenhaAux", $("#SenhaAux").val());
-                dados.append("ConfirmaSenhaAux", $("#ConfirmaSenhaAux").val());
+
+                // Desabilita o botão durante o processamento
+                $('#buttonAlterarSenha').prop('disabled', true).text('Salvando...');
 
                 var options = {};
                 options.url = "/Usuarios/AlterarSenha"
@@ -1155,6 +1265,8 @@
                 options.processData = false;
                 options.dataType = "application/json; charset=utf-8";
                 options.complete = function (data) {
+                    // Reabilita o botão
+                    $('#buttonAlterarSenha').prop('disabled', false).text('Salvar');
 
                     var json = $.parseJSON(data.responseText);
                     if (json.codigo == '00') {
@@ -1166,6 +1278,13 @@
                         $('#senha-form').trigger("reset");
                         $('#events').password().trigger("reset");
                     }
+                    else {
+                        var mensagem = json.mensagem || 'Erro ao salvar a senha. Por favor, tente novamente.';
+                        $('#modalMensagemResposta').text(mensagem);
+                        $('#modalMensagem').attr('data-backdrop', 'static');
+                        $('#modalMensagem').attr('data-keyboard', 'false');
+                        $('#modalMensagem').modal('show');
+                    }
                 };
                 $.ajax(options);
 
@@ -1176,7 +1295,6 @@
             }
 
         });
-
         function pv(value) {
 
             // 1,235.12
@@ -1207,20 +1325,9 @@
             return valor
         }
 
-        function randomPassword() {
-            var length = 10;
-            var chars = "abcdefghijklmnopqrstuvwxyz!#$%^&*()-+<>ABCDEFGHIJKLMNOP1234567890";
-            var pass = "";
-            for (var x = 0; x < length; x++) {
-                var i = Math.floor(Math.random() * chars.length);
-                pass += chars.charAt(i);
-            }
-            return pass;
-        }
-
         $(document).ready(function () {
             //Initialize tooltips
-           // $('.nav-tabs > li a[title]').tooltip();
+            // $('.nav-tabs > li a[title]').tooltip();
 
             //Wizard
             $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
@@ -1260,6 +1367,53 @@
             return str.length < max ? pad("0" + str, max) : str;
         }
 
+
+    </script>
+
+    <script type="text/javascript">
+
+        function validarSenhaIdentity(senha) {
+            var erros = [];
+            if (!senha || senha.length < 6) {
+                erros.push("A senha deve ter pelo menos 6 caracteres.");
+            }
+            if (!/[A-Z]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos uma letra maiúscula.");
+            }
+            if (!/[a-z]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos uma letra minúscula.");
+            }
+            if (!/[0-9]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos um número.");
+            }
+
+            if (!/[!@@\$%\^&*(),.?":{}|<>\[\]\\\/;'`~\-_=+]/.test(senha)) {
+                erros.push("A senha deve conter pelo menos um caractere especial.");
+            }
+            if (/\s/.test(senha)) {
+                erros.push("A senha não pode conter espaços.");
+            }
+            return erros;
+        }
+
+        function atualizarBotaoAlterarSenha() {
+            var senha = $("#SenhaAux").val();
+            var confirma = $("#ConfirmaSenhaAux").val();
+            var erros = validarSenhaIdentity(senha);
+            if (senha !== confirma) {
+                erros.push("As senhas não coincidem.");
+            }
+            if (erros.length === 0) {
+                $("#buttonAlterarSenha").prop("disabled", false);
+            } else {
+                $("#buttonAlterarSenha").prop("disabled", true);
+            }
+        }
+
+        $(document).ready(function () {
+            $("#buttonAlterarSenha").prop("disabled", true);
+            $("#SenhaAux, #ConfirmaSenhaAux").on("input", atualizarBotaoAlterarSenha);
+        });
     </script>
 
     <!-- Empresa Info -->
@@ -1572,10 +1726,54 @@
 
         }
 
+        $(function () {
+            // Ativa tooltip Bootstrap apenas no ícone de ajuda
+            $('#senhaRequisitosAjuda').tooltip({
+                trigger: 'hover focus',
+                html: true
+            });
+        });
     </script>
 
+    <!--password reuse lock -->
+    @*<script type="text/javascript">
+            var passwordCheck = {
+                init: function () {
+                    $('#SenhaAux').on('keyup', this.checkPasswordReuse);
+                    $('#ConfirmaSenhaAux').on('keyup', this.checkPasswordReuse);
+                },
+                checkPasswordReuse: function () {
+                    var newPassword = $('#SenhaAux').val();
+                    var confirmPassword = $('#ConfirmaSenhaAux').val();
+                    var oldPassword = '@Uranus.Suite.Sessao.Usuario.Senha'; // Ou como você obtiver a senha antiga
+
+                    if (newPassword === oldPassword) {
+                        $('#senhaRequisitosAjuda').data('bs.tooltip').tip().css('color', 'red');
+                        $('#senhaRequisitosAjuda').attr('data-original-title', 'A nova senha não pode ser igual à senha antiga.').tooltip('show');
+                    } else {
+                        $('#senhaRequisitosAjuda').tooltip('hide');
+                    }
+
+                    if (newPassword && confirmPassword && newPassword === confirmPassword) {
+                        $('#buttonAlterarSenha').prop('disabled', false);
+                    } else {
+                        $('#buttonAlterarSenha').prop('disabled', true);
+                    }
+                }
+            };
+
+            $(document).ready(function () {
+                passwordCheck.init();
+            });
+        </script>*@
+    @RenderSection("scripts", required: false)
+
+
     <script>
-        NProgress.done();
+        $(window).on('load', function () {
+            NProgress.done();
+        });
     </script>
+
 </body>
 </html>

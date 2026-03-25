@@ -8,9 +8,11 @@ using Uranus.Data.R9;
 using Uranus.Domain;
 using Uranus.Business;
 using System.Linq;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
+    [RequireSubmenu("Relatorios:RelatorioPorSede")]
     public class RelatorioPorSedeController : Controller
     {
         // GET: RelatorioPorSede
@@ -44,10 +46,10 @@ namespace Uranus.Suite.Controllers
                         dataFim = DateTime.Parse(FiltrarDataFim);
                     }
 
-                    string sedes = FiltrarSedes != null ? string.Join(",", FiltrarSedes.Select(x => x.ToString())) : null;
-                    string acoes = FiltrarAcao != null ? string.Join(",", FiltrarAcao.Select(x => x.ToString())) : null;
-                    string area = FiltrarArea != null ? string.Join(",", FiltrarArea.Select(x => x.ToString())) : null;
-                    string juizo = FiltrarJuizo != null ? string.Join(",", FiltrarJuizo.Select(x => x.ToString())) : null;
+                    string sedes = FiltrarSedes != null ? String.Join(",", FiltrarSedes.Select(x => x.ToString())) : null;
+                    string acoes = FiltrarAcao != null ? String.Join(",", FiltrarAcao.Select(x => x.ToString())) : null;
+                    string area = FiltrarArea != null ? String.Join(",", FiltrarArea.Select(x => x.ToString())) : null;
+                    string juizo = FiltrarJuizo != null ? String.Join(",", FiltrarJuizo.Select(x => x.ToString())) : null;
                     
 
                     var ds = RelatorioPorSede.Gerar(dataInicio, dataFim, FiltrarCliente, sedes, acoes, area, juizo, ConfigurationManager.ConnectionStrings["APIR9"].ConnectionString);

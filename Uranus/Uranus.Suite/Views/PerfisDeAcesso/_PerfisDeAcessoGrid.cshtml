@@ -1,0 +1,158 @@
+﻿@model IEnumerable<Uranus.Suite.ViewModels.PerfilDeAcessoViewModel>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Listagem de Perfis de Acesso</h2>
+            <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+            @if (Model != null && Model.Any())
+            {
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Nome do Perfil</th>
+                            <th style="text-align: center;">Usuários Associados</th>
+                            <th style="text-align: center;">Status</th>
+                            <th style="text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var perfil in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@perfil.Role</strong>
+                                    @if (perfil.Claims != null && perfil.Claims.Any())
+                                    {
+                                        <br />
+                                        <small class="text-muted">
+                                            <i class="fa fa-shield"></i> @perfil.Claims.Count() permissão(ões) configurada(s)
+                                        </small>
+                                    }
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    @if (perfil.UsersCount.HasValue && perfil.UsersCount.Value > 0 && perfil.UsersNames != null && perfil.UsersNames.Any())
+                                    {
+                                        var tooltipText = string.Join("&#10;", perfil.UsersNames);
+                                        <span class="badge user-badge" 
+                                              style="background-color: #26B99A; font-size: 14px; padding: 6px 12px; cursor: help;"
+                                              data-toggle="tooltip" 
+                                              data-placement="top" 
+                                              data-html="true"
+                                              title="@Html.Raw(tooltipText)">
+                                            <i class="fa fa-users"></i> @perfil.UsersCount.Value usuário(s)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span style="color: #ccc;">-</span>
+                                    }
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    @if (perfil.IsActive)
+                                    {
+                                        <span class="label" style="background-color: #26B99A; font-size: 12px; padding: 5px 10px;">
+                                            <i class="fa fa-check-circle"></i> Ativo
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="label label-danger" style="font-size: 12px; padding: 5px 10px;">
+                                            <i class="fa fa-ban"></i> Inativo
+                                        </span>
+                                    }
+                                </td>
+                                <td style="text-align: center; vertical-align: middle;">
+                                    <div class="btn-group" role="group">
+                                        <a href="@Url.Action("Edit", "PerfisDeAcesso", new { id = perfil.Id })" 
+                                           class="btn btn-primary btn-sm" 
+                                           title="Editar perfil"
+                                           style="margin-right: 10px !important">
+                                            <i class="fa fa-edit"></i> Editar
+                                        </a>
+                                        
+                                        @if (perfil.IsActive)
+                                        {
+                                            <button type="button" 
+                                                    class="btn btn-sm" 
+                                                    style="background-color: #d9534f; border-color: #d43f3a; color: #fff;"
+                                                    onclick="AtivarInativar('@perfil.Id', false, '@perfil.Role')"
+                                                    title="Inativar perfil"
+                                                    onmouseover="this.style.backgroundColor='#c9302c'; this.style.borderColor='#ac2925';"
+                                                    onmouseout="this.style.backgroundColor='#d9534f'; this.style.borderColor='#d43f3a';">
+                                                <i class="fa fa-ban"></i> Inativar
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" 
+                                                    class="btn btn-sm" 
+                                                    style="background-color: #26B99A; border-color: #169F85; color: #fff;"
+                                                    onclick="AtivarInativar('@perfil.Id', true, '@perfil.Role')"
+                                                    title="Ativar perfil"
+                                                    onmouseover="this.style.backgroundColor='#1a9278'; this.style.borderColor='#148166';"
+                                                    onmouseout="this.style.backgroundColor='#26B99A'; this.style.borderColor='#169F85';">
+                                                <i class="fa fa-check"></i> Ativar
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="pull-right">
+                            <strong>Total de perfis:</strong> @Model.Count()
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i> Nenhum perfil encontrado.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .table > thead > tr > th {
+        background-color: #f5f5f5;
+        font-weight: 600;
+        border-bottom: 2px solid #ddd;
+    }
+    
+    .table > tbody > tr:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .btn-group .btn {
+        margin-right: 2px;
+    }
+    
+    .user-badge {
+        transition: all 0.3s ease;
+    }
+    
+    .user-badge:hover {
+        background-color: #1f8c73 !important;
+        transform: scale(1.05);
+    }
+</style>
+
+<script>
+$(document).ready(function() {
+    // Inicializar tooltips do Bootstrap
+    $('[data-toggle="tooltip"]').tooltip({
+        html: true,
+        template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner" style="max-width: 300px; text-align: left; white-space: pre-line;"></div></div>'
+    });
+});
+</script>

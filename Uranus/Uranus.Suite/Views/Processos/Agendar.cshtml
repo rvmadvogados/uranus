@@ -215,7 +215,7 @@
                                         @Html.Raw("<a class='btn btn-default btn-xs' onclick='Visualizar(" + item.Id + ");'>Visualizar</a>")
                                         @Html.Raw("<a class='btn btn-primary btn-xs' onclick='Alterar(" + item.Id + ");'>Alterar</a>")
 
-                                        @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                                        @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ProcessosAgendarExibirExcluir") != null)
                                                                {
                                             @Html.Raw("<a class='btn btn-danger btn-xs' data-toggle='modal' data-target='#modalExcluir' onclick='Excluir(" + item.Id + ", " + '"' + item.Profissional + '"' + ", " + '"' + item.NumeroProcesso + '"' + ");'>Excluir</a>")
                                                                }
@@ -444,28 +444,31 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label class="titlefield">Agendar para o profissional</label>
+                                        <label class="titlefield" id="labelEventoProfissional">Agendar para o profissional</label>
                                         <select id="EventoProfissional" name="EventoProfissional" class="select2_single form-control" style="width: 100% !important;"></select>
+                                        <label id="EventoProfissionalValidate" name="EventoProfissionalValidate" for="EventoProfissional" class="error hidden">Por favor, selecione um Profissional.</label>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="titlefield">Data 1º Prazo</label>
+                                        <label class="titlefield" id="labelEventoPrazoEvento1">Data 1º Prazo</label>
                                         <div id="EventoDataPrazoEvento1" name="EventoDataPrazoEvento1" class="input-group date" style="margin: 0 !important;">
                                             <input id="EventoPrazoEvento1" name="EventoPrazoEvento1" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
                                             <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
                                         </div>
                                         <label id="EventoDataPrazoEvento1Validate" name="EventoDataPrazoEvento1Validate" for="EventoDataPrazoEvento1" class="error hidden">Por favor, informe o primeiro prazo.</label>
+                                        <label id="EventoPrazoEvento1Validate" name="EventoPrazoEvento1Validate" for="EventoPrazoEvento1" class="error hidden">Por favor, selecione uma Data.</label>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label class="titlefield">Data 2º Prazo</label>
+                                        <label class="titlefield" id="labelEventoPrazoEvento2">Data 2º Prazo</label>
                                         <div id="EventoDataPrazoEvento2" name="EventoDataPrazoEvento2" class="input-group date" style="margin: 0 !important;">
                                             <input id="EventoPrazoEvento2" name="EventoPrazoEvento2" class="form-control placeholder" type="text" style="height: 40px !important;" readonly />
                                             <span class="input-group-addon" style="border-radius: 0px !important; padding: 11px 12px !important;"><i class="glyphicon glyphicon-calendar"></i></span>
                                         </div>
                                         <label id="EventoDataPrazoEvento2Validate" name="EventoDataPrazoEvento2Validate" for="EventoDataPrazoEvento2" class="error hidden">Por favor, informe um prazo maior que o primeiro prazo.</label>
+                                        <label id="EventoPrazoEvento2Validate" name="EventoPrazoEvento2Validate" for="EventoPrazoEvento2" class="error hidden">Por favor, selecione uma Data.</label>
                                     </div>
                                 </div>
                             </div>
@@ -655,21 +658,15 @@
     <!-- datepicker -->
     <script type="text/javascript" src="~/Scripts/datepicker/bootstrap-datepicker.min.js"></script>
     <script type="text/javascript" src="~/Scripts/datepicker/locales/bootstrap-datepicker.pt-BR.min.js"></script>
-
-    @*Choices includes*@
     <link rel="stylesheet" href="~/Content/Choices-main/public/assets/styles/choices.min.css" />
     <script src="~/Content/Choices-main/public/assets/scripts/choices.js"></script>
-    @*End Choices includes*@
 
     <script>
 
         var ultimoEventoSelecionado = null;
-
         var choicesInstance;
         var choicesEventoProfissional;
-
         var isSettingEventoDescricao = false; //flag pra evitar o loop ao colar texto
-
 
     $('#modalCriarEvento').on('shown.bs.modal', function () {
         $("#modalVisualizarProcesso").modal("hide");
@@ -884,6 +881,8 @@
                             $('<option selected disabled></option>').val("").html("Selecione um Processo")
                         );
 
+                        if (processoAtual && rows[index].Id == processoAtual) existe = true; //aqui
+
                         var processoAtual = $('#NumeroProcessoAux').data('processo-atual');
                         var valorAtual = $('#NumeroProcessoAux')
                         var existe = false;
@@ -896,22 +895,36 @@
 
                         if (processoAtual && !existe) {
                             select.append(
-                                $('<option selected></option>').val(processoAtual).html(processoAtual)
+                                $('<option></option>').val(processoAtual).html(processoAtual)
                             );
-                        } else {
-                            $('#NumeroProcessoAux').val("").trigger('change');
                         }
 
-                        if (valorAtual) {
-                            $('#NumeroProcessoAux').val(valorAtual);
-                        } else {
+                        // Agora, selecione o valor desejado
                         if (processoAtual) {
                             $('#NumeroProcessoAux').val(processoAtual).trigger('change');
                         } else {
                             $('#NumeroProcessoAux').val("").trigger('change');
                         }
-                        }
                         $('#NumeroProcessoAux').removeData('processo-atual');
+
+                        //if (processoAtual && !existe) {
+                        //    select.append(
+                        //        $('<option selected></option>').val(processoAtual).html(processoAtual)
+                        //    );
+                        //} else {
+                        //    $('#NumeroProcessoAux').val("").trigger('change');
+                        //}
+
+                        //if (valorAtual) {
+                        //    $('#NumeroProcessoAux').val(valorAtual);
+                        //} else {
+                        //if (processoAtual) {
+                        //    $('#NumeroProcessoAux').val(processoAtual).trigger('change');
+                        //} else {
+                        //    $('#NumeroProcessoAux').val("").trigger('change');
+                        //}
+                        //}
+                        //$('#NumeroProcessoAux').removeData('processo-atual');
                     }
                 }
 
@@ -1022,18 +1035,6 @@
             height: 200
         });
 
-        //$("#EventoEvento").select2({
-        //    placeholder: "Selecione um Evento",
-        //    allowClear: true,
-        //    tags: true
-        //});
-
-        //$("#EventoProfissional").select2({
-        //    placeholder: "&nbsp;",
-        //    allowClear: true,
-        //    tags: true
-        //});
-
         $("#EventoDataPrazoEvento1").datepicker({
             language: 'pt-BR',
             autoclose: true,
@@ -1124,23 +1125,6 @@
 
         });
 
-
-    //CKEDITOR.on('instanceReady', function (evt) {
-
-    //    //if (evt.editor.name === 'EventoDescricao') {
-    //    console.log("Instancia do Editor: " + evt.editor.name);
-    //        evt.editor.on('paste', function (e) {
-    //            console.log(evt.editor.name + ". Evento de colar. Flag ", isSettingEventoDescricao);
-    //        });
-    //        evt.editor.on('change', function (e) {
-    //            console.log(evt.editor.name + ". Evento de change disparado.");
-    //        });
-
-    //                 evt.editor.on('*', function (e) {
-    //                     console.log(evt.editor.name + ". Evento disparado", e.name, e);
-    //           });
-    //    //}
-    //});
 
     CKEDITOR.on('instanceReady', function (evt) {
 
@@ -1244,7 +1228,7 @@
             var dados = new window.FormData();
             dados.append("Data", Data);
             dados.append("Todos", TodosRregistros);
-
+            console.log("dados", dados);
             var options = {};
             options.url = "/Profissionais/Listar"
             options.type = "POST";
@@ -1509,13 +1493,11 @@
                 if (json.codigo == '00') {
                     var rows = json.eventos;
 
-                    // Destroi a instância anterior do Choices, se houver
                     if (choicesInstance) {
                         choicesInstance.destroy();
                         $('#EventoEvento').html(""); // limpar o DOM depois de destruir
                     }
 
-                    // Preenche o select com as novas opções
                     var select = $('#EventoEvento');
                     select.append(
                         $('<option disabled selected></option>').val("").html("Selecione um Evento")
@@ -1527,7 +1509,6 @@
                         );
                     }
 
-                    // Agora que o DOM está com os options corretos, crie a instância Choices
                     choicesInstance = new Choices('#EventoEvento', {
                         allowHTML: true,
                         removeItemButton: true,
@@ -1650,7 +1631,7 @@
                     agenda += "                </tbody>";
                     agenda += "            </table>";
 
-                    var nivel = @Uranus.Suite.Sessao.Usuario.Nivel;
+                    @*var nivel = @Uranus.Suite.Sessao.Usuario.Nivel;*@
 
                     agenda += "            <br />";
                     agenda += "            <table width='100%'>";
@@ -1757,7 +1738,7 @@
                 var json = $.parseJSON(data.responseText);
 
                 if (json.codigo == '00') {
-
+                    console.log('uepa')
                     $('#NumeroProcessoAux').data('processo-atual', json.agenda[0].NumeroProcesso);
 
                     $('#id').val(Id);
@@ -1799,6 +1780,7 @@
                     $('#NumeroProcessoAux').val(json.agenda[0].IdProcessosAcao);
                     $('#NumeroProcessoAux').trigger('change');
 
+                    $('#IdProcessAction').val(json.agenda[0].IdProcessosAcao);
 
                     VisualizarAlerta(json.agenda[0].NumeroProcesso, json.agenda[0].IdProcesso);
 
@@ -1831,15 +1813,6 @@
                     $('#ProfissionalValidate').addClass('hidden');
                 }
 
-                //if (($('#NumeroProcesso').val() == null || !$.isNumeric($('#NumeroProcesso').val())) && $('#Cliente').select2("val") == null) {
-                //    $('#NumeroProcessoValidate').removeClass('hidden').css("display", "");
-                //    validate = false;
-                //} else if (($('#NumeroProcessoAux').val() == null || !$.isNumeric($('#NumeroProcessoAux').val())) && $('#Cliente').select2("val") != null) {
-                //        $('#NumeroProcessoValidate').removeClass('hidden').css("display", "");
-                //        validate = false;
-                //} else {
-                //    $('#NumeroProcessoValidate').addClass('hidden');
-                //}
 
                 if ($('#Evento').val() == null || !$.isNumeric($('#Evento').val())) {
                     $('#EventoValidate').removeClass('hidden').css("display", "");
@@ -1882,26 +1855,56 @@
                     var dados = new window.FormData();
                     dados.append("Id", $("#idAcaoEvento").val());
 
-                    //if ($('#Cliente').select2("val") == null) {
-
-                        //dados.append("IdProcessosAcao", $("#NumeroProcesso").val());
-
-                    //}
-                    //else {
-
-                    //    dados.append("IdProcessosAcao", $("#NumeroProcessoAux").val());
-
-                    //}
 
                     dados.append("Data", "");
                     dados.append("Origem", "");
 
-                    //                dados.append("IdProcessosAcao", $("#NumeroProcessoAux").val());
-                    // Ao cadastrar uma nova agenda pela aba de cadastrar, é utilizado o NumeroProcesso e quando é pelo alterar utiliza-se o NumeroProcessoAux
-                    var idProcessosAcao = $("#NumeroProcessoAux").val();
-                    if (idProcessosAcao === null || idProcessosAcao === "" || idProcessosAcao === "0") {
-                        idProcessosAcao = $("#NumeroProcesso").val();
+                    //// Ao cadastrar uma nova agenda pela aba de cadastrar, é utilizado o NumeroProcesso e quando é pelo alterar utiliza-se o NumeroProcessoAux
+                    //var idProcessosAcao = ""
+                    //if (IdProcessAction != null) {
+                    //    idProcessosAcao = IdProcessAction.value;
+                    //} else {
+                    //    idProcessosAcao = $("#NumeroProcessoAux").val();
+                    //    if (idProcessosAcao === null || idProcessosAcao === "" || idProcessosAcao === "0") {
+                    //        console.log("vvvvvvvvvvv")
+                    //        idProcessosAcao = $("#NumeroProcesso").val();
+                    //    }
+                    //}
+
+                    //dados.append("IdProcessosAcao", idProcessosAcao);
+
+                    var idProcessosAcao = "";
+
+                    // se está alterando se está alterando, já existe IDProcessAction
+                    var IdProcessAction = $("#IdProcessAction").val();
+                    if (IdProcessAction && IdProcessAction !== "0" && IdProcessAction !== "") {
+                        idProcessosAcao = IdProcessAction;
+                        console.log("Usando IdProcessAction (alteração):", idProcessosAcao);
                     }
+                    // cadastrando novo, verificar se tem cliente
+                    else {
+                        var clienteId = $("#Cliente").val();
+
+                        if (clienteId && clienteId !== "" && clienteId !== "0") {
+                            // Tem cliente - usar NumeroProcessoAux
+                            idProcessosAcao = $("#NumeroProcessoAux").val();
+                            console.log("Usando NumeroProcessoAux (com cliente):", idProcessosAcao);
+                        } else {
+                            // Sem cliente - usar NumeroProcesso
+                            idProcessosAcao = $("#NumeroProcesso").val();
+                            console.log("Usando NumeroProcesso (sem cliente):", idProcessosAcao);
+                        }
+                    }
+
+                    // se tem ID válido
+                    if (!idProcessosAcao || idProcessosAcao === "" || idProcessosAcao === "0") {
+                        alert("Por favor, selecione um Número do Processo válido.");
+                        $("#buttonSalvar").text("Salvar");
+                        $("#buttonSalvar").attr('disabled', false);
+                        return false;
+                    }
+
+                    console.log("IdProcessosAcao final sendo enviado:", idProcessosAcao);
                     dados.append("IdProcessosAcao", idProcessosAcao);
 
                     dados.append("IdProcessosEvento", $("#Evento").val());
@@ -2097,9 +2100,73 @@
 
         }
 
+
+        //Visualizar, Criar Processo
+        function atualizarAsteriscosEventoModal() {
+            var profissional = $('#EventoProfissional').val();
+            var prazo1 = $('#EventoPrazoEvento1').val();
+            var prazo2 = $('#EventoPrazoEvento2').val();
+
+            $('#labelEventoProfissional .required').remove();
+            $('#labelEventoPrazoEvento1 .required').remove();
+            $('#labelEventoPrazoEvento2 .required').remove();
+
+            if (profissional !== "" && profissional != null) {
+                $('#labelEventoPrazoEvento1').append('<span class="required">*</span>');
+                return;
+            }
+
+            if (prazo1 && prazo1 !== "") {
+                $('#labelEventoProfissional').append('<span class="required">*</span>');
+                return;
+            }
+
+            if (prazo2 && prazo2 !== "") {
+                $('#labelEventoProfissional').append('<span class="required">*</span>');
+                $('#labelEventoPrazoEvento1').append('<span class="required">*</span>');
+            }
+        }
+
+        if (typeof atualizarAsteriscosEventoModal === "function") {
+            $('#modalCriarEvento').on('shown.bs.modal', atualizarAsteriscosEventoModal);
+            $('#EventoDataPrazoEvento1').on('changeDate clearDate', atualizarAsteriscosEventoModal);
+            $('#EventoDataPrazoEvento2').on('changeDate clearDate', atualizarAsteriscosEventoModal);
+            $('#EventoProfissional, #EventoPrazoEvento1, #EventoPrazoEvento2').on('change keyup', atualizarAsteriscosEventoModal);
+        }
+
+        //Visualizar, Criar Processo
         $('#buttonSalvarEvento').click(function (evt) {
 
             var validate = true;
+
+            var profissional = $('#EventoProfissional').val();
+            var prazo1 = $('#EventoPrazoEvento1').val();
+            var prazo2 = $('#EventoPrazoEvento2').val();
+
+            if (profissional && profissional !== "" && (!prazo1 || prazo1 === "")) {
+                $('#EventoDataPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EventoDataPrazoEvento1Validate').addClass('hidden');
+            }
+
+            if (prazo1 && prazo1 !== "" && (!profissional || profissional === "")) {
+                $('#EventoProfissional').removeClass('hidden').css("display", "");
+                validate = false;
+            } else {
+                $('#EventoProfissional').addClass('hidden');
+            }
+
+            if (prazo2 && prazo2 !== "") {
+                if (!profissional || profissional === "") {
+                    $('#EventoProfissional').removeClass('hidden').css("display", "");
+                    validate = false;
+                }
+                if (!prazo1 || prazo1 === "") {
+                    $('#EventoDataPrazoEvento1Validate').removeClass('hidden').css("display", "");
+                    validate = false;
+                }
+            }
 
             if ($('#EventoEvento').val() == null || !$.isNumeric($('#EventoEvento').val())) {
                 $('#EventoEventoValidate').removeClass('hidden').css("display", "");

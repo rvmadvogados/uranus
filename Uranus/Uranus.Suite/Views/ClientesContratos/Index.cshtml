@@ -237,7 +237,7 @@
                                 </div>
                             </div>
 
-                            @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                            @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteCadastroVisualizarInformacoesCadastro") != null)
                                 {
                                     <div class="row">
                                         <div class="col-md-3">
@@ -452,7 +452,7 @@
                         {
                             @Html.Raw("Contrato já integrado no financeiro.")
                         }
-                            @{ if (Uranus.Suite.Sessao.Usuario.Nivel == 5)
+                            @{ if (Sessao.Claims.FirstOrDefault(a => a.Tipo == "sistema" && a.Valor == "ClienteCadastroExcluir") != null)
                                 {
                                     @Html.Raw("<a class='btn btn-danger  btn-xs' data-toggle='modal' data-target='#modalExcluir' data-backdrop='static' onclick='Excluir(" + item.ID + ", " + '"' + item.Clientes.Pessoas.Nome + '"' + ");'>Excluir</a>")
                                 }

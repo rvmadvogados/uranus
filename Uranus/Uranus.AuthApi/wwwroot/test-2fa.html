@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo - 2FA Uranus Suite</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .qr-container img {
+            max-width: 300px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .manual-key {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 18px;
+            text-align: center;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+        .recovery-codes {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .recovery-codes ul {
+            columns: 2;
+            -webkit-columns: 2;
+            -moz-columns: 2;
+        }
+        .hidden {
+            display: none;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Autentica��o de Dois Fatores - Uranus Suite</h1>
+        
+        <!-- Se��o de Login -->
+        <div id="loginSection" class="section">
+            <h2>1. Login</h2>
+            <div class="form-group">
+                <label for="loginUsername">Usu�rio:</label>
+                <input type="text" id="loginUsername" value="usuario123">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Senha:</label>
+                <input type="password" id="loginPassword" value="senha123">
+            </div>
+            <button onclick="login()">Fazer Login</button>
+            <div id="loginResult"></div>
+            
+            <!-- Campo para c�digo 2FA (aparece quando necess�rio) -->
+            <div id="twoFactorSection" class="hidden">
+                <div class="info">
+                    <strong>Autentica��o de Dois Fatores Requerida</strong>
+                    <p>Por favor, insira o c�digo de 6 d�gitos do Google Authenticator ou um c�digo de recupera��o.</p>
+                </div>
+                <div class="form-group">
+                    <label for="twoFactorCode">C�digo 2FA:</label>
+                    <input type="text" id="twoFactorCode" maxlength="6" placeholder="123456">
+                </div>
+                <button onclick="loginWith2FA()">Confirmar C�digo</button>
+            </div>
+        </div>
+
+        <!-- Se��o para Habilitar 2FA -->
+        <div id="enable2FASection" class="section">
+            <h2>2. Habilitar Autentica��o de Dois Fatores</h2>
+            <div class="info">
+                <strong>Pr�-requisito:</strong> Voc� precisa estar autenticado (fa�a login primeiro)
+            </div>
+            <div class="form-group">
+                <label for="enableUsername">Usu�rio:</label>
+                <input type="text" id="enableUsername" value="usuario123">
+            </div>
+            <button onclick="enable2FA()">Habilitar 2FA</button>
+            
+            <div id="qrCodeSection" class="hidden">
+                <div class="success">
+                    <strong>QR Code Gerado!</strong>
+                    <p>Escaneie o QR Code abaixo com o Google Authenticator:</p>
+                </div>
+                <div class="qr-container">
+                    <img id="qrCodeImage" alt="QR Code">
+                </div>
+                <div class="info">
+                    <strong>Ou insira a chave manualmente:</strong>
+                    <div class="manual-key" id="manualKey"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="verifyCode">Digite o c�digo do Google Authenticator para confirmar:</label>
+                    <input type="text" id="verifyCode" maxlength="6" placeholder="123456">
+                </div>
+                <button onclick="verify2FA()">Verificar e Ativar</button>
+            </div>
+            
+            <div id="recoveryCodesSection" class="hidden">
+                <div class="recovery-codes">
+                    <strong>?? IMPORTANTE: C�digos de Recupera��o</strong>
+                    <p>Salve estes c�digos em um local seguro. Voc� pode us�-los caso perca acesso ao Google Authenticator.</p>
+                    <ul id="recoveryCodesList"></ul>
+                    <button onclick="downloadRecoveryCodes()">Baixar C�digos</button>
+                </div>
+            </div>
+            
+            <div id="enable2FAResult"></div>
+        </div>
+
+        <!-- Se��o de Status do 2FA -->
+        <div id="statusSection" class="section">
+            <h2>3. Verificar Status do 2FA</h2>
+            <div class="form-group">
+                <label for="statusUsername">Usu�rio:</label>
+                <input type="text" id="statusUsername" value="usuario123">
+            </div>
+            <button onclick="check2FAStatus()">Verificar Status</button>
+            <div id="statusResult"></div>
+        </div>
+
+        <!-- Se��o para Desabilitar 2FA -->
+        <div id="disable2FASection" class="section">
+            <h2>4. Desabilitar Autentica��o de Dois Fatores</h2>
+            <div class="form-group">
+                <label for="disableUsername">Usu�rio:</label>
+                <input type="text" id="disableUsername" value="usuario123">
+            </div>
+            <div class="form-group">
+                <label for="disableCode">C�digo do Google Authenticator:</label>
+                <input type="text" id="disableCode" maxlength="6" placeholder="123456">
+            </div>
+            <button onclick="disable2FA()">Desabilitar 2FA</button>
+            <div id="disable2FAResult"></div>
+        </div>
+    </div>
+
+    <script>
+        // Configura��o da API
+        const API_BASE_URL = 'https://localhost:7000/api'; // Ajuste conforme necess�rio
+        let authToken = null;
+        let currentUsername = null;
+        let currentPassword = null;
+        let savedRecoveryCodes = [];
+
+        // Fun��es auxiliares
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        function clearMessage(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+
+        // 1. Login
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            currentUsername = username;
+            currentPassword = password;
+            
+            clearMessage('loginResult');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.requiresTwoFactor) {
+                    // Mostrar campo para c�digo 2FA
+                    document.getElementById('twoFactorSection').classList.remove('hidden');
+                    showMessage('loginResult', data.message, 'info');
+                } else if (data.token) {
+                    // Login bem-sucedido
+                    authToken = data.token;
+                    showMessage('loginResult', 
+                        `<strong>Login bem-sucedido!</strong><br>Token: ${data.token.substring(0, 50)}...`, 
+                        'success');
+                    document.getElementById('twoFactorSection').classList.add('hidden');
+                } else {
+                    showMessage('loginResult', 'Erro no login', 'error');
+                }
+            } catch (error) {
+                showMessage('loginResult', `Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // 2. Login com 2FA
+        async function loginWith2FA() {
+            const code = document.getElementById('twoFactorCode').value;
+            
+            clearMessage('loginResult');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login-2fa`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        username: currentUsername, 
+                        password: currentPassword,
+                        twoFactorCode: code 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.token) {
+                    authToken = data.token;
+                    showMessage('loginResult', 
+                        `<strong>Login com 2FA bem-sucedido!</strong><br>Token: ${data.token.substring(0, 50)}...`, 
+                        'success');
+                    document.getElementById('twoFactorSection').classList.add('hidden');
+                } else {
+                    showMessage('loginResult', data.message || 'C�digo inv�lido', 'error');
+                }
+            } catch (error) {
+                showMessage('loginResult', `Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // 3. Habilitar 2FA
+        async function enable2FA() {
+            const username = document.getElementById('enableUsername').value;
+            
+            if (!authToken) {
+                showMessage('enable2FAResult', 'Voc� precisa estar autenticado. Fa�a login primeiro.', 'error');
+                return;
+            }
+            
+            clearMessage('enable2FAResult');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/twofactor/enable`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ username })
+                });
+                
+                const data = await response.json();
+                
+                if (data.qrCodeUri) {
+                    // Mostrar QR Code
+                    document.getElementById('qrCodeImage').src = data.qrCodeUri;
+                    document.getElementById('manualKey').textContent = data.manualEntryKey;
+                    document.getElementById('qrCodeSection').classList.remove('hidden');
+                    showMessage('enable2FAResult', data.message, 'success');
+                } else {
+                    showMessage('enable2FAResult', data.message || 'Erro ao habilitar 2FA', 'error');
+                }
+            } catch (error) {
+                showMessage('enable2FAResult', `Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // 4. Verificar e ativar 2FA
+        async function verify2FA() {
+            const username = document.getElementById('enableUsername').value;
+            const code = document.getElementById('verifyCode').value;
+            
+            clearMessage('enable2FAResult');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/twofactor/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ username, code })
+                });
+                
+                const data = await response.json();
+                
+                if (data.recoveryCodes) {
+                    savedRecoveryCodes = data.recoveryCodes;
+                    
+                    // Mostrar c�digos de recupera��o
+                    const codesList = document.getElementById('recoveryCodesList');
+                    codesList.innerHTML = '';
+                    data.recoveryCodes.forEach(code => {
+                        const li = document.createElement('li');
+                        li.textContent = code;
+                        codesList.appendChild(li);
+                    });
+                    
+                    document.getElementById('recoveryCodesSection').classList.remove('hidden');
+                    showMessage('enable2FAResult', data.message, 'success');
+                } else {
+                    showMessage('enable2FAResult', data.message || 'C�digo inv�lido', 'error');
+                }
+            } catch (error) {
+                showMessage('enable2FAResult', `Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // 5. Verificar status do 2FA
+        async function check2FAStatus() {
+            const username = document.getElementById('statusUsername').value;
+            
+            if (!authToken) {
+                showMessage('statusResult', 'Voc� precisa estar autenticado. Fa�a login primeiro.', 'error');
+                return;
+            }
+            
+            clearMessage('statusResult');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/twofactor/status/${username}`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                const status = data.twoFactorEnabled ? 'Habilitado ?' : 'Desabilitado ?';
+                const statusClass = data.twoFactorEnabled ? 'success' : 'info';
+                
+                showMessage('statusResult', 
+                    `<strong>Usu�rio:</strong> ${data.username}<br>
+                     <strong>2FA:</strong> ${status}<br>
+                     <strong>Authenticator Configurado:</strong> ${data.hasAuthenticator ? 'Sim' : 'N�o'}`, 
+                    statusClass);
+            } catch (error) {
+                showMessage('statusResult', `Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // 6. Desabilitar 2FA
+        async function disable2FA() {
+            const username = document.getElementById('disableUsername').value;
+            const code = document.getElementById('disableCode').value;
+            
+            if (!authToken) {
+                showMessage('disable2FAResult', 'Voc� precisa estar autenticado. Fa�a login primeiro.', 'error');
+                return;
+            }
+            
+            clearMessage('disable2FAResult');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/twofactor/disable`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ username, code })
+                });
+                
+                const data = await response.json();
+                
+                showMessage('disable2FAResult', data.message, 
+                    response.ok ? 'success' : 'error');
+            } catch (error) {
+                showMessage('disable2FAResult', `Erro: ${error.message}`, 'error');
+            }
+        }
+
+        // 7. Baixar c�digos de recupera��o
+        function downloadRecoveryCodes() {
+            const content = `C�digos de Recupera��o - Uranus Suite\n` +
+                          `Gerado em: ${new Date().toLocaleString()}\n\n` +
+                          `IMPORTANTE: Guarde estes c�digos em local seguro!\n` +
+                          `Cada c�digo pode ser usado apenas uma vez.\n\n` +
+                          savedRecoveryCodes.join('\n');
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'codigos-recuperacao-uranus.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

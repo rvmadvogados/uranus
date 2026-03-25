@@ -5,10 +5,11 @@ using System.Configuration;
 using Uranus.Data.R9;
 using Microsoft.Reporting.WebForms;
 using System.Web.UI.WebControls;
+using Uranus.Suite.Filters;
 
 namespace Uranus.Suite.Controllers
 {
-
+    [RequireMenu("Relatorios")]
     public class RelatorioEventosPorClienteController : Controller
     {
         //GET: RelatorioEventos
