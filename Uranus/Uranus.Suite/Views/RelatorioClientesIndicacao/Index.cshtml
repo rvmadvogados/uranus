@@ -67,7 +67,16 @@
             </div>
         </div>*@
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label class="titlefield">Ordem da Data</label>
+                                                    <select id="OrdemData" name="OrdemData" class="form-control">
+                                                        <option value="asc" @(ViewBag.OrdemData == "asc" ? "selected" : "")>Crescente</option>
+                                                        <option value="desc" @(ViewBag.OrdemData == "asc" ? "" : "selected")>Decrescente</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <div class="form-group" style="vertical-align: bottom !important;">
                                                     <button type="submit" class="btn btn-primary" style="margin-top: 25px !important;">Filtrar</button>
                                                     &nbsp;

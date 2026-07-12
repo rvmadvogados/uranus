@@ -19,6 +19,8 @@ namespace Uranus.WindowsService
             #else
                 Service serviceCall = new Service();
                 serviceCall.ReadWebServiceWEBJUR();
+         //       serviceCall.ReadWebServiceOAB();
+           //     serviceCall.ReadSpreadsheet();
             #endif
         }
     }

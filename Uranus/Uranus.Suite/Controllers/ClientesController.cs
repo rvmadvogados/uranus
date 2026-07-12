@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -189,7 +190,7 @@ namespace Uranus.Suite.Controllers
 
             cliente.ID = Id;
             ClientesBo.Salvar(cliente);
-
+            //removido
             ClientesBo.AjustarVinculo(cliente.ID);
 
             #region Arquivo PDF
@@ -233,7 +234,8 @@ namespace Uranus.Suite.Controllers
         }
 
         [HttpPost]
-        public JsonResult SalvarIndicacao(Int32 Id, String Vinculo, Int32? IdTipoIndicacao, String Indicacao, Int32? IdParceiro, Int32? IdProfissional, Int32? IdCliente)
+        public JsonResult SalvarIndicacao(Int32 Id, String Vinculo, Int32? IdTipoIndicacao, String Indicacao, Int32? IdParceiro,
+            Int32? IdProfissional, Int32? IdCliente, String DataCadastroIndicacao)
         {
             var cliente = ClientesBo.ConsultarIndicacao(Id);
             cliente.Vinculo = Vinculo;
@@ -264,15 +266,38 @@ namespace Uranus.Suite.Controllers
             cliente.NomeIndicacao = nomeIndicacao;
             if (cliente.DataCadastroIndicacao == null)
             {
-                cliente.DataCadastroIndicacao = DateTime.Now;
+                cliente.DataCadastroIndicacao = DateTime.TryParseExact(DataCadastroIndicacao, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture, 
+                    DateTimeStyles.None, out DateTime dataCadastro)
+                    ? dataCadastro
+                    : DateTime.Now;
                 cliente.UsuarioCadastroIndicacao = Sessao.Usuario.Nome;
             }
             cliente.DataAlteracaoIndicacao = DateTime.Now;
             cliente.UsuarioAlteracaoIndicacao = Sessao.Usuario.Nome;
 
             ClientesBo.SalvarIndicacao(cliente);
+            //removido
             ClientesBo.AjustarVinculo(cliente.ID);
 
+
+            #region Auditoria
+            Auditoria auditoria = new Auditoria();
+            auditoria.DataHora = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
+            auditoria.Modulo = "Cliente";
+            auditoria.Tipo = "Indicação";
+            auditoria.Acao = "Alterado";
+            auditoria.Log = String.Format("<b>ClienteId</b>:{0}; <b>Vinculo</b>: {1};<b>Tipo de Indicação:</b>: {2};<b>Indicacao</b>: {3};<b>IdParceiro:</b>: {4};<b>IdProfissional</b>: " +
+                "{5};<b>IdCliente</b>: {6};<b>DataCadastroIndicacao</b>: {7};<b>Indicação</b>: {8};<b>Nome Indicacao: </b> {9}",
+                cliente.IdCliente, Vinculo, IdTipoIndicacao, Indicacao, IdParceiro, IdProfissional, IdCliente, DataCadastroIndicacao, Indicacao, nomeIndicacao);
+            auditoria.Usuario = Sessao.Usuario.Nome;
+
+            if (Id == 0)
+            {
+                auditoria.Acao = "Inserido";
+            }
+
+            AuditoriaBo.Inserir(auditoria);
+            #endregion
             var result = new { codigo = "00", id = Id };
             return Json(result);
         }

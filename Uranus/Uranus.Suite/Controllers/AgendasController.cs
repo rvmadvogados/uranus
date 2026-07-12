@@ -301,18 +301,19 @@ namespace Uranus.Suite.Controllers
 
                 var EventoId = AgendasBo.Inserir(agendaEncaixe);
 
-                evento = "{ \"id\": " + EventoId + ", \"title\": \"" + string.Format("{0} - {1} - {2}{3}", agendado.Profissionais.Pessoas.Nome, agendado.AgendasTipos.Nome, agendado.Sedes.Nome, (agendado.Salas != null ? string.Format(" - {0}", agendado.Salas.Nome) : string.Empty)) + "\"";
+                if (EventoId > 0)
+                {
+                    evento = "{ \"id\": " + EventoId + ", \"title\": \"" + string.Format("{0} - {1} - {2}{3}", agendado.Profissionais.Pessoas.Nome, agendado.AgendasTipos.Nome, agendado.Sedes.Nome, (agendado.Salas != null ? string.Format(" - {0}", agendado.Salas.Nome) : string.Empty)) + "\"";
 
-                var started = DateTime.Parse(string.Format("{0} {1}", agendado.Data.ToString("yyyy-MM-dd"), HoraEncaixe));
-                var ended = started.AddHours(1);
-                ended = started.AddMinutes(15);
+                    var started = DateTime.Parse(string.Format("{0} {1}", agendado.Data.ToString("yyyy-MM-dd"), HoraEncaixe));
+                    var ended = started.AddMinutes(30);
 
-                evento = evento + ", \"start\": \"" + started.ToString("yyyy-MM-ddTHH:mm:00") + "\", \"end\": \"" + ended.ToString("yyyy-MM-ddTHH:mm:00") + "\"";
+                    evento = evento + ", \"start\": \"" + started.ToString("yyyy-MM-ddTHH:mm:00") + "\", \"end\": \"" + ended.ToString("yyyy-MM-ddTHH:mm:00") + "\"";
 
-                evento = evento + ", \"allDay\": false ";
+                    evento = evento + ", \"allDay\": false ";
 
-                evento = evento + ", \"color\": \"#D5F5E3\" }";
-
+                    evento = evento + ", \"color\": \"#D5F5E3\" }";
+                }
             }
 
             var result = new { codigo = codigo, id = Id, title = title, evento = evento };
@@ -398,11 +399,21 @@ namespace Uranus.Suite.Controllers
                 else
                 {
                     var started = DateTime.Parse($"{item.Data:yyyy-MM-dd} {item.Hora}");
-                    var ended = item.Encaixe == "S" ? started.AddMinutes(15) : started.AddHours(1);
+                    var ended = item.Encaixe == "S" ? started.AddMinutes(30) : started.AddHours(1);
 
-                    sb.Append($", \"start\": \"{started:yyyy-MM-ddTHH:mm:00}\", \"end\": \"{ended:yyyy-MM-ddTHH:mm:00}\"");
+                    sb.Append($", \"start\": \"{started:yyyy-MM-ddTHH:mm:00}\", \"end\": \"{ended:yyyy-MM-ddTHH:mm:00}\", \"allDay\": false");
                 }
 
+                //if (item.Compareceu.HasValue && item.Compareceu == true)
+                //{
+                //    sb.Append($", \"compareceu\": true");
+                //}
+                //else
+                //{
+                //    sb.Append(", \"compareceu\": false");
+                //}
+
+                sb.Append($", \"compareceu\": \"{!item.Compareceu}\"");
                 string color = "#E1DCE6";
 
                 if (Sessao.Usuario.ID == item.IdUsuario)

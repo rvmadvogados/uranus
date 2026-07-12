@@ -25,5 +25,7 @@ namespace Uranus.Business.DTOs
         public string NomeTipo { get; set; }
         public string NomeSede { get; set; }
         public string NomeSala { get; set; }
+
+        public bool? Compareceu { get; set; }
     }
 }

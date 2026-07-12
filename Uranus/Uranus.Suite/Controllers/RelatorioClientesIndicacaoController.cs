@@ -29,7 +29,7 @@ namespace Uranus.Suite.Controllers
         }
         
 
-        public ActionResult Index(Int32 FiltrarIndicacao = 0, Int32? Profissionais = 0, Int32? Parceiros = 0, Int32? Clientes = 0)
+        public ActionResult Index(Int32 FiltrarIndicacao = 0, Int32? Profissionais = 0, Int32? Parceiros = 0, Int32? Clientes = 0, string OrdemData = "desc")
         {
             if (Sessao.Usuario == null)
             {
@@ -41,8 +41,11 @@ namespace Uranus.Suite.Controllers
                 var viewer = new Microsoft.Reporting.WebForms.ReportViewer();
                 if (FiltrarIndicacao != 0 || Profissionais != 0 || Parceiros != 0 || Clientes != 0)
                 {
-                    //var ds = RelatorioClientesIndicacao.Gerar(ConfigurationManager.ConnectionStrings["APIR9"].ConnectionString);
                     var ds = RelatorioClientesIndicacaoBO.Gerar(FiltrarIndicacao, Profissionais, Parceiros, Clientes);
+
+                    ds = OrdemData == "desc"
+                        ? ds.OrderByDescending(x => x.DataCadastroIndicacao.HasValue).ThenByDescending(x => x.DataCadastroIndicacao).ToList()
+                        : ds.OrderByDescending(x => x.DataCadastroIndicacao.HasValue).ThenBy(x => x.DataCadastroIndicacao).ToList();
 
                     //if (FiltrarIndicacao != null && FiltrarIndicacao.Count > 0 && FiltrarIndicacao[0] > 0)
                     //{
@@ -70,6 +73,7 @@ namespace Uranus.Suite.Controllers
                 }
                 ViewBag.ReportViewer = viewer;
                 ViewBag.FiltrarIndicacao = FiltrarIndicacao;
+                ViewBag.OrdemData = OrdemData;
 
 
                 return View();

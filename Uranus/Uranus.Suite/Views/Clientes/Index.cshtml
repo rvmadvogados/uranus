@@ -773,6 +773,40 @@
                 maximumSelectionLength: 100
             });
 
+            $('#DataCadastroIndicacao').daterangepicker({
+                singleDatePicker: true,
+                timePicker: true,
+                timePicker24Hour: true,
+                autoApply: true,
+                drops: 'auto',
+                opens: 'right',
+                maxDate: moment(),
+                locale: {
+                    format: 'DD/MM/YYYY HH:mm',
+                    daysOfWeek: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                    firstDay: 0
+                }
+            }).on('apply.daterangepicker', function (ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY HH:mm'));
+            });
+
+            var drp = $('#DataCadastroIndicacao').data('daterangepicker');
+            var origMove = drp.move.bind(drp);
+            drp.move = function () {
+                origMove();
+                var $c = this.container;
+                var winW = $(window).width();
+                var winH = $(window).height();
+                var offset = $c.offset();
+                var w = $c.outerWidth();
+                var h = $c.outerHeight();
+                if (offset.left + w > winW - 5) $c.css('left', Math.max(5, winW - w - 5) + 'px');
+                if (offset.left < 5) $c.css('left', '5px');
+                if (offset.top + h > winH - 5) $c.css('top', Math.max(5, winH - h - 5) + 'px');
+                if (offset.top < 5) $c.css('top', '5px');
+            };
+
         });
 
         //$(window).load(function () {
@@ -1138,6 +1172,11 @@
         });
 
         $(document.body).on("change", "#TipoIndicacao", function () {
+
+            $('#NomeIndicacao').val('');
+            $('#Parceiros').val('');
+            $('#Profissionais').val('');
+            $('#Clientes').val(null).trigger('change');
 
             var dados = new window.FormData();
             dados.append("Id", this.value);
@@ -1826,7 +1865,14 @@
                     $('#Vinculo').val(json.cliente[0].Vinculo);
                     $('#NomeIndicacao').val(json.cliente[0].Indicacao);
 
-                    $('#DataCadastroIndicacao').val(json.cliente[0].DataCadastroIndicacao);
+                    var drpIndicacao = $('#DataCadastroIndicacao').data('daterangepicker');
+                    var dataMomento = json.cliente[0].DataCadastroIndicacao
+                        ? moment(json.cliente[0].DataCadastroIndicacao, ['DD/MM/YYYY HH:mm:ss', 'DD/MM/YYYY HH:mm'])
+                        : null;
+                    if (!dataMomento || !dataMomento.isValid()) dataMomento = moment();
+                    $('#DataCadastroIndicacao').val(dataMomento.format('DD/MM/YYYY HH:mm'));
+                    drpIndicacao.startDate = dataMomento.clone();
+                    drpIndicacao.endDate = dataMomento.clone();
                     $('#UsuarioCadastroIndicacao').val(json.cliente[0].UsuarioCadastroIndicacao);
                     $('#DataAlteracaoIndicacao').val(json.cliente[0].DataAlteracaoIndicacao);
                     $('#UsuarioAlteracaoIndicacao').val(json.cliente[0].UsuarioAlteracaoIndicacao);
@@ -2164,6 +2210,7 @@
             dados.append("IdParceiro", $("#Parceiros").val());
             dados.append("IdProfissional", $("#Profissionais").val());
             dados.append("IdCliente", $("#Clientes").val());
+            dados.append("DataCadastroIndicacao", $("#DataCadastroIndicacao").val());
 
             var options = {};
             options.url = "/Clientes/SalvarIndicacao"

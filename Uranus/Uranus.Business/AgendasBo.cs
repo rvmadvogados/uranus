@@ -170,6 +170,7 @@ namespace Uranus.Business
                     a.Data,
                     a.Hora,
                     a.Encaixe,
+                    a.Compareceu,
                     a.IdSede,
                     a.IdProfissional,
                     a.IdCliente,
@@ -191,7 +192,8 @@ namespace Uranus.Business
                 LEFT JOIN Clientes c WITH (NOLOCK) ON a.IdCliente = c.Id
                 LEFT JOIN Pessoas pc WITH (NOLOCK) ON c.IdPessoa = pc.Id
 
-                WHERE a.Cancelou = 0 AND a.Data BETWEEN @p0 AND @p1";
+                WHERE a.Cancelou = 0 AND a.Data BETWEEN @p0 AND @p1
+                ORDER BY a.Data ASC, a.Hora ASC, a.IdProfissional ASC, a.Id ASC";
 
                 return context.Database.SqlQuery<EventoDTO>(sql, dataInicio, dataFim).ToList();
             }
